@@ -12,7 +12,7 @@ import ch.epfl.sdp.R;
 
 public class MainFragment extends Fragment {
 
-    //private MainViewModel mViewModel;
+    private MainViewModel mViewModel;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -28,8 +28,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        System.out.println(mViewModel.toString());
+
         // TODO: Use the ViewModel
     }
 
