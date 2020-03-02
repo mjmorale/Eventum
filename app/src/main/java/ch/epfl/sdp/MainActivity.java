@@ -2,6 +2,8 @@ package ch.epfl.sdp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+
 import ch.epfl.sdp.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
