@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 
 public class Event {
@@ -34,7 +36,12 @@ public class Event {
         this.date = date;
     }
 
+    @NonNull
     private String description;
+
+    @NonNull
     private Date date;
+
+    @NonNull
     private String title;
 }
