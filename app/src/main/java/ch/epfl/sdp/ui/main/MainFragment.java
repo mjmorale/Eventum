@@ -63,10 +63,6 @@ public class MainFragment extends Fragment {
                     signOut();
                 }
 
-//                if(!signedIn)
-//                    button.setText("Sign In");
-//                else
-//                    button.setText("Sign Out");
             }
         });
         return view;
