@@ -79,6 +79,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
     implementation 'com.lorentzos.swipecards:library:1.0.9'
+    implementation "androidx.cardview:cardview:1.0.0"
 }
 
 dependencies {
