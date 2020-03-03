@@ -1,5 +1,6 @@
 package ch.epfl.sdp;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
@@ -10,6 +11,6 @@ public interface AuthProvider {
 
     Intent getLoginIntent();
 
-    void logoutCurrentAccount(@Nullable OnCompleteListener<Void> onCompleteCallback);
-    void deleteCurrentAccount(@Nullable OnCompleteListener<Void> onCompleteCallback);
+    void logoutCurrentAccount(Context context, @Nullable OnCompleteListener<Void> onCompleteCallback);
+    void deleteCurrentAccount(Context context, @Nullable OnCompleteListener<Void> onCompleteCallback);
 }
