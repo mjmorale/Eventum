@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -8,11 +9,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.databinding.EventFragmentBinding;
 
 public class EventFragment extends Fragment {
 
     private EventViewModel mViewModel;
+    private EventFragmentBinding binding;
 
     public static EventFragment newInstance() {
         return new EventFragment();
@@ -21,14 +25,29 @@ public class EventFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.event_fragment, container, false);
+        binding = EventFragmentBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // Get the ViewModel
         mViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        // TODO: Use the ViewModel
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            binding.date.setText(event.getDate().toString());
+            binding.description.setText(event.getDescription());
+            binding.title.setText(event.getTitle());
+        });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }
