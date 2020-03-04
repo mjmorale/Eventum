@@ -18,6 +18,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -29,8 +32,7 @@ dependencies {
     // Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
-
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 
     // Unit test dependencies
     testImplementation 'junit:junit:4.12'
@@ -53,6 +55,10 @@ android {
             testCoverageEnabled true
         }
         // ...
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
