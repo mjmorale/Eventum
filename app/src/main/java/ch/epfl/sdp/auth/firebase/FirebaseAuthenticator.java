@@ -16,8 +16,11 @@ public class FirebaseAuthenticator implements Authenticator {
 
     private final FirebaseAuth mAuth;
 
-    public FirebaseAuthenticator(FirebaseAuth auth) {
-        mAuth = auth;
+    public FirebaseAuthenticator(@NonNull FirebaseAuth firebaseAuth) {
+        if(firebaseAuth == null) {
+            throw new IllegalArgumentException();
+        }
+        this.mAuth = firebaseAuth;
     }
 
     @Override

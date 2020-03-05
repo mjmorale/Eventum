@@ -47,6 +47,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         mBinding = AuthFragmentBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         mBinding.btnGoogleSignIn.setOnClickListener(this);
+        mBinding.btnLogout.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -64,7 +65,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(AuthViewModel.class);
-        mViewModel.setUser(null);
+        mViewModel.setUser(mAuthenticator.getCurrentUser());
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if(user != null) {
@@ -113,7 +114,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btn_logout:
-                //TODO: Does not work
                 mAuthenticator.logout();
                 mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), task -> mViewModel.setUser(null));
                 break;
