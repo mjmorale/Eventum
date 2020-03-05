@@ -51,15 +51,11 @@ public class SwipeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         SwipeFlingAdapterView flingContainer = getView().findViewById(R.id.frame);
-
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
                 eventList.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -77,11 +73,8 @@ public class SwipeFragment extends Fragment {
             @Override
             public void onScroll(float scrollProgressPercent) {
                 SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
-
-                View view = flingContainer.getSelectedView();
-                //Show indicator about the action of the user
-                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                flingContainer.getSelectedView().findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                flingContainer.getSelectedView().findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
         flingContainer.setOnItemClickListener((itemPosition, dataObject) -> {
