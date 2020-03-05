@@ -7,11 +7,16 @@ import java.util.Date;
 public class Event {
 
     public Event(String title, String description, Date date) {
+        this(title, description, date, R.mipmap.ic_launcher);
+    }
+
+    public Event(String title, String description, Date date, int imageID){
         if (title == null || description == null || date == null)
             throw new IllegalArgumentException();
         this.title = title;
         this.description = description;
         this.date = date;
+        this.imageID = imageID;
     }
 
     public String getTitle() {
@@ -45,6 +50,15 @@ public class Event {
     }
 
     @NonNull
+    public int getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(@NonNull int imageName) {
+        this.imageID = imageName;
+    }
+
+    @NonNull
     private String description;
 
     @NonNull
@@ -52,4 +66,7 @@ public class Event {
 
     @NonNull
     private String title;
+
+    @NonNull
+    private int imageID;
 }

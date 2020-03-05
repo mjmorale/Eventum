@@ -5,8 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.event.EventFragment"
-        android:id="@+id/frameLayout">
+        android:background="@color/grey"
+        tools:context=".ui.event.EventFragment">
 
     <TextView
         android:id="@+id/title"
