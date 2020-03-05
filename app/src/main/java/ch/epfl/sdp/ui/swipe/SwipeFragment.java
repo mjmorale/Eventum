@@ -11,11 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import java.util.ArrayList;
+import java.util.Date;
+
+import ch.epfl.sdp.CardArrayAdapter;
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 
 public class SwipeFragment extends Fragment {
-    private ArrayList<String> al;
-    private ArrayAdapter<String> arrayAdapter;
+    private ArrayList<Event> eventList;
+    private ArrayAdapter<Event> arrayAdapter;
     private int i;
 
     @Override
@@ -31,12 +35,22 @@ public class SwipeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        al = new ArrayList<>();
-        al.add("Event A");
-        al.add("Event B");
-        al.add("Event C");
+        eventList = new ArrayList<Event>();
 
-        arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.card, R.id.eventName, al );
+        eventList.add(new Event("OSS-117 Movie watching",
+                "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
+                new Date(2021, 1, 16), R.drawable.oss_117));
+        eventList.add(new Event("Duck themed party",
+                "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
+                new Date(2020, 3, 7), R.drawable.duck));
+        eventList.add(new Event("Make Internet great again",
+                "At this meeting we will debate on how to make pepe the frog memes great again",
+                new Date(2020, 4, 20), R.drawable.frog));
+        eventList.add(new Event("Real Fake Party",
+                "This is really happening",
+                new Date(2020, 11, 10)));
+
+        arrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, eventList );
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
 
@@ -46,7 +60,7 @@ public class SwipeFragment extends Fragment {
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-                al.remove(0);
+                eventList.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
 
@@ -68,11 +82,11 @@ public class SwipeFragment extends Fragment {
             @Override
             public void onScroll(float scrollProgressPercent) {
                 SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
-                View view = flingContainer.getSelectedView();
 
+                View view = flingContainer.getSelectedView();
                 //Show indicator about the action of the user
-                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+//                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+//                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
 

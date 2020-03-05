@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@color/white">
+            android:background="@color/white"
+            android:id="@+id/frame">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imageCard"
                 android:scaleType="centerCrop"
-                android:src="@drawable/oss117"
                 android:contentDescription="Profile image of the event">
             </ImageView>
 
@@ -43,7 +43,7 @@
                     android:textColor="@color/colorPrimary"
                     android:gravity="start"
                     android:paddingStart="30dp"
-                    android:background="@color/transparentGrey"
+                    android:background="@color/grey"
                     tools:text="card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
