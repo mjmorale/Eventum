@@ -1,8 +1,5 @@
-package ch.epfl.sdp;
+package ch.epfl.sdp.auth.firebase;
 
-import android.content.Context;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -11,9 +8,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import ch.epfl.sdp.AuthenticationResult;
-import ch.epfl.sdp.Authenticator;
-import ch.epfl.sdp.User;
+import ch.epfl.sdp.auth.AuthenticationResult;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.User;
 
 public class FirebaseAuthenticator implements Authenticator {
 
@@ -31,16 +28,13 @@ public class FirebaseAuthenticator implements Authenticator {
 
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(email, password);
         if(callback != null) {
-            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
-                        callback.onLoginComplete(AuthenticationResult.success(user));
-                    } else {
-                        callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
-                    }
+            authResultTask.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
+                    callback.onLoginComplete(AuthenticationResult.success(user));
+                } else {
+                    callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
                 }
             });
         }
@@ -58,16 +52,13 @@ public class FirebaseAuthenticator implements Authenticator {
 
         Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
         if(callback != null) {
-            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
-                        callback.onLoginComplete(AuthenticationResult.success(user));
-                    } else {
-                        callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
-                    }
+            authResultTask.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
+                    callback.onLoginComplete(AuthenticationResult.success(user));
+                } else {
+                    callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
                 }
             });
         }

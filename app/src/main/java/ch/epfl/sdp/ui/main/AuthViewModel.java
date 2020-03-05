@@ -3,7 +3,7 @@ package ch.epfl.sdp.ui.main;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import ch.epfl.sdp.User;
+import ch.epfl.sdp.auth.User;
 
 public class AuthViewModel extends ViewModel {
 

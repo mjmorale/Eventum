@@ -1,4 +1,6 @@
-package ch.epfl.sdp;
+package ch.epfl.sdp.auth;
+
+import androidx.annotation.Nullable;
 
 public class User {
 
@@ -8,6 +10,9 @@ public class User {
 
     public User(String uid, String name, String email) {
         if(uid == null || name == null || email == null) {
+            throw new IllegalArgumentException();
+        }
+        if(uid.isEmpty() || name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
@@ -26,5 +31,19 @@ public class User {
 
     public String getEmail() {
         return mEmail;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        User user = (User)obj;
+
+        return user.mUid == this.mUid && user.mName == this.mName && user.mEmail == this.mEmail;
     }
 }

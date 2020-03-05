@@ -1,4 +1,4 @@
-package ch.epfl.sdp;
+package ch.epfl.sdp.auth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
