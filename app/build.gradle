@@ -19,6 +19,12 @@ android {
     }
 }
 
+android {
+    viewBinding {
+        enabled = true;
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
