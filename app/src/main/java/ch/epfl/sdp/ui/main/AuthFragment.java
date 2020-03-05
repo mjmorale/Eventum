@@ -36,10 +36,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuthenticator mAuthenticator;
 
-    public static AuthFragment newInstance() {
-        return new AuthFragment();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
