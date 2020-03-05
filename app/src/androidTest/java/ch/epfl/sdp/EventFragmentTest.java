@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,16 +15,24 @@ import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.event.EventViewModel;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class EventFragmentTest {
+
     private EventViewModel eventViewModel;
+
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
             new ActivityTestRule<>(MainActivity.class);
+
+    @Before
+    public void setup() {
+        onView(withText("Event")).perform(click());
+    }
 
     @Test
     public void testEventFragment() {

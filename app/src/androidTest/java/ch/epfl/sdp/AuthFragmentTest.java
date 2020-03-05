@@ -3,11 +3,16 @@ package ch.epfl.sdp;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import ch.epfl.sdp.ui.main.AuthFragment;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthFragmentTest {
@@ -15,19 +20,13 @@ public class AuthFragmentTest {
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
-    private AuthFragment setupFragment() {
-        AuthFragment authFragment = new AuthFragment();
-        mActivityRule.getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .add(authFragment, "AuthFragment")
-                .commitNow();
-        return authFragment;
+    @Before
+    public void setup() {
+        onView(withText("Login")).perform(click());
     }
 
     @Test
     public void authFragment_Create() {
-        mActivityRule.getActivity().runOnUiThread(() -> {
-            AuthFragment authFragment = setupFragment();
-        });
+
     }
 }

@@ -14,6 +14,7 @@ import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class SwipeTest{
@@ -21,22 +22,17 @@ public class SwipeTest{
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
 
     @Before
-    public void init(){
-        activityActivityTestRule.getActivity()
-                .getSupportFragmentManager().beginTransaction();
-        onView(withId(R.id.swipeButton))
-                .perform(click());
+    public void setup(){
+        onView(withText("Swipe")).perform(click());
     }
 
     @Test
-    public void buttonToSwipeFragment()
-    {
+    public void buttonToSwipeFragment() {
         onView(withId(R.id.frame)).check(matches((isDisplayed())));
     }
 
     @Test
-    public void scrollShowDeny()
-    {
+    public void scrollShowDeny() {
         onView(withId(R.id.frame)).perform(swipeLeft());
         onView(withId(R.id.frame)).check(matches((isDisplayed())));
 
@@ -49,8 +45,7 @@ public class SwipeTest{
     }
 
     @Test
-    public void scrollShowAccept()
-    {
+    public void scrollShowAccept() {
         onView(withId(R.id.frame)).perform(swipeRight());
         onView(withId(R.id.frame)).check(matches((isDisplayed())));
     }
