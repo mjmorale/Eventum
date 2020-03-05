@@ -66,7 +66,6 @@ public class SwipeFragment extends Fragment {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //acceptIndicator.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -85,10 +84,7 @@ public class SwipeFragment extends Fragment {
                 view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
-
-        // Optionally add an OnItemClickListener
         flingContainer.setOnItemClickListener((itemPosition, dataObject) -> {
-
         });
     }
 }
