@@ -77,12 +77,12 @@ public class SwipeFragment extends Fragment {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-                //SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
+                SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
 
-                //View view = flingContainer.getSelectedView();
+                View view = flingContainer.getSelectedView();
                 //Show indicator about the action of the user
-//                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
 

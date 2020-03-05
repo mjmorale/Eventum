@@ -27,15 +27,16 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Event event = getItem(position);
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.eventcard, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.card, parent, false);
         }
 
         TextView name = convertView.findViewById(R.id.eventName);
         ImageView imageView = convertView.findViewById(R.id.imageCard);
+        TextView description = convertView.findViewById(R.id.eventDescription);
 
         name.setText(event.getTitle());
         imageView.setImageResource(event.getImageID());
-
+        description.setText(event.getDescription());
         return convertView;
     }
 }
