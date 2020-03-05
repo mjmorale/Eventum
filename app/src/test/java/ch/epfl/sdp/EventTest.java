@@ -69,4 +69,30 @@ public class EventTest {
         Event e = new Event(title,description,date);
         e.setDate(null);
     }
+
+    @Test
+    public void testSetTitle()
+    {
+        Event e = new Event(title,description,date);
+        String newTitle = "Not really";
+        e.setTitle(newTitle);
+        assertEquals(e.getTitle(), newTitle);
+    }
+
+    @Test
+    public void testSetDesccription()
+    {
+        Event e = new Event(title,description,date);
+        String newDescription = "Not really";
+        e.setDescription(newDescription);
+        assertEquals(e.getDescription(), newDescription);
+    }
+
+    @Test public void testSetDate()
+    {
+        Event e = new Event(title,description,date);
+        Date newDate = new Date(2020, 4, 14);
+        e.setDate(newDate);
+        assertEquals(e.getDate(), newDate);
+    }
 }
