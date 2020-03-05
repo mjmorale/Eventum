@@ -20,7 +20,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.auth.firebase.FirebaseAuthenticator;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.AuthFragmentBinding;
@@ -40,34 +40,20 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         return new AuthFragment();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        mBinding = AuthFragmentBinding.inflate(getLayoutInflater());
-        View view = mBinding.getRoot();
-        mBinding.btnGoogleSignIn.setOnClickListener(this);
-        mBinding.btnLogout.setOnClickListener(this);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-
+        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         mAuthenticator = new FirebaseAuthenticator(FirebaseAuth.getInstance());
 
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(AuthViewModel.class);
-        mViewModel.setUser(mAuthenticator.getCurrentUser());
-
-        mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+        mViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        mViewModel.getUser().observe(this, user -> {
             if(user != null) {
                 mBinding.txtUserName.setText(user.getName());
                 mBinding.txtUserEmail.setText(user.getEmail());
@@ -81,6 +67,20 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 mBinding.btnLogout.setEnabled(false);
             }
         });
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mBinding = AuthFragmentBinding.inflate(getLayoutInflater());
+        View view = mBinding.getRoot();
+        mBinding.btnGoogleSignIn.setOnClickListener(this);
+        mBinding.btnLogout.setOnClickListener(this);
+
+        mViewModel.setUser(mAuthenticator.getCurrentUser());
+
+        return view;
     }
 
     @Override
