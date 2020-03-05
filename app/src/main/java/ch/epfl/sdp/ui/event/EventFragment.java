@@ -18,10 +18,6 @@ public class EventFragment extends Fragment {
     private EventViewModel mViewModel;
     private EventFragmentBinding binding;
 
-    public static EventFragment newInstance() {
-        return new EventFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -49,5 +45,9 @@ public class EventFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public EventViewModel getViewModel() {
+        return mViewModel;
     }
 }

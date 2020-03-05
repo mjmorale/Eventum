@@ -5,11 +5,10 @@ import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 
 public class EventViewModel extends ViewModel {
-    public EventViewModel(MutableLiveData<Event> event) {
-        this.event = event;
-    }
-
     public MutableLiveData<Event> getEvent() {
+        if (event == null) {
+            event = new MutableLiveData<>();
+        }
         return event;
     }
 
