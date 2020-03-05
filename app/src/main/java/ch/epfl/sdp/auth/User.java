@@ -1,7 +1,5 @@
 package ch.epfl.sdp.auth;
 
-import android.net.Uri;
-
 import androidx.annotation.Nullable;
 
 public class User {
