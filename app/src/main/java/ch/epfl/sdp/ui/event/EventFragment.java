@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -16,19 +17,17 @@ public class EventFragment extends Fragment {
     private EventFragmentBinding binding;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = EventFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        // Get the ViewModel
-        mViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
@@ -36,6 +35,8 @@ public class EventFragment extends Fragment {
             binding.description.setText(event.getDescription());
             binding.title.setText(event.getTitle());
         });
+
+        return view;
     }
 
     @Override

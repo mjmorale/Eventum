@@ -41,6 +41,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    // Google Material
+    implementation 'com.google.android.material:material:1.0.0'
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
 
