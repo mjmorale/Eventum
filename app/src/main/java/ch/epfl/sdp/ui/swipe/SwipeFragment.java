@@ -25,15 +25,8 @@ public class SwipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.swipe_fragment, container, false);
         super.onCreate(savedInstanceState);
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        View view = inflater.inflate(R.layout.swipe_fragment, container, false);
 
         eventList = new ArrayList<Event>();
 
@@ -50,9 +43,16 @@ public class SwipeFragment extends Fragment {
                 "This is really happening",
                 new Date(2020, 11, 10)));
 
-        arrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, eventList );
+        arrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, eventList);
 
-        SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        SwipeFlingAdapterView flingContainer = getView().findViewById(R.id.frame);
 
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
@@ -70,20 +70,16 @@ public class SwipeFragment extends Fragment {
             }
 
             @Override
-            public void onRightCardExit(Object dataObject) {
-
-            }
+            public void onRightCardExit(Object dataObject) { }
 
             @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-
-            }
+            public void onAdapterAboutToEmpty(int itemsInAdapter) { }
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-                SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
+                //SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
 
-                View view = flingContainer.getSelectedView();
+                //View view = flingContainer.getSelectedView();
                 //Show indicator about the action of the user
 //                view.findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
 //                view.findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
@@ -91,11 +87,8 @@ public class SwipeFragment extends Fragment {
         });
 
         // Optionally add an OnItemClickListener
-        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
+        flingContainer.setOnItemClickListener((itemPosition, dataObject) -> {
 
-            }
         });
     }
 }
