@@ -30,17 +30,7 @@ public class FirebaseAuthenticator implements Authenticator {
         }
 
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(email, password);
-        if(callback != null) {
-            authResultTask.addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                    User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
-                    callback.onLoginComplete(AuthenticationResult.success(user));
-                } else {
-                    callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
-                }
-            });
-        }
+        handleAuthResultTask(authResultTask, callback);
     }
 
     @Override
@@ -54,6 +44,20 @@ public class FirebaseAuthenticator implements Authenticator {
         }
 
         Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
+        handleAuthResultTask(authResultTask, callback);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if(firebaseUser == null) {
+            return null;
+        }
+        User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
+        return user;
+    }
+
+    private void handleAuthResultTask(Task<AuthResult> authResultTask, OnLoginCallback callback) {
         if(callback != null) {
             authResultTask.addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -65,15 +69,5 @@ public class FirebaseAuthenticator implements Authenticator {
                 }
             });
         }
-    }
-
-    @Override
-    public User getCurrentUser() {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if(firebaseUser == null) {
-            return null;
-        }
-        User user = new User(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
-        return user;
     }
 }

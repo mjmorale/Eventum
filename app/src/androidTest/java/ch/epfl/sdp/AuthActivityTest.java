@@ -23,6 +23,6 @@ public class AuthActivityTest {
 
     @Test
     public void test() {
-        
+
     }
 }
