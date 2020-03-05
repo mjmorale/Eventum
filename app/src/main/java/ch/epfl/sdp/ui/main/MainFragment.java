@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements View.OnClickListener {
 
     private MainViewModel mViewModel;
 
@@ -30,14 +29,9 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         Button swipeButton = (Button) view.findViewById(R.id.swipeButton);
-        swipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, new SwipeFragment());
-                transaction.commit();
-            }
-        });
+        Button loginButton = (Button) view.findViewById(R.id.loginButton);
+        swipeButton.setOnClickListener(this);
+        loginButton.setOnClickListener(this);
         return view;
     }
 
@@ -45,5 +39,23 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.swipeButton:
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, new SwipeFragment());
+                transaction.commit();
+                break;
+
+            case R.id.loginButton:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new AuthFragment())
+                        .commit();
+                break;
+        }
     }
 }
