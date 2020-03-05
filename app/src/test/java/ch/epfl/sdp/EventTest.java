@@ -54,6 +54,13 @@ public class EventTest {
         e.setTitle(null);
     }
 
+    @Test
+    public void testSetTitle()
+    {
+        Event e = new Event(title,description,date);
+        e.setTitle("New title");
+    }
+
     // An attribute of an Event should not be null
     @Test(expected = IllegalArgumentException.class)
     public void testSetDescFailsOnNull()
@@ -62,11 +69,25 @@ public class EventTest {
         e.setDescription(null);
     }
 
+    @Test
+    public void testSetDescription()
+    {
+        Event e = new Event(title,description,date);
+        e.setDescription("New description");
+    }
+
     // An attribute of an Event should not be null
     @Test(expected = IllegalArgumentException.class)
     public void testSetDateFailsOnNull()
     {
         Event e = new Event(title,description,date);
         e.setDate(null);
+    }
+
+    @Test
+    public void testSetDate()
+    {
+        Event e = new Event(title,description,date);
+        e.setDate(new Date());
     }
 }
