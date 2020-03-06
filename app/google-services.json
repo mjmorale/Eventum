@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "136039800601",
+    "firebase_url": "https://eventum-6a6b7.firebaseio.com",
+    "project_id": "eventum-6a6b7",
+    "storage_bucket": "eventum-6a6b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136039800601:android:6e38462f8fb00600376f88",
+        "android_client_info": {
+          "package_name": "ch.epfl.sdp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "136039800601-jvkps28lnpr34mu0d2cu4gkmbc139b83.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.epfl.sdp",
+            "certificate_hash": "33477bfbe25d05d6b63680aed1dc3281ddddf216"
+          }
+        },
+        {
+          "client_id": "136039800601-th0of7ir1b4nebgf328abeblpqsu2o96.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFmHiJxgI-BYE2qQW-5IEZ_X_PMIyhCPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136039800601-r8hhuj3oj6hlh0e6a6rjhg07eoskr0vt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
