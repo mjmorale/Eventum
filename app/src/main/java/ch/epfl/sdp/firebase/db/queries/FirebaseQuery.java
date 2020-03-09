@@ -1,4 +1,4 @@
-package ch.epfl.sdp.db.firebase.queries;
+package ch.epfl.sdp.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 

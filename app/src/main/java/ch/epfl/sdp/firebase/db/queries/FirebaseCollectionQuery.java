@@ -1,4 +1,4 @@
-package ch.epfl.sdp.db.firebase.queries;
+package ch.epfl.sdp.firebase.db.queries;
 
 import android.util.Log;
 
@@ -7,11 +7,14 @@ import androidx.annotation.NonNull;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
@@ -66,6 +69,14 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
+    public <T, B extends DatabaseObjectBuilder<T>> LiveData<List<T>> livedata(@NonNull B builder) {
+        if(builder == null) {
+            throw new IllegalArgumentException();
+        }
+        return new FirebaseCollectionLiveData(mCollection, builder);
+    }
+
+    @Override
     public <T, B extends DatabaseObjectBuilder<T>> void create(@NonNull T object, @NonNull B builder, @NonNull OnQueryCompleteCallback<String> callback) {
         if(object == null || builder == null || callback == null) {
             throw new IllegalArgumentException();
@@ -78,5 +89,51 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
                 callback.onGetQueryComplete(QueryResult.failure(task.getException()));
             }
         });
+    }
+
+    private class FirebaseCollectionLiveData<T, B extends DatabaseObjectBuilder<T>> extends LiveData<List<T>> {
+
+        private final CollectionReference mCollection;
+        private final B mBuilder;
+
+        private ListenerRegistration mListener = null;
+
+        FirebaseCollectionLiveData(@NonNull CollectionReference collection, @NonNull B builder) {
+            if(collection == null || builder == null) {
+                throw new IllegalArgumentException();
+            }
+            mCollection = collection;
+            mBuilder = builder;
+        }
+
+        @Override
+        protected void onActive() {
+            super.onActive();
+
+            mListener = mCollection.addSnapshotListener((collectionSnapshot, e) -> {
+                if(e == null) {
+                    if(collectionSnapshot != null) {
+                        List<T> data = new ArrayList<>();
+                        for(DocumentSnapshot doc: collectionSnapshot) {
+                            data.add(mBuilder.buildFromMap(doc.getData()));
+                        }
+                        postValue(data);
+                    }
+                }
+                else {
+                    Log.e("FirestoreLiveData", "Exception during update", e);
+                }
+            });
+        }
+
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+
+            if(mListener != null) {
+                mListener.remove();
+                mListener = null;
+            }
+        }
     }
 }

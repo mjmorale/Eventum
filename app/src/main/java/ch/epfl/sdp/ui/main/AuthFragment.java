@@ -23,11 +23,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ch.epfl.sdp.Event;
-import ch.epfl.sdp.auth.firebase.FirebaseAuthenticator;
+import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.AuthFragmentBinding;
-import ch.epfl.sdp.db.firebase.FirestoreDatabase;
+import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 

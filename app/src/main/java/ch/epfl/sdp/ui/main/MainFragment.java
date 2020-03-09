@@ -78,12 +78,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, toInsert)
                 .commitNow();
-
-        if(tab.getPosition() == 2) {
-            mEventFragment.getViewModel().getEvent().setValue(new Event("OSS-117 Movie watching",
-                    "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
-                    new Date(2021, 1, 16), R.drawable.oss_117));
-        }
     }
 
     @Override

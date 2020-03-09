@@ -14,10 +14,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Any;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.auth.User;
+import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;

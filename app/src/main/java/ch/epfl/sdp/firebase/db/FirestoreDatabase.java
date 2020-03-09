@@ -1,11 +1,11 @@
-package ch.epfl.sdp.db.firebase;
+package ch.epfl.sdp.firebase.db;
 
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.db.firebase.queries.FirebaseCollectionQuery;
+import ch.epfl.sdp.firebase.db.queries.FirebaseCollectionQuery;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 
 public class FirestoreDatabase implements Database {
