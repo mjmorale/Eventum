@@ -43,6 +43,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     // Google Material
     implementation 'com.google.android.material:material:1.0.0'
+    // Maps dependency
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
 
