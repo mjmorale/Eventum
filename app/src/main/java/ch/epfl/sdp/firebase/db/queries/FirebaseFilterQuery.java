@@ -64,6 +64,24 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
     }
 
     @Override
+    public FilterQuery orderBy(@NonNull String field) {
+        if(field == null) {
+            throw new IllegalArgumentException();
+        }
+        mQuery = mQuery.orderBy(field);
+        return this;
+    }
+
+    @Override
+    public FilterQuery limitCount(int count) {
+        if(count <= 0) {
+            throw new IllegalArgumentException();
+        }
+        mQuery = mQuery.limit(count);
+        return this;
+    }
+
+    @Override
     public <T> LiveData<List<T>> livedata(@NonNull Class<T> type) {
         if(type == null) {
             throw new IllegalArgumentException();

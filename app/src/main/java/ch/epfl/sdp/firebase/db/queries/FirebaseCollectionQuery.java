@@ -51,6 +51,22 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
+    public FilterQuery orderBy(@NonNull String field) {
+        if(field == null) {
+            throw new IllegalArgumentException();
+        }
+        return new FirebaseFilterQuery(mDb, mCollection.orderBy(field));
+    }
+
+    @Override
+    public FilterQuery limitCount(int count) {
+        if(count <= 0) {
+            throw new IllegalArgumentException();
+        }
+        return new FirebaseFilterQuery(mDb, mCollection.limit(count));
+    }
+
+    @Override
     public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
         if(type == null || callback == null) {
             throw new IllegalArgumentException();
