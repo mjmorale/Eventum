@@ -31,6 +31,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     private SwipeFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
     private EventFragment mEventFragment;
+    private MapFragment mMapFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
         mEventFragment = new EventFragment();
+        mMapFragment = new MapFragment();
     }
 
     @Nullable
@@ -73,6 +75,9 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
                 break;
             case 2:
                 toInsert = mEventFragment;
+                break;
+            case 3:
+                toInsert = mMapFragment;
                 break;
         }
         getActivity().getSupportFragmentManager().beginTransaction()
