@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.util.Log;
+
 import com.google.firebase.Timestamp;
 
 import java.util.Date;
@@ -11,16 +13,7 @@ import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 public class DatabaseEventBuilder extends DatabaseObjectBuilder<Event> {
 
-    private static DatabaseEventBuilder mInstance = null;
-
-    public static DatabaseEventBuilder getInstance() {
-        if(mInstance == null) {
-            mInstance = new DatabaseEventBuilder();
-        }
-        return mInstance;
-    }
-
-    private DatabaseEventBuilder() {
+    public DatabaseEventBuilder() {
         super("title", "description", "date");
     }
 

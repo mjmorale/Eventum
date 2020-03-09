@@ -16,6 +16,7 @@ import java.util.Map;
 
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
@@ -50,12 +51,13 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> void get(@NonNull B builder, @NonNull OnQueryCompleteCallback<List<T>> callback) {
-        if(builder == null || callback == null) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
+        if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
         mCollection.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
                 List<T> data = new ArrayList<>();
                 for(DocumentSnapshot doc: task.getResult()) {
                     data.add(builder.buildFromMap(doc.getData()));
@@ -69,19 +71,19 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> LiveData<List<T>> livedata(@NonNull B builder) {
-        if(builder == null) {
+    public <T> LiveData<List<T>> livedata(@NonNull Class<T> type) {
+        if(type == null) {
             throw new IllegalArgumentException();
         }
-        return new FirebaseCollectionLiveData(mCollection, builder);
+        return new FirebaseCollectionLiveData(mCollection, type);
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> void create(@NonNull T object, @NonNull B builder, @NonNull OnQueryCompleteCallback<String> callback) {
-        if(object == null || builder == null || callback == null) {
+    public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
+        if(object == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        Map<String, Object> data = builder.serializeToMap(object);
+        Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
         mCollection.add(data).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 callback.onGetQueryComplete(QueryResult.success(task.getResult().getId()));
@@ -98,12 +100,12 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
 
         private ListenerRegistration mListener = null;
 
-        FirebaseCollectionLiveData(@NonNull CollectionReference collection, @NonNull B builder) {
-            if(collection == null || builder == null) {
+        FirebaseCollectionLiveData(@NonNull CollectionReference collection, @NonNull Class<T> type) {
+            if(collection == null || type == null) {
                 throw new IllegalArgumentException();
             }
             mCollection = collection;
-            mBuilder = builder;
+            mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
         }
 
         @Override

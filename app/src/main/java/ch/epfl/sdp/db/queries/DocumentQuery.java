@@ -9,9 +9,9 @@ public interface DocumentQuery extends Query {
 
     CollectionQuery collection(String collection);
 
-    <T, B extends DatabaseObjectBuilder<T>> void get(@NonNull B builder, @NonNull OnQueryCompleteCallback<T> callback);
+    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback);
 
-    <T, B extends DatabaseObjectBuilder<T>> LiveData<T> livedata(@NonNull B builder);
+    <T> LiveData<T> livedata(@NonNull Class<T> type);
 
     void delete(@NonNull OnQueryCompleteCallback<Void> callback);
 }

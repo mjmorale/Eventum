@@ -18,6 +18,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
 
@@ -34,12 +35,13 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> void get(@NonNull B builder, @NonNull OnQueryCompleteCallback<List<T>> callback) {
-        if(builder == null || callback == null) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
+        if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
         mQuery.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
                 List<T> data = new ArrayList<>();
                 for(DocumentSnapshot doc: task.getResult()) {
                     data.add(builder.buildFromMap(doc.getData()));
@@ -53,11 +55,11 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> LiveData<List<T>> livedata(@NonNull B builder) {
-        if(builder == null) {
+    public <T> LiveData<List<T>> livedata(@NonNull Class<T> type) {
+        if(type == null) {
             throw new IllegalArgumentException();
         }
-        return new FirebaseQueryLiveData(mQuery, builder);
+        return new FirebaseQueryLiveData(mQuery, type);
     }
 
     private class FirebaseQueryLiveData<T, B extends DatabaseObjectBuilder<T>> extends LiveData<List<T>> {
@@ -67,12 +69,12 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
 
         private ListenerRegistration mListener = null;
 
-        FirebaseQueryLiveData(@NonNull Query query, @NonNull B builder) {
-            if(query == null || builder == null) {
+        FirebaseQueryLiveData(@NonNull Query query, @NonNull Class<T> type) {
+            if(query == null || type == null) {
                 throw new IllegalArgumentException();
             }
             mQuery = query;
-            mBuilder = builder;
+            mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
         }
 
         @Override

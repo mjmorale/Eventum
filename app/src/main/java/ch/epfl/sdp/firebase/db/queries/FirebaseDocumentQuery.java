@@ -14,6 +14,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
@@ -39,12 +40,13 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> void get(@NonNull B builder, @NonNull OnQueryCompleteCallback<T> callback) {
-        if(builder == null || callback == null) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback) {
+        if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
         mDocument.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
                 DocumentSnapshot doc = task.getResult();
                 T data = null;
                 if(doc.exists()) {
@@ -58,8 +60,8 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     }
 
     @Override
-    public <T, B extends DatabaseObjectBuilder<T>> LiveData<T> livedata(@NonNull B builder) {
-        return new FirebaseDocumentLivedata<T, B>(mDocument, builder);
+    public <T> LiveData<T> livedata(@NonNull Class<T> type) {
+        return new FirebaseDocumentLivedata(mDocument, type);
     }
 
     @Override
@@ -83,12 +85,12 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
 
         private ListenerRegistration mListener = null;
 
-        FirebaseDocumentLivedata(@NonNull DocumentReference document, @NonNull B builder) {
-            if(document == null || builder == null) {
+        FirebaseDocumentLivedata(@NonNull DocumentReference document, @NonNull Class<T> type) {
+            if(document == null || type == null) {
                 throw new IllegalArgumentException();
             }
             mDocument = document;
-            mBuilder = builder;
+            mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
         }
 
         @Override

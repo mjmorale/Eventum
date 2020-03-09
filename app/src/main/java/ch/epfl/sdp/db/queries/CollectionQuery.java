@@ -13,9 +13,9 @@ public interface CollectionQuery extends Query {
 
     FilterQuery whereFieldEqualTo(@NonNull String field, Object value);
 
-    <T, B extends DatabaseObjectBuilder<T>> void get(@NonNull B builder, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
 
-    <T, B extends DatabaseObjectBuilder<T>> LiveData<List<T>> livedata(@NonNull B builder);
+    <T> LiveData<List<T>> livedata(@NonNull Class<T> type);
 
-    <T, B extends DatabaseObjectBuilder<T>> void create(@NonNull T object, @NonNull B builder, @NonNull OnQueryCompleteCallback<String> callback);
+    <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback);
 }
