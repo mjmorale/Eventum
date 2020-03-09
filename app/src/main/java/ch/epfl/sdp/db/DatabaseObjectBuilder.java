@@ -4,21 +4,7 @@ import java.util.Map;
 
 public abstract class DatabaseObjectBuilder<T> {
 
-    String[] mRequiredFields;
+    public abstract T buildFromMap(Map<String, Object> data);
 
-    public DatabaseObjectBuilder(String... requiredFields) {
-        this.mRequiredFields = requiredFields;
-    }
-
-    protected void checkRequiredFields(Map<String, Object> data) throws IllegalArgumentException {
-        for(String field: mRequiredFields) {
-            if(!data.containsKey(field)) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    public abstract T instantiateFromDatabase(Map<String, Object> data) throws IllegalArgumentException;
-
-    public abstract Map<String, Object> serializeToDatabase(T object);
+    public abstract Map<String, Object> serializeToMap(T object);
 }
