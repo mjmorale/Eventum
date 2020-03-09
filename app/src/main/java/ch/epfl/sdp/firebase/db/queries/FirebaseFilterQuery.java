@@ -24,7 +24,7 @@ import ch.epfl.sdp.db.queries.QueryResult;
 
 public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
 
-    private final Query mQuery;
+    private Query mQuery;
 
     FirebaseFilterQuery(@NonNull FirebaseFirestore database, @NonNull Query query) {
         super(database);
@@ -52,6 +52,15 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
                 callback.onGetQueryComplete(QueryResult.failure(task.getException()));
             }
         });
+    }
+
+    @Override
+    public FilterQuery whereFieldEqualTo(@NonNull String field, Object value) {
+        if(field == null) {
+            throw new IllegalArgumentException();
+        }
+        mQuery = mQuery.whereEqualTo(field, value);
+        return this;
     }
 
     @Override

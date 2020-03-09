@@ -11,5 +11,7 @@ public interface FilterQuery extends Query {
 
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
 
+    FilterQuery whereFieldEqualTo(@NonNull String field, Object value);
+
     <T> LiveData<List<T>> livedata(@NonNull Class<T> type);
 }
