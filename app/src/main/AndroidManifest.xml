@@ -14,7 +14,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-            <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_key"/>
+
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_key"/>
     </application>
 
 </manifest>
