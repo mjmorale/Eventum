@@ -28,4 +28,8 @@ public class DatabaseObjectBuilderFactory {
         }
         return (R) mBuilders.get(type);
     }
+
+    public static void clear() {
+        mBuilders.clear();
+    }
 }

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.auth.firebase;
+package ch.epfl.sdp.firebase.auth;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
