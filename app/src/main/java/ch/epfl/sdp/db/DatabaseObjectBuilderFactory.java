@@ -10,7 +10,7 @@ public class DatabaseObjectBuilderFactory {
 
     private static final Map<Class, DatabaseObjectBuilder> mBuilders = new HashMap<>();
 
-    public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<DatabaseObjectBuilder<T>> builder)
+    public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<? extends DatabaseObjectBuilder<T>> builder)
             throws InstantiationException, IllegalAccessException {
         if(type == null || builder == null) {
             throw new IllegalArgumentException();
