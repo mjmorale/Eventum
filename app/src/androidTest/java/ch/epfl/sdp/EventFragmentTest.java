@@ -47,26 +47,25 @@ public class EventFragmentTest {
                 eventFragment.getViewModel().getEvent().postValue(
                         new Event(mockTitle, mockDescription, mockDate)
                 );
-
-/*                onView(withId(R.id.description))
-                        .check(matches(withText(mockDescription)));
-
-                onView(withId(R.id.date))
-                        .check(matches(withText(mockDate.toString())));
-
-                onView(withId(R.id.title))
-                        .check(matches(withText(mockTitle)));*/
             }
         });
+
+        onView(withId(R.id.description))
+                .check(matches(withText(mockDescription)));
+
+        onView(withId(R.id.date))
+                .check(matches(withText(mockDate.toString())));
+
+        onView(withId(R.id.title))
+                .check(matches(withText(mockTitle)));
 
     }
 
     private EventFragment startEventFragment() {
-        MainActivity activity = (MainActivity) mActivityRule.getActivity();
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
         EventFragment eventFragment = new EventFragment();
-        transaction.add(eventFragment, "eventFragment");
-        transaction.commitNow();
+        mActivityRule.getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, eventFragment)
+                .commitNow();
         return eventFragment;
     }
 
