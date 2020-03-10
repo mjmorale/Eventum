@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.firebase.FirebaseAuthenticator;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.AuthFragmentBinding;
@@ -34,7 +36,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private AuthFragmentBinding mBinding;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuthenticator mAuthenticator;
+    private Authenticator mAuthenticator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
