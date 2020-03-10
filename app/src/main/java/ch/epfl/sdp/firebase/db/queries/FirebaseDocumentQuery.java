@@ -6,12 +6,9 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
@@ -44,19 +41,7 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        mDocument.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
-                DocumentSnapshot doc = task.getResult();
-                T data = null;
-                if(doc.exists()) {
-                    data = builder.buildFromMap(doc.getData());
-                }
-                callback.onGetQueryComplete(QueryResult.success(data));
-            } else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
-            }
-        });
+        handleDocumentSnapshot(mDocument.get(), type, callback);
     }
 
     @Override
@@ -71,9 +56,9 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         }
         mDocument.delete().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                callback.onGetQueryComplete(QueryResult.success(null));
+                callback.onQueryComplete(QueryResult.success(null));
             } else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
+                callback.onQueryComplete(QueryResult.failure(task.getException()));
             }
         });
     }

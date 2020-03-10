@@ -5,17 +5,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
@@ -39,19 +35,7 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
         if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        mQuery.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
-                List<T> data = new ArrayList<>();
-                for(DocumentSnapshot doc: task.getResult()) {
-                    data.add(builder.buildFromMap(doc.getData()));
-                }
-                callback.onGetQueryComplete(QueryResult.success(data));
-            }
-            else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
-            }
-        });
+        handleQuerySnapshot(mQuery.get(), type, callback);
     }
 
     @Override
