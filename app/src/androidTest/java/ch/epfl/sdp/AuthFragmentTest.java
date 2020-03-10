@@ -8,14 +8,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ch.epfl.sdp.ui.main.AuthFragment;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthFragmentTest {

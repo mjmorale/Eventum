@@ -1,22 +1,14 @@
 package ch.epfl.sdp.firebase.db.queries;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
@@ -72,19 +64,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
         if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        mCollection.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
-                List<T> data = new ArrayList<>();
-                for(DocumentSnapshot doc: task.getResult()) {
-                    data.add(builder.buildFromMap(doc.getData()));
-                }
-                callback.onGetQueryComplete(QueryResult.success(data));
-            }
-            else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
-            }
-        });
+        handleQuerySnapshot(mCollection.get(), type, callback);
     }
 
     @Override
@@ -92,7 +72,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
         if(type == null) {
             throw new IllegalArgumentException();
         }
-        return new FirebaseCollectionLiveData(mCollection, type);
+        return new FirebaseQueryLiveData(mCollection, type);
     }
 
     @Override
@@ -103,56 +83,10 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
         Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
         mCollection.add(data).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                callback.onGetQueryComplete(QueryResult.success(task.getResult().getId()));
+                callback.onQueryComplete(QueryResult.success(task.getResult().getId()));
             } else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
+                callback.onQueryComplete(QueryResult.failure(task.getException()));
             }
         });
-    }
-
-    private class FirebaseCollectionLiveData<T, B extends DatabaseObjectBuilder<T>> extends LiveData<List<T>> {
-
-        private final CollectionReference mCollection;
-        private final B mBuilder;
-
-        private ListenerRegistration mListener = null;
-
-        FirebaseCollectionLiveData(@NonNull CollectionReference collection, @NonNull Class<T> type) {
-            if(collection == null || type == null) {
-                throw new IllegalArgumentException();
-            }
-            mCollection = collection;
-            mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
-        }
-
-        @Override
-        protected void onActive() {
-            super.onActive();
-
-            mListener = mCollection.addSnapshotListener((collectionSnapshot, e) -> {
-                if(e == null) {
-                    if(collectionSnapshot != null) {
-                        List<T> data = new ArrayList<>();
-                        for(DocumentSnapshot doc: collectionSnapshot) {
-                            data.add(mBuilder.buildFromMap(doc.getData()));
-                        }
-                        postValue(data);
-                    }
-                }
-                else {
-                    Log.e("FirestoreLiveData", "Exception during update", e);
-                }
-            });
-        }
-
-        @Override
-        protected void onInactive() {
-            super.onInactive();
-
-            if(mListener != null) {
-                mListener.remove();
-                mListener = null;
-            }
-        }
     }
 }

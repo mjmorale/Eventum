@@ -1,20 +1,11 @@
 package ch.epfl.sdp.firebase.db.queries;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
@@ -44,24 +35,12 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         if(type == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        mDocument.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
-                DocumentSnapshot doc = task.getResult();
-                T data = null;
-                if(doc.exists()) {
-                    data = builder.buildFromMap(doc.getData());
-                }
-                callback.onGetQueryComplete(QueryResult.success(data));
-            } else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
-            }
-        });
+        handleDocumentSnapshot(mDocument.get(), type, callback);
     }
 
     @Override
     public <T> LiveData<T> livedata(@NonNull Class<T> type) {
-        return new FirebaseDocumentLivedata(mDocument, type);
+        return new FirebaseDocumentLiveData(mDocument, type);
     }
 
     @Override
@@ -71,52 +50,10 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         }
         mDocument.delete().addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                callback.onGetQueryComplete(QueryResult.success(null));
+                callback.onQueryComplete(QueryResult.success(null));
             } else {
-                callback.onGetQueryComplete(QueryResult.failure(task.getException()));
+                callback.onQueryComplete(QueryResult.failure(task.getException()));
             }
         });
-    }
-
-    private class FirebaseDocumentLivedata<T, B extends DatabaseObjectBuilder<T>> extends LiveData<T> {
-
-        private final DocumentReference mDocument;
-        private final B mBuilder;
-
-        private ListenerRegistration mListener = null;
-
-        FirebaseDocumentLivedata(@NonNull DocumentReference document, @NonNull Class<T> type) {
-            if(document == null || type == null) {
-                throw new IllegalArgumentException();
-            }
-            mDocument = document;
-            mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
-        }
-
-        @Override
-        protected void onActive() {
-            super.onActive();
-
-            mListener = mDocument.addSnapshotListener((documentSnapshot, e) -> {
-                if(e == null) {
-                    if(documentSnapshot.getData() != null) {
-                        postValue(mBuilder.buildFromMap(documentSnapshot.getData()));
-                    }
-                }
-                else {
-                    Log.e("FirestoreLiveData", "Exception during update", e);
-                }
-            });
-        }
-
-        @Override
-        protected void onInactive() {
-            super.onInactive();
-
-            if(mListener != null) {
-                mListener.remove();
-                mListener = null;
-            }
-        }
     }
 }
