@@ -47,9 +47,6 @@ public class FirebaseFilterQueryTest {
     private Query mQuery;
 
     @Mock
-    private FilterQuery mFilterQuery;
-
-    @Mock
     private Task<QuerySnapshot> mQuerySnapshotTask;
 
     @Mock
@@ -61,9 +58,6 @@ public class FirebaseFilterQueryTest {
     private DocumentSnapshot mDocumentSnapshot2;
     @Mock
     private DocumentSnapshot mDocumentSnapshot3;
-
-    @Mock
-    private DocumentSnapshot mDocumentSnapshot;
 
     @Captor
     private ArgumentCaptor<OnCompleteListener<QuerySnapshot>> mQuerySnapshotCompleteListenerCaptor;
