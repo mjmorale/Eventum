@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.content.Intent;
+
 import androidx.fragment.app.FragmentTransaction;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -17,8 +19,10 @@ import ch.epfl.sdp.ui.event.EventViewModel;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 public class EventFragmentTest {
@@ -31,7 +35,12 @@ public class EventFragmentTest {
 
     @Before
     public void setup() {
-        onView(withText("Event")).perform(click());
+        // Dismiss any system dialog that could hijack the focus
+        // See: https://stackoverflow.com/questions/39457305/android-testing-waited-for-the-root-of-the-view-hierarchy-to-have-window-focus
+        mActivityRule.getActivity().sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        onView(withText("Event"))
+                .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
+                .perform(click());
     }
 
     @Test
