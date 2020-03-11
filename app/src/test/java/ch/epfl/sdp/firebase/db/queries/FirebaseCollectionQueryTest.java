@@ -253,6 +253,12 @@ public class FirebaseCollectionQueryTest {
         firebaseCollectionQuery.livedata(null);
     }
 
+    @Test
+    public void FirebaseCollectionQuery_Livedata_CreationDoesNotFail() {
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        LiveData<List<String>> stringsLiveData = firebaseCollectionQuery.livedata(String.class);
+    }
+
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseCollectionQuery_Create_FailsWithNullFirstArgument() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);

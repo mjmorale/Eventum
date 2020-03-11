@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,11 +47,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FirebaseDocumentQueryTest {
 
-    @Mock
-    private FirebaseFirestore mDb;
+    private final static String DUMMY_STRING = "test";
+    private final static Exception DUMMY_EXCEPTION = new Exception();
 
     @Mock
-    private DocumentQuery mDocumentQuery;
+    private FirebaseFirestore mDb;
 
     @Mock
     private DocumentReference mDocumentReference;
@@ -62,7 +63,7 @@ public class FirebaseDocumentQueryTest {
     private DocumentSnapshot mDocumentSnapshot;
 
     @Mock
-    Task<Void> mQuerySnapshotTask;
+    Task<Void> mVoidTask;
 
     @Mock
     private CollectionReference mCollectionReference;
@@ -71,9 +72,7 @@ public class FirebaseDocumentQueryTest {
     private ArgumentCaptor<OnCompleteListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
 
     @Captor
-    private ArgumentCaptor<OnCompleteListener> mSnapshotCompleteListenerCaptor;
-
-    private final static String DUMMY_STRING = "test";
+    private ArgumentCaptor<OnCompleteListener<Void>> mVoidCompleteListenerCaptor;
 
     @Before
     public void setup() throws IllegalAccessException, InstantiationException {
@@ -93,6 +92,18 @@ public class FirebaseDocumentQueryTest {
         FirestoreDatabase db = new FirestoreDatabase(mDb);
         FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
         FDQ.collection(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Get_FailsWithNullFirstArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.get(null, result -> {});
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Get_FailsWithNullSecondArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.get(String.class, null);
     }
 
     @Test
@@ -122,66 +133,53 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentQuery_livedata_FailsWithNullArgument() {
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        FDQ.livedata(null);
+    public void FirebaseDocumentQuery_Livedata_FailsWithNullArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.livedata(null);
     }
 
-    //i don't know how to do it
     @Test
-    public void FirebaseDocumentQuery_livedata() {
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        LiveData<Event> test = FDQ.livedata(Event.class);
+    public void FirebaseDocumentQuery_Livedata_CreationDoesNotFail() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        LiveData<String> stringLiveData = firebaseDocumentQuery.livedata(String.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentQuery_get_FailsWithNullArgument() {
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        FDQ.get(null,null);
+    public void FirebaseDocumentQuery_Delete_FailsWithNullArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.delete(null);
     }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentQuery_delete_FailsWithNullArgument() {
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        FDQ.delete(null);
-    }
-
 
     @Test
-    public void FirebaseDocumentQuery_delete_success() {
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
+    public void FirebaseDocumentQuery_Delete_CallsCallbackWithSuccessAndNullValue() {
+        when(mDocumentReference.delete()).thenReturn(mVoidTask);
+        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mVoidTask.isSuccessful()).thenReturn(true);
+        when(mVoidTask.getResult()).thenReturn(null);
 
-        when(mDocumentReference.delete()).thenReturn(mQuerySnapshotTask);
-        when(mQuerySnapshotTask.addOnCompleteListener(mSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mQuerySnapshotTask.getResult()).thenReturn(null);
-        FDQ.delete(result -> {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.delete(result -> {
+            assertTrue(result.isSuccessful());
             assertNull(result.getData());
         });
 
-        mSnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
     }
 
     @Test
-    public void FirebaseDocumentQuery_delete_notSuccess() {
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
+    public void FirebaseDocumentQuery_Delete_CallsCallbackWithExceptionIfAnErrorOccurred() {
+        when(mDocumentReference.delete()).thenReturn(mVoidTask);
+        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mVoidTask.isSuccessful()).thenReturn(false);
+        when(mVoidTask.getException()).thenReturn(DUMMY_EXCEPTION);
 
-        Exception exception = new Exception("exception");
-
-        when(mDocumentReference.delete()).thenReturn(mQuerySnapshotTask);
-        when(mQuerySnapshotTask.addOnCompleteListener(mSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mQuerySnapshotTask.isCanceled()).thenReturn(true);
-        //when(mQuerySnapshotTask.getResult()).thenReturn(exception);
-        when(mQuerySnapshotTask.getException()).thenReturn(exception);
-
-        FDQ.delete(result -> {
-            assertEquals(exception, result.getException());
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.delete(result -> {
+            assertFalse(result.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, result.getException());
         });
 
-        mSnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
     }
 
 }
