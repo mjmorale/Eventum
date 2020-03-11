@@ -1,18 +1,13 @@
 package ch.epfl.sdp.firebase.db.queries;
-import android.hardware.camera2.CameraCaptureSession;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,21 +18,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import ch.epfl.sdp.Event;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.firebase.db.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -139,7 +125,7 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test
-    public void FirebaseDocumentQuery_Get_CallsCallbackWithNullValueIsDocumentDoesNotExist() {
+    public void FirebaseDocumentQuery_Get_CallsCallbackWithNullValueIfDocumentDoesNotExist() {
         when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
         when(mDocumentSnapshot.exists()).thenReturn(false);

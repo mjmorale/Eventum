@@ -38,7 +38,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuthenticator mAuthenticator;
-    private FirestoreDatabase mDb;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         mAuthenticator = new FirebaseAuthenticator(FirebaseAuth.getInstance());
-        mDb = new FirestoreDatabase(FirebaseFirestore.getInstance());
 
         mViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         mViewModel.getUser().observe(this, user -> {

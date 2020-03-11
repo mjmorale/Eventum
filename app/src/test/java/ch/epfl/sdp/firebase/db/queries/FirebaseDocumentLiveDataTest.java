@@ -79,7 +79,7 @@ public class FirebaseDocumentLiveDataTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullArgument() {
-        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(null,String.class);
+        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(null, String.class);
     }
 
     @Test

@@ -23,19 +23,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Filter;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.firebase.db.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
