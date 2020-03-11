@@ -1,32 +1,24 @@
 package ch.epfl.sdp.ui.main;
 
-import android.os.Bundle;
 
+import android.location.Location;
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import ch.epfl.sdp.LocationHelper;
 import ch.epfl.sdp.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private GoogleMap map;
-
-    public MapFragment() {
-        //empty constructor
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +36,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
+    public void onMapReady(GoogleMap map) {
+        float zoom = 12;
         LatLng Vidy = new LatLng(46.518615, 6.591796);
-        map.addMarker(new MarkerOptions().position(Vidy).title("Event Test"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(Vidy));
+        LatLng Satellite = new LatLng(46.520564, 6.567827);
 
+        map.addMarker(new MarkerOptions().position(Vidy).title("Event A"));
+        map.addMarker(new MarkerOptions().position(Satellite).title("Event B"));
+
+        LocationHelper locationHelper = new LocationHelper(getContext());
+        locationHelper.startListeningUserLocation(new LocationHelper.MyLocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                LatLng myLocation=new LatLng(location.getLatitude(), location.getLongitude());
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, zoom));
+            }
+        });
     }
 }
