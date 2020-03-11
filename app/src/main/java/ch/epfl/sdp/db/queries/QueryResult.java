@@ -13,9 +13,6 @@ public class QueryResult<T> {
     }
 
     public static <T> QueryResult<T> success(T data) {
-        if(data == null) {
-            throw new IllegalArgumentException();
-        }
         return new QueryResult<T>(data, true, null);
     }
 

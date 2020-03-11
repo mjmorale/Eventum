@@ -1,4 +1,6 @@
 package ch.epfl.sdp.firebase.db.queries;
+import android.hardware.camera2.CameraCaptureSession;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
@@ -10,6 +12,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +37,8 @@ import ch.epfl.sdp.firebase.db.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,10 +62,16 @@ public class FirebaseDocumentQueryTest {
     private DocumentSnapshot mDocumentSnapshot;
 
     @Mock
-    private LiveData mLiveData;
+    Task<Void> mQuerySnapshotTask;
+
+    @Mock
+    private CollectionReference mCollectionReference;
 
     @Captor
     private ArgumentCaptor<OnCompleteListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnCompleteListener> mSnapshotCompleteListenerCaptor;
 
     private final static String DUMMY_STRING = "test";
 
@@ -100,14 +111,14 @@ public class FirebaseDocumentQueryTest {
         mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
     }
 
-    /*
+
     @Test
     public void FirebaseDocumentQuery_collection() {
-        when(mDocumentQuery.collection("text")).thenReturn(mCollectionQuery);
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
+        when(mDocumentReference.collection("text")).thenReturn(mCollectionReference);
+
         FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        assertEquals(mDocumentReference, FDQ.collection("text"));
-    }*/
+        assertNotNull(FDQ.collection("text"));
+    }
 
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseDocumentQuery_livedata_FailsWithNullArgument() {
@@ -125,22 +136,51 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_get_FailsWithNullArgument() {
+        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
+        FDQ.get(null,null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
     public void FirebaseDocumentQuery_delete_FailsWithNullArgument() {
         FirestoreDatabase db = new FirestoreDatabase(mDb);
         FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
         FDQ.delete(null);
     }
 
-    /*
+
     @Test
-    public void FirebaseDocumentQuery_delete() {
-        Exception exception = new Exception("dummy exception");
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
+    public void FirebaseDocumentQuery_delete_success() {
         FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
+
+        when(mDocumentReference.delete()).thenReturn(mQuerySnapshotTask);
+        when(mQuerySnapshotTask.addOnCompleteListener(mSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
+        when(mQuerySnapshotTask.getResult()).thenReturn(null);
         FDQ.delete(result -> {
-            assertFalse(result.isSuccessful());
+            assertNull(result.getData());
+        });
+
+        mSnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_delete_notSuccess() {
+        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
+
+        Exception exception = new Exception("exception");
+
+        when(mDocumentReference.delete()).thenReturn(mQuerySnapshotTask);
+        when(mQuerySnapshotTask.addOnCompleteListener(mSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mQuerySnapshotTask.isCanceled()).thenReturn(true);
+        //when(mQuerySnapshotTask.getResult()).thenReturn(exception);
+        when(mQuerySnapshotTask.getException()).thenReturn(exception);
+
+        FDQ.delete(result -> {
             assertEquals(exception, result.getException());
         });
-    }*/
+
+        mSnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+    }
 
 }
