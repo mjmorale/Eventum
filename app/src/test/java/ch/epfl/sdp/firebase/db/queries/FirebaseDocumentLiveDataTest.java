@@ -78,39 +78,41 @@ public class FirebaseDocumentLiveDataTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullArgument() {
-        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(null, String.class);
+    public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullFirstArgument() {
+        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(null, String.class);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullSecondArgument() {
+        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference, null);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_Constructor() {
-        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveDataTest_Constructor_CreationDoesNotFail() {
+        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_Active_nullDocumentSnapshot() {
-        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveDataTest_Active_DoesNotFailWithNullListener() {
+        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
 
         when(mDocumentReference.addSnapshotListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         Map<String, Object> mMapStringObj2 = new HashMap<>();
         mMapStringObj2.put("England", "London");
         when(mDocumentSnapshot.getData()).thenReturn( null);
-        FDLD.onActive();
+        firebaseDocumentLiveData.onActive();
         mDocumentSnapshotCompleteListenerCaptor.getValue().onEvent(mDocumentSnapshot,null);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_onInactive() {
-        FirebaseDocumentLiveData FDLD = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveDataTest_onInactive_DoesNotFailWithNullListener() {
+        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
 
         Map<String, Object> mMapStringObj2 = new HashMap<>();
         mMapStringObj2.put("England", "London");
         when(mDocumentReference.addSnapshotListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshot.getData()).thenReturn( null);
-
-        FDLD.setListener(mListenerRegistration);
-        FDLD.onInactive();
-        //when(mListenerRegistration.remove()).then(any());
+        firebaseDocumentLiveData.setListener(mListenerRegistration);
+        firebaseDocumentLiveData.onInactive();
     }
-
 }
