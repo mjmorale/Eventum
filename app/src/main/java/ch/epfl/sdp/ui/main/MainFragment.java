@@ -19,6 +19,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
+import ch.epfl.sdp.ui.swiper.SwiperFragment;
 
 public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelectedListener {
 
@@ -28,7 +29,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         return new MainFragment();
     }
 
-    private SwipeFragment mSwipeFragment;
+    private SwiperFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
     private EventFragment mEventFragment;
 
@@ -36,7 +37,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSwipeFragment = new SwipeFragment();
+        mSwipeFragment = new SwiperFragment();
         mAuthFragment = new AuthFragment();
         mEventFragment = new EventFragment();
     }
