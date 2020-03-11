@@ -17,6 +17,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.firebase.db.MockStringBuilder;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,6 +63,17 @@ public class FirebaseQueryLiveDataTest {
         firebaseQueryLiveData.onActive();
 
         mEventListenerArgumentCaptor.getValue().onEvent(null, null);
+    }
+
+    @Test
+    public void FirebaseQueryLiveData_OnInactive_RemovesListenerRegistrationIfSet() {
+        when(mQuery.addSnapshotListener(any())).thenReturn(mListenerRegistration);
+
+        FirebaseQueryLiveData<String> firebaseQueryLiveData = new FirebaseQueryLiveData<>(mQuery, String.class);
+        firebaseQueryLiveData.onActive();
+
+        firebaseQueryLiveData.onInactive();
+        verify(mListenerRegistration).remove();
     }
 
     @Test

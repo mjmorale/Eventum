@@ -40,16 +40,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FirebaseDocumentLiveDataTest {
-    @Mock
-    private FirebaseFirestore mDb;
 
-    @Mock
-    private Query mQuery;
+    private final static List<String> DUMMY_STRING = Collections.singletonList("test");
 
     @Mock
     private ListenerRegistration mListenerRegistration;
@@ -58,61 +56,60 @@ public class FirebaseDocumentLiveDataTest {
     private DocumentReference mDocumentReference;
 
     @Mock
-    private QuerySnapshot mQuerySnapshot;
-
-    @Mock
-    private Map<String, Object> mMapStringObj;
-
-    @Mock
     private DocumentSnapshot mDocumentSnapshot;
-
-    private final static List<String> DUMMY_STRING = Collections.singletonList("test");
 
     @Captor
     private ArgumentCaptor<EventListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
 
     @Before
-    public void setup() {
+    public void setup() throws IllegalAccessException, InstantiationException {
         MockitoAnnotations.initMocks(this);
         DatabaseObjectBuilderFactory.clear();
+        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullFirstArgument() {
-        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(null, String.class);
+    public void FirebaseDocumentLiveData_Constructor_FailsWithNullFirstArgument() {
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(null, String.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentLiveDataTest_Constructor_FailsWithNullSecondArgument() {
-        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference, null);
+    public void FirebaseDocumentLiveData_Constructor_FailsWithNullSecondArgument() {
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, null);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_Constructor_CreationDoesNotFail() {
-        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveData_Constructor_CreationDoesNotFail() {
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_Active_DoesNotFailWithNullListener() {
-        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveData_OnActive_DoesNotFailWithNullDataSnapshot() {
+        when(mDocumentReference.addSnapshotListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(mListenerRegistration);
+        when(mDocumentSnapshot.getData()).thenReturn(null);
 
-        when(mDocumentReference.addSnapshotListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        Map<String, Object> mMapStringObj2 = new HashMap<>();
-        mMapStringObj2.put("England", "London");
-        when(mDocumentSnapshot.getData()).thenReturn( null);
-        firebaseDocumentLiveData.onActive();
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
+        stringLiveData.onActive();
+
         mDocumentSnapshotCompleteListenerCaptor.getValue().onEvent(mDocumentSnapshot,null);
     }
 
     @Test
-    public void FirebaseDocumentLiveDataTest_onInactive_DoesNotFailWithNullListener() {
-        FirebaseDocumentLiveData firebaseDocumentLiveData = new FirebaseDocumentLiveData(mDocumentReference,String.class);
+    public void FirebaseDocumentLiveData_OnInactive_RemovesListenerRegistrationIfSet() {
+        when(mDocumentReference.addSnapshotListener(any())).thenReturn(mListenerRegistration);
+        when(mDocumentSnapshot.getData()).thenReturn(null);
 
-        Map<String, Object> mMapStringObj2 = new HashMap<>();
-        mMapStringObj2.put("England", "London");
-        when(mDocumentReference.addSnapshotListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mDocumentSnapshot.getData()).thenReturn( null);
-        firebaseDocumentLiveData.setListener(mListenerRegistration);
-        firebaseDocumentLiveData.onInactive();
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
+        stringLiveData.onActive();
+
+        stringLiveData.onInactive();
+        verify(mListenerRegistration).remove();
+    }
+
+    @Test
+    public void FirebaseDocumentLiveData_OnInactive_DoesNotFailIfNoListenerRegistration() {
+        FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
+
+        stringLiveData.onInactive();
     }
 }

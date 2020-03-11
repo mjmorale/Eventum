@@ -49,9 +49,6 @@ public class FirebaseFilterQueryTest {
     private FilterQuery mFilterQuery;
 
     @Mock
-    private DocumentReference mDocumentReference;
-
-    @Mock
     private Task<QuerySnapshot> mQuerySnapshotTask;
 
     @Mock
