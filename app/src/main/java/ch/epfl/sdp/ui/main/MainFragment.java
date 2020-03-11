@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.ui.event.CreateEventFragment;
 import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
@@ -28,6 +29,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     private SwipeFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
     private EventFragment mEventFragment;
+    private CreateEventFragment mCreateEventFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +37,8 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
 
         mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
-        mEventFragment = new EventFragment();
+        mEventFragment = EventFragment.newInstance("fake");
+        mCreateEventFragment = new CreateEventFragment();
     }
 
     @Nullable
@@ -70,6 +73,9 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
                 break;
             case 2:
                 toInsert = mEventFragment;
+                break;
+            case 3:
+                toInsert = mCreateEventFragment;
                 break;
         }
         getActivity().getSupportFragmentManager().beginTransaction()

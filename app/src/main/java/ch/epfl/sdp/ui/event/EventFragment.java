@@ -15,6 +15,24 @@ public class EventFragment extends Fragment {
 
     private EventViewModel viewModel;
     private EventFragmentBinding binding;
+    private String ref;
+
+    public static EventFragment newInstance(String ref) {
+        Bundle bundle = new Bundle();
+        bundle.putString("dbRef", ref);
+
+        EventFragment fragment = new EventFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+
+    private void readBundle(Bundle bundle) {
+        if (bundle != null) {
+            ref = bundle.getString("dbRef");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,10 +44,11 @@ public class EventFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = EventFragmentBinding.inflate(inflater, container, false);
+        readBundle(getArguments());
         View view = binding.getRoot();
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        viewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+        viewModel.getEvent(ref).observe(getViewLifecycleOwner(), event -> {
             binding.date.setText(viewModel.formatDate(event.getDate()));
             binding.description.setText(event.getDescription());
             binding.title.setText(event.getTitle());

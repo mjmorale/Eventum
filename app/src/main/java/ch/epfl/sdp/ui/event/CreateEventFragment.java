@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.text.ParseException;
 
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
 
@@ -31,9 +34,21 @@ public class CreateEventFragment extends Fragment {
         View view = binding.getRoot();
 
         binding.createButton.setOnClickListener(v -> {
-            viewModel.createEvent(binding.title.toString(),
-                                   binding.description.toString(),
-                                   binding.date.toString());
+            String title = binding.title.getText().toString();
+            String description = binding.description.getText().toString();
+            String date = binding.date.getText().toString();
+            try {
+                checkInput(title, description, date);
+                viewModel.createEvent(title, description, date);
+            } catch (ParseException e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid date", Toast.LENGTH_SHORT).show();
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid input", Toast.LENGTH_SHORT).show();
+            }
+
+/*            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, EventFragment.newInstance(viewModel.))
+                    .commitNow();*/
         });
 
         return view;
@@ -43,5 +58,14 @@ public class CreateEventFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void checkInput(String title, String description, String date) throws IllegalArgumentException {
+        if (title == null || description == null || date == null) {
+            throw new IllegalArgumentException();
+        }
+        if (title.isEmpty() || description.isEmpty() || date.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
