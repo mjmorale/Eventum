@@ -13,14 +13,14 @@ public class QueryResult<T> {
     }
 
     public static <T> QueryResult<T> success(T data) {
-        return new QueryResult<T>(data, true, null);
+        return new QueryResult<>(data, true, null);
     }
 
     public static <T> QueryResult<T> failure(Exception exception) {
         if(exception == null) {
             throw new IllegalArgumentException();
         }
-        return new QueryResult<T>(null, false, exception);
+        return new QueryResult<>(null, false, exception);
     }
 
     public boolean isSuccessful() {

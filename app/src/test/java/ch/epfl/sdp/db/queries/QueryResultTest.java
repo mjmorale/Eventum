@@ -9,11 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 public class QueryResultTest {
 
-    @Test (expected = IllegalArgumentException.class)
-    public void QueryResult_success_FailsIfNullValue() {
-        QueryResult.success(null);
-    }
-
     @Test
     public void QueryResult_success_DataIsCorrectlySet() {
         String testData = "test";

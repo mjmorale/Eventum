@@ -76,8 +76,10 @@ public class FirebaseDocumentQueryTest {
     private final static String DUMMY_STRING = "test";
 
     @Before
-    public void setup() {
+    public void setup() throws IllegalAccessException, InstantiationException {
         MockitoAnnotations.initMocks(this);
+        DatabaseObjectBuilderFactory.clear();
+        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -94,8 +96,7 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test
-    public void FirebaseDocumentQuery_get_CallsCallbackWithDeserializedObject() throws IllegalAccessException, InstantiationException {
-        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
+    public void FirebaseDocumentQuery_get_CallsCallbackWithDeserializedObject() {
         when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
         when(mDocumentSnapshot.exists()).thenReturn(true);
