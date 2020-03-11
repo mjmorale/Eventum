@@ -16,14 +16,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import ch.epfl.sdp.auth.firebase.FirebaseAuthenticator;
+
+import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.AuthFragmentBinding;
+import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 
@@ -35,6 +38,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuthenticator mAuthenticator;
+    private FirestoreDatabase mDb;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         mAuthenticator = new FirebaseAuthenticator(FirebaseAuth.getInstance());
+        mDb = new FirestoreDatabase(FirebaseFirestore.getInstance());
 
         mViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         mViewModel.getUser().observe(this, user -> {
@@ -73,6 +78,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         View view = mBinding.getRoot();
         mBinding.btnGoogleSignIn.setOnClickListener(this);
         mBinding.btnLogout.setOnClickListener(this);
+        mBinding.btnTest.setOnClickListener(this);
 
         mViewModel.setUser(mAuthenticator.getCurrentUser());
 
@@ -112,6 +118,9 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_logout:
                 mAuthenticator.logout();
                 mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), task -> mViewModel.setUser(null));
+                break;
+
+            case R.id.btn_test:
                 break;
         }
     }
