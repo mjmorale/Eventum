@@ -82,16 +82,30 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentQuery_Constructor_FailsWithNullArgument() {
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,null);
+    public void FirebaseDocumentQuery_Constructor_FailsWithNullFirstArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(null, mDocumentReference);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseDocumentQuery_collection_FailsWithNullArgument() {
-        FirestoreDatabase db = new FirestoreDatabase(mDb);
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        FDQ.collection(null);
+    public void FirebaseDocumentQuery_Constructor_FailsWithNullSecondArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Collection_FailsWithNullArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.collection(null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Collection_ReturnsCollectionQueryWithCorrectParameters() {
+        when(mDocumentReference.collection(DUMMY_STRING)).thenReturn(mCollectionReference);
+        when(mCollectionReference.orderBy(any(String.class))).thenReturn(mCollectionReference);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        CollectionQuery collectionQuery = firebaseDocumentQuery.collection(DUMMY_STRING);
+        collectionQuery.orderBy(DUMMY_STRING);
+        verify(mCollectionReference).orderBy(DUMMY_STRING);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -107,7 +121,7 @@ public class FirebaseDocumentQueryTest {
     }
 
     @Test
-    public void FirebaseDocumentQuery_get_CallsCallbackWithDeserializedObject() {
+    public void FirebaseDocumentQuery_Get_CallsCallbackWithDeserializedObject() {
         when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
         when(mDocumentSnapshot.exists()).thenReturn(true);
@@ -117,19 +131,45 @@ public class FirebaseDocumentQueryTest {
 
         FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
         query.get(String.class, s -> {
+            assertTrue(s.isSuccessful());
             assertEquals(DUMMY_STRING, s.getData());
         });
 
         mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
     }
 
+    @Test
+    public void FirebaseDocumentQuery_Get_CallsCallbackWithNullValueIsDocumentDoesNotExist() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
+        when(mDocumentSnapshot.exists()).thenReturn(false);
+        when(mDocumentSnapshot.getData()).thenReturn(null);
+        when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.get(String.class, s -> {
+            assertTrue(s.isSuccessful());
+            assertNull(s.getData());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
+    }
 
     @Test
-    public void FirebaseDocumentQuery_collection() {
-        when(mDocumentReference.collection("text")).thenReturn(mCollectionReference);
+    public void FirebaseDocumentQuery_Get_CallsCallbackWithExceptionIfErrorOccurred() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(false);
+        when(mDocumentSnapshotTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
 
-        FirebaseDocumentQuery FDQ = new FirebaseDocumentQuery(mDb,mDocumentReference);
-        assertNotNull(FDQ.collection("text"));
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.get(String.class, s -> {
+            assertFalse(s.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, s.getException());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
     }
 
     @Test (expected = IllegalArgumentException.class)
