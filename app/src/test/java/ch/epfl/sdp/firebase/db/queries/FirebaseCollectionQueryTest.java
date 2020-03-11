@@ -184,15 +184,9 @@ public class FirebaseCollectionQueryTest {
 
     @Test
     public void FirebaseCollectionQuery_Get_CallsCallbackWithDeserializedListOfObjects() {
-        Map<String, Object> data1 = new HashMap<>();
-        data1.put("mock", DUMMY_STRINGS[0]);
-        Map<String, Object> data2 = new HashMap<>();
-        data2.put("mock", DUMMY_STRINGS[1]);
-        Map<String, Object> data3 = new HashMap<>();
-        data3.put("mock", DUMMY_STRINGS[2]);
-        when(mDocumentSnapshot1.getData()).thenReturn(data1);
-        when(mDocumentSnapshot2.getData()).thenReturn(data2);
-        when(mDocumentSnapshot3.getData()).thenReturn(data3);
+        when(mDocumentSnapshot1.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[0]));
+        when(mDocumentSnapshot2.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[1]));
+        when(mDocumentSnapshot3.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[2]));
         when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>(Arrays.asList(mDocumentSnapshot1, mDocumentSnapshot2, mDocumentSnapshot3)));
         when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
         when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
@@ -228,7 +222,7 @@ public class FirebaseCollectionQueryTest {
     }
 
     @Test
-    public void FirebaseCollectionQuery_Get_CallsCallbackWithExceptionIfAnErrorOccurs() throws IllegalAccessException, InstantiationException {
+    public void FirebaseCollectionQuery_Get_CallsCallbackWithExceptionIfAnErrorOccurs() {
         when(mQuerySnapshotTask.isSuccessful()).thenReturn(false);
         when(mQuerySnapshotTask.getException()).thenReturn(DUMMY_EXCEPTION);
         when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
