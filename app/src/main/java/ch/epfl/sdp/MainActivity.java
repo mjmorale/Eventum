@@ -2,6 +2,8 @@ package ch.epfl.sdp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
+        }
+
+        try {
+            if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
+                DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 }
