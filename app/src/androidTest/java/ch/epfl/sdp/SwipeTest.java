@@ -49,5 +49,11 @@ public class SwipeTest{
         onView(withId(R.id.frame)).perform(swipeRight());
         onView(withId(R.id.frame)).check(matches((isDisplayed())));
     }
+
+    @Test
+    public void clickSwapsToDetailled(){
+        onView(withId(R.id.frame)).perform(click());
+        onView(withId(R.id.eventDetail)).check(matches(isDisplayed()));
+    }
 }
 
