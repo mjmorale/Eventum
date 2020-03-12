@@ -17,8 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.ui.event.EventFragment;
-import ch.epfl.sdp.ui.swipe.SwipeFragment;
+
 import ch.epfl.sdp.ui.swiper.SwiperFragment;
 
 public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelectedListener {
@@ -31,7 +30,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
 
     private SwiperFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
-    private EventFragment mEventFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +37,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
 
         mSwipeFragment = new SwiperFragment();
         mAuthFragment = new AuthFragment();
-        mEventFragment = new EventFragment();
     }
 
     @Nullable
@@ -72,19 +69,13 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
             case 1:
                 toInsert = mAuthFragment;
                 break;
-            case 2:
-                toInsert = mEventFragment;
-                break;
+
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, toInsert)
                 .commitNow();
 
-        if(tab.getPosition() == 2) {
-            mEventFragment.getViewModel().getEvent().setValue(new Event("OSS-117 Movie watching",
-                    "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
-                    new Date(2021, 1, 16), R.drawable.oss_117));
-        }
+
     }
 
     @Override
