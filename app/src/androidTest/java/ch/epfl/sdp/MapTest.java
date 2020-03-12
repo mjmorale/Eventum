@@ -63,7 +63,7 @@ public class MapTest{
             }
         } catch (Exception e){
         }
-        sleep(3000);
+        sleep(10000);
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
         onView(withText("Swipe")).perform(click());
         onView(withText("Map")).perform(click());
