@@ -2,10 +2,8 @@ package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.google.firebase.Timestamp;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +14,8 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
     public Event buildFromMap(@NonNull Map data) {
         String title = (String) data.get("title");
         String description = (String) data.get("description");
-        String dateStr = (String)data.get("date");
-        Date date = null;
-        try {
-            date = (Date) formatter.parse(dateStr);
-        } catch (ParseException e) {
-            date = new Date();
-        }
-        return new Event(title, description, date);
+        Timestamp timestamp = (Timestamp)data.get("date");
+        return new Event(title, description, timestamp.toDate());
     }
 
     @Override
@@ -31,9 +23,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         return new HashMap<String, Object>() {{
             put("title", event.getTitle());
             put("description", event.getDescription());
-            put("date", event.getDate().toString());
+            put("date", new Timestamp(event.getDate()));
         }};
     }
-
-    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 }
