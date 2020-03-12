@@ -15,11 +15,14 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 
 public class EventViewModel extends ViewModel {
+    private LiveData<Event> mEvent;
+    private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
+    private Database mDb = new FirestoreDatabase(FirebaseFirestore.getInstance());
+    private MutableLiveData<String> mRef = new MutableLiveData<>();
+
     public EventViewModel() {
         if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
             try {
@@ -31,33 +34,28 @@ public class EventViewModel extends ViewModel {
     }
 
     public LiveData<Event> getEvent(String ref) {
-        if (event == null) {
-            event = db.query("events").document(ref).livedata(Event.class);
+        if (mEvent == null) {
+            mEvent = mDb.query("events").document(ref).livedata(Event.class);
         }
-        return event;
+        return mEvent;
     }
 
     public String formatDate(Date date) {
-        return formatter.format(date);
+        return mFormatter.format(date);
     }
 
     public LiveData<String> createEvent(@NonNull String title,
                             @NonNull String description,
                             @NonNull String date) throws ParseException {
-        Date formatDate = formatter.parse(date);
+        Date formatDate = mFormatter.parse(date);
         Event newEvent = new Event(title, description, formatDate);
-        db.query("events").create(newEvent, result -> {
-            ref.postValue(result.getData());
+        mDb.query("events").create(newEvent, result -> {
+            mRef.postValue(result.getData());
         });
-        return ref;
+        return mRef;
     }
 
     public void setDb(Database db) {
-        this.db = db;
+        this.mDb = db;
     }
-
-    private LiveData<Event> event;
-    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-    private Database db = new FirestoreDatabase(FirebaseFirestore.getInstance());
-    private MutableLiveData<String> ref = new MutableLiveData<>();
 }

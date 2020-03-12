@@ -20,28 +20,28 @@ import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
 
 
 public class CreateEventFragment extends Fragment {
-    private EventViewModel viewModel;
-    private CreateEventFragmentBinding binding;
+    private EventViewModel mViewModel;
+    private CreateEventFragmentBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = CreateEventFragmentBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
+        mBinding = CreateEventFragmentBinding.inflate(inflater, container, false);
+        View view = mBinding.getRoot();
 
-        binding.createButton.setOnClickListener(v -> {
-            String title = binding.title.getText().toString();
-            String description = binding.description.getText().toString();
-            String date = binding.date.getText().toString();
+        mBinding.createButton.setOnClickListener(v -> {
+            String title = mBinding.title.getText().toString();
+            String description = mBinding.description.getText().toString();
+            String date = mBinding.date.getText().toString();
             try {
                 checkInput(title, description, date);
-                LiveData<String> ref = viewModel.createEvent(title, description, date);
+                LiveData<String> ref = mViewModel.createEvent(title, description, date);
                 ref.observe(getViewLifecycleOwner(), result -> {
                                 getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, EventFragment.newInstance(result))
@@ -60,7 +60,7 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 
     private void checkInput(String title, String description, String date) throws IllegalArgumentException {
@@ -73,6 +73,6 @@ public class CreateEventFragment extends Fragment {
     }
 
     public EventViewModel getViewModel() {
-        return viewModel;
+        return mViewModel;
     }
 }

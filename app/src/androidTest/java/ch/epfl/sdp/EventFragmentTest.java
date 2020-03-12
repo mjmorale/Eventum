@@ -8,8 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
-
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.event.EventFragment;
 
@@ -22,8 +20,8 @@ import static org.hamcrest.Matchers.is;
 @RunWith(AndroidJUnit4.class)
 public class EventFragmentTest {
 
-    private Database db = new MockDatabase();
-    private MockEvents mockEvents = new MockEvents();
+    private Database mDb = new MockDatabase();
+    private MockEvents mMockEvents = new MockEvents();
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
@@ -41,7 +39,7 @@ public class EventFragmentTest {
     public void testEventFragment() {
         mActivityRule.getActivity().runOnUiThread(() -> {
             EventFragment eventFragment = startEventFragment();
-            eventFragment.getViewModel().setDb(db);
+            eventFragment.getViewModel().setDb(mDb);
         });
 
 /*        onView(withId(R.id.description))

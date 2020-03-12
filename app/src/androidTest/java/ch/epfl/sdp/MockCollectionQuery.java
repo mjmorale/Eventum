@@ -13,6 +13,7 @@ import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
 
 public class MockCollectionQuery implements CollectionQuery {
+    private static final String REF_SUCCESS = "fake";
     @Override
     public DocumentQuery document(@NonNull String document) {
         return new MockDocumentQuery();
@@ -47,6 +48,6 @@ public class MockCollectionQuery implements CollectionQuery {
     public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
         Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
         T event = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).buildFromMap(data);
-        callback.onQueryComplete(QueryResult.success("fake"));
+        callback.onQueryComplete(QueryResult.success(REF_SUCCESS));
     }
 }

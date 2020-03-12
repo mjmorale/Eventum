@@ -13,9 +13,9 @@ import ch.epfl.sdp.databinding.EventFragmentBinding;
 
 public class EventFragment extends Fragment {
 
-    private EventViewModel viewModel;
-    private EventFragmentBinding binding;
-    private String ref;
+    private EventViewModel mViewModel;
+    private EventFragmentBinding mBinding;
+    private String mRef;
 
     public static EventFragment newInstance(String ref) {
         Bundle bundle = new Bundle();
@@ -30,28 +30,28 @@ public class EventFragment extends Fragment {
 
     private void readBundle(Bundle bundle) {
         if (bundle != null) {
-            ref = bundle.getString("dbRef");
+            mRef = bundle.getString("dbRef");
         }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = EventFragmentBinding.inflate(inflater, container, false);
+        mBinding = EventFragmentBinding.inflate(inflater, container, false);
         readBundle(getArguments());
-        View view = binding.getRoot();
+        View view = mBinding.getRoot();
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        viewModel.getEvent(ref).observe(getViewLifecycleOwner(), event -> {
-            binding.date.setText(viewModel.formatDate(event.getDate()));
-            binding.description.setText(event.getDescription());
-            binding.title.setText(event.getTitle());
+        mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
         });
 
         return view;
@@ -60,10 +60,10 @@ public class EventFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 
     public EventViewModel getViewModel() {
-        return viewModel;
+        return mViewModel;
     }
 }
