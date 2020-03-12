@@ -11,12 +11,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Remove ActionBar on the Application
+        // Remove ActionBar on the Application and create the EventDatabaseBuilder
         try
         {
             this.getSupportActionBar().hide();
         }
-        catch (NullPointerException e){}
+        catch (Exception e){}
 
         setContentView(R.layout.main_activity);
         if (savedInstanceState == null) {
@@ -25,14 +25,12 @@ public class MainActivity extends AppCompatActivity {
                     .commitNow();
         }
 
-        try {
-            if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
+        if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
+            try {
                 DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
     }
 }

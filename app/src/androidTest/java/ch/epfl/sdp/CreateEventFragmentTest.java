@@ -42,32 +42,13 @@ public class CreateEventFragmentTest {
 
     @Test
     public void testCreateEventFragment() {
-        mActivityRule.getActivity().runOnUiThread(() -> {
-            CreateEventFragment createEventFragment = startCreateEventFragment();
-            createEventFragment.getViewModel().setDb(db);
-        });
-
-        Event event = mockEvents.getNextEvent();
-        /* Try with incorrect values */
-        onView(withHint(is("Title"))).perform(
-                clearText(),
-                typeText(""),
-                closeSoftKeyboard());
-
-        onView(withHint(is("Date"))).perform(
-                clearText(),
-                typeText(""),
-                closeSoftKeyboard());
-
-        onView(withId(R.id.createButton)).perform(
-                click());
-
         /* Now try with correct values */
         mActivityRule.getActivity().runOnUiThread(() -> {
             CreateEventFragment createEventFragment = startCreateEventFragment();
             createEventFragment.getViewModel().setDb(db);
         });
 
+        Event event = mockEvents.getNextEvent();
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 typeText(event.getTitle()),
@@ -81,6 +62,28 @@ public class CreateEventFragmentTest {
         onView(withHint(is("Date"))).perform(
                 clearText(),
                 typeText("20/04/2020"),
+                closeSoftKeyboard());
+
+        onView(withId(R.id.createButton)).perform(
+                click());
+    }
+
+    @Test
+    public void testCreateIncorrectEventFragment() {
+        mActivityRule.getActivity().runOnUiThread(() -> {
+            CreateEventFragment createEventFragment = startCreateEventFragment();
+            createEventFragment.getViewModel().setDb(db);
+        });
+
+        /* Try with incorrect values */
+        onView(withHint(is("Title"))).perform(
+                clearText(),
+                typeText(""),
+                closeSoftKeyboard());
+
+        onView(withHint(is("Date"))).perform(
+                clearText(),
+                typeText(""),
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton)).perform(
