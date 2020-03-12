@@ -13,6 +13,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -20,16 +22,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.ui.event.EventViewModel;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     private static final int PERMISSION_LOCATION=0;
     private MapView mapView;
     private GoogleMap map;
+    private MapViewModel mViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mViewModel = new ViewModelProvider(this).get(MapViewModel.class);
     }
 
     @Override
@@ -41,6 +47,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         mapView= view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
+            //to be implemented
+        });
 
         return view;
     }
