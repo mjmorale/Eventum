@@ -27,16 +27,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private MapView mapView;
     private GoogleMap map;
     private MapViewModel mViewModel;
-    private boolean havePermission;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mViewModel = new ViewModelProvider(this).get(MapViewModel.class);
-        havePermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -52,6 +48,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
             //to be implemented
         });
+
+        return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onMapReady(GoogleMap googlemap) {
+        map = googlemap;
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -60,25 +64,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
+        } else {
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.setMyLocationEnabled(true);
         }
-        return view;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            havePermission= true;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onMapReady(GoogleMap googlemap) {
-        map = googlemap;
-        map.getUiSettings().setMyLocationButtonEnabled(havePermission);
-        map.setMyLocationEnabled(havePermission);
 
         // need to pull the events from the database
         addMarker("Vidy", new LatLng(46.518615, 6.591796), map);
