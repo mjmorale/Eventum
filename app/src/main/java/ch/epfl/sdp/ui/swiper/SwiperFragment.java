@@ -84,9 +84,7 @@ public class SwiperFragment extends Fragment {
         );
         flingAdapterView.setOnItemClickListener((itemPosition, dataObject) -> {
             mInfoFragment = new EventDetailFragment(currentEvent,this);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(this.getId(), mInfoFragment)
-                    .commit();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
     }
 }
