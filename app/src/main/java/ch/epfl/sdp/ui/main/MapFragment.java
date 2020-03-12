@@ -13,14 +13,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import ch.epfl.sdp.R;
-
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
@@ -32,7 +31,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -64,9 +62,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             map.setMyLocationEnabled(true);
         }
 
+        // need to pull the events from the database
         addMarker("Vidy", new LatLng(46.518615, 6.591796), map);
         addMarker("Satellite", new LatLng(46.520564, 6.567827), map);
         addMarker("Football", new LatLng(46.523345, 6.569809), map);
+
+        // for now display the french part of Switzerland on launch, to be modified
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
     }
 
     public void addMarker(String eventName, LatLng coordinates, GoogleMap googlemap) {
@@ -78,7 +80,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         mapView.onResume();
         super.onResume();
     }
-
 
     @Override
     public void onPause() {
