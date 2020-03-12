@@ -21,15 +21,13 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MapTest2 {
+public class MapEspressoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -41,7 +39,7 @@ public class MapTest2 {
                     "android.permission.ACCESS_COARSE_LOCATION");
 
     @Test
-    public void mapTest2() {
+    public void mapEspressoTest() {
         ViewInteraction tabView = onView(
                 allOf(withContentDescription("Map"),
                         childAtPosition(
@@ -51,36 +49,6 @@ public class MapTest2 {
                                 3),
                         isDisplayed()));
         tabView.perform(click());
-
-        ViewInteraction tabView2 = onView(
-                allOf(withContentDescription("Event"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.tabLayout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        tabView2.perform(click());
-
-        ViewInteraction tabView3 = onView(
-                allOf(withContentDescription("Map"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.tabLayout),
-                                        0),
-                                3),
-                        isDisplayed()));
-        tabView3.perform(click());
-
-        ViewInteraction imageView = onView(
-                allOf(withContentDescription("My Location"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.FrameLayout")),
-                                        2),
-                                0),
-                        isDisplayed()));
-        imageView.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
