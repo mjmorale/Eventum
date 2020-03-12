@@ -19,7 +19,7 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
 
 
-public class CreateEventFragment extends Fragment {
+public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private EventViewModel mViewModel;
     private CreateEventFragmentBinding mBinding;
 
@@ -34,26 +34,6 @@ public class CreateEventFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = CreateEventFragmentBinding.inflate(inflater, container, false);
         View view = mBinding.getRoot();
-
-        mBinding.createButton.setOnClickListener(v -> {
-            String title = mBinding.title.getText().toString();
-            String description = mBinding.description.getText().toString();
-            String date = mBinding.date.getText().toString();
-            try {
-                checkInput(title, description, date);
-                LiveData<String> ref = mViewModel.createEvent(title, description, date);
-                ref.observe(getViewLifecycleOwner(), result -> {
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, EventFragment.newInstance(result))
-                    .commitNow();
-                });
-            } catch (ParseException e) {
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid date", Toast.LENGTH_SHORT).show();
-            } catch (IllegalArgumentException e) {
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid input", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         return view;
     }
 
@@ -74,5 +54,31 @@ public class CreateEventFragment extends Fragment {
 
     public EventViewModel getViewModel() {
         return mViewModel;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.createButton:
+                String title = mBinding.title.getText().toString();
+                String description = mBinding.description.getText().toString();
+                String date = mBinding.date.getText().toString();
+                try {
+                    checkInput(title, description, date);
+                    LiveData<String> ref = mViewModel.createEvent(title, description, date);
+                    ref.observe(getViewLifecycleOwner(), result -> {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, EventFragment.newInstance(result))
+                                .commitNow();
+                    });
+                } catch (ParseException e) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Invalid date", Toast.LENGTH_SHORT).show();
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Invalid input", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }
