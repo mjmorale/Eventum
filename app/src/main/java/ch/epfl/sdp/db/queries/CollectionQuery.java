@@ -19,7 +19,7 @@ public interface CollectionQuery extends Query {
 
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
 
-    <T> LiveData<List<T>> livedata(@NonNull Class<T> type);
+    <T> LiveData<List<T>> liveData(@NonNull Class<T> type);
 
     <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback);
 }

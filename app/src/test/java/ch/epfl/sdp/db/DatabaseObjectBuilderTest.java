@@ -31,10 +31,10 @@ public class DatabaseObjectBuilderTest {
             if(object == null) {
                 throw new IllegalArgumentException();
             }
-            Map<String, Object> result = new HashMap<>();
-            result.put("mock1", object);
-            result.put("mock2", "test2");
-            return result;
+            return new HashMap<String, Object>() {{
+                put("mock1", object);
+                put("mock2", "test2");
+            }};
         }
     }
 
@@ -49,9 +49,10 @@ public class DatabaseObjectBuilderTest {
     @Test
     public void DatabaseObjectBuilder_RequiredFields_DoesNotFailIfContained() {
         MockBuilder builder = new MockBuilder("mock1", "mock2");
-        Map<String, Object> data = new HashMap<>();
-        data.put("mock1", new Object());
-        data.put("mock2", new Object());
+        Map<String, Object> data = new HashMap<String, Object>() {{
+            put("mock1", new Object());
+            put("mock2", new Object());
+        }};
         try {
             builder.checkRequiredFields(data);
         } catch(Exception e) {

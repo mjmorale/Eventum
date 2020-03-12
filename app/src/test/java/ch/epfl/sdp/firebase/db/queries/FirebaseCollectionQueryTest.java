@@ -20,9 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
@@ -240,13 +238,13 @@ public class FirebaseCollectionQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseCollectionQuery_Livedata_FailsWithNullArgument() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.livedata(null);
+        firebaseCollectionQuery.liveData(null);
     }
 
     @Test
     public void FirebaseCollectionQuery_Livedata_CreationDoesNotFail() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        LiveData<List<String>> stringsLiveData = firebaseCollectionQuery.livedata(String.class);
+        LiveData<List<String>> stringsLiveData = firebaseCollectionQuery.liveData(String.class);
     }
 
     @Test (expected = IllegalArgumentException.class)

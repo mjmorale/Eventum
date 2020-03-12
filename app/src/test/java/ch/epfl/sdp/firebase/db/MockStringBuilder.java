@@ -15,8 +15,8 @@ public class MockStringBuilder extends DatabaseObjectBuilder<String> {
 
     @Override
     public Map<String, Object> serializeToMap(@NonNull String object) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("mock", object);
-        return map;
+        return new HashMap<String, Object>() {{
+            put("mock", object);
+        }};
     }
 }

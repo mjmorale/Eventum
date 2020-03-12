@@ -40,7 +40,7 @@ public class MockCollectionQuery implements CollectionQuery {
     }
 
     @Override
-    public <T> LiveData<List<T>> livedata(@NonNull Class<T> type) {
+    public <T> LiveData<List<T>> liveData(@NonNull Class<T> type) {
         return null;
     }
 
