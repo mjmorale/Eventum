@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.google.android.gms.maps.model.VisibleRegion;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,6 +14,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -33,6 +36,9 @@ public class MapTest{
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 
-
-
+    @Test
+    public void checkThatMyLocationButtonIsDisplayed() {
+        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
+        onView(withContentDescription("My Location")).perform(click());
+    }
 }
