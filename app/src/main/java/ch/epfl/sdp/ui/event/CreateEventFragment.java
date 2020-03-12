@@ -33,6 +33,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = CreateEventFragmentBinding.inflate(inflater, container, false);
+        mBinding.createButton.setOnClickListener(this);
         View view = mBinding.getRoot();
         return view;
     }

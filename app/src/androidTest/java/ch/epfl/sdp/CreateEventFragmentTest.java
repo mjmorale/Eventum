@@ -52,7 +52,6 @@ public class CreateEventFragmentTest {
             createEventFragment.getViewModel().setDb(mDb);
         });
 
-        Event event = mMockEvents.getNextEvent();
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 typeText(TITLE),
