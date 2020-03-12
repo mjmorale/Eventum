@@ -26,10 +26,12 @@ import static org.hamcrest.Matchers.is;
 public class CreateEventFragmentTest {
 
     private Database mDb = new MockDatabase();
-    private MockEvents mMockEvents = new MockEvents();
-    private final static String TITLE = "title";
-    private final static String DESCRIPTION = "Description";
-    private final static String DATE = "date";
+    private static MockEvents mMockEvents = new MockEvents();
+
+    private static final String DATE = "20/04/2020";
+    private static final String TITLE = mMockEvents.getNextEvent().getTitle();
+    private static final String DESCRIPTION = mMockEvents.getNextEvent().getDescription();
+    private static final String EMPTY = "";
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
@@ -51,19 +53,19 @@ public class CreateEventFragmentTest {
         });
 
         Event event = mMockEvents.getNextEvent();
-        onView(withHint(is(TITLE))).perform(
+        onView(withHint(is("Title"))).perform(
                 clearText(),
-                typeText(event.getTitle()),
+                typeText(TITLE),
                 closeSoftKeyboard());
 
-        onView(withHint(is(DESCRIPTION))).perform(
+        onView(withHint(is("Description"))).perform(
                 clearText(),
-                typeText(event.getDescription()),
+                typeText(DESCRIPTION),
                 closeSoftKeyboard());
 
-        onView(withHint(is(DATE))).perform(
+        onView(withHint(is("Date"))).perform(
                 clearText(),
-                typeText("20/04/2020"),
+                typeText(DATE),
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton)).perform(
@@ -78,14 +80,14 @@ public class CreateEventFragmentTest {
         });
 
         /* Try with incorrect values */
-        onView(withHint(is(TITLE))).perform(
+        onView(withHint(is("Title"))).perform(
                 clearText(),
-                typeText(""),
+                typeText(EMPTY),
                 closeSoftKeyboard());
 
-        onView(withHint(is(DATE))).perform(
+        onView(withHint(is("Date"))).perform(
                 clearText(),
-                typeText(""),
+                typeText(EMPTY),
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton)).perform(
