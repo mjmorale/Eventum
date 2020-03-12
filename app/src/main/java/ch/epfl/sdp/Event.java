@@ -1,8 +1,5 @@
 package ch.epfl.sdp;
 
-import android.icu.text.Transliterator;
-import android.location.Location;
-
 import androidx.annotation.NonNull;
 
 import java.util.Date;
@@ -12,10 +9,8 @@ public class Event {
     public Event(String title, String description, Date date) {
         this(title, description, date, R.mipmap.ic_launcher);
     }
-    public Event(String title, String description, Date date, int imageID) {
-        this(title, description, date, imageID, new Location(""));
-    }
-    public Event(String title, String description, Date date, int imageID, Location location){
+
+    public Event(String title, String description, Date date, int imageID){
         if (title == null || description == null || date == null)
             throw new IllegalArgumentException();
         this.title = title;
@@ -55,11 +50,6 @@ public class Event {
     }
 
     @NonNull
-    public Location getLocation() {
-        return location;
-    }
-
-    @NonNull
     public int getImageID() {
         return imageID;
     }
@@ -79,7 +69,4 @@ public class Event {
 
     @NonNull
     private int imageID;
-
-    @NonNull
-    private Location location;
 }
