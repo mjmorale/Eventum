@@ -25,6 +25,7 @@ public class SwiperFragment extends Fragment {
     private ArrayAdapter<Event> mArrayAdapter;
     private EventDetailFragment mInfoFragment;
     private List<Event> eventList;
+    private Event currentEvent;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -35,7 +36,6 @@ public class SwiperFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mInfoFragment = new EventDetailFragment();
         View view = inflater.inflate(R.layout.swipe_fragment, container, false);
         eventList = new ArrayList<>();
         eventList.add(new Event("OSS-117 Movie watching",
@@ -52,7 +52,7 @@ public class SwiperFragment extends Fragment {
                 new Date(2020, 11, 10)));
 
         mArrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, eventList);
-
+        currentEvent = eventList.get(0);
         return view;
     }
 
@@ -66,6 +66,7 @@ public class SwiperFragment extends Fragment {
                                               public void removeFirstObjectInAdapter() {
                                                   eventList.remove(0);
                                                   mArrayAdapter.notifyDataSetChanged();
+                                                  currentEvent = eventList.get(0);
                                               }
 
                                               @Override
@@ -92,9 +93,11 @@ public class SwiperFragment extends Fragment {
 
         );
         flingAdapterView.setOnItemClickListener((itemPosition, dataObject) -> {
+            mInfoFragment = new EventDetailFragment(currentEvent,this);
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame, mInfoFragment)
+                    .replace(this.getId(), mInfoFragment)
                     .commit();
+            //mInfoFragment.getViewModel().getEvent().setValue(currentEvent);
         });
     }
 }
