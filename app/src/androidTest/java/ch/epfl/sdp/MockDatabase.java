@@ -8,6 +8,6 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 public class MockDatabase implements Database {
     @Override
     public CollectionQuery query(@NonNull String collection) {
-        return null;
+        return new MockCollectionQuery();
     }
 }

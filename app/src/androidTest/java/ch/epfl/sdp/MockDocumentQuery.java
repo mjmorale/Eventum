@@ -26,7 +26,7 @@ public class MockDocumentQuery implements DocumentQuery {
                 @Override
                 protected void onActive() {
                     super.onActive();
-                    postValue(mockEvents.getNextEvent());
+                    setValue(mockEvents.getNextEvent());
                 }
             };
         }

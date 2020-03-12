@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.Map;
 
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
+import ch.epfl.sdp.db.queries.QueryResult;
 
 public class MockCollectionQuery implements CollectionQuery {
     @Override
@@ -42,6 +45,8 @@ public class MockCollectionQuery implements CollectionQuery {
 
     @Override
     public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
-
+        Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
+        T event = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).buildFromMap(data);
+        callback.onQueryComplete(QueryResult.success("fake"));
     }
 }
