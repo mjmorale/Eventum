@@ -32,4 +32,7 @@ public class MapTest{
     public void checkThatMapIsDisplayed() {
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
+
+
+
 }
