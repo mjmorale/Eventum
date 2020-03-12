@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
 
 
@@ -39,16 +41,17 @@ public class CreateEventFragment extends Fragment {
             String date = binding.date.getText().toString();
             try {
                 checkInput(title, description, date);
-                viewModel.createEvent(title, description, date);
+                LiveData<String> ref = viewModel.createEvent(title, description, date);
+                ref.observe(getViewLifecycleOwner(), result -> {
+                                getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, EventFragment.newInstance(result))
+                    .commitNow();
+                });
             } catch (ParseException e) {
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid date", Toast.LENGTH_SHORT).show();
             } catch (IllegalArgumentException e) {
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid input", Toast.LENGTH_SHORT).show();
             }
-
-/*            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, EventFragment.newInstance(viewModel.))
-                    .commitNow();*/
         });
 
         return view;
@@ -67,5 +70,9 @@ public class CreateEventFragment extends Fragment {
         if (title.isEmpty() || description.isEmpty() || date.isEmpty()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public EventViewModel getViewModel() {
+        return viewModel;
     }
 }
