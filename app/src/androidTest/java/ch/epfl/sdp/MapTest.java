@@ -39,38 +39,38 @@ public class MapTest{
         onView(withText("Map")).perform(click());
     }
 
-//    @Test
-//    public void checkThatMapIsDisplayed() {
-//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-//    }
-//
-//    @Test
-//    public void checkThatMyLocationButtonIsDisplayed() {
-//        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
-//        onView(withContentDescription("My Location")).perform(click());
-//    }
+    @Test
+    public void checkThatMapIsDisplayed() {
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+    }
 
     @Test
-    public void checkPermissionsTest() throws InterruptedException {
-        try {
-            UiDevice device = UiDevice.getInstance(getInstrumentation());
-            UiObject allowPermissions = device.findObject(new UiSelector()
-                    .clickable(true)
-                    .checkable(false)
-                    .index(0));
-            if (allowPermissions.exists()) {
-                allowPermissions.click();
-            }
-        } catch (Exception e){
-        }
-        sleep(10000);
-        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-        onView(withText("Swipe")).perform(click());
-        onView(withText("Map")).perform(click());
-        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+    public void checkThatMyLocationButtonIsDisplayed() {
         onView(withContentDescription("My Location")).check(matches((isDisplayed())));
         onView(withContentDescription("My Location")).perform(click());
     }
+
+//    @Test
+//    public void checkPermissionsTest() throws InterruptedException {
+//        try {
+//            UiDevice device = UiDevice.getInstance(getInstrumentation());
+//            UiObject allowPermissions = device.findObject(new UiSelector()
+//                    .clickable(true)
+//                    .checkable(false)
+//                    .index(0));
+//            if (allowPermissions.exists()) {
+//                allowPermissions.click();
+//            }
+//        } catch (Exception e){
+//        }
+//        sleep(10000);
+//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+//        onView(withText("Swipe")).perform(click());
+//        onView(withText("Map")).perform(click());
+//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+//        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
+//        onView(withContentDescription("My Location")).perform(click());
+//    }
 
 //    @Test
 //    public void revokePermissionsTest() {
