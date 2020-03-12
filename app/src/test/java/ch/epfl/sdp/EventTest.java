@@ -90,4 +90,11 @@ public class EventTest {
         Event e = new Event(title,description,date);
         e.setDate(new Date());
     }
+
+    @Test
+    public void testSetImageId(){
+        Event e = new Event(title,description,date);
+        e.setImageID(R.drawable.oss_117);
+        assertEquals(e.getImageID(), R.drawable.oss_117);
+    }
 }
