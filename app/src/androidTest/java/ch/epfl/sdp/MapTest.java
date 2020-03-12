@@ -24,6 +24,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static java.lang.Thread.sleep;
 
 @RunWith(AndroidJUnit4.class)
 public class MapTest{
@@ -50,7 +51,7 @@ public class MapTest{
 //    }
 
     @Test
-    public void checkPermissionsTest() {
+    public void checkPermissionsTest() throws InterruptedException {
         try {
             UiDevice device = UiDevice.getInstance(getInstrumentation());
             UiObject allowPermissions = device.findObject(new UiSelector()
@@ -62,6 +63,7 @@ public class MapTest{
             }
         } catch (Exception e){
         }
+        sleep(3000);
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
         onView(withText("Swipe")).perform(click());
         onView(withText("Map")).perform(click());
