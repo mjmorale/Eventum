@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.Manifest;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -43,12 +45,15 @@ public class MapTest{
         onView(withContentDescription("My Location")).perform(click());
     }
 
+    @Before
     void revokePermissions() {
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().
-                executeShellCommand("pm revoke ${InstrumentationRegistry.getInstrumentation().targetContext.packageName} android.permission.ACCESS_COARSE_LOCATION");
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().revokeRuntimePermission(
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(),
+                Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().
-                executeShellCommand("pm revoke ${InstrumentationRegistry.getInstrumentation().targetContext.packageName} android.permission.ACCESS_FINE_LOCATION")
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().revokeRuntimePermission(
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
     }
 }
-}
+
