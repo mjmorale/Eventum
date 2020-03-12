@@ -6,6 +6,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiSelector;
 
 import com.google.android.gms.maps.model.VisibleRegion;
 
@@ -20,11 +23,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 @RunWith(AndroidJUnit4.class)
 public class MapTest{
-    @Rule public GrantPermissionRule permissionRule1 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+    // @Rule public GrantPermissionRule permissionRule1 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    // @Rule public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Rule
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
@@ -34,26 +38,43 @@ public class MapTest{
         onView(withText("Map")).perform(click());
     }
 
-    @Test
-    public void checkThatMapIsDisplayed() {
-        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-    }
+//    @Test
+//    public void checkThatMapIsDisplayed() {
+//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+//    }
+//
+//    @Test
+//    public void checkThatMyLocationButtonIsDisplayed() {
+//        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
+//        onView(withContentDescription("My Location")).perform(click());
+//    }
 
     @Test
-    public void checkThatMyLocationButtonIsDisplayed() {
+    public void checkPermissionsTest() {
+        try {
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
+            UiObject allowPermissions = device.findObject(new UiSelector()
+                    .clickable(true)
+                    .checkable(false)
+                    .index(0));
+            if (allowPermissions.exists()) {
+                allowPermissions.click();
+            }
+        } catch (Exception e){
+        }
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+        onView(withText("Swipe")).perform(click());
+        onView(withText("Map")).perform(click());
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
         onView(withContentDescription("My Location")).check(matches((isDisplayed())));
         onView(withContentDescription("My Location")).perform(click());
     }
 
-    @Before
-    void revokePermissions() {
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().revokeRuntimePermission(
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(),
-                Manifest.permission.ACCESS_COARSE_LOCATION);
+//    @Test
+//    public void revokePermissionsTest() {
+//        //revokePermissions();
+//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+//    }
 
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().revokeRuntimePermission(
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(),
-                Manifest.permission.ACCESS_FINE_LOCATION);
-    }
 }
 
