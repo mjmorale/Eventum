@@ -116,9 +116,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 mAuthenticator.logout();
                 mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), task -> mViewModel.setUser(null));
                 break;
-
-            case R.id.btn_test:
-                break;
         }
     }
 
