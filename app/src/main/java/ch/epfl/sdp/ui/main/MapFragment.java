@@ -1,6 +1,7 @@
 package ch.epfl.sdp.ui.main;
 
-
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -18,9 +21,9 @@ import ch.epfl.sdp.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
+    private static final int PERMISSION_LOCATION=0;
     private MapView mapView;
     private GoogleMap map;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +37,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.map_fragment, container, false);
 
-        mapView= view.findViewById(R.id.mapView2);
+        mapView= view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
@@ -44,12 +47,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onMapReady(GoogleMap googlemap) {
-
         map = googlemap;
-        map.getUiSettings().setMyLocationButtonEnabled(true);
-        map.setMyLocationEnabled(true);
-        float zoom = 12;
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_LOCATION);
+        } else {
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.setMyLocationEnabled(true);
+        }
     }
 
     @Override
@@ -76,5 +86,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         super.onLowMemory();
         mapView.onLowMemory();
     }
-
 }

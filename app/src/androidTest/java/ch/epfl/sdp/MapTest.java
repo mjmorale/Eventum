@@ -29,6 +29,6 @@ public class MapTest{
 
     @Test
     public void checkThatMapIsDisplayed() {
-        onView(withId(R.id.mapView2)).check(matches((isDisplayed())));
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 }
