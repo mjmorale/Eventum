@@ -70,34 +70,23 @@ public class SwiperFragment extends Fragment {
                                               }
 
                                               @Override
-                                              public void onLeftCardExit(Object o) {
-
-                                              }
+                                              public void onLeftCardExit(Object o) {}
 
                                               @Override
-                                              public void onRightCardExit(Object o) {
-
-                                              }
+                                              public void onRightCardExit(Object o) {}
 
                                               @Override
-                                              public void onAdapterAboutToEmpty(int i) {
-
-                                              }
+                                              public void onAdapterAboutToEmpty(int i) {}
 
                                               @Override
-                                              public void onScroll(float v) {
-
-                                              }
+                                              public void onScroll(float v) {}
                                           }
-
-
         );
         flingAdapterView.setOnItemClickListener((itemPosition, dataObject) -> {
             mInfoFragment = new EventDetailFragment(currentEvent,this);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(this.getId(), mInfoFragment)
                     .commit();
-            //mInfoFragment.getViewModel().getEvent().setValue(currentEvent);
         });
     }
 }
