@@ -16,6 +16,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import ch.epfl.sdp.R;
 
 
@@ -60,6 +63,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.setMyLocationEnabled(true);
         }
+
+        addMarker("Vidy", new LatLng(46.518615, 6.591796), map);
+        addMarker("Satellite", new LatLng(46.520564, 6.567827), map);
+        addMarker("Football", new LatLng(46.523345, 6.569809), map);
+    }
+
+    public void addMarker(String eventName, LatLng coordinates, GoogleMap googlemap) {
+        map.addMarker(new MarkerOptions().position(coordinates).title(eventName));
     }
 
     @Override
@@ -79,11 +90,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
     }
 }
