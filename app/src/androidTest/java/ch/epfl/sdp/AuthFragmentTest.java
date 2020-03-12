@@ -8,8 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ch.epfl.sdp.ui.main.AuthFragment;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
@@ -24,6 +22,7 @@ public class AuthFragmentTest {
 
     @Before
     public void setup() {
+        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Login"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());

@@ -16,9 +16,7 @@ import ch.epfl.sdp.ui.event.EventViewModel;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 
@@ -33,6 +31,7 @@ public class EventFragmentTest {
 
     @Before
     public void setup() {
+        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Event"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());
