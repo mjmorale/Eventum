@@ -1,6 +1,7 @@
 package ch.epfl.sdp;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -41,4 +42,13 @@ public class MapTest{
         onView(withContentDescription("My Location")).check(matches((isDisplayed())));
         onView(withContentDescription("My Location")).perform(click());
     }
+
+    void revokePermissions() {
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().
+                executeShellCommand("pm revoke ${InstrumentationRegistry.getInstrumentation().targetContext.packageName} android.permission.ACCESS_COARSE_LOCATION");
+
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().
+                executeShellCommand("pm revoke ${InstrumentationRegistry.getInstrumentation().targetContext.packageName} android.permission.ACCESS_FINE_LOCATION")
+    }
+}
 }
