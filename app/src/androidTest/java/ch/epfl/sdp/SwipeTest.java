@@ -25,7 +25,6 @@ public class SwipeTest {
 
     @Before
     public void setup(){
-        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Swipe"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());

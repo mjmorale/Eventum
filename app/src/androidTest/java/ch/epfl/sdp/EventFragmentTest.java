@@ -29,7 +29,6 @@ public class EventFragmentTest {
 
     @Before
     public void setup() {
-        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Event"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());

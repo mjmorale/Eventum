@@ -22,7 +22,6 @@ public class AuthFragmentTest {
 
     @Before
     public void setup() {
-        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Login"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());

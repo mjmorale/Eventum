@@ -16,17 +16,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.AuthFragmentBinding;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 
@@ -37,7 +36,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private AuthFragmentBinding mBinding;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuthenticator mAuthenticator;
+    private Authenticator mAuthenticator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
