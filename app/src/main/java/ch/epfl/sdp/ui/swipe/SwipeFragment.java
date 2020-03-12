@@ -21,7 +21,6 @@ public class SwipeFragment extends Fragment {
     private ArrayList<Event> eventList;
     private ArrayAdapter<Event> arrayAdapter;
     private int i;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -29,7 +28,6 @@ public class SwipeFragment extends Fragment {
         View view = inflater.inflate(R.layout.swipe_fragment, container, false);
 
         eventList = new ArrayList<Event>();
-
         eventList.add(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
                 new Date(2021, 1, 16), R.drawable.oss_117));

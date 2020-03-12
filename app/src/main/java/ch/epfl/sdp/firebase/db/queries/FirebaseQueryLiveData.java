@@ -30,7 +30,7 @@ public class FirebaseQueryLiveData<TType> extends FirebaseLiveData<TType, List<T
             if(e == null) {
                 if(queryDocumentSnapshots != null) {
                     List<TType> data = new ArrayList<>();
-                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
+                    for(DocumentSnapshot doc: queryDocumentSnapshots.getDocuments()) {
                         data.add(mBuilder.buildFromMap(doc.getData()));
                     }
                     postValue(data);
