@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
-
     private static final int PERMISSION_LOCATION=0;
     private MapView mapView;
     private GoogleMap map;
@@ -64,6 +63,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         }
         return view;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
@@ -72,7 +72,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             havePermission= true;
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -93,7 +92,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void addMarker(String eventName, LatLng coordinates, GoogleMap googlemap) {
         map.addMarker(new MarkerOptions().position(coordinates).title(eventName));
     }
-
 
     @Override
     public void onResume() {
