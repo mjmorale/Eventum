@@ -24,13 +24,5 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
         }
-
-        if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
-            try {
-                DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -12,12 +12,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 
 public class EventViewModel extends ViewModel {
+    public EventViewModel() {
+        if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
+            try {
+                DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public LiveData<Event> getEvent(String ref) {
         if (event == null) {
             event = db.query("events").document(ref).livedata(Event.class);
