@@ -11,7 +11,7 @@ android:
     - sys-img-armeabi-v7a-android-22
 before_script:
   # Emulator Management: Create, Start and Wait
-  - android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - android list avd
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
