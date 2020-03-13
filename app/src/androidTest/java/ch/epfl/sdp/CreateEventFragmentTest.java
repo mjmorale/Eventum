@@ -20,6 +20,7 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
@@ -45,27 +46,30 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void testCreateEventFragment() {
-        /* Now try with correct values */
-        mActivityRule.getActivity().runOnUiThread(() -> {
-            CreateEventFragment createEventFragment = startCreateEventFragment();
-            createEventFragment.getViewModel().setDb(mDb);
-        });
+    public void testCreateEventFragment() throws InterruptedException {
+        launchEventFragment();
 
+        // Now try with correct values
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 typeText(TITLE),
                 closeSoftKeyboard());
+
+        sleep(10000);
 
         onView(withHint(is("Description"))).perform(
                 clearText(),
                 typeText(DESCRIPTION),
                 closeSoftKeyboard());
 
+        sleep(10000);
+
         onView(withHint(is("Date"))).perform(
                 clearText(),
                 typeText(DATE),
                 closeSoftKeyboard());
+
+        sleep(10000);
 
         onView(withId(R.id.createButton)).perform(
                 click());
@@ -73,12 +77,9 @@ public class CreateEventFragmentTest {
 
     @Test
     public void testCreateIncorrectEventFragment() {
-        mActivityRule.getActivity().runOnUiThread(() -> {
-            CreateEventFragment createEventFragment = startCreateEventFragment();
-            createEventFragment.getViewModel().setDb(mDb);
-        });
+        launchEventFragment();
 
-        /* Try with incorrect values */
+        // Try with incorrect values
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 typeText(EMPTY),
@@ -91,6 +92,27 @@ public class CreateEventFragmentTest {
 
         onView(withId(R.id.createButton)).perform(
                 click());
+    }
+
+    private void launchEventFragment() {
+        Runnable fragmentRunnable = new Runnable() {
+            @Override
+            public void run() {
+                CreateEventFragment createEventFragment = startCreateEventFragment();
+                createEventFragment.getViewModel().setDb(mDb);
+                synchronized(this) {
+                    this.notify();
+                }
+            };
+        };
+        synchronized(fragmentRunnable) {
+            mActivityRule.getActivity().runOnUiThread(fragmentRunnable);
+            try {
+                fragmentRunnable.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private CreateEventFragment startCreateEventFragment() {

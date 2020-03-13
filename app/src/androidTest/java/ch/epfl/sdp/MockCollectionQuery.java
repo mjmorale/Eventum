@@ -46,8 +46,6 @@ public class MockCollectionQuery implements CollectionQuery {
 
     @Override
     public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
-        Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
-        T event = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).buildFromMap(data);
         callback.onQueryComplete(QueryResult.success(REF_SUCCESS));
     }
 }
