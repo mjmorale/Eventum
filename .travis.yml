@@ -14,6 +14,8 @@ before_script:
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - android list avd
   - cat /home/travis/.android/avd/test.avd/config.ini
+  - cat /usr/local/android-sdk/platforms/android-22/skins/WVGA800/layout
+  - cat /usr/local/android-sdk/platforms/android-22/skins/WVGA800/hardware.ini
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82
