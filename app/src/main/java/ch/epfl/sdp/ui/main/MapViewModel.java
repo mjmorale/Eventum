@@ -21,6 +21,4 @@ public class MapViewModel extends ViewModel {
     private void loadEvents() {
 
     }
-
-
 }

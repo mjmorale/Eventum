@@ -68,5 +68,4 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
     public void addMarker(MarkerOptions markerOptions) {
         markerOptionsToBeAdded.add(markerOptions);
     }
-
 }
