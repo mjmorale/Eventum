@@ -22,17 +22,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.R;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment{
     private static final int PERMISSION_LOCATION=0;
     private MapView mapView;
-    private GoogleMap map;
     private MapViewModel mViewModel;
+    private GoogleMapProvider googleMapProvider;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+      //  mViewModel = new ViewModelProvider(this).get(MapViewModel.class);
     }
 
     @Override
@@ -43,43 +43,46 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
         mapView= view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        googleMapProvider = new GoogleMapProvider(mapView, this.getContext());
+//        googleMapProvider.setMyLocationButtonEnabled(true);
+//        googleMapProvider.setMyLocationEnabled(true);
+//        addMarker("Vidy", new LatLng(46.518615, 6.591796), googleMapProvider);
+//        addMarker("Satellite", new LatLng(46.520564, 6.567827), googleMapProvider);
+//        addMarker("Football", new LatLng(46.523345, 6.569809), googleMapProvider);
 
-        mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
-            //to be implemented
-        });
+//        mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
+//            //to be implemented
+//        });
 
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onMapReady(GoogleMap googlemap) {
-        map = googlemap;
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    @Override
+//    public void onMapReady(GoogleMap googlemap) {
+//        map = googlemap;
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED &&
+//                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+//                    PERMISSION_LOCATION);
+//        } else {
+//            map.getUiSettings().setMyLocationButtonEnabled(true);
+//            map.setMyLocationEnabled(true);
+//        }
+//
+//        // need to pull the events from the database
+//
+//
+//        // for now display the french part of Switzerland on launch, to be modified
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
+//    }
 
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PERMISSION_LOCATION);
-        } else {
-            map.getUiSettings().setMyLocationButtonEnabled(true);
-            map.setMyLocationEnabled(true);
-        }
-
-        // need to pull the events from the database
-        addMarker("Vidy", new LatLng(46.518615, 6.591796), map);
-        addMarker("Satellite", new LatLng(46.520564, 6.567827), map);
-        addMarker("Football", new LatLng(46.523345, 6.569809), map);
-
-        // for now display the french part of Switzerland on launch, to be modified
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
-    }
-
-    public void addMarker(String eventName, LatLng coordinates, GoogleMap googlemap) {
-        map.addMarker(new MarkerOptions().position(coordinates).title(eventName));
+    public void addMarker(String eventName, LatLng coordinates, GoogleMapProvider googleMapProvider) {
+        googleMapProvider.addMarker(new MarkerOptions().position(coordinates).title(eventName));
     }
 
     @Override
