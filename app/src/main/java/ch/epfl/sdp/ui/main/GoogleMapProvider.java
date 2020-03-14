@@ -28,7 +28,7 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback, Acti
     public  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
     private  final int PERMISSION_LOCATION=0;
     private Context context;
-    public boolean havePermission= false;
+    public static boolean havePermission= false;
     MapView mapView;
 
     GoogleMapProvider(MapView mapView, Context context){
@@ -51,11 +51,9 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback, Acti
     @Override
     public void onMapReady(GoogleMap googlemap) {
         map = googlemap;
-        if (havePermission) {
-            map.getUiSettings().setMyLocationButtonEnabled(locationButtonEnabled);
-            map.setMyLocationEnabled(locationEnabled);
-        }
-
+        map.getUiSettings().setMyLocationButtonEnabled(locationButtonEnabled&&havePermission);
+        map.setMyLocationEnabled(locationEnabled&&havePermission);
+        
         for(MarkerOptions mo :markerOptionsToBeAdded)
             map.addMarker(mo);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
