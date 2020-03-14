@@ -24,17 +24,16 @@ import static android.app.PendingIntent.getActivity;
 import static java.security.AccessController.getContext;
 
 public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
-    private static Boolean locationButtonEnabled;
-    private static Boolean locationEnabled;
+    private static Boolean locationButtonEnabled=false;
+    private static Boolean locationEnabled=false;
     private static GoogleMap map;
-    private static Set<MarkerOptions> markerOptionsToBeAdded;
+    private static Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
     private static final int PERMISSION_LOCATION=0;
     private static Context context;
 
     GoogleMapProvider(MapView mapView, Context context){
         mapView.getMapAsync(this);
         this.context = context;
-        
     }
 
 
@@ -50,12 +49,12 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
         } else {
-            map.getUiSettings().setMyLocationButtonEnabled(locationEnabled);
-            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(locationButtonEnabled);
+            map.setMyLocationEnabled(locationEnabled);
         }
 
-//        for(MarkerOptions mo :markerOptionsToBeAdded)
-//            map.addMarker(mo);
+        for(MarkerOptions mo :markerOptionsToBeAdded)
+            map.addMarker(mo);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
     }
 

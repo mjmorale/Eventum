@@ -44,8 +44,8 @@ public class MapFragment extends Fragment{
         mapView= view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         googleMapProvider = new GoogleMapProvider(mapView, this.getContext());
-//        googleMapProvider.setMyLocationButtonEnabled(true);
-//        googleMapProvider.setMyLocationEnabled(true);
+        googleMapProvider.setMyLocationButtonEnabled(true);
+        googleMapProvider.setMyLocationEnabled(true);
 //        addMarker("Vidy", new LatLng(46.518615, 6.591796), googleMapProvider);
 //        addMarker("Satellite", new LatLng(46.520564, 6.567827), googleMapProvider);
 //        addMarker("Football", new LatLng(46.523345, 6.569809), googleMapProvider);
