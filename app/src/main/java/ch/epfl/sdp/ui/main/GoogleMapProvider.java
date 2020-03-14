@@ -27,7 +27,7 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
     public  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
     private  final int PERMISSION_LOCATION=0;
     private Context context;
-    public boolean havePermission;
+    public boolean havePermission=false;
     MapView mapView;
 
     GoogleMapProvider(MapView mapView, Context context){
@@ -36,7 +36,7 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
         havePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED;
+                        == PackageManager.PERMISSION_GRANTED&&havePermission;
         if (!havePermission) {
             ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
