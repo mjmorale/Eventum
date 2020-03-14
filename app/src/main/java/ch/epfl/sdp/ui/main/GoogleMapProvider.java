@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -20,16 +17,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashSet;
 import java.util.Set;
 
-import static android.app.PendingIntent.getActivity;
-import static java.security.AccessController.getContext;
-
 public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
-    private static Boolean locationButtonEnabled=false;
-    private static Boolean locationEnabled=false;
-    private static GoogleMap map;
-    private static Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
-    private static final int PERMISSION_LOCATION=0;
-    private static Context context;
+    public  Boolean locationButtonEnabled=false;
+    public  Boolean locationEnabled=false;
+    private  GoogleMap map;
+    public  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
+    private  final int PERMISSION_LOCATION=0;
+    private Context context;
 
     GoogleMapProvider(MapView mapView, Context context){
         mapView.getMapAsync(this);
