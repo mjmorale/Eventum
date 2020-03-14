@@ -15,6 +15,9 @@ before_script:
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+  - cat /home/travis/.android/avd/test.avd/config.ini
+  - cat /usr/local/android-sdk/platforms/android-22/skins/WVGA800/layout
+  - cat /usr/local/android-sdk/platforms/android-22/skins/WVGA800/hardware.ini
   # Set up Code Climate test reporter
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
