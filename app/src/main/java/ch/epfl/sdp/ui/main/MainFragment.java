@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -17,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.ui.map.MapFragment;
 import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 

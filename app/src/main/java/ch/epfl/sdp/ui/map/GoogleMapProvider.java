@@ -1,26 +1,23 @@
-package ch.epfl.sdp.ui.main;
+package ch.epfl.sdp.ui.map;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
+public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     public  Boolean locationButtonEnabled=false;
     public  Boolean locationEnabled=false;
     private  GoogleMap map;
@@ -43,7 +40,7 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED;
-        
+
         mapView.getMapAsync(this);
     }
 

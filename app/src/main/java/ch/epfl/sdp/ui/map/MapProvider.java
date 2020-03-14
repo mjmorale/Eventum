@@ -1,7 +1,5 @@
-package ch.epfl.sdp.ui.main;
+package ch.epfl.sdp.ui.map;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public interface MapProvider {
