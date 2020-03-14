@@ -33,16 +33,17 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
     GoogleMapProvider(MapView mapView, Context context){
         this.mapView = mapView;
         this.context = context;
-        havePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED&&havePermission;
+
         if (!havePermission) {
             ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
         }
-
+        havePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+        
         mapView.getMapAsync(this);
     }
 
