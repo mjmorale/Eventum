@@ -51,10 +51,7 @@ public class GoogleMapProvider implements MapProvider , OnMapReadyCallback {
         map = googlemap;
         map.getUiSettings().setMyLocationButtonEnabled(locationButtonEnabled&&havePermission);
         map.setMyLocationEnabled(locationEnabled&&havePermission);
-
-        for(MarkerOptions mo :markerOptionsToBeAdded)
-            map.addMarker(mo);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
+        map.addMarker(markerOptionsToBeAdded.iterator().next());
     }
 
     @Override
