@@ -28,8 +28,8 @@ import static java.lang.Thread.sleep;
 
 @RunWith(AndroidJUnit4.class)
 public class MapTest{
-    // @Rule public GrantPermissionRule permissionRule1 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    // @Rule public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+    @Rule public GrantPermissionRule permissionRule1 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    @Rule public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Rule
     public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
@@ -41,6 +41,7 @@ public class MapTest{
 
     @Test
     public void checkThatMapIsDisplayed() {
+
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 
