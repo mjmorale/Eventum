@@ -7,8 +7,6 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 
 public class MockDocumentQuery implements DocumentQuery {
-    private MockEvents mockEvents = new MockEvents();
-
     @Override
     public CollectionQuery collection(String collection) {
         return null;
@@ -22,13 +20,7 @@ public class MockDocumentQuery implements DocumentQuery {
     @Override
     public <T> LiveData<T> livedata(@NonNull Class<T> type) {
         if (type == Event.class) {
-            return new LiveData() {
-                @Override
-                protected void onActive() {
-                    super.onActive();
-                    setValue(mockEvents.getNextEvent());
-                }
-            };
+            return (LiveData<T>)new MockEventLiveData();
         }
         return null;
     }

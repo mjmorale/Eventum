@@ -16,6 +16,7 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -27,11 +28,12 @@ import static org.hamcrest.Matchers.is;
 public class CreateEventFragmentTest {
 
     private Database mDb = new MockDatabase();
-    private static MockEvents mMockEvents = new MockEvents();
 
+
+    private static final Event mockEvent = MockEvents.getCurrentEvent();
     private static final String DATE = "20/04/2020";
-    private static final String TITLE = mMockEvents.getNextEvent().getTitle();
-    private static final String DESCRIPTION = mMockEvents.getNextEvent().getDescription();
+    private static final String TITLE = mockEvent.getTitle();
+    private static final String DESCRIPTION = mockEvent.getDescription();
     private static final String EMPTY = "";
 
     @Rule
@@ -50,29 +52,33 @@ public class CreateEventFragmentTest {
         launchEventFragment();
 
         // Now try with correct values
-        onView(withHint(is("Title"))).perform(
+        onView(withId(R.id.title)).perform(
                 clearText(),
                 typeText(TITLE),
                 closeSoftKeyboard());
 
-        sleep(10000);
-
-        onView(withHint(is("Description"))).perform(
+        onView(withId(R.id.description)).perform(
                 clearText(),
                 typeText(DESCRIPTION),
                 closeSoftKeyboard());
 
-        sleep(10000);
-
-        onView(withHint(is("Date"))).perform(
+        onView(withId(R.id.date)).perform(
                 clearText(),
                 typeText(DATE),
                 closeSoftKeyboard());
 
-        sleep(10000);
-
         onView(withId(R.id.createButton)).perform(
                 click());
+
+        // Check the created event page
+/*        onView(withId(R.id.description))
+                .check(matches(withText(DESCRIPTION)));
+
+        onView(withId(R.id.date))
+                .check(matches(withText(DATE)));
+
+        onView(withId(R.id.title))
+                .check(matches(withText(TITLE)));*/
     }
 
     @Test
@@ -95,24 +101,10 @@ public class CreateEventFragmentTest {
     }
 
     private void launchEventFragment() {
-        Runnable fragmentRunnable = new Runnable() {
-            @Override
-            public void run() {
-                CreateEventFragment createEventFragment = startCreateEventFragment();
-                createEventFragment.getViewModel().setDb(mDb);
-                synchronized(this) {
-                    this.notify();
-                }
-            };
-        };
-        synchronized(fragmentRunnable) {
-            mActivityRule.getActivity().runOnUiThread(fragmentRunnable);
-            try {
-                fragmentRunnable.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        mActivityRule.getActivity().runOnUiThread(() -> {
+            CreateEventFragment createEventFragment = startCreateEventFragment();
+            createEventFragment.getViewModel().setDb(mDb);
+        });
     }
 
     private CreateEventFragment startCreateEventFragment() {

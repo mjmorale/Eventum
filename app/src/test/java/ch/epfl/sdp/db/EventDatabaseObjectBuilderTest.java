@@ -14,14 +14,8 @@ import static org.junit.Assert.assertEquals;
 public class EventDatabaseObjectBuilderTest {
 
     @Before
-    public void setup() {
-        try {
-            DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public void setup() throws IllegalAccessException, InstantiationException {
+        DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
     }
 
     @Test
