@@ -1,4 +1,4 @@
-package ch.epfl.sdp.auth.firebase;
+package ch.epfl.sdp.firebase.auth;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -14,10 +14,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Any;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.auth.User;
+import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
+import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -53,6 +54,7 @@ public class FirebaseAuthenticatorTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        DatabaseObjectBuilderFactory.clear();
     }
 
     @Test(expected = IllegalArgumentException.class)

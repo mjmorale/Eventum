@@ -19,14 +19,16 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
-public class SwipeTest{
+public class SwipeTest {
+
     @Rule
-    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<MainActivity>(MainActivity.class);
 
     @Before
     public void setup(){
+        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
         onView(withText("Swipe"))
-                .inRoot(withDecorView(is(activityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());
     }
 

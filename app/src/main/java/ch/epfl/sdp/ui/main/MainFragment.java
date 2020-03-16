@@ -4,21 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-
-import ch.epfl.sdp.ui.swiper.SwiperFragment;
+import ch.epfl.sdp.ui.event.EventFragment;
+import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
 public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelectedListener {
 
@@ -28,15 +25,17 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         return new MainFragment();
     }
 
-    private SwiperFragment mSwipeFragment;
+    private SwipeFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
+    private EventFragment mEventFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSwipeFragment = new SwiperFragment();
+        mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
+        mEventFragment = new EventFragment();
     }
 
     @Nullable
@@ -69,13 +68,13 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
             case 1:
                 toInsert = mAuthFragment;
                 break;
-
+            case 2:
+                toInsert = mEventFragment;
+                break;
         }
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, toInsert)
                 .commitNow();
-
-
     }
 
     @Override
