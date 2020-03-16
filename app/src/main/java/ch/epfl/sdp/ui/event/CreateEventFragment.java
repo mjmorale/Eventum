@@ -17,16 +17,23 @@ import java.text.ParseException;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
+import ch.epfl.sdp.db.Database;
 
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private EventViewModel mViewModel;
     private CreateEventFragmentBinding mBinding;
+    private Database mDb;
+
+    public CreateEventFragment(Database db) {
+        mDb = db;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        mViewModel.setDb(mDb);
     }
 
     @Override
@@ -69,7 +76,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     LiveData<String> ref = mViewModel.createEvent(title, description, date);
                     ref.observe(getViewLifecycleOwner(), result -> {
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, EventFragment.newInstance(result))
+                                .replace(R.id.fragment_container, EventFragment.newInstance(result, mDb))
                                 .commitNow();
                     });
                 } catch (ParseException e) {

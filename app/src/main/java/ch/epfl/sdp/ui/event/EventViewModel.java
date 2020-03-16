@@ -20,7 +20,7 @@ import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 public class EventViewModel extends ViewModel {
     private LiveData<Event> mEvent;
     private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
-    private Database mDb = new FirestoreDatabase(FirebaseFirestore.getInstance());
+    private Database mDb;
     private MutableLiveData<String> mRef = new MutableLiveData<>();
 
     public EventViewModel() {
@@ -47,8 +47,7 @@ public class EventViewModel extends ViewModel {
     public LiveData<String> createEvent(@NonNull String title,
                             @NonNull String description,
                             @NonNull String date) throws ParseException {
-        Date formatDate = mFormatter.parse(date);
-        Event newEvent = new Event(title, description, formatDate);
+        Event newEvent = new Event(title, description, mFormatter.parse(date));
         mDb.query("events").create(newEvent, result -> {
             mRef.postValue(result.getData());
         });

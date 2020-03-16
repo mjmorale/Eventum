@@ -10,21 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
+import ch.epfl.sdp.db.Database;
 
 public class EventFragment extends Fragment {
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
     private String mRef;
+    private Database mDb;
 
-    public static EventFragment newInstance(String ref) {
+    public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
         bundle.putString("dbRef", ref);
 
-        EventFragment fragment = new EventFragment();
+        EventFragment fragment = new EventFragment(db);
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    public EventFragment(Database db) {
+        mDb = db;
     }
 
 
@@ -38,6 +44,7 @@ public class EventFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        mViewModel.setDb(mDb);
     }
 
     @Override

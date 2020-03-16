@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.event.CreateEventFragment;
 import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
@@ -35,10 +38,11 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Database db = new FirestoreDatabase(FirebaseFirestore.getInstance());
         mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
-        mEventFragment = EventFragment.newInstance("fake");
-        mCreateEventFragment = new CreateEventFragment();
+        mEventFragment = EventFragment.newInstance("fake", db);
+        mCreateEventFragment = new CreateEventFragment(db);
     }
 
     @Nullable

@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.SimpleDateFormat;
+
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.event.CreateEventFragment;
 
@@ -28,12 +30,12 @@ import static org.hamcrest.Matchers.is;
 public class CreateEventFragmentTest {
 
     private Database mDb = new MockDatabase();
+    private static SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-
-    private static final Event mockEvent = MockEvents.getCurrentEvent();
-    private static final String DATE = "20/04/2020";
-    private static final String TITLE = mockEvent.getTitle();
-    private static final String DESCRIPTION = mockEvent.getDescription();
+    private static final Event mMockEvent = MockEvents.getCurrentEvent();
+    private static final String DATE = mFormatter.format(mMockEvent.getDate());
+    private static final String TITLE = mMockEvent.getTitle();
+    private static final String DESCRIPTION = mMockEvent.getDescription();
     private static final String EMPTY = "";
 
     @Rule
@@ -71,14 +73,15 @@ public class CreateEventFragmentTest {
                 click());
 
         // Check the created event page
-/*        onView(withId(R.id.description))
+        onView(withId(R.id.description))
                 .check(matches(withText(DESCRIPTION)));
 
         onView(withId(R.id.date))
                 .check(matches(withText(DATE)));
 
         onView(withId(R.id.title))
-                .check(matches(withText(TITLE)));*/
+                .check(matches(withText(TITLE)));
+
     }
 
     @Test
@@ -108,7 +111,7 @@ public class CreateEventFragmentTest {
     }
 
     private CreateEventFragment startCreateEventFragment() {
-        CreateEventFragment createEventFragment = new CreateEventFragment();
+        CreateEventFragment createEventFragment = new CreateEventFragment(new MockDatabase());
         mActivityRule.getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, createEventFragment)
                 .commitNow();
