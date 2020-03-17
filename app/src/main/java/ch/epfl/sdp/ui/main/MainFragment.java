@@ -44,7 +44,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         Database db = new FirestoreDatabase(FirebaseFirestore.getInstance());
         mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
-        mEventFragment = new EventFragment();
         mMapFragment = new MapFragment();
         mEventFragment = EventFragment.newInstance("fake", db);
         mCreateEventFragment = new CreateEventFragment(db);
