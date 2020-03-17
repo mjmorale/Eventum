@@ -1,4 +1,4 @@
-package ch.epfl.sdp.auth.firebase;
+package ch.epfl.sdp.firebase.auth;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -12,7 +12,7 @@ import ch.epfl.sdp.auth.AuthenticationResult;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.User;
 
-public class FirebaseAuthenticator implements Authenticator {
+public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
 
     private final FirebaseAuth mAuth;
 
@@ -34,10 +34,6 @@ public class FirebaseAuthenticator implements Authenticator {
     }
 
     @Override
-    public void logout() {
-        mAuth.signOut();
-    }
-
     public void login(@NonNull AuthCredential credential, @Nullable final OnLoginCallback callback) {
         if(credential == null) {
             throw new IllegalArgumentException();
@@ -45,6 +41,11 @@ public class FirebaseAuthenticator implements Authenticator {
 
         Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
         handleAuthResultTask(authResultTask, callback);
+    }
+
+    @Override
+    public void logout() {
+        mAuth.signOut();
     }
 
     @Override
