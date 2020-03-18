@@ -18,14 +18,14 @@ import java.util.Set;
 
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
-    public  Boolean locationButtonEnabled=false;
-    public  Boolean locationEnabled=false;
+    private  Boolean locationButtonEnabled=false;
+    private  Boolean locationEnabled=false;
     private  GoogleMap map;
-    public  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
+    private  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
     private  final int PERMISSION_LOCATION=0;
     private Context context;
-    public boolean havePermission=false;
-    MapView mapView;
+    private boolean havePermission=false;
+    private MapView mapView;
 
     GoogleMapProvider(MapView mapView, Context context){
         this.mapView = mapView;

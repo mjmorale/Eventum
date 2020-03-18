@@ -16,11 +16,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class MapTest{
-    @Rule public GrantPermissionRule permissionRule1 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule public GrantPermissionRule permissionRule2 = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+    @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Rule
-    public ActivityTestRule<MainActivity> activityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
 
     @Before
     public void setup(){
@@ -31,36 +31,6 @@ public class MapTest{
     public void checkThatMapIsDisplayed() {
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
-
-//    @Test
-//    public void checkThatMyLocationButtonIsDisplayed() {
-//        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
-//        onView(withContentDescription("My Location")).perform(click());
-//    }
-
-//    @Test
-//    public void checkPermissionsTest() throws InterruptedException {
-//        sleep(10000);
-//        try {
-//            UiDevice device = UiDevice.getInstance(getInstrumentation());
-//            UiObject allowPermissions = device.findObject(new UiSelector()
-//                    .clickable(true)
-//                    .checkable(false)
-//                    .index(0));
-//            if (allowPermissions.exists()) {
-//                allowPermissions.click();
-//            }
-//        } catch (Exception e){
-//        }
-//        sleep(10000);
-
-//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-//        onView(withText("Swipe")).perform(click());
-//        onView(withText("Map")).perform(click());
-//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-//        onView(withContentDescription("My Location")).check(matches((isDisplayed())));
-//        onView(withContentDescription("My Location")).perform(click());
-//    }
 
 }
 

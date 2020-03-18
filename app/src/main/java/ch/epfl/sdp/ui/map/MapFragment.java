@@ -55,8 +55,8 @@ public class MapFragment extends Fragment{
 
     @Override
     public void onResume() {
-        mapView.onResume();
         super.onResume();
+        mapView.onResume();
     }
 
     @Override
