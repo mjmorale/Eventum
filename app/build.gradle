@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     // Unit test dependencies
     testImplementation 'junit:junit:4.12'

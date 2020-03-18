@@ -1,28 +1,100 @@
 package ch.epfl.sdp;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.ui.main.MainFragment;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.core.view.GravityCompat;
+import ch.epfl.sdp.databinding.MainActivityBinding;
+import ch.epfl.sdp.ui.main.AuthFragment;
+import ch.epfl.sdp.ui.swipe.SwipeFragment;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    private MainActivityBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Remove ActionBar on the Application and create the EventDatabaseBuilder
-        try
-        {
-            this.getSupportActionBar().hide();
-        }
-        catch (Exception e){}
+        mBinding = MainActivityBinding.inflate(getLayoutInflater());
+        View view = mBinding.getRoot();
+        setContentView(view);
 
-        setContentView(R.layout.main_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow();
+        setSupportActionBar(mBinding.mainToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        mBinding.mainNavView.setNavigationItemSelectedListener(this);
+        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_profile_picture)
+                .setOnClickListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
+                R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
+        mBinding.mainDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new SwipeFragment())
+                .commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_actionbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch(menuItem.getItemId()) {
+            case R.id.nav_home:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(mBinding.mainContainer.getId(), new SwipeFragment()).commit();
+                break;
+            case R.id.nav_map:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(mBinding.mainContainer.getId(), new AuthFragment()).commit();
+        }
+        mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the drawer is open and the back button is pressed, then
+        // close the drawer instead of quitting the activity
+        if(mBinding.mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.main_nav_header_profile_picture:
+                Toast.makeText(this, "User profile", Toast.LENGTH_SHORT).show();
+                mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+                break;
         }
     }
 }

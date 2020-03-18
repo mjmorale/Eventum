@@ -76,7 +76,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     LiveData<String> ref = mViewModel.createEvent(title, description, date);
                     ref.observe(getViewLifecycleOwner(), result -> {
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, EventFragment.newInstance(result, mDb))
+                                .replace(R.id.main_container, EventFragment.newInstance(result, mDb))
                                 .commitNow();
                     });
                 } catch (ParseException e) {
