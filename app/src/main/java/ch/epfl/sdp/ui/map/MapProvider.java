@@ -4,9 +4,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public interface MapProvider {
 
-    void setMyLocationButtonEnabled(Boolean enabled);
+    void setMyLocationButtonEnabled(boolean enabled);
 
-    void setMyLocationEnabled(Boolean enabled);
+    void setMyLocationEnabled(boolean enabled);
 
     void addMarker(MarkerOptions markerOptions);
 

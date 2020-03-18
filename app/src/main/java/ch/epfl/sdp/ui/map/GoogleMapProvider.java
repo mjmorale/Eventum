@@ -53,12 +53,12 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     }
 
     @Override
-    public void setMyLocationButtonEnabled(Boolean enabled) {
+    public void setMyLocationButtonEnabled(boolean enabled) {
         mLocationButtonEnabled= enabled;
     }
 
     @Override
-    public void setMyLocationEnabled(Boolean enabled) {
+    public void setMyLocationEnabled(boolean enabled) {
         mLocationEnabled= enabled;
     }
 
