@@ -1,12 +1,11 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,22 +31,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(mBinding.mainToolbar);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-
         mBinding.mainNavView.setNavigationItemSelectedListener(this);
-        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout)
-                .setOnClickListener(this);
+        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout).setOnClickListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
                 R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, new SwipeFragment())
-                .commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new SwipeFragment())
+                    .commit();
+        }
     }
 
     @Override
@@ -58,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.main_actionbar_add:
+                // Start event creation activity
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()
                         .replace(mBinding.mainContainer.getId(), new AuthFragment()).commit();
+            case R.id.nav_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
         }
         mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
