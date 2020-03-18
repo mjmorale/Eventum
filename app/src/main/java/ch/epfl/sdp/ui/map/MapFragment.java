@@ -13,10 +13,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.databinding.MapFragmentBinding;
 
 public class MapFragment extends Fragment{
-    private MapView mapView;
-    private GoogleMapProvider googleMapProvider;
+    private MapView mMapView;
+    private GoogleMapProvider mGoogleMapProvider;
     private MapViewModel mViewModel;
 
     @Override
@@ -32,17 +33,17 @@ public class MapFragment extends Fragment{
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.map_fragment, container, false);
 
-        mapView= view.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        googleMapProvider = new GoogleMapProvider(this.getContext(),mapView);
-        googleMapProvider.setMyLocationButtonEnabled(true);
-        googleMapProvider.setMyLocationEnabled(true);
+        mMapView= view.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView);
+        mGoogleMapProvider.setMyLocationButtonEnabled(true);
+        mGoogleMapProvider.setMyLocationEnabled(true);
 
         mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
 
         });
 
-        addMarker("Vidy", new LatLng(46.518615, 6.591796), googleMapProvider);
+        addMarker("Vidy", new LatLng(46.518615, 6.591796), mGoogleMapProvider);
 
         return view;
     }
@@ -54,18 +55,18 @@ public class MapFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        mMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+        mMapView.onDestroy();
     }
 }
