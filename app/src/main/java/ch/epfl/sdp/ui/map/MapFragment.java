@@ -42,6 +42,8 @@ public class MapFragment extends Fragment{
 
         });
 
+        addMarker("Vidy", new LatLng(46.518615, 6.591796), googleMapProvider);
+
         return view;
     }
 
