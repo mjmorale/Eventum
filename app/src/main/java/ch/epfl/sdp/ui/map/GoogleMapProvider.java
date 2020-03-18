@@ -18,25 +18,25 @@ import java.util.Set;
 
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
-    private  Boolean locationButtonEnabled=false;
-    private  Boolean locationEnabled=false;
-    private  GoogleMap map;
-    private  Set<MarkerOptions> markerOptionsToBeAdded= new HashSet<>();
-    private  final int PERMISSION_LOCATION=0;
-    private Context context;
-    private boolean havePermission=false;
-    private MapView mapView;
+    private  boolean mLocationButtonEnabled=false;
+    private  boolean mLocationEnabled=false;
+    private  GoogleMap mMap;
+    private  Set<MarkerOptions> mMarkerOptionsToBeAdded= new HashSet<>();
+    private  final int mPERMISSION_LOCATION=0;
+    private Context mContext;
+    private boolean mHavePermission=false;
+    private MapView mMapView;
 
-    GoogleMapProvider(MapView mapView, Context context){
-        this.mapView = mapView;
-        this.context = context;
+    GoogleMapProvider(Context context,MapView mapView){
+        this.mMapView = mapView;
+        this.mContext = context;
 
-        if (!havePermission) {
+        if (!mHavePermission) {
             ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PERMISSION_LOCATION);
+                    mPERMISSION_LOCATION);
         }
-        havePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        mHavePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED;
@@ -46,24 +46,24 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googlemap) {
-        map = googlemap;
-        map.getUiSettings().setMyLocationButtonEnabled(locationButtonEnabled&&havePermission);
-        map.setMyLocationEnabled(locationEnabled&&havePermission);
-        map.addMarker(markerOptionsToBeAdded.iterator().next());
+        mMap = googlemap;
+        mMap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
+        mMap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
+        mMap.addMarker(mMarkerOptionsToBeAdded.iterator().next());
     }
 
     @Override
     public void setMyLocationButtonEnabled(Boolean enabled) {
-        locationButtonEnabled= enabled;
+        mLocationButtonEnabled= enabled;
     }
 
     @Override
     public void setMyLocationEnabled(Boolean enabled) {
-        locationEnabled= enabled;
+        mLocationEnabled= enabled;
     }
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-        markerOptionsToBeAdded.add(markerOptions);
+        mMarkerOptionsToBeAdded.add(markerOptions);
     }
 }
