@@ -22,7 +22,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private  boolean mLocationEnabled=false;
     private  GoogleMap mMap;
     private  Set<MarkerOptions> mMarkerOptionsToBeAdded= new HashSet<>();
-    private  final int mPERMISSION_LOCATION=0;
+    private  final static int PERMISSION_LOCATION=0;
     private Context mContext;
     private boolean mHavePermission=false;
     private MapView mMapView;
@@ -34,7 +34,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         if (!mHavePermission) {
             ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    mPERMISSION_LOCATION);
+                    PERMISSION_LOCATION);
         }
         mHavePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
