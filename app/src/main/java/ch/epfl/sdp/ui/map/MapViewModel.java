@@ -8,14 +8,14 @@ import java.util.Set;
 import ch.epfl.sdp.Event;
 
 public class MapViewModel extends ViewModel {
-    private MutableLiveData<Set<Event>> events;
+    private MutableLiveData<Set<Event>> mEvents;
 
     public MutableLiveData<Set<Event>> getEvents() {
-        if (events == null) {
-            events = new MutableLiveData<Set<Event>>();
+        if (mEvents == null) {
+            mEvents = new MutableLiveData<Set<Event>>();
             loadEvents();
         }
-        return events;
+        return mEvents;
     }
 
     private void loadEvents() {
