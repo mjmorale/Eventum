@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         mBinding.mainNavView.setNavigationItemSelectedListener(this);
-        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_profile_picture)
+        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout)
                 .setOnClickListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.main_nav_header_profile_picture:
+            case R.id.main_nav_header_layout:
                 Toast.makeText(this, "User profile", Toast.LENGTH_SHORT).show();
                 mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
                 break;
