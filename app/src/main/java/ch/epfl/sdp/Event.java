@@ -7,92 +7,45 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Date;
 
 public class Event {
+    final private String mDescription;
+    final private Date mDate;
+    final private String mTitle;
+    final private int mImageID;
+    final private LatLng mLocation;
 
-    @NonNull
-    private String description;
-
-    @NonNull
-    private Date date;
-
-    @NonNull
-    private String title;
-
-    @NonNull
-    private int imageID;
-
-    @NonNull
-    private LatLng location;
-
-    public Event(String title, LatLng location){
-        this(title,new String(), new Date(),R.mipmap.ic_launcher,location);
-    }
-
-    public Event(String title, String description, Date date) {
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date) {
         this(title, description, date, R.mipmap.ic_launcher);
     }
 
-    public Event(String title, String description, Date date, int imageID){
-        this(title,description,date,imageID,new LatLng(46.518615, 6.591796));
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID){
+        this(title,description,date,imageID,new LatLng(46.520553, 6.567821));
     }
 
-    public Event(String title, String description, Date date, int imageID, LatLng location){
-        if (title == null || description == null || date == null || location == null)
-            throw new IllegalArgumentException();
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.imageID = imageID;
-        this.location = location;
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID, @NonNull LatLng location){
+        this.mTitle = title;
+        this.mDescription = description;
+        this.mDate = date;
+        this.mImageID = imageID;
+        this.mLocation = location;
     }
 
     public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        if (title == null)
-            throw new IllegalArgumentException();
-        this.title = title;
+        return mTitle;
     }
 
     public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        if (description == null)
-            throw new IllegalArgumentException();
-        this.description = description;
+        return mDescription;
     }
 
     public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        if (date == null)
-            throw new IllegalArgumentException();
-        this.date = date;
+        return mDate;
     }
 
     public LatLng getLocation() {
-        return location;
+        return mLocation;
     }
 
-    public void setLocation(LatLng location) {
-        if (location == null)
-            throw new IllegalArgumentException();
-        this.location = location;
-    }
-
-    @NonNull
     public int getImageID() {
-        return imageID;
+        return mImageID;
     }
-
-    public void setImageID(@NonNull int imageName) {
-        this.imageID = imageName;
-    }
-
-
 }
