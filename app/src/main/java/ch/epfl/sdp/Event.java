@@ -8,15 +8,31 @@ import java.util.Date;
 
 public class Event {
 
+    @NonNull
+    private String description;
+
+    @NonNull
+    private Date date;
+
+    @NonNull
+    private String title;
+
+    @NonNull
+    private int imageID;
+
+    @NonNull
+    private LatLng location;
+
     public Event(String title, LatLng location){
         this(title,new String(), new Date(),R.mipmap.ic_launcher,location);
     }
+
     public Event(String title, String description, Date date) {
         this(title, description, date, R.mipmap.ic_launcher);
     }
 
     public Event(String title, String description, Date date, int imageID){
-        this(title,description,date,imageID,new LatLng(100,100));
+        this(title,description,date,imageID,new LatLng(46.518615, 6.591796));
     }
 
     public Event(String title, String description, Date date, int imageID, LatLng location){
@@ -78,18 +94,5 @@ public class Event {
         this.imageID = imageName;
     }
 
-    @NonNull
-    private String description;
 
-    @NonNull
-    private Date date;
-
-    @NonNull
-    private String title;
-
-    @NonNull
-    private int imageID;
-
-    @NonNull
-    private LatLng location;
 }
