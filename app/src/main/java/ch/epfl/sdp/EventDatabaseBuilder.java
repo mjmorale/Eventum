@@ -2,7 +2,9 @@ package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,8 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         String title = (String) data.get("title");
         String description = (String) data.get("description");
         Timestamp timestamp = (Timestamp)data.get("date");
-        return new Event(title, description, timestamp.toDate());
+        GeoPoint location = (GeoPoint)data.get("location");
+        return new Event(title, description, timestamp.toDate(),R.mipmap.ic_launcher,new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     @Override
@@ -24,6 +27,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
             put("title", event.getTitle());
             put("description", event.getDescription());
             put("date", new Timestamp(event.getDate()));
+            put("location", new GeoPoint(event.getLocation().latitude, event.getLocation().longitude));
         }};
     }
 }
