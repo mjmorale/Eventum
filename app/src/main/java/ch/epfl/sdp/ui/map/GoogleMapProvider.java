@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashSet;
@@ -50,6 +52,8 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         mMap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
         mMap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
         mMap.addMarker(mMarkerOptionsToBeAdded.iterator().next());
+        // for now display the french part of Switzerland on launch, to be modified
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
     }
 
     @Override

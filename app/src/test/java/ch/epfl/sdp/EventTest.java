@@ -81,7 +81,7 @@ public class EventTest {
     @Test
     public void testSetLocation()
     {
-        Event e = new Event(title,location);
+        Event e = new Event(title,description,date);
         e.setLocation(location);
     }
 
