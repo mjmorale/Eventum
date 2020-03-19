@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView_event"
     tools:context=".ui.event.EventFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_marginHorizontal="5dp"
         android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
                 <EditText
                     android:id="@+id/title"
                     android:layout_height="wrap_content"
-                    android:hint="name"
+                    android:hint="Title"
                     android:inputType="text"
                     android:layout_weight="0.4"
                     android:textSize="20sp"
@@ -94,21 +95,27 @@
                 android:layout_height="wrap_content"
                 android:textSize="50sp"
                 android:background="@color/colorPrimary"
+                android:layout_marginBottom="80dp"
                 android:text="+"/>
-
-            <Button
-                android:id="@+id/createButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:layout_marginVertical="30dp"
-                android:background="@color/black"
-                android:textColor="@color/colorPrimary"
-                android:text="Create event"/>
-
-
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="1dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/createButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="16dp"
+            android:src="@drawable/check"
+            app:layout_anchorGravity="bottom|center" />
+    </LinearLayout>
 
 </RelativeLayout>
