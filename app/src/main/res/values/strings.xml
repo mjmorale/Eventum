@@ -3,5 +3,6 @@
 
     <string name="navigation_main_drawer_open">Open navigation drawer</string>
     <string name="navigation_main_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_create_event">CreateEventActivity</string>
 
 </resources>

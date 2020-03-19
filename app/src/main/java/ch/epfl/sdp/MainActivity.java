@@ -15,7 +15,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
 import ch.epfl.sdp.databinding.MainActivityBinding;
-import ch.epfl.sdp.ui.main.AuthFragment;
 import ch.epfl.sdp.ui.map.MapFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
@@ -57,7 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.main_actionbar_add:
-                // Start event creation activity
+                Intent intent = new Intent(this, CreateEventActivity.class);
+                startActivityForResult(intent, 123);
                 break;
         }
         return super.onOptionsItemSelected(item);
