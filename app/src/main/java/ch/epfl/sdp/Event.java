@@ -2,21 +2,24 @@ package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 
 public class Event {
 
-    public Event(String title, String description, Date date) {
-        this(title, description, date, R.mipmap.ic_launcher);
+    public Event(String title, String description, Date date, LatLng location) {
+        this(title, description, date, R.mipmap.ic_launcher, location);
     }
 
-    public Event(String title, String description, Date date, int imageID){
-        if (title == null || description == null || date == null)
+    public Event(String title, String description, Date date, int imageID, LatLng location){
+        if (title == null || description == null || date == null || location == null)
             throw new IllegalArgumentException();
         this.title = title;
         this.description = description;
         this.date = date;
         this.imageID = imageID;
+        this.location = location;
     }
 
     public String getTitle() {
@@ -49,6 +52,16 @@ public class Event {
         this.date = date;
     }
 
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        if (location == null)
+            throw new IllegalArgumentException();
+        this.location = location;
+    }
+
     @NonNull
     public int getImageID() {
         return imageID;
@@ -69,4 +82,7 @@ public class Event {
 
     @NonNull
     private int imageID;
+
+    @NonNull
+    private LatLng location;
 }
