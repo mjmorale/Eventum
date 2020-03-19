@@ -39,6 +39,9 @@ public class CreateEventFragmentTest {
     private static final String TITLE = mMockEvent.getTitle();
     private static final String DESCRIPTION = mMockEvent.getDescription();
     private static final String EMPTY = "";
+    private static final int DAY = 30;
+    private static final int MONTH = 6;
+    private static final int YEAR = 2017;
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
@@ -67,7 +70,7 @@ public class CreateEventFragmentTest {
                 closeSoftKeyboard());
 
         onView(withId(R.id.date)).perform(
-                PickerActions.setDate(2017, 6, 30),
+                PickerActions.setDate(YEAR, MONTH, DAY),
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton))

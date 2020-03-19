@@ -24,7 +24,6 @@ import ch.epfl.sdp.db.Database;
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private EventViewModel mViewModel;
     private CreateEventFragmentBinding mBinding;
-    private static SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
     private Database mDb;
 
     public CreateEventFragment(Database db) {
