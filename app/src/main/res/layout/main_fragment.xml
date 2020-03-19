@@ -32,6 +32,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event" />
+
+        <com.google.android.material.tabs.TabItem
+
+            android:id="@+id/map_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Map" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_create_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create" />
     </com.google.android.material.tabs.TabLayout>
 
     <FrameLayout
