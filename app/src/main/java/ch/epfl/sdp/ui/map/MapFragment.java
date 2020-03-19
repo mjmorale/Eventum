@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -18,7 +16,6 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.MapFragmentBinding;
 import ch.epfl.sdp.db.Database;
 
 public class MapFragment extends Fragment{
