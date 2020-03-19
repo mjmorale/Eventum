@@ -44,8 +44,6 @@
 
             </TableRow>
 
-
-
             <TextView
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
@@ -65,8 +63,6 @@
                 android:inputType="textMultiLine"
                 android:background="@android:color/transparent"
                 android:textAlignment="center"/>
-
-
 
             <DatePicker
                 android:id="@+id/date"
