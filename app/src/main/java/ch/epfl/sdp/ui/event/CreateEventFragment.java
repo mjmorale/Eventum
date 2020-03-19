@@ -70,7 +70,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             case R.id.createButton:
                 String title = mBinding.title.getText().toString();
                 String description = mBinding.description.getText().toString();
-                String date = mBinding.date.getText().toString();
+                String date = mBinding.date.getDayOfMonth()+"/"+mBinding.date.getMonth()+"/"+mBinding.date.getYear();
+
                 try {
                     checkInput(title, description, date);
                     LiveData<String> ref = mViewModel.createEvent(title, description, date);

@@ -7,10 +7,10 @@
     android:id="@+id/cardView_event"
     tools:context=".ui.event.EventFragment">
 
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <androidx.cardview.widget.CardView
 
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
-                    android:layout_height="314dp"
+                    android:layout_height="414dp"
                     android:src="@drawable/oss117"
                     android:scaleType="centerCrop">
                 </ImageView>
