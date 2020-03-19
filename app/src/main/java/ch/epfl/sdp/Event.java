@@ -8,6 +8,9 @@ import java.util.Date;
 
 public class Event {
 
+    public Event(String title, LatLng location){
+        this(title,new String(), new Date(),R.mipmap.ic_launcher,location);
+    }
     public Event(String title, String description, Date date) {
         this(title, description, date, R.mipmap.ic_launcher);
     }
