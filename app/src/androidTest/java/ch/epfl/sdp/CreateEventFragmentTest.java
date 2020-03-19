@@ -1,5 +1,6 @@
 package ch.epfl.sdp;
 
+import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -17,6 +18,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
@@ -37,6 +39,9 @@ public class CreateEventFragmentTest {
     private static final String TITLE = mMockEvent.getTitle();
     private static final String DESCRIPTION = mMockEvent.getDescription();
     private static final String EMPTY = "";
+    private static final int DAY = 30;
+    private static final int MONTH = 6;
+    private static final int YEAR = 2017;
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
@@ -65,12 +70,11 @@ public class CreateEventFragmentTest {
                 closeSoftKeyboard());
 
         onView(withId(R.id.date)).perform(
-                clearText(),
-                typeText(DATE),
+                PickerActions.setDate(YEAR, MONTH, DAY),
                 closeSoftKeyboard());
 
-        onView(withId(R.id.createButton)).perform(
-                click());
+        onView(withId(R.id.createButton))
+                .perform(click());
 
         // Check the created event page
         onView(withId(R.id.description))
@@ -90,11 +94,6 @@ public class CreateEventFragmentTest {
 
         // Try with incorrect values
         onView(withHint(is("Title"))).perform(
-                clearText(),
-                typeText(EMPTY),
-                closeSoftKeyboard());
-
-        onView(withHint(is("Date"))).perform(
                 clearText(),
                 typeText(EMPTY),
                 closeSoftKeyboard());
