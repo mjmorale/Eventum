@@ -1,60 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.event.CreateEventFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView_event"
+    tools:context=".ui.event.EventFragment">
 
-    <EditText
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="5dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="text"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/white">
 
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="Name: "
+                    android:layout_weight="0.6"
+                    android:textColor="@color/grey"
+                    android:textSize="25sp">
+                </TextView>
+
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:inputType="text"
+                    android:layout_weight="0.4"
+                    android:textSize="20sp"
+                    android:background="@android:color/transparent"
+                    android:textAlignment="center"/>
+
+            </TableRow>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Description: "
+                android:textColor="@color/grey"
+                android:layout_marginTop="20dp"
+                android:textSize="25sp"
+                android:layout_width="match_parent">
+            </TextView>
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_height="wrap_content"
+                android:hint="description"
+                android:layout_width="match_parent"
+                android:textSize="20sp"
+                android:inputType="textMultiLine"
+                android:background="@android:color/transparent"
+                android:textAlignment="center"/>
+
+            <DatePicker
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:endYear="2100"
+                android:startYear="2020"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
+                android:layout_marginTop="20dp">
+            </DatePicker>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="414dp"
+                android:src="@drawable/add_image"
+                android:layout_marginTop="20dp"
+                android:background="@color/grey"
+                android:scaleType="centerCrop">
+            </ImageView>
+
+            <Button
+                android:id="@+id/addImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="50sp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="80dp"
+                android:text="+"/>
+        </LinearLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Description"
-        android:inputType="textLongMessage"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="1dp">
 
-    <EditText
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:ems="10"
-        android:hint="Date"
-        android:inputType="date"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/createButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/createButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="16dp"
+            android:src="@drawable/check"
+            app:layout_anchorGravity="bottom|center" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/createButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
