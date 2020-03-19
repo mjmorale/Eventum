@@ -72,9 +72,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()
                         .replace(mBinding.mainContainer.getId(), new AuthFragment()).commit();
+                break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                break;
         }
         mBinding.mainDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
