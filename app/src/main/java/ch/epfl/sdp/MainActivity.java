@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
 import ch.epfl.sdp.databinding.MainActivityBinding;
 import ch.epfl.sdp.ui.main.AuthFragment;
+import ch.epfl.sdp.ui.map.MapFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new AuthFragment()).commit();
+                        .replace(mBinding.mainContainer.getId(), new MapFragment()).commit();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);

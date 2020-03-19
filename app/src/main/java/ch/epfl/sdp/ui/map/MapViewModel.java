@@ -12,7 +12,7 @@ public class MapViewModel extends ViewModel {
 
     public MutableLiveData<Set<Event>> getEvents() {
         if (mEvents == null) {
-            mEvents = new MutableLiveData<Set<Event>>();
+            mEvents = new MutableLiveData<>();
             loadEvents();
         }
         return mEvents;
