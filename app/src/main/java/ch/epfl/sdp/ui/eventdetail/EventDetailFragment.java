@@ -17,18 +17,21 @@ public class EventDetailFragment extends Fragment {
     private EventFragmentBinding mBinding;
     private Event mEvent;
     private SwipeFragment mSwipeFragment;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
 
     }
-    public EventDetailFragment(Event event, SwipeFragment swiperFragment){
+
+    public EventDetailFragment(Event event, SwipeFragment swipeFragment){
         super();
         this.mEvent = event;
-        this.mSwipeFragment = swiperFragment;
+        this.mSwipeFragment = swipeFragment;
 
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +46,6 @@ public class EventDetailFragment extends Fragment {
         mBinding.backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
                 getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit();
-
             }
                                                }
 
