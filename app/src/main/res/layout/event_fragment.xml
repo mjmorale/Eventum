@@ -96,6 +96,7 @@
             android:layout_gravity="bottom|center"
             android:layout_margin="16dp"
             android:src="@drawable/check"
+            android:id="@id/back_button"
             app:layout_anchorGravity="bottom|center" />
     </LinearLayout>
 

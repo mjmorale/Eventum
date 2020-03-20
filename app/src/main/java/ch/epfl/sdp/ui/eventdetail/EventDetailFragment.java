@@ -13,10 +13,10 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
-public class EventDetailFragment extends Fragment implements View.OnClickListener {
+public class EventDetailFragment extends Fragment {
     private EventFragmentBinding mBinding;
     private Event mEvent;
-    private SwipeFragment mSwiperFragment;
+    private SwipeFragment mSwipeFragment;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -26,7 +26,7 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
     public EventDetailFragment(Event event, SwipeFragment swiperFragment){
         super();
         this.mEvent = event;
-        this.mSwiperFragment = swiperFragment;
+        this.mSwipeFragment = swiperFragment;
 
     }
     @Nullable
@@ -38,12 +38,19 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
         mBinding.description.setText(mEvent.getDescription());
         mBinding.title.setText(mEvent.getTitle());
         mBinding.imageView.setImageResource(mEvent.getImageID());
+        mBinding.backButton.setClickable(true);
+        Fragment thisFragment = this;
+        mBinding.backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit();
+
+            }
+                                               }
+
+        );
         return mBinding.getRoot();
     }
 
 
-    @Override
-    public void onClick(View v) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mSwiperFragment).commit();
-    }
+
 }

@@ -2,4 +2,5 @@
 <resources>
     <item name="mainName" type="id"></item>
     <item name="mainGoButton" type="id"></item>
+    <item name="back_button" type="id" />
 </resources>
