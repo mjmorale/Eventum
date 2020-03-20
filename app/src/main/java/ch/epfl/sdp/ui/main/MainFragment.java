@@ -18,7 +18,7 @@ import java.util.Date;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.eventdetail.EventDetailFragment;
-import ch.epfl.sdp.ui.swiper.SwiperFragment;
+import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
 public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelectedListener {
 
@@ -28,7 +28,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
         return new MainFragment();
     }
 
-    private SwiperFragment mSwipeFragment;
+    private SwipeFragment mSwipeFragment;
     private AuthFragment mAuthFragment;
     private EventDetailFragment mEventFragment;
 
@@ -36,7 +36,7 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSwipeFragment = new SwiperFragment();
+        mSwipeFragment = new SwipeFragment();
         mAuthFragment = new AuthFragment();
         mEventFragment = new EventDetailFragment(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",

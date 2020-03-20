@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.swiper;
+package ch.epfl.sdp.ui.swipe;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +21,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.eventdetail.EventDetailFragment;
 
-public class SwiperFragment extends Fragment {
+public class SwipeFragment extends Fragment {
     private ArrayAdapter<Event> mArrayAdapter;
     private EventDetailFragment mInfoFragment;
     private List<Event> eventList;

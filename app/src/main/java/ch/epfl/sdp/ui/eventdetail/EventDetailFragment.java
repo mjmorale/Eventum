@@ -11,19 +11,19 @@ import androidx.fragment.app.Fragment;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
-import ch.epfl.sdp.ui.swiper.SwiperFragment;
+import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
-public class EventDetailFragment extends Fragment {
+public class EventDetailFragment extends Fragment implements View.OnClickListener {
     private EventFragmentBinding mBinding;
     private Event mEvent;
-    private SwiperFragment mSwiperFragment;
+    private SwipeFragment mSwiperFragment;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
 
     }
-    public EventDetailFragment(Event event, SwiperFragment swiperFragment){
+    public EventDetailFragment(Event event, SwipeFragment swiperFragment){
         super();
         this.mEvent = event;
         this.mSwiperFragment = swiperFragment;
@@ -42,4 +42,8 @@ public class EventDetailFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mSwiperFragment).commit();
+    }
 }
