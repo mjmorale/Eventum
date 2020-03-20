@@ -44,6 +44,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.1'
     // Google Material
     implementation 'com.google.android.material:material:1.0.0'
+    // Maps dependency
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
 
@@ -54,6 +58,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude module: 'support-annotations'
+        exclude module: 'support-v4'
+        exclude module: 'support-v13'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'appcompat-v7'
+    }
 }
 
 apply plugin: 'com.android.application'
