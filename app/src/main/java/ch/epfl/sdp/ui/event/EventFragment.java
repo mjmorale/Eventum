@@ -2,6 +2,7 @@ package ch.epfl.sdp.ui.event;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,12 +13,13 @@ import android.view.ViewGroup;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.db.Database;
 
-public class EventFragment extends Fragment {
+public class EventFragment extends Fragment implements View.OnClickListener{
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
     private String mRef;
     private Database mDb;
+    private Intent mSendIntent;
 
     public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
@@ -61,6 +63,9 @@ public class EventFragment extends Fragment {
             mBinding.title.setText(event.getTitle());
         });
 
+        mBinding.sharingButton.setOnClickListener(this);
+        mSendIntent = new Intent(android.content.Intent.ACTION_SEND);
+        mSendIntent.setType("text/plain");
         return view;
     }
 
@@ -68,6 +73,11 @@ public class EventFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
+    }
+    @Override
+    public void onClick(View v) {
+        mSendIntent.putExtra(Intent.EXTRA_TEXT, "Hello, please come to my event "+mBinding.title.getText()+": "+ mBinding.description.getText() +" On "+ mBinding.date.getText());
+        startActivity(Intent.createChooser(mSendIntent, "Share via"));
     }
 
     public EventViewModel getViewModel() {
