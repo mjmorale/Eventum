@@ -59,7 +59,7 @@ public class SwipeTest {
     @Test
     public void clickSwapsToDetailled(){
         onView(withId(R.id.frame)).perform(click());
-        onView(withId(R.id.eventDetail)).check(matches(isDisplayed()));
+        onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
     }
 }
 
