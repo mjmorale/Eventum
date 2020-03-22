@@ -1,5 +1,8 @@
 package ch.epfl.sdp;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,9 +22,18 @@ public class AuthViewModelFactory<CredType> implements ViewModelProvider.Factory
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(AuthViewModel.class)) {
-            return (T) new AuthViewModel(mAuthenticator);
+        if (AuthViewModel.class.isAssignableFrom(modelClass)) {
+            try {
+                Constructor<T> constructor = modelClass.getConstructor(Authenticator.class);
+                return constructor.newInstance(mAuthenticator);
+            }
+            catch(NoSuchMethodException e) {
+                throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that only takes an Authenticator");
+            }
+            catch(IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                throw new IllegalArgumentException("Cannot instantiate an instance of the class " + modelClass.getSimpleName());
+            }
         }
-        throw new IllegalArgumentException("ViewModel class is not a subclass of AuthViewModel");
+        throw new IllegalArgumentException("ViewModel class is not a superclass of AuthViewModel");
     }
 }

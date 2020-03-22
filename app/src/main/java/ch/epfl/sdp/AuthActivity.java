@@ -16,11 +16,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ch.epfl.sdp.databinding.AuthActivityBinding;
-import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
 public class AuthActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,7 +27,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     private final static String TAG = "AuthActivity";
     private final static int RC_GOOGLE_SIGN_IN = 9001;
 
-    private AuthViewModel<AuthCredential> mViewModel;
+    private LoginAuthViewModel<AuthCredential> mViewModel;
     private AuthActivityBinding mBinding;
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -50,8 +48,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        AuthViewModelFactory<AuthCredential> viewModelFactory = new AuthViewModelFactory<>(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
-        mViewModel = new ViewModelProvider(this, viewModelFactory).get(AuthViewModel.class);
+        FirebaseAuthViewModelFactory viewModelFactory = FirebaseAuthViewModelFactory.getInstance();
+        mViewModel = new ViewModelProvider(this, viewModelFactory).get(LoginAuthViewModel.class);
 
         mViewModel.getUser().observe(this, user -> {
             if(user == null) {
