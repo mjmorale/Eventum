@@ -1,12 +1,16 @@
 package ch.epfl.sdp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,47 +25,51 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.User;
+import ch.epfl.sdp.databinding.AuthActivityBinding;
 import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
-import ch.epfl.sdp.ui.main.AuthViewModel;
 
 public class AuthActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String TAG = "AuthFragment";
+
+    public final static String USER_EXTRA = "user_data";
+
+    private final static String TAG = "AuthActivity";
     private final static int RC_GOOGLE_SIGN_IN = 9001;
 
-    private AuthViewModel mViewModel;
-    private Intent activityIntent;
+    private AuthViewModel<AuthCredential> mViewModel;
+    private AuthActivityBinding mBinding;
+
     private GoogleSignInClient mGoogleSignInClient;
-    private Authenticator mAuthenticator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBinding = AuthActivityBinding.inflate(getLayoutInflater());
+        View view = mBinding.getRoot();
+        setContentView(view);
 
-        setContentView(R.layout.auth_activity);
-        SignInButton btnGoogleSignIn = (SignInButton) findViewById(R.id.btn_google_sign_in);
+        mBinding.btnGoogleSignIn.setOnClickListener(this);
+        mBinding.btnGoogleSignIn.setEnabled(false);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        mAuthenticator = new FirebaseAuthenticator(FirebaseAuth.getInstance());
 
-        mViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        AuthViewModelFactory viewModelFactory = new AuthViewModelFactory(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
+        mViewModel = new ViewModelProvider(this, viewModelFactory).get(AuthViewModel.class);
+
         mViewModel.getUser().observe(this, user -> {
-            if(user != null) {
-                btnGoogleSignIn.setEnabled(false);
-                activityIntent = new Intent(this, MainActivity.class);
-                startActivity(activityIntent);
+            if(user == null) {
+                mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
-                btnGoogleSignIn.setEnabled(true);
+                Intent mainActivityIntent = new Intent(this, MainActivity.class);
+                mainActivityIntent.putExtra(USER_EXTRA, user);
+                startActivity(mainActivityIntent);
             }
         });
-
-        btnGoogleSignIn.setOnClickListener(this);
-        mViewModel.setUser(mAuthenticator.getCurrentUser());
     }
 
     @Override
@@ -73,13 +81,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                mAuthenticator.login(credential, result -> {
-                    if(result.isSuccessful()) {
-                        mViewModel.setUser(result.getUser());
-                    } else {
-                        Log.w(TAG, "Firebase authentication failed", result.getException());
-                    }
-                });
+                mViewModel.login(credential);
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
             }
@@ -92,11 +94,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_google_sign_in:
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
-                break;
-
-            case R.id.btn_logout:
-                mAuthenticator.logout();
-                mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> mViewModel.setUser(null));
                 break;
         }
     }
