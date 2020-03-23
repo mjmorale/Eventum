@@ -60,9 +60,10 @@ public class User implements Parcelable {
         }
 
         User user = (User)obj;
-        boolean result = user.mUid.equals(this.mUid) && user.mName.equals(this.mName) && user.mEmail.equals(this.mEmail);
+        boolean result = user.mUid.equals(this.mUid) & user.mName.equals(this.mName) & user.mEmail.equals(this.mEmail);
         return result;
     }
+
 
     @Override
     public int describeContents() {
