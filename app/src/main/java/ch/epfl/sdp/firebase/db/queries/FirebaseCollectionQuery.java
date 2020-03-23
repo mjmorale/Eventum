@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
@@ -80,7 +80,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
         if(object == null || callback == null) {
             throw new IllegalArgumentException();
         }
-        Map<String, Object> data = DatabaseObjectBuilderFactory.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
+        Map<String, Object> data = DatabaseObjectBuilderRegistry.getBuilder((Class<T>) object.getClass()).serializeToMap(object);
         mCollection.add(data).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 callback.onQueryComplete(QueryResult.success(task.getResult().getId()));

@@ -19,11 +19,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import ch.epfl.sdp.Event;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.firebase.db.MockStringBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
+import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,10 +60,9 @@ public class FirebaseFilterQueryTest {
     private ArgumentCaptor<OnCompleteListener<QuerySnapshot>> mQuerySnapshotCompleteListenerCaptor;
 
     @Before
-    public void setup() throws IllegalAccessException, InstantiationException {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        DatabaseObjectBuilderFactory.clear();
-        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
+        DatabaseObjectBuilderRegistry.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -95,9 +91,9 @@ public class FirebaseFilterQueryTest {
     public void FirebaseFilterQuery_Get_CallsCallbackWithDeserializedListOfObjects() {
         when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mDocumentSnapshot1.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[0]));
-        when(mDocumentSnapshot2.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[1]));
-        when(mDocumentSnapshot3.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[2]));
+        when(mDocumentSnapshot1.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[0]));
+        when(mDocumentSnapshot2.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[1]));
+        when(mDocumentSnapshot3.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[2]));
         when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
         when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>(Arrays.asList(mDocumentSnapshot1, mDocumentSnapshot2, mDocumentSnapshot3)));
         when(mQuery.get()).thenReturn(mQuerySnapshotTask);
