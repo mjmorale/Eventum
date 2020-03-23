@@ -18,9 +18,6 @@ public class EventViewModel extends ViewModel {
     private Database mDb;
     private MutableLiveData<String> mRef = new MutableLiveData<>();
 
-    public EventViewModel() {
-    }
-
     public LiveData<Event> getEvent(String ref) {
         if (mEvent == null) {
             mEvent = mDb.query("events").document(ref).livedata(Event.class);
