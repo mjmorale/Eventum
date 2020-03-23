@@ -54,9 +54,7 @@ public class AuthActivityTest {
         //click button google window
         Thread.sleep(7000);
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject emailInput = mUiDevice.findObject(new UiSelector()
-                .instance(0)
-                .className(EditText.class));
+        UiObject emailInput = mUiDevice.findObject(new UiSelector().instance(0).className(EditText.class));
 
         emailInput.waitForExists(5000);
         emailInput.setText("eventum.app.test@gmail.com");
@@ -67,9 +65,7 @@ public class AuthActivityTest {
 
         // Set Password
         //mUiDevice.pressBack();
-        UiObject passwordInput = mUiDevice.findObject(new UiSelector()
-                .instance(0)
-                .className(EditText.class));
+        UiObject passwordInput = mUiDevice.findObject(new UiSelector().instance(0).className(EditText.class));
 
         passwordInput.waitForExists(5000);
         passwordInput.setText("passwordfake");// type your password here
@@ -79,31 +75,17 @@ public class AuthActivityTest {
         Next.waitForExists(5000);
         Next.click();
 
-        UiObject nextButton = mUiDevice.findObject(new UiSelector()
-                .textMatches("I agree"));
+        UiObject nextButton = mUiDevice.findObject(new UiSelector().textMatches("I agree"));
 
         nextButton.waitForExists(5000);
         nextButton.click();
 
-
-        UiObject layout = mUiDevice.findObject(new UiSelector()
-                .resourceId("suw_layout_content"));
+        UiObject layout = mUiDevice.findObject(new UiSelector().resourceId("suw_layout_content"));
         layout.waitForExists(5000);
 
-
-        UiObject buttonNext = mUiDevice.findObject(new UiSelector()
-                .className(Button.class));
+        UiObject buttonNext = mUiDevice.findObject(new UiSelector().className(Button.class));
         buttonNext.waitForExists(5000);
-        assertEquals(false, nextButton.exists());
         buttonNext.click();
-
-        /*
-        Next = mUiDevice.findObject(new UiSelector()
-                .textContains("agree"));
-        Next.waitForExists(5000);
-        Next.click();*/
-
-
         Thread.sleep(7000);
 
         intended(hasComponent(MainActivity.class.getName()));
