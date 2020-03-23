@@ -3,6 +3,8 @@ package ch.epfl.sdp;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.intent.Intents;
@@ -26,6 +28,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
@@ -44,22 +47,64 @@ public class AuthActivityTest {
     }
 
     @Test
-    public void authActivityTest() throws UiObjectNotFoundException {
+    public void authActivityTest() throws UiObjectNotFoundException, InterruptedException {
 
         onView(withId(R.id.btn_google_sign_in)).perform(click());
 
         //click button google window
+        Thread.sleep(7000);
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject mText = mUiDevice.findObject(new UiSelector().textContains("@gmail.com"));
+        UiObject emailInput = mUiDevice.findObject(new UiSelector()
+                .instance(0)
+                .className(EditText.class));
+
+        emailInput.waitForExists(5000);
+        emailInput.setText("eventum.app.test@gmail.com");
+
+        UiObject mText = mUiDevice.findObject(new UiSelector().textContains("Next"));
+        mText.waitForExists(5000);
         mText.click();
 
+        // Set Password
+        //mUiDevice.pressBack();
+        UiObject passwordInput = mUiDevice.findObject(new UiSelector()
+                .instance(0)
+                .className(EditText.class));
 
-        //time to respond
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        passwordInput.waitForExists(5000);
+        passwordInput.setText("passwordfake");// type your password here
+
+        // Confirm Button Click
+        UiObject Next = mUiDevice.findObject(new UiSelector().textContains("Next"));
+        Next.waitForExists(5000);
+        Next.click();
+
+        UiObject nextButton = mUiDevice.findObject(new UiSelector()
+                .textMatches("I agree"));
+
+        nextButton.waitForExists(5000);
+        nextButton.click();
+
+
+        UiObject layout = mUiDevice.findObject(new UiSelector()
+                .resourceId("suw_layout_content"));
+        layout.waitForExists(5000);
+
+
+        UiObject buttonNext = mUiDevice.findObject(new UiSelector()
+                .className(Button.class));
+        buttonNext.waitForExists(5000);
+        assertEquals(false, nextButton.exists());
+        buttonNext.click();
+
+        /*
+        Next = mUiDevice.findObject(new UiSelector()
+                .textContains("agree"));
+        Next.waitForExists(5000);
+        Next.click();*/
+
+
+        Thread.sleep(7000);
 
         intended(hasComponent(MainActivity.class.getName()));
     }
