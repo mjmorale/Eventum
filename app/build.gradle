@@ -66,9 +66,6 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'appcompat-v7'
     }
-
-    // test dependencies
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
 apply plugin: 'com.android.application'

@@ -1,101 +1,125 @@
 package ch.epfl.sdp;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.Button;
-import android.widget.EditText;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 
-import androidx.test.espresso.ViewInteraction;
+import com.google.firebase.auth.AuthCredential;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.runner.AndroidJUnit4;
+import ch.epfl.sdp.auth.AuthenticationResult;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.User;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.core.AllOf.allOf;
 
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiObjectNotFoundException;
-import androidx.test.uiautomator.UiSelector;
-
+@RunWith(AndroidJUnit4.class)
 public class AuthActivityTest {
-    private UiDevice mUiDevice;
+
+    private final static User DUMMY_USER = new User("uid", "name", "email");
+
+    static class MockAuthenticator implements Authenticator<AuthCredential> {
+
+        private User mUser;
+        private OnLoginCallback mLoginCallback;
+
+        MockAuthenticator(@Nullable User user, @Nullable OnLoginCallback loginCallback) {
+            mUser = user;
+            mLoginCallback = loginCallback;
+        }
+
+        @Override
+        public void login(@NonNull String email, @NonNull String password, @Nullable OnLoginCallback callback) { }
+
+        @Override
+        public void login(@NonNull AuthCredential credential, @Nullable OnLoginCallback callback) {
+            mLoginCallback.onLoginComplete(AuthenticationResult.success(mUser));
+        }
+
+        @Override
+        public void logout() { }
+
+        @Override
+        public User getCurrentUser() {
+            return mUser;
+        }
+    }
+
+    static class MockLoginViewModel extends LoginAuthViewModel<AuthCredential> {
+        public MockLoginViewModel(User user, Authenticator.OnLoginCallback callback) {
+            super(new MockAuthenticator(user, callback));
+        }
+    }
 
     @Rule
-    public ActivityTestRule<AuthActivity> mActivityTestRule = new ActivityTestRule<>(AuthActivity.class);
+    public final ActivityScenarioRule<AuthActivity> mScenarioRule = new ActivityScenarioRule<>(AuthActivity.class);
 
-    @Before
-    public void before() throws Exception {
+    @Test
+    public void AuthActivity_test_LaunchesMainActivityWithCorrectUserData() {
+        ActivityScenario<AuthActivity> scenario = mScenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.onActivity(activity -> {
+            activity.setViewModel(new MockLoginViewModel(DUMMY_USER, null));
+        });
         Intents.init();
+        scenario.moveToState(Lifecycle.State.RESUMED);
+
+        intended(allOf(hasComponent("ch.epfl.sdp.MainActivity"), hasExtra(AuthActivity.USER_EXTRA, DUMMY_USER)));
+
+        Intents.release();
     }
 
     @Test
-    public void authActivityTest() throws UiObjectNotFoundException, InterruptedException {
+    public void AuthActivity_test_GoogleSignInButtonIsEnabledIfNoConnectedUser() {
+        ActivityScenario<AuthActivity> scenario = mScenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.onActivity(activity -> {
+            activity.setViewModel(new MockLoginViewModel(null, null));
+        });
+        scenario.moveToState(Lifecycle.State.RESUMED);
+
+        onView(withId(R.id.btn_google_sign_in)).check(matches(isEnabled()));
+    }
+
+    @Test
+    public void AuthActivity_test_GoogleSignInButtonLaunchesCorrectIntent() {
+        ActivityScenario<AuthActivity> scenario = mScenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.onActivity(activity -> {
+            activity.setViewModel(new MockLoginViewModel(null, null));
+        });
+        Intents.init();
+        scenario.moveToState(Lifecycle.State.RESUMED);
+
+        Intent intent = new Intent();
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
+        intending(allOf(hasAction("com.google.android.gms.auth.GOOGLE_SIGN_IN"), hasPackage("ch.epfl.sdp"))).respondWith(result);
 
         onView(withId(R.id.btn_google_sign_in)).perform(click());
 
-        //click button google window
-        Thread.sleep(7000);
-        mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject mText = mUiDevice.findObject(new UiSelector().textContains("@gmail.com"));
-        mText.waitForExists(5000);
-        mText.click();
+        intended(allOf(hasAction("com.google.android.gms.auth.GOOGLE_SIGN_IN"), hasPackage("ch.epfl.sdp")));
 
-        /*
-        UiObject emailInput = mUiDevice.findObject(new UiSelector().instance(0).className(EditText.class));
-
-        emailInput.waitForExists(5000);
-        emailInput.setText("eventum.app.test@gmail.com");
-
-        UiObject mText = mUiDevice.findObject(new UiSelector().textContains("Next"));
-        mText.waitForExists(5000);
-        mText.click();
-
-        // Set Password
-        //mUiDevice.pressBack();
-        UiObject passwordInput = mUiDevice.findObject(new UiSelector().instance(0).className(EditText.class));
-
-        passwordInput.waitForExists(5000);
-        passwordInput.setText("passwordfake");// type your password here
-
-        // Confirm Button Click
-        UiObject Next = mUiDevice.findObject(new UiSelector().textContains("Next"));
-        Next.waitForExists(5000);
-        Next.click();
-
-        UiObject nextButton = mUiDevice.findObject(new UiSelector().textMatches("I agree"));
-
-        nextButton.waitForExists(5000);
-        nextButton.click();
-
-        UiObject layout = mUiDevice.findObject(new UiSelector().resourceId("suw_layout_content"));
-        layout.waitForExists(5000);
-
-        UiObject buttonNext = mUiDevice.findObject(new UiSelector().className(Button.class));
-        buttonNext.waitForExists(5000);
-        buttonNext.click();
-        Thread.sleep(7000);
-        */
-
-
-        intended(hasComponent(MainActivity.class.getName()));
+        Intents.release();
     }
-
 }

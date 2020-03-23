@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -50,17 +52,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseAuthViewModelFactory viewModelFactory = FirebaseAuthViewModelFactory.getInstance();
         mViewModel = new ViewModelProvider(this, viewModelFactory).get(LoginAuthViewModel.class);
-
-        mViewModel.getUser().observe(this, user -> {
-            if(user == null) {
-                mBinding.btnGoogleSignIn.setEnabled(true);
-            }
-            else {
-                Intent mainActivityIntent = new Intent(this, MainActivity.class);
-                mainActivityIntent.putExtra(USER_EXTRA, user);
-                startActivity(mainActivityIntent);
-            }
-        });
     }
 
     @Override
@@ -80,6 +71,22 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        mViewModel.getUser().observe(this, user -> {
+            if(user == null) {
+                mBinding.btnGoogleSignIn.setEnabled(true);
+            }
+            else {
+                Intent mainActivityIntent = new Intent(this, MainActivity.class);
+                mainActivityIntent.putExtra(USER_EXTRA, user);
+                startActivity(mainActivityIntent);
+            }
+        });
+    }
+
+    @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btn_google_sign_in:
@@ -87,5 +94,13 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
                 break;
         }
+    }
+
+    @VisibleForTesting
+    protected void setViewModel(@NonNull LoginAuthViewModel<AuthCredential> viewModel) {
+        if(viewModel == null) {
+            throw new IllegalArgumentException();
+        }
+        mViewModel = viewModel;
     }
 }

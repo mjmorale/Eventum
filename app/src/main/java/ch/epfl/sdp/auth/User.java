@@ -54,14 +54,14 @@ public class User implements Parcelable {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-
+        if(obj == this) {
+            return true;
+        }
         if(obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-
         User user = (User)obj;
-        boolean result = user.mUid.equals(this.mUid) & user.mName.equals(this.mName) & user.mEmail.equals(this.mEmail);
-        return result;
+        return user.mUid.equals(mUid) && user.mName.equals(mName) && user.mEmail.equals(mEmail);
     }
 
 
