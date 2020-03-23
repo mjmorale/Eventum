@@ -37,21 +37,23 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         this.mActivity = activity;
 
         if (!mHavePermission) {
+            mCurrentLocation = new Location("Europe");
+            mCurrentLocation.setLatitude(46.520564);
+            mCurrentLocation.setLongitude(6.567827);
+            mZoomLevel = 4;
+
             ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
         }
+
         mHavePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED;
         mapView.getMapAsync(this);
 
-        if (!mHavePermission) {
-            mCurrentLocation.setLatitude(46.520564);
-            mCurrentLocation.setLongitude(6.567827);
-            mZoomLevel = 3;
-        } else {
+        if (mHavePermission) {
             LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
             mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mZoomLevel = 12;
