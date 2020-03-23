@@ -5,17 +5,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 
 public class EventViewModel extends ViewModel {
     private LiveData<Event> mEvent;
@@ -24,13 +19,6 @@ public class EventViewModel extends ViewModel {
     private MutableLiveData<String> mRef = new MutableLiveData<>();
 
     public EventViewModel() {
-        if (DatabaseObjectBuilderFactory.getBuilder(Event.class) == null) {
-            try {
-                DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public LiveData<Event> getEvent(String ref) {

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.firebase.db;
+package ch.epfl.sdp.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +8,20 @@ import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 public class MockStringBuilder extends DatabaseObjectBuilder<String> {
 
+    public MockStringBuilder() {
+        super("mock");
+    }
+
     @Override
     public String buildFromMap(@NonNull Map<String, Object> data) {
+        checkRequiredFields(data);
         return (String) data.get("mock");
     }
 
     @Override
     public Map<String, Object> serializeToMap(@NonNull String object) {
-        return new HashMap<String, Object>() {{
-            put("mock", object);
-        }};
+        Map<String, Object> result = new HashMap<>();
+        result.put("mock", object);
+        return result;
     }
 }
