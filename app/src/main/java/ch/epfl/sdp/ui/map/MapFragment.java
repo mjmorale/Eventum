@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.map;
 
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,7 @@ import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
@@ -43,7 +42,7 @@ public class MapFragment extends Fragment{
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mEvents.observe(getViewLifecycleOwner(), event -> {
-            mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView);
+            mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
             mGoogleMapProvider.setMyLocationButtonEnabled(true);
             mGoogleMapProvider.setMyLocationEnabled(true);
             for(Event e: event){
