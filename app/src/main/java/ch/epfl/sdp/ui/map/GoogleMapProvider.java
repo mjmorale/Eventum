@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -51,7 +52,12 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         mMap = googlemap;
         mMap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
         mMap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
-        mMap.addMarker(mMarkerOptionsToBeAdded.iterator().next());
+        Iterator<MarkerOptions> mIterator =mMarkerOptionsToBeAdded.iterator();
+        while (mIterator.hasNext()){
+            MarkerOptions toBeAdded = mIterator.next();
+            mMap.addMarker(toBeAdded);
+            mIterator.remove();
+        }
         // for now display the french part of Switzerland on launch, to be modified
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
     }
