@@ -2,7 +2,7 @@ package ch.epfl.sdp.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 
@@ -31,7 +31,7 @@ public abstract class FirebaseQuery {
         }
         task.addOnCompleteListener(t -> {
             if(t.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
                 DocumentSnapshot doc = t.getResult();
                 T data = null;
                 if(doc.exists()) {
@@ -51,7 +51,7 @@ public abstract class FirebaseQuery {
         }
         task.addOnCompleteListener(t -> {
             if(t.isSuccessful()) {
-                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderFactory.getBuilder(type);
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
                 List<DocumentSnapshot> docs = t.getResult().getDocuments();
                 List<T> data = new ArrayList<>();
                 for(DocumentSnapshot doc: docs) {

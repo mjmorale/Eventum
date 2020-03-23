@@ -17,8 +17,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.auth.User;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -54,7 +52,6 @@ public class FirebaseAuthenticatorTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DatabaseObjectBuilderFactory.clear();
     }
 
     @Test(expected = IllegalArgumentException.class)
