@@ -54,6 +54,11 @@ public class AuthActivityTest {
         //click button google window
         Thread.sleep(7000);
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiObject mText = mUiDevice.findObject(new UiSelector().textContains("@gmail.com"));
+        mText.waitForExists(5000);
+        mText.click();
+
+        /*
         UiObject emailInput = mUiDevice.findObject(new UiSelector().instance(0).className(EditText.class));
 
         emailInput.waitForExists(5000);
@@ -87,6 +92,8 @@ public class AuthActivityTest {
         buttonNext.waitForExists(5000);
         buttonNext.click();
         Thread.sleep(7000);
+        */
+
 
         intended(hasComponent(MainActivity.class.getName()));
     }
