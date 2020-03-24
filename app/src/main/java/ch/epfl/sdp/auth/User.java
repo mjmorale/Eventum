@@ -57,8 +57,8 @@ public class User implements Parcelable {
         if(obj == null) return false;
         if(obj.getClass() != this.getClass()) return false;
         final User user = (User)obj;
-        return (user.mUid.equals(mUid) &&
-                user.mName.equals(mName) &&
+        return (user.mUid.equals(mUid) &
+                user.mName.equals(mName) &
                 user.mEmail.equals(mEmail));
     }
 

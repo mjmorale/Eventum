@@ -42,7 +42,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(view);
 
         mBinding.btnGoogleSignIn.setOnClickListener(this);
-        mBinding.btnGoogleSignIn.setEnabled(false);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -79,6 +78,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
+                mBinding.btnGoogleSignIn.setEnabled(false);
                 Intent mainActivityIntent = new Intent(this, MainActivity.class);
                 mainActivityIntent.putExtra(USER_EXTRA, user);
                 startActivity(mainActivityIntent);
