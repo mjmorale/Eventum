@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 
 public abstract class FirebaseLiveData<TType, TData> extends LiveData<TData> {
 
@@ -19,7 +19,7 @@ public abstract class FirebaseLiveData<TType, TData> extends LiveData<TData> {
             throw new IllegalArgumentException();
         }
 
-        mBuilder = DatabaseObjectBuilderFactory.getBuilder(type);
+        mBuilder = DatabaseObjectBuilderRegistry.getBuilder(type);
     }
 
     void setListener(@Nullable ListenerRegistration listener) {
