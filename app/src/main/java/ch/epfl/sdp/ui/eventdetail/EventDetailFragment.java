@@ -11,13 +11,14 @@ import androidx.fragment.app.Fragment;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
+import ch.epfl.sdp.ui.event.ShareEvent;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
 public class EventDetailFragment extends Fragment {
     private EventFragmentBinding mBinding;
     private Event mEvent;
     private SwipeFragment mSwipeFragment;
-
+    private ShareEvent mShareEvent;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -50,6 +51,8 @@ public class EventDetailFragment extends Fragment {
                                                }
 
         );
+
+        mShareEvent = new ShareEvent (this, mBinding);
         return mBinding.getRoot();
     }
 

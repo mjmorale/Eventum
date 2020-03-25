@@ -14,6 +14,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
+        <provider android:authorities="com.facebook.app.FacebookContentProvider219842675772324"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true" />
 
 
         <activity android:name=".MainActivity">
@@ -23,8 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.event.ShareEvent" />
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_key"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
+
 
 </manifest>

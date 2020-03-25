@@ -73,7 +73,6 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="314dp"
-                    android:onClick="onClick"
                     android:scaleType="centerCrop"
                     android:src="@drawable/zoom_sur_archizoom"></ImageView>
 
@@ -102,12 +101,12 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sharingButton"
-            android:src="?attr/actionModeShareDrawable"
-            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/com_facebook_favicon_blue"
             app:layout_anchorGravity="bottom|right" />
     </LinearLayout>
 
