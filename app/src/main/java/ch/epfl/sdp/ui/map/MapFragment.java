@@ -42,8 +42,7 @@ public class MapFragment extends Fragment{
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
-        mGoogleMapProvider.setMyLocationButtonEnabled(true);
+        mGoogleMapProvider = new GoogleMapProvider(this ,mMapView);
         mGoogleMapProvider.setMyLocationEnabled(true);
         
         mEvents.observe(getViewLifecycleOwner(), event -> {

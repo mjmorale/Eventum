@@ -30,8 +30,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private Activity mActivity;
     private Location mCurrentLocation;
     private float mZoomLevel;
-    private boolean mMapReady=false;
-    private GoogleMap mMap;
+    private GoogleMap mMap = null;
 
     GoogleMapProvider(Fragment fragment, MapView mapView){
         this.mMapView = mapView;
@@ -55,7 +54,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
                         == PackageManager.PERMISSION_GRANTED;
 
 
-        if (mHavePermission) {
+        if (mHavePermission){
             LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
             mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mZoomLevel = 12;
@@ -66,16 +65,9 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googlemap) {
         mMap = googlemap;
-        mMapReady=true;
-        googlemap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
         googlemap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
         for(MarkerOptions markerOptions: mMarkerOptions)googlemap.addMarker(markerOptions);
         googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mZoomLevel));
-    }
-
-    @Override
-    public void setMyLocationButtonEnabled(boolean enabled) {
-        mLocationButtonEnabled= enabled;
     }
 
     @Override
@@ -85,7 +77,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-        if(!mMapReady){
+        if(mMap==null){
             mMarkerOptions.add(markerOptions);
         }else{
             mMap.addMarker(markerOptions);
