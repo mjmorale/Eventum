@@ -35,6 +35,7 @@ public class MapFragment extends Fragment{
         mEvents = mDataBase.query("events").liveData(Event.class);
     }
 
+    
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
