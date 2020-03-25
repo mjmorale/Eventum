@@ -40,13 +40,16 @@ import java.io.File;
 import java.util.List;
 
 
-public class EventFragment extends Fragment{
+public class EventFragment extends Fragment  implements View.OnClickListener{
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
     private String mRef;
     private Database mDb;
-    private ShareEvent mShareEvent;
+
+    private ShareContent mShareContent;
+
+
 
     public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
@@ -92,9 +95,24 @@ public class EventFragment extends Fragment{
             mBinding.title.setText(event.getTitle());
         });
 
-        mShareEvent = new ShareEvent(this,mBinding);
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        mShareContent = new ShareMediaContent.Builder()
+                .setShareHashtag(
+                        new ShareHashtag.Builder().setHashtag(
+                                mBinding.title.getText().toString() + " :\n\n " +
+                                        mBinding.description.getText().toString()).build())
+                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
+                .build();
+
+        mBinding.sharingButton.setOnClickListener(this);
 
         return view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        ShareDialog.show(this,mShareContent);
     }
 
     @Override
