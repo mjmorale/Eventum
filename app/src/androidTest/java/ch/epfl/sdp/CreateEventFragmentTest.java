@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import java.text.SimpleDateFormat;
 
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.ui.event.CreateEventFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;

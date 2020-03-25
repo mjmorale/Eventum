@@ -1,4 +1,4 @@
-package ch.epfl.sdp;
+package ch.epfl.sdp.ui.swipe;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import ch.epfl.sdp.Event;
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.EventcardBinding;
 
 public class CardArrayAdapter extends ArrayAdapter<Event> {

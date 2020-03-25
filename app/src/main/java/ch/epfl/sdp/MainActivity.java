@@ -1,6 +1,7 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,15 +13,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.core.view.GravityCompat;
 import ch.epfl.sdp.databinding.MainActivityBinding;
+import ch.epfl.sdp.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.map.MapFragment;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private MainActivityBinding mBinding;
+
+    private static final int RC_CREATE_EVENT = 8000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +62,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId()) {
             case R.id.main_actionbar_add:
                 Intent intent = new Intent(this, CreateEventActivity.class);
-                startActivityForResult(intent, 123);
+                startActivityForResult(intent, RC_CREATE_EVENT);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBinding = null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == RC_CREATE_EVENT) {
+            if(resultCode == RESULT_OK) {
+                Event event = (Event) data.getExtras().get(CreateEventActivity.CREATE_EVENT_DATA);
+            }
+            else {
+                Toast.makeText(this, "Failed to create event", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -72,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new MapFragment()).commit();
+                        .replace(mBinding.mainContainer.getId(), new MapFragment(new FirestoreDatabase(FirebaseFirestore.getInstance()))).commit();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);

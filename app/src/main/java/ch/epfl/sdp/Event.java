@@ -1,12 +1,16 @@
 package ch.epfl.sdp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
-public class Event {
+public class Event implements Parcelable {
+
     private String mDescription;
     private Date mDate;
     private String mTitle;
@@ -31,18 +35,38 @@ public class Event {
         this.mLocation = location;
     }
 
+    protected Event(Parcel in) {
+        this(in.readString(), in.readString(), new Date(in.readLong()), in.readInt(), in.readParcelable(LatLng.class.getClassLoader()));
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
+    @NonNull
     public String getTitle() {
         return mTitle;
     }
 
+    @NonNull
     public String getDescription() {
         return mDescription;
     }
 
+    @NonNull
     public Date getDate() {
         return mDate;
     }
 
+    @NonNull
     public LatLng getLocation() {
         return mLocation;
     }
@@ -79,4 +103,17 @@ public class Event {
         this.mImageID = imageName;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mTitle);
+        dest.writeString(mDescription);
+        dest.writeLong(mDate.getTime());
+        dest.writeInt(mImageID);
+        dest.writeParcelable(mLocation, flags);
+    }
 }

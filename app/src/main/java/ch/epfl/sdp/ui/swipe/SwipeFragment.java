@@ -16,17 +16,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ch.epfl.sdp.CardArrayAdapter;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.eventdetail.EventDetailFragment;
 
 public class SwipeFragment extends Fragment {
+
     private ArrayAdapter<Event> mArrayAdapter;
     private EventDetailFragment mInfoFragment;
     private List<Event> mEventList;
     private Event mCurrentEvent;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState){
