@@ -21,7 +21,7 @@ public abstract class DatabaseObjectBuilder<T> {
     protected void checkRequiredFields(Map<String, Object> data) {
         for(String field: mRequiredFields) {
             if(!data.containsKey(field)) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Missing field in database map: " + field);
             }
         }
     }
