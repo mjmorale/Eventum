@@ -27,7 +27,6 @@ public class ShareEvent implements View.OnClickListener{
     private ShareLinkContent mShareLinkContent;
 
     public ShareEvent(Fragment fragment, @NonNull EventFragmentBinding binding) {
-        super();
         mBinding = binding;
         mFragment = fragment;
         mShareDialog = new ShareDialog(mFragment);
@@ -47,9 +46,7 @@ public class ShareEvent implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         if(view.getId() == mBinding.sharingButton.getId()){
-            if(mShareDialog.canShow(mShareContent)){
                 mShareDialog.show(mFragment,mShareContent);
-            }
         }
     }
 }
