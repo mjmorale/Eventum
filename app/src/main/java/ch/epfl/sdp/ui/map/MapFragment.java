@@ -46,7 +46,7 @@ public class MapFragment extends Fragment{
         mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
         mGoogleMapProvider.setMyLocationButtonEnabled(true);
         mGoogleMapProvider.setMyLocationEnabled(true);
-        
+
         mEvents.observe(getViewLifecycleOwner(), event -> {
             for(Event e: event){
                 addMarker(e.getTitle(),e.getLocation(), mGoogleMapProvider);
