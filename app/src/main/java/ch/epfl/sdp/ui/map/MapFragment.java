@@ -42,11 +42,12 @@ public class MapFragment extends Fragment{
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mEvents.observe(getViewLifecycleOwner(), event -> {
 
-            mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
-            mGoogleMapProvider.setMyLocationButtonEnabled(true);
-            mGoogleMapProvider.setMyLocationEnabled(true);
+        mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
+        mGoogleMapProvider.setMyLocationButtonEnabled(true);
+        mGoogleMapProvider.setMyLocationEnabled(true);
+        
+        mEvents.observe(getViewLifecycleOwner(), event -> {
             for(Event e: event){
                 addMarker(e.getTitle(),e.getLocation(), mGoogleMapProvider);
             }
