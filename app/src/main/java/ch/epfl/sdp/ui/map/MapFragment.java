@@ -7,23 +7,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
+import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.db.Database;
 
 public class MapFragment extends Fragment {
     private MapView mMapView;
     private GoogleMapProvider mGoogleMapProvider;
-    private MapViewModel mViewModel;
+    private Database mDataBase;
+    private LiveData<List<Event>> mEvents;
+
+    public MapFragment(Database db) {
+        mDataBase = db;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        mEvents = mDataBase.query("events").liveData(Event.class);
     }
 
     @Override
@@ -34,15 +42,14 @@ public class MapFragment extends Fragment {
 
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mGoogleMapProvider = new GoogleMapProvider(this.getContext(), mMapView);
-        mGoogleMapProvider.setMyLocationButtonEnabled(true);
-        mGoogleMapProvider.setMyLocationEnabled(true);
-
-        mViewModel.getEvents().observe(getViewLifecycleOwner(), event -> {
-
+        mEvents.observe(getViewLifecycleOwner(), event -> {
+            mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView);
+            mGoogleMapProvider.setMyLocationButtonEnabled(true);
+            mGoogleMapProvider.setMyLocationEnabled(true);
+            for(Event e: event){
+                addMarker(e.getTitle(),e.getLocation(), mGoogleMapProvider);
+            }
         });
-
-        addMarker("Vidy", new LatLng(46.518615, 6.591796), mGoogleMapProvider);
 
         return view;
     }

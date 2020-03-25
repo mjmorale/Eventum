@@ -1,81 +1,93 @@
 package ch.epfl.sdp.ui.swipe;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import ch.epfl.sdp.CardArrayAdapter;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.ui.eventdetail.EventDetailFragment;
 
 public class SwipeFragment extends Fragment {
-    private ArrayList<Event> eventList;
-    private ArrayAdapter<Event> arrayAdapter;
-    private int i;
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.swipe_fragment, container, false);
+    private ArrayAdapter<Event> mArrayAdapter;
+    private EventDetailFragment mInfoFragment;
+    private List<Event> mEventList;
+    private Event mCurrentEvent;
 
-        eventList = new ArrayList<Event>();
-        eventList.add(new Event("OSS-117 Movie watching",
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        mEventList = new ArrayList<>();
+        mEventList.add(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
                 new Date(2021, 1, 16), R.drawable.oss_117));
-        eventList.add(new Event("Duck themed party",
+        mEventList.add(new Event("Duck themed party",
                 "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
                 new Date(2020, 3, 7), R.drawable.duck));
-        eventList.add(new Event("Make Internet great again",
+        mEventList.add(new Event("Make Internet great again",
                 "At this meeting we will debate on how to make pepe the frog memes great again",
                 new Date(2020, 4, 20), R.drawable.frog));
-        eventList.add(new Event("Real Fake Party",
+        mEventList.add(new Event("Real Fake Party",
                 "This is really happening",
                 new Date(2020, 11, 10)));
 
-        arrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, eventList);
+        mArrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, mEventList);
+        mCurrentEvent = mEventList.get(0);
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.swipe_fragment, container, false);
 
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        SwipeFlingAdapterView flingContainer = getView().findViewById(R.id.frame);
-        flingContainer.setAdapter(arrayAdapter);
-        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-            @Override
-            public void removeFirstObjectInAdapter() {
-                eventList.remove(0);
-                arrayAdapter.notifyDataSetChanged();
-            }
+        SwipeFlingAdapterView flingAdapterView = getView().findViewById(R.id.frame);
+        flingAdapterView.setAdapter(mArrayAdapter);
+        flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+                                              @Override
+                                              public void removeFirstObjectInAdapter() {
+                                                  mEventList.remove(0);
+                                                  mArrayAdapter.notifyDataSetChanged();
+                                                  mCurrentEvent = mEventList.get(0);
+                                              }
 
-            @Override
-            public void onLeftCardExit(Object dataObject) {
-            }
+                                              @Override
+                                              public void onLeftCardExit(Object o) {}
 
-            @Override
-            public void onRightCardExit(Object dataObject) { }
+                                              @Override
+                                              public void onRightCardExit(Object o) {}
 
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) { }
+                                              @Override
+                                              public void onAdapterAboutToEmpty(int i) {}
 
-            @Override
-            public void onScroll(float scrollProgressPercent) {
-                SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) getView().findViewById(R.id.frame);
-                flingContainer.getSelectedView().findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                flingContainer.getSelectedView().findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-            }
-        });
-        flingContainer.setOnItemClickListener((itemPosition, dataObject) -> {
+                                              @Override
+                                              public void onScroll(float v) {}
+                                          }
+        );
+        flingAdapterView.setOnItemClickListener((itemPosition, dataObject) -> {
+            mInfoFragment = new EventDetailFragment(mCurrentEvent,this);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
     }
 }

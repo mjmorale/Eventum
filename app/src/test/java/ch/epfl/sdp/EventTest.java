@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -15,7 +17,7 @@ public class EventTest {
     String title = "Real Fake Event";
     String description = "This is really happening";
     Date date = new Date(2020,11,10);
-
+    LatLng location = new LatLng(100,100);
     @Test
     public void testDummyEvent()
     {
@@ -76,6 +78,14 @@ public class EventTest {
         e.setDescription("New description");
     }
 
+    @Test
+    public void testSetLocation()
+    {
+        Event e = new Event(title,description,date);
+        e.setLocation(location);
+    }
+
+
     // An attribute of an Event should not be null
     @Test(expected = IllegalArgumentException.class)
     public void testSetDateFailsOnNull()
@@ -89,5 +99,12 @@ public class EventTest {
     {
         Event e = new Event(title,description,date);
         e.setDate(new Date());
+    }
+
+    @Test
+    public void testSetImageId(){
+        Event e = new Event(title,description,date);
+        e.setImageID(R.drawable.oss_117);
+        assertEquals(e.getImageID(), R.drawable.oss_117);
     }
 }

@@ -18,9 +18,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.firebase.db.MockStringBuilder;
+import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -61,10 +61,9 @@ public class FirebaseDocumentQueryTest {
     private ArgumentCaptor<OnCompleteListener<Void>> mVoidCompleteListenerCaptor;
 
     @Before
-    public void setup() throws IllegalAccessException, InstantiationException {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        DatabaseObjectBuilderFactory.clear();
-        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
+        DatabaseObjectBuilderRegistry.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -111,7 +110,7 @@ public class FirebaseDocumentQueryTest {
         when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
         when(mDocumentSnapshot.exists()).thenReturn(true);
-        when(mDocumentSnapshot.getData()).thenReturn(DatabaseObjectBuilderFactory.getBuilder(String.class).serializeToMap(DUMMY_STRING));
+        when(mDocumentSnapshot.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRING));
         when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
         when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
 
