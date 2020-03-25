@@ -27,6 +27,7 @@ public class MapFragment extends Fragment{
         mDataBase = db;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
