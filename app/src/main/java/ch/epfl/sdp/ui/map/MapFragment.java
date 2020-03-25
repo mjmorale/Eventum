@@ -41,17 +41,16 @@ public class MapFragment extends Fragment{
 
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        List<Event> event = mEvents.getValue();
 
-//        mEvents.observe(getViewLifecycleOwner(), event -> {
+        mEvents.observe(getViewLifecycleOwner(), event -> {
+
             mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView, this.getActivity());
             mGoogleMapProvider.setMyLocationButtonEnabled(true);
             mGoogleMapProvider.setMyLocationEnabled(true);
-           if(event!=null){
             for(Event e: event){
                 addMarker(e.getTitle(),e.getLocation(), mGoogleMapProvider);
-            }}
-//        });
+            }
+        });
 
         return view;
     }

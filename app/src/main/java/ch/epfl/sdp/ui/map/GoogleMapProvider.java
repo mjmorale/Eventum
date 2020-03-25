@@ -14,15 +14,19 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private  boolean mLocationButtonEnabled=false;
     private  boolean mLocationEnabled=false;
-    private  GoogleMap mMap;
-    private  Set<MarkerOptions> mMarkerOptionsToBeAdded= new HashSet<>();
+    private List<MarkerOptions> mMarkerOptions;
+
     private  final static int PERMISSION_LOCATION=0;
     private Context mContext;
     private boolean mHavePermission=false;
@@ -30,12 +34,13 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private Activity mActivity;
     private Location mCurrentLocation;
     private float mZoomLevel;
+    private boolean mapReady;
 
     GoogleMapProvider(Context context, MapView mapView, Activity activity){
         this.mMapView = mapView;
         this.mContext = context;
         this.mActivity = activity;
-
+        mMarkerOptions = new ArrayList<>();
         if (!mHavePermission) {
             mCurrentLocation = new Location("Europe");
             mCurrentLocation.setLatitude(46.520564);
@@ -62,17 +67,10 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googlemap) {
-        mMap = googlemap;
-        mMap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
-        mMap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
-
-        Iterator<MarkerOptions> mIterator =mMarkerOptionsToBeAdded.iterator();
-        while (mIterator!=null && mIterator.hasNext()){
-            MarkerOptions toBeAdded = mIterator.next();
-            mMap.addMarker(toBeAdded);
-            mIterator.remove();
-        }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mZoomLevel));
+        googlemap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
+        googlemap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
+        for(MarkerOptions markerOptions: mMarkerOptions)googlemap.addMarker(markerOptions);
+        googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mZoomLevel));
     }
 
     @Override
@@ -87,6 +85,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-        mMarkerOptionsToBeAdded.add(markerOptions);
+
+        mMarkerOptions.add(markerOptions);
     }
 }
