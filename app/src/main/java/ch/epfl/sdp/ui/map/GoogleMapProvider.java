@@ -34,8 +34,8 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private Activity mActivity;
     private Location mCurrentLocation;
     private float mZoomLevel;
-    private boolean mapReady;
-
+    private boolean mapReady=false;
+    private GoogleMap mMap;
     GoogleMapProvider(Context context, MapView mapView, Activity activity){
         this.mMapView = mapView;
         this.mContext = context;
@@ -67,6 +67,8 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googlemap) {
+        mMap = googlemap;
+        mapReady=true;
         googlemap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
         googlemap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
         for(MarkerOptions markerOptions: mMarkerOptions)googlemap.addMarker(markerOptions);
@@ -85,7 +87,10 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-
-        mMarkerOptions.add(markerOptions);
+        if(!mapReady){
+            mMarkerOptions.add(markerOptions);
+        }else{
+            mMap.addMarker(markerOptions);
+        }
     }
 }
