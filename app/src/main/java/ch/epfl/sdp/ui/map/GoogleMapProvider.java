@@ -8,6 +8,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -28,12 +30,13 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private Activity mActivity;
     private Location mCurrentLocation;
     private float mZoomLevel;
-    private boolean mapReady=false;
+    private boolean mMapReady=false;
     private GoogleMap mMap;
-    GoogleMapProvider(Context context, MapView mapView, Activity activity){
+
+    GoogleMapProvider(Fragment fragment, MapView mapView){
         this.mMapView = mapView;
-        this.mContext = context;
-        this.mActivity = activity;
+        this.mContext = fragment.getContext();
+        this.mActivity = fragment.getActivity();
         mMarkerOptions = new ArrayList<>();
 
         // default current location
@@ -42,27 +45,28 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         mCurrentLocation.setLongitude(6.567827);
         mZoomLevel = 4;
 
-        ActivityCompat.requestPermissions((Activity)context,
+        ActivityCompat.requestPermissions((Activity)mContext,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
 
-        mHavePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        mHavePermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED;
-        mapView.getMapAsync(this);
+
 
         if (mHavePermission) {
             LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
             mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mZoomLevel = 12;
         }
+        mapView.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googlemap) {
         mMap = googlemap;
-        mapReady=true;
+        mMapReady=true;
         googlemap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled&&mHavePermission);
         googlemap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
         for(MarkerOptions markerOptions: mMarkerOptions)googlemap.addMarker(markerOptions);
@@ -81,9 +85,8 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-        if(!mapReady){
+        if(!mMapReady){
             mMarkerOptions.add(markerOptions);
-            
         }else{
             mMap.addMarker(markerOptions);
         }
