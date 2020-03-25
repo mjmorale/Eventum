@@ -14,19 +14,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private  boolean mLocationButtonEnabled=false;
     private  boolean mLocationEnabled=false;
     private List<MarkerOptions> mMarkerOptions;
-
     private  final static int PERMISSION_LOCATION=0;
     private Context mContext;
     private boolean mHavePermission=false;
@@ -41,16 +35,16 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         this.mContext = context;
         this.mActivity = activity;
         mMarkerOptions = new ArrayList<>();
-        if (!mHavePermission) {
-            mCurrentLocation = new Location("Europe");
-            mCurrentLocation.setLatitude(46.520564);
-            mCurrentLocation.setLongitude(6.567827);
-            mZoomLevel = 4;
 
-            ActivityCompat.requestPermissions((Activity)context,
+        // default current location
+        mCurrentLocation = new Location("Europe");
+        mCurrentLocation.setLatitude(46.520564);
+        mCurrentLocation.setLongitude(6.567827);
+        mZoomLevel = 4;
+
+        ActivityCompat.requestPermissions((Activity)context,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
-        }
 
         mHavePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED &&
