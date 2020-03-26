@@ -15,7 +15,9 @@ import java.text.SimpleDateFormat;
 
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.event.CreateEventFragment;
+import ch.epfl.sdp.ui.event.GeoSearchResult;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -29,6 +31,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static java.lang.Thread.sleep;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
 
@@ -65,10 +69,8 @@ public class CreateEventFragmentTest {
 
         // Now try with correct values
         doCorrectInput();
-        // Sleep to let the Geocoder found some locations
-        sleep(10000);
 
-        onView(withId(R.id.geo_search_result_text))
+        onData(instanceOf(GeoSearchResult.class))
                 .inRoot(isPlatformPopup())
                 .check(matches(isDisplayed()))
                 .perform(click());
