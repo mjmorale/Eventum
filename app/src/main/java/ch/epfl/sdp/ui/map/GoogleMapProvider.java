@@ -33,7 +33,6 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         this.mContext = fragment.getContext();
         this.mActivity = fragment.getActivity();
         mMarkerOptions = new ArrayList<>();
-
         
         // default current location
         mCurrentLatLng = new LatLng(46.520564, 6.567827);
