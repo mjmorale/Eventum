@@ -96,11 +96,5 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @VisibleForTesting
-    protected void setViewModel(@NonNull LoginAuthViewModel<AuthCredential> viewModel) {
-        if(viewModel == null) {
-            throw new IllegalArgumentException();
-        }
-        mViewModel = viewModel;
-    }
+
 }
