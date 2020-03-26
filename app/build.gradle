@@ -58,6 +58,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'android.arch.core:core-testing:1.1.1'
     androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2') {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude module: 'support-annotations'

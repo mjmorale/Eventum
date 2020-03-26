@@ -5,13 +5,20 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.AuthCredential;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
+
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import ch.epfl.sdp.auth.AuthenticationResult;
@@ -21,11 +28,14 @@ import ch.epfl.sdp.auth.User;
 @RunWith(MockitoJUnitRunner.class)
 public class LoginAuthViewModelTest {
 
+    @Rule
+    public TestRule rule = new InstantTaskExecutorRule();
+
     @Mock
     private Authenticator<String> mAuthenticator;
 
-    @Mock
-    private User mUser;
+    //@Mock
+    //private String mString;
 
     @Before
     public void setup() {
@@ -37,39 +47,21 @@ public class LoginAuthViewModelTest {
         LoginAuthViewModel<String> mLoginAuthViewModel = new LoginAuthViewModel<String>(null);
     }
 
-
-    /*
-    static class MockAuthenticator implements Authenticator<String> {
-
-
-        @Override
-        public void login(@NonNull String email, @NonNull String password, @Nullable OnLoginCallback callback) {
-
-        }
-
-        @Override
-        public void login(@NonNull String credential, @Nullable OnLoginCallback callback) {
-
-        }
-
-        @Override
-        public void logout() {
-
-        }
-
-        @Override
-        public User getCurrentUser() {
-            return null;
-        }
+    @Test
+    public void LoginAuthViewModel_ConstructorSucceed() {
+        LoginAuthViewModel<String> mLoginAuthViewModel = new LoginAuthViewModel<String>(mAuthenticator);
     }
 
     @Test
-    public void LoginAuthViewModel_ConstructorSucceed() {
-        User user1 = new User("t", "b", "c");
-        //when(super(mAuthenticator)).thenReturn(user1);
-        //Mockito.doNothing().when(mParcel).writeString(DUMMY_UID);
-        mMockAuthenticator = new MockAuthenticator();
-        Authenticator<String> mAuthenticator2 = null;
-        LoginAuthViewModel<String> mLoginAuthViewModel = new LoginAuthViewModel<String>(MockAuthenticator);
-    }*/
+    public void LoginAuthViewModel_LoginSucceed() {
+        LoginAuthViewModel<String> mLoginAuthViewModel = new LoginAuthViewModel<String>(mAuthenticator);
+        String mString = "test";
+        mLoginAuthViewModel.login(mString);
+    }
+
+    @Test
+    public void LoginAuthViewModel_getUser() {
+        LoginAuthViewModel<String> mLoginAuthViewModel = new LoginAuthViewModel<String>(mAuthenticator);
+        LiveData<User> result = mLoginAuthViewModel.getUser();
+    }
 }
