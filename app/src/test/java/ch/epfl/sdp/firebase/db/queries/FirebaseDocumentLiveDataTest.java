@@ -71,7 +71,6 @@ public class FirebaseDocumentLiveDataTest {
     @Test
     public void FirebaseDocumentLiveData_OnInactive_RemovesListenerRegistrationIfSet() {
         when(mDocumentReference.addSnapshotListener(any())).thenReturn(mListenerRegistration);
-        when(mDocumentSnapshot.getData()).thenReturn(null);
 
         FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
         stringLiveData.onActive();
