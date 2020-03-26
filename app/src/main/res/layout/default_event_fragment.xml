@@ -7,7 +7,25 @@
     android:id="@+id/cardView_event"
     tools:context=".ui.event.DefaultEventFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/default_event_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="An unexpected error occurred."
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/default_event_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -16,8 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            app:cardCornerRadius="15dp"
-            android:elevation="2dp">
+            android:elevation="2dp"
+            app:cardCornerRadius="15dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,57 +46,53 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="414dp"
-                    android:src="@drawable/oss117"
-                    android:scaleType="centerCrop">
-                </ImageView>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/oss117"></ImageView>
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
+                    android:background="@color/black"
                     android:text="Prévention des épidémies avec l'unité 731"
-                    android:textSize="30sp"
+                    android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:background="@color/black"
-                    tools:text="title">
-                </TextView>
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="textEnd"
-                    android:paddingRight="40dp"
-                    android:textSize="20sp"
-                    android:text="11 Septembre 2001"
-                    android:textColor="@color/white"
-                    android:background="@color/black"
-                    android:paddingBottom="5dp"
-                    tools:text="date">
-                </TextView>
+                    android:textSize="30sp"
+                    tools:text="title"></TextView>
 
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:text="Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !"
-                    android:textAlignment="textStart"
+                    android:background="@color/white"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="30dp"
+                    android:text="Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !"
+                    android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:background="@color/white"
-                    tools:text="description">
-                </TextView>
+                    android:textSize="20sp"
+                    tools:text="description"></TextView>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:paddingRight="40dp"
+                    android:paddingBottom="5dp"
+                    android:text="11 Septembre 2001"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    tools:text="date"></TextView>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="314dp"
-                    android:src="@drawable/zoom_sur_archizoom"
-                    android:scaleType="centerCrop">
-                </ImageView>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/zoom_sur_archizoom"></ImageView>
 
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
     </androidx.core.widget.NestedScrollView>
 

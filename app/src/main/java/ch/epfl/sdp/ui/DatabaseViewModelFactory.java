@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui;
 
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -32,7 +31,7 @@ public class DatabaseViewModelFactory implements ViewModelProvider.Factory {
                 throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that only takes a Database");
             }
             catch(IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new IllegalArgumentException("Cannot instantiate an the class " + modelClass.getSimpleName());
+                throw new IllegalArgumentException("Cannot instantiate the class " + modelClass.getSimpleName());
             }
         }
         throw new IllegalArgumentException(modelClass.getSimpleName() + " is not a subclass of DatabaseViewModel");

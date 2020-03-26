@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.databinding.EventFragmentBinding;
+import ch.epfl.sdp.databinding.DefaultEventFragmentBinding;
 
 public class EventDetailFragment extends Fragment {
-    private EventFragmentBinding mBinding;
+    private DefaultEventFragmentBinding mBinding;
     private Event mEvent;
     private SwipeFragment mSwipeFragment;
 
@@ -35,7 +35,8 @@ public class EventDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, null, savedInstanceState);
-        mBinding = EventFragmentBinding.inflate(inflater, null,false);
+        mBinding = DefaultEventFragmentBinding.inflate(inflater, null,false);
+        mBinding.defaultEventErrorLayout.setVisibility(View.INVISIBLE);
         mBinding.date.setText(mEvent.getDate().toString());
         mBinding.description.setText(mEvent.getDescription());
         mBinding.title.setText(mEvent.getTitle());

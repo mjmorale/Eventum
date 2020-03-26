@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ch.epfl.sdp.databinding.EventFragmentBinding;
+import ch.epfl.sdp.databinding.DefaultEventFragmentBinding;
 import ch.epfl.sdp.ui.EventViewModelFactory;
 import ch.epfl.sdp.ui.FirestoreEventViewModelFactory;
 
 public class DefaultEventFragment extends Fragment {
 
-    private DefaultEventViewModel mViewModel;
-    private EventFragmentBinding mBinding;
+    protected DefaultEventViewModel mViewModel;
+    private DefaultEventFragmentBinding mBinding;
 
     public static DefaultEventFragment newInstance(String eventRef) {
         Bundle bundle = new Bundle();
@@ -32,7 +32,7 @@ public class DefaultEventFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = EventFragmentBinding.inflate(inflater, container, false);
+        mBinding = DefaultEventFragmentBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 
@@ -41,19 +41,23 @@ public class DefaultEventFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle args = getArguments();
-        if(args == null) {
-            throw new IllegalArgumentException("Fragment was created without providing the necessary arguments");
+        if(args != null) {
+            String eventRef = args.getString(EventActivity.EVENT_REF_EXTRA);
+            if(eventRef != null) {
+                EventViewModelFactory factory = FirestoreEventViewModelFactory.getInstance(eventRef);
+                mViewModel = new ViewModelProvider(this, factory).get(DefaultEventViewModel.class);
+
+                mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+                    mBinding.date.setText(event.getDate().toString());
+                    mBinding.description.setText(event.getDescription());
+                    mBinding.title.setText(event.getTitle());
+                });
+
+                mBinding.defaultEventErrorLayout.setVisibility(View.INVISIBLE);
+                return;
+            }
         }
-        String eventRef = args.getString(EventActivity.EVENT_REF_EXTRA);
-
-        EventViewModelFactory factory = FirestoreEventViewModelFactory.getInstance(eventRef);
-        mViewModel = new ViewModelProvider(this, factory).get(DefaultEventViewModel.class);
-
-        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDate().toString());
-            mBinding.description.setText(event.getDescription());
-            mBinding.title.setText(event.getTitle());
-        });
+        mBinding.defaultEventLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override

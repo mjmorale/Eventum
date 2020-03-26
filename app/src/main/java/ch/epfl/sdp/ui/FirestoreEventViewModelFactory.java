@@ -15,6 +15,9 @@ public class FirestoreEventViewModelFactory extends EventViewModelFactory {
     }
 
     public static FirestoreEventViewModelFactory getInstance(@NonNull String eventRef) {
+        if(eventRef == null) {
+            throw new IllegalArgumentException();
+        }
         if(sFirestoreDatabase == null) {
             sFirestoreDatabase = new FirestoreDatabase(FirebaseFirestore.getInstance());
         }

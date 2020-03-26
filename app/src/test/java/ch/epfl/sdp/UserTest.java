@@ -1,8 +1,6 @@
-package ch.epfl.sdp.auth;
+package ch.epfl.sdp;
 
 import org.junit.Test;
-
-import ch.epfl.sdp.User;
 
 import static org.junit.Assert.*;
 

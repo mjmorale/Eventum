@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.EventActivityBinding;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,7 +36,14 @@ public class EventActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         EventActivityMode mode = (EventActivityMode) intent.getSerializableExtra(EVENT_MODE_EXTRA);
+        if(mode == null) {
+            mode = EventActivityMode.ATTENDEE;
+        }
         String eventRef = intent.getStringExtra(EVENT_REF_EXTRA);
+        if(eventRef == null) {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
 
         switch(mode) {
             case ORGANIZER:

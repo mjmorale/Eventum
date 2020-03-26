@@ -9,7 +9,7 @@ import ch.epfl.sdp.db.Database;
 
 public class EventViewModelFactory extends DatabaseViewModelFactory {
 
-    private String mEventRef;
+    protected final String mEventRef;
 
     public EventViewModelFactory(@NonNull Database database, @NonNull String eventRef) {
         super(database);
@@ -25,7 +25,7 @@ public class EventViewModelFactory extends DatabaseViewModelFactory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (EventViewModel.class.isAssignableFrom(modelClass)) {
             try {
-                Constructor<T> constructor = modelClass.getConstructor(Database.class);
+                Constructor<T> constructor = modelClass.getConstructor(Database.class, String.class);
                 return constructor.newInstance(mDatabase, mEventRef);
             }
             catch(NoSuchMethodException e) {
