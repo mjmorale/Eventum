@@ -5,7 +5,11 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
+
+import com.google.firebase.firestore.GeoPoint;
+
+import org.imperiumlabs.geofirestore.GeoFirestore.CompletionCallback;
+
 
 public interface CollectionQuery extends Query {
 
@@ -17,9 +21,14 @@ public interface CollectionQuery extends Query {
 
     FilterQuery limitCount(int count);
 
+    GeoFirestoreQuery queryAtLocation(GeoPoint geoPoint, double radius);
+
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
 
     <T> LiveData<List<T>> liveData(@NonNull Class<T> type);
 
     <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback);
+
+    <T> void createWithLocation(@NonNull T object, @NonNull CompletionCallback callback, @NonNull GeoPoint geoPoint);
+
 }

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.imperiumlabs.geofirestore.GeoFirestore;
+
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.firebase.db.queries.FirebaseCollectionQuery;
 import ch.epfl.sdp.db.queries.CollectionQuery;
@@ -24,6 +26,7 @@ public class FirestoreDatabase implements Database {
         if(collection == null) {
             throw new IllegalArgumentException();
         }
+
         return new FirebaseCollectionQuery(mDb, mDb.collection(collection));
     }
 }
