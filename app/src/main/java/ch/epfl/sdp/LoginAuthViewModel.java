@@ -21,12 +21,8 @@ public class LoginAuthViewModel<CredType> extends AuthViewModel<CredType> {
 
     public void login(CredType credential) {
         mAuthenticator.login(credential, result -> {
-            if(result.isSuccessful()) {
-                mUser.postValue(result.getUser());
-            }
-            else {
-                Log.e(TAG, "Cannot log in", result.getException());
-            }
+            if(result.isSuccessful()) { mUser.postValue(result.getUser());}
+            else { Log.e(TAG, "Cannot log in", result.getException());}
         });
     }
 
