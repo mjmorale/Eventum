@@ -1,6 +1,13 @@
 package ch.epfl.sdp.ui.event;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,13 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
@@ -25,6 +26,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private EventViewModel mViewModel;
     private CreateEventFragmentBinding mBinding;
     private Database mDb;
+    private static final int THRESHOLD = 2;
+    private DelayAutoCompleteTextView mGeoAutocomplete;
+    private ImageView mGeoAutocompleteClear;
 
     public CreateEventFragment(Database db) {
         mDb = db;
@@ -35,6 +39,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
         mViewModel.setDb(mDb);
+
     }
 
     @Override
@@ -42,6 +47,41 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                              @Nullable Bundle savedInstanceState) {
         mBinding = CreateEventFragmentBinding.inflate(inflater, container, false);
         mBinding.createButton.setOnClickListener(this);
+
+        mGeoAutocompleteClear = mBinding.geoAutocompleteClear;
+        mGeoAutocomplete = mBinding.geoAutocomplete;
+
+        mGeoAutocomplete.setThreshold(THRESHOLD);
+        mGeoAutocomplete.setAdapter(new GeoAutoCompleteAdapter(getContext()));
+
+        mGeoAutocomplete.setOnItemClickListener((adapterView, view, position, id) -> {
+            GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
+            mGeoAutocomplete.setText(result.getAddress());
+        });
+
+        mGeoAutocomplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() > 0) {
+                    mGeoAutocompleteClear.setVisibility(View.VISIBLE);
+                } else {
+                    mGeoAutocompleteClear.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mGeoAutocompleteClear.setOnClickListener(v -> {
+            mGeoAutocomplete.setText("");
+        });
+
         View view = mBinding.getRoot();
         return view;
     }
