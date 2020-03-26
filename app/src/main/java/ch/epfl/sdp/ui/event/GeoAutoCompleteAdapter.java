@@ -53,7 +53,7 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public Filter getFilter() {
-        return new Filter() {
+        Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
@@ -77,6 +77,7 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
                 }
             }
         };
+        return filter;
     }
 
     private List<GeoSearchResult> findLocations(Context context, String queryText) {

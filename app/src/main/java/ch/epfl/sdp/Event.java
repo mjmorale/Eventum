@@ -6,27 +6,19 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Event {
     private String mDescription;
     private Date mDate;
     private String mTitle;
-    private int mImageID = R.mipmap.ic_launcher;
+    private int mImageID;
     private String mAddress;
     private LatLng mLocation;
+    private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Event(@NonNull String title,
-                 @NonNull String description,
-                 @NonNull Date date,
-                 @NonNull String address,
-                 @NonNull LatLng location) {
-        mTitle = title;
-        mDescription = description;
-        mDate = date;
-        mAddress = address;
-        mLocation = location;
-    }
     public Event(@NonNull String title,
                  @NonNull String description,
                  @NonNull Date date,
@@ -51,6 +43,10 @@ public class Event {
 
     public Date getDate() {
         return mDate;
+    }
+
+    public String getDateStr() {
+        return mFormatter.format(mDate);
     }
 
     public LatLng getLocation() {
@@ -79,6 +75,14 @@ public class Event {
         this.mDate = date;
     }
 
+    public void setDate(String date) {
+        try {
+            this.mDate = mFormatter.parse(date);
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public void setLocation(LatLng location) {
         if (location == null)
             throw new IllegalArgumentException();
@@ -92,4 +96,6 @@ public class Event {
     public String getAddress() { return mAddress; }
 
     public void setAddress(String mAddress) { this.mAddress = mAddress; }
+
+    private SimpleDateFormat getFormatter() { return mFormatter; }
 }

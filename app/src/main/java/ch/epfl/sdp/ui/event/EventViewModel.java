@@ -16,7 +16,6 @@ import ch.epfl.sdp.db.Database;
 
 public class EventViewModel extends ViewModel {
     private LiveData<Event> mEvent;
-    private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
     private Database mDb;
     private MutableLiveData<String> mRef = new MutableLiveData<>();
 
@@ -27,15 +26,7 @@ public class EventViewModel extends ViewModel {
         return mEvent;
     }
 
-    public String formatDate(Date date) {
-        return mFormatter.format(date);
-    }
-
-    public LiveData<String> createEvent(@NonNull String title,
-                                        @NonNull String description,
-                                        @NonNull String date, @NonNull String address,
-                                        @NonNull LatLng location) throws ParseException {
-        Event newEvent = new Event(title, description, mFormatter.parse(date), address, location);
+    public LiveData<String> createEvent(@NonNull Event newEvent) {
         mDb.query("events").create(newEvent, result -> {
             mRef.postValue(result.getData());
         });

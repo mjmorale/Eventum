@@ -19,11 +19,16 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         Timestamp timestamp = (Timestamp)data.get("date");
         GeoPoint location = (GeoPoint)data.get("location");
         String address = (String)data.get("address");
-        return new Event(title,
-                description,
-                timestamp.toDate(),
-                address,
-                new LatLng(location.getLatitude(), location.getLongitude()));
+
+        EventBuilder eventBuilder = new EventBuilder();
+        Event newEvent = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(timestamp.toDate())
+                .setAddress(address)
+                .setLocation(new LatLng(location.getLatitude(), location.getLongitude()))
+                .build();
+
+        return newEvent;
     }
 
     @Override

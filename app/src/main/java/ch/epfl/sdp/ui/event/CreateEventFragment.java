@@ -19,6 +19,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.text.ParseException;
 
+import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.CreateEventFragmentBinding;
 import ch.epfl.sdp.db.Database;
@@ -55,6 +57,58 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mGeoAutocompleteClear = mBinding.geoAutocompleteClear;
         mGeoAutocomplete = mBinding.geoAutocomplete;
 
+        setupGeoAutoComplete();
+
+        View view = mBinding.getRoot();
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.createButton:
+                String title = mBinding.title.getText().toString();
+                String description = mBinding.description.getText().toString();
+                String date = mBinding.date.getDayOfMonth()+"/"+mBinding.date.getMonth()+"/"+mBinding.date.getYear();
+                String address = mBinding.geoAutocomplete.getText().toString();
+
+                try {
+                    EventBuilder eventBuilder = new EventBuilder();
+                    Event newEvent = eventBuilder.setTitle(title)
+                                                 .setDescription(description)
+                                                 .setDate(date)
+                                                 .setAddress(address)
+                                                 .setLocation(mLocation)
+                                                 .build();
+
+                    LiveData<String> ref = mViewModel.createEvent(newEvent);
+                    ref.observe(getViewLifecycleOwner(), result -> {
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, EventFragment.newInstance(result, mDb))
+                                .commitNow();
+                    });
+                } catch (ParseException e) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Invalid date", Toast.LENGTH_SHORT).show();
+                } catch (IllegalStateException e) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    public EventViewModel getViewModel() {
+        return mViewModel;
+    }
+
+    public void setupGeoAutoComplete() {
         mGeoAutocomplete.setThreshold(THRESHOLD);
         mGeoAutocomplete.setAdapter(new GeoAutoCompleteAdapter(getContext()));
 
@@ -84,56 +138,5 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         });
 
         mGeoAutocompleteClear.setOnClickListener(v -> mGeoAutocomplete.setText(""));
-
-        View view = mBinding.getRoot();
-        return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinding = null;
-    }
-
-    private void checkInput(String title, String description, String date, String address) throws IllegalArgumentException {
-        if (title == null || description == null || date == null || address == null) {
-            throw new IllegalArgumentException();
-        }
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || address.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public EventViewModel getViewModel() {
-        return mViewModel;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.createButton:
-                String title = mBinding.title.getText().toString();
-                String description = mBinding.description.getText().toString();
-                String date = mBinding.date.getDayOfMonth()+"/"+mBinding.date.getMonth()+"/"+mBinding.date.getYear();
-                String address = mBinding.geoAutocomplete.getText().toString();
-
-                try {
-                    checkInput(title, description, date, address);
-
-                    LiveData<String> ref = mViewModel.createEvent(title, description, date, address, mLocation);
-                    ref.observe(getViewLifecycleOwner(), result -> {
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, EventFragment.newInstance(result, mDb))
-                                .commitNow();
-                    });
-                } catch (ParseException e) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Invalid date", Toast.LENGTH_SHORT).show();
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Invalid input", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
     }
 }

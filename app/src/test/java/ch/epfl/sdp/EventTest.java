@@ -20,55 +20,21 @@ public class EventTest {
     LatLng location = new LatLng(100,100);
     String address = "Lausanne, Switzerland";
 
+
     @Test
     public void testDummyEvent()
     {
-        Event e = new Event(title, description, date, address, location);
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                              .setDescription(description)
+                              .setDate(date)
+                              .setAddress(address)
+                              .setLocation(location)
+                              .build();
+
         assertEquals(e.getTitle(), title);
         assertEquals(e.getDescription(), description);
         assertEquals(e.getDate(), date);
-        assertEquals(e.getAddress(), address);
-    }
-
-    @Test
-    public void testSetTitle()
-    {
-        Event e = new Event(title, description, date, address, location);
-        e.setTitle("New title");
-    }
-
-    @Test
-    public void testSetDescription()
-    {
-        Event e = new Event(title, description, date, address, location);
-        e.setDescription("New description");
-    }
-
-    @Test
-    public void testSetLocation()
-    {
-        Event e = new Event(title,description, date, address, location);
-        e.setLocation(location);
-    }
-
-    @Test
-    public void testSetDate()
-    {
-        Event e = new Event(title, description, date, address, location);
-        e.setDate(new Date());
-    }
-
-    @Test
-    public void testSetImageId(){
-        Event e = new Event(title, description, date, address, location);
-        e.setImageID(R.drawable.oss_117);
-        assertEquals(e.getImageID(), R.drawable.oss_117);
-    }
-
-    @Test
-    public void testSetAddress(){
-        Event e = new Event(title, description, date, address, location);
-        e.setAddress(address);
         assertEquals(e.getAddress(), address);
     }
 }

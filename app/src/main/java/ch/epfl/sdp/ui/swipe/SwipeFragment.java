@@ -44,7 +44,7 @@ public class SwipeFragment extends Fragment {
                 new Date(2020, 4, 20), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
         mEventList.add(new Event("Real Fake Party",
                 "This is really happening",
-                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821)));
+                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
 
         mArrayAdapter = new CardArrayAdapter(getActivity(), R.layout.card, mEventList);
         mCurrentEvent = mEventList.get(0);

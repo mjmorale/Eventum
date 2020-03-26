@@ -56,7 +56,7 @@ public class EventFragment extends Fragment {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
+            mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
