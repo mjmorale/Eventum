@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -78,8 +79,6 @@ public class EventFragment extends Fragment  implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
         mViewModel.setDb(mDb);
-        mSharedDialog = new ShareDialog(this);
-
     }
 
     @Override
@@ -90,28 +89,13 @@ public class EventFragment extends Fragment  implements View.OnClickListener {
         View view = mBinding.getRoot();
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-//        mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
-//            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
-//            mBinding.description.setText(event.getDescription());
-//            mBinding.title.setText(event.getTitle());
-//        });
-
+        mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
+        });
+        prepareShare();
         return view;
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        mShareContent = new ShareMediaContent.Builder()
-                .setShareHashtag(
-                        new ShareHashtag.Builder().setHashtag(
-                                mBinding.title.getText().toString() + " :\n\n " +
-                                        mBinding.description.getText().toString()).build())
-                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
-                .build();
-        mBinding.sharingButton.setOnClickListener(this);
-
     }
 
     @Override
@@ -131,5 +115,19 @@ public class EventFragment extends Fragment  implements View.OnClickListener {
 
     public EventViewModel getViewModel() {
         return mViewModel;
+    }
+
+    private void prepareShare(){
+        mSharedDialog = new ShareDialog(this);
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        mShareContent = new ShareMediaContent.Builder()
+                .setShareHashtag(
+                        new ShareHashtag.Builder().setHashtag(
+                                mBinding.title.getText().toString() + " :\n\n " +
+                                        mBinding.description.getText().toString()).build())
+                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
+                .build();
+        mBinding.sharingButton.setOnClickListener(this);
     }
 }

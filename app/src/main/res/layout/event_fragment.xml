@@ -105,8 +105,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
+            android:backgroundTint="@color/white"
             android:clickable="true"
             android:src="@drawable/com_facebook_favicon_blue"
+            app:backgroundTint="@color/white"
             app:layout_anchorGravity="bottom|right" />
     </LinearLayout>
 
