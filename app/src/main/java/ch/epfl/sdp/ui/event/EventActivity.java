@@ -46,8 +46,6 @@ public class EventActivity extends AppCompatActivity {
         }
 
         switch(mode) {
-            case ORGANIZER:
-            case ATTENDEE:
             default:
                 getSupportFragmentManager().beginTransaction()
                         .replace(mBinding.eventContent.getId(), DefaultEventFragment.newInstance(eventRef)).commit();

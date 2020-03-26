@@ -21,6 +21,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static ch.epfl.sdp.TestUtils.selectNavigation;
 
 @RunWith(AndroidJUnit4.class)
 public class SwipeTest {
@@ -30,12 +31,7 @@ public class SwipeTest {
 
     @Before
     public void setup() {
-        onView(withId(R.id.main_drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.main_nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_home));
+        selectNavigation(R.id.nav_home);
     }
 
     @Test
