@@ -2,6 +2,8 @@ package ch.epfl.sdp.ui.event;
 
 import android.location.Address;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class GeoSearchResult {
     private Address mAddress;
 
@@ -14,6 +16,10 @@ public class GeoSearchResult {
             display_address.append(mAddress.getAddressLine(i)).append(", ");
         }
         return display_address.toString();
+    }
+
+    public LatLng getLocation() {
+        return new LatLng(mAddress.getLatitude(), mAddress.getLongitude());
     }
 
     public String toString() {

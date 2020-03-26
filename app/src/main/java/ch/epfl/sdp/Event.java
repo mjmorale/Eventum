@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.location.Geocoder;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -10,25 +12,33 @@ public class Event {
     private String mDescription;
     private Date mDate;
     private String mTitle;
-    private int mImageID;
+    private int mImageID = R.mipmap.ic_launcher;
+    private String mAddress;
     private LatLng mLocation;
 
-    public Event(@NonNull String title, @NonNull String description, @NonNull Date date) {
-        this(title, description, date, R.mipmap.ic_launcher);
+    public Event(@NonNull String title,
+                 @NonNull String description,
+                 @NonNull Date date,
+                 @NonNull String address,
+                 @NonNull LatLng location) {
+        mTitle = title;
+        mDescription = description;
+        mDate = date;
+        mAddress = address;
+        mLocation = location;
     }
-
-    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID){
-        this(title,description,date,imageID,new LatLng(46.520553, 6.567821));
-    }
-
-    public Event(String title, String description, Date date, int imageID, LatLng location){
-        if (title == null || description == null || date == null || location == null)
-            throw new IllegalArgumentException();
-        this.mTitle = title;
-        this.mDescription = description;
-        this.mDate = date;
-        this.mImageID = imageID;
-        this.mLocation = location;
+    public Event(@NonNull String title,
+                 @NonNull String description,
+                 @NonNull Date date,
+                 @NonNull String address,
+                 @NonNull LatLng location,
+                 @NonNull int imageID) {
+        mTitle = title;
+        mDescription = description;
+        mDate = date;
+        mAddress = address;
+        mLocation = location;
+        mImageID = imageID;
     }
 
     public String getTitle() {
@@ -79,4 +89,7 @@ public class Event {
         this.mImageID = imageName;
     }
 
+    public String getAddress() { return mAddress; }
+
+    public void setAddress(String mAddress) { this.mAddress = mAddress; }
 }

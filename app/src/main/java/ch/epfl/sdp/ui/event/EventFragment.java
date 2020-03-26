@@ -59,6 +59,7 @@ public class EventFragment extends Fragment {
             mBinding.date.setText(mViewModel.formatDate(event.getDate()));
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
+            mBinding.address.setText(event.getAddress());
         });
 
         return view;

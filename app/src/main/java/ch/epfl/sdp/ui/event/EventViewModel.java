@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,9 +32,10 @@ public class EventViewModel extends ViewModel {
     }
 
     public LiveData<String> createEvent(@NonNull String title,
-                            @NonNull String description,
-                            @NonNull String date) throws ParseException {
-        Event newEvent = new Event(title, description, mFormatter.parse(date));
+                                        @NonNull String description,
+                                        @NonNull String date, @NonNull String address,
+                                        @NonNull LatLng location) throws ParseException {
+        Event newEvent = new Event(title, description, mFormatter.parse(date), address, location);
         mDb.query("events").create(newEvent, result -> {
             mRef.postValue(result.getData());
         });

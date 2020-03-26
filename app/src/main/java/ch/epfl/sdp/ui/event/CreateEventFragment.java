@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.ParseException;
 
 import ch.epfl.sdp.R;
@@ -23,12 +25,14 @@ import ch.epfl.sdp.db.Database;
 
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
+    private static final int THRESHOLD = 2;
+
     private EventViewModel mViewModel;
     private CreateEventFragmentBinding mBinding;
     private Database mDb;
-    private static final int THRESHOLD = 2;
     private DelayAutoCompleteTextView mGeoAutocomplete;
     private ImageView mGeoAutocompleteClear;
+    private LatLng mLocation;
 
     public CreateEventFragment(Database db) {
         mDb = db;
@@ -57,6 +61,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mGeoAutocomplete.setOnItemClickListener((adapterView, view, position, id) -> {
             GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
             mGeoAutocomplete.setText(result.getAddress());
+            mLocation = result.getLocation();
         });
 
         mGeoAutocomplete.addTextChangedListener(new TextWatcher() {
@@ -78,9 +83,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             }
         });
 
-        mGeoAutocompleteClear.setOnClickListener(v -> {
-            mGeoAutocomplete.setText("");
-        });
+        mGeoAutocompleteClear.setOnClickListener(v -> mGeoAutocomplete.setText(""));
 
         View view = mBinding.getRoot();
         return view;
@@ -92,11 +95,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding = null;
     }
 
-    private void checkInput(String title, String description, String date) throws IllegalArgumentException {
-        if (title == null || description == null || date == null) {
+    private void checkInput(String title, String description, String date, String address) throws IllegalArgumentException {
+        if (title == null || description == null || date == null || address == null) {
             throw new IllegalArgumentException();
         }
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty()) {
+        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || address.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
@@ -112,10 +115,12 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 String title = mBinding.title.getText().toString();
                 String description = mBinding.description.getText().toString();
                 String date = mBinding.date.getDayOfMonth()+"/"+mBinding.date.getMonth()+"/"+mBinding.date.getYear();
+                String address = mBinding.geoAutocomplete.getText().toString();
 
                 try {
-                    checkInput(title, description, date);
-                    LiveData<String> ref = mViewModel.createEvent(title, description, date);
+                    checkInput(title, description, date, address);
+
+                    LiveData<String> ref = mViewModel.createEvent(title, description, date, address, mLocation);
                     ref.observe(getViewLifecycleOwner(), result -> {
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, EventFragment.newInstance(result, mDb))
