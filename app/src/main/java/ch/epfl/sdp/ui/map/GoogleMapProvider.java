@@ -25,7 +25,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private Context mContext;
     private boolean mHavePermission;
     private Activity mActivity;
-    private LatLng mCurrentLatLng;
+    private Location mLocation;
     private float mZoomLevel;
     private GoogleMap mMap = null;
 
@@ -33,9 +33,11 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
         this.mContext = fragment.getContext();
         this.mActivity = fragment.getActivity();
         mMarkerOptions = new ArrayList<>();
-        
+
         // default current location
-        mCurrentLatLng = new LatLng(46.520564, 6.567827);
+        mLocation = new Location("Europe");
+        mLocation.setLatitude(46.520564);
+        mLocation.setLongitude(6.567827);
         mZoomLevel = 4;
 
         ActivityCompat.requestPermissions((Activity)mContext,
@@ -49,8 +51,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
         if (mHavePermission){
             LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mZoomLevel = 12;
         }
         mapView.getMapAsync(this);
@@ -60,7 +61,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setMapSettings(mMap, mMarkerOptions, mLocationEnabled&&mHavePermission);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, mZoomLevel));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), mZoomLevel));
     }
 
     static public void setMapSettings(GoogleMap googleMap, List<MarkerOptions> markerOptionsList, boolean locationEnabled) {
