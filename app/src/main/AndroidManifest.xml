@@ -14,7 +14,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider219842675772324"
+        <provider android:authorities="com.facebook.app.FacebookContentProvider683489682480326"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
 
