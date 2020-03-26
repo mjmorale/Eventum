@@ -14,13 +14,19 @@ import java.text.SimpleDateFormat;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.event.CreateEventFragment;
 
+import static android.service.autofill.Validators.not;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeDown;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -36,10 +42,11 @@ public class CreateEventFragmentTest {
     private static final String DATE = mFormatter.format(mMockEvent.getDate());
     private static final String TITLE = mMockEvent.getTitle();
     private static final String DESCRIPTION = mMockEvent.getDescription();
+    private static final String ADDRESS = mMockEvent.getAddress();
     private static final String EMPTY = "";
-    private static final int DAY = 30;
-    private static final int MONTH = 6;
-    private static final int YEAR = 2017;
+    private static final int DAY = mMockEvent.getDate().getDay();
+    private static final int MONTH = mMockEvent.getDate().getMonth();
+    private static final int YEAR = mMockEvent.getDate().getYear();
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule =
@@ -53,7 +60,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void testCreateEventFragment() throws InterruptedException {
+    public void testCreateEventFragment() {
         launchEventFragment();
 
         // Now try with correct values
@@ -71,8 +78,13 @@ public class CreateEventFragmentTest {
                 PickerActions.setDate(YEAR, MONTH, DAY),
                 closeSoftKeyboard());
 
-        onView(withId(R.id.createButton))
-                .perform(click());
+        onView(withId(R.id.geo_autocomplete)).perform(
+                scrollTo(),
+                typeText(ADDRESS),
+                closeSoftKeyboard());
+
+       onView(withId(R.id.createButton))
+                .perform(scrollTo(), click());
 
         // Check the created event page
         onView(withId(R.id.description))
@@ -84,6 +96,9 @@ public class CreateEventFragmentTest {
         onView(withId(R.id.title))
                 .check(matches(withText(TITLE)));
 
+        onView(withId(R.id.address))
+                .check(matches(withText(ADDRESS)));
+
     }
 
     @Test
@@ -91,12 +106,13 @@ public class CreateEventFragmentTest {
         launchEventFragment();
 
         // Try with incorrect values
-        onView(withHint(is("Title"))).perform(
+        onView(withId(R.id.title)).perform(
                 clearText(),
                 typeText(EMPTY),
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton)).perform(
+                scrollTo(),
                 click());
     }
 
