@@ -54,8 +54,6 @@ public class CreateEventFragmentTest {
 
     @Before
     public void setup() {
-        mActivityRule.getActivity().sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-
         onView(withText("Create"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());
@@ -68,7 +66,7 @@ public class CreateEventFragmentTest {
         // Now try with correct values
         doCorrectInput();
         // Sleep to let the Geocoder found some locations
-        sleep(5000);
+        sleep(10000);
 
         onView(withId(R.id.geo_search_result_text))
                 .inRoot(isPlatformPopup())
