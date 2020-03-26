@@ -16,9 +16,7 @@ public class FirebaseAuthViewModelFactory extends AuthViewModelFactory<AuthCrede
 
     @NonNull
     public static FirebaseAuthViewModelFactory getInstance() {
-        if(mInstance == null) {
-            mInstance = new FirebaseAuthViewModelFactory();
-        }
+        if(mInstance == null) { mInstance = new FirebaseAuthViewModelFactory();}
         return mInstance;
     }
 }

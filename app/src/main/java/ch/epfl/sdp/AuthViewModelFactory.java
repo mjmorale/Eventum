@@ -30,8 +30,7 @@ public class AuthViewModelFactory<CredType> implements ViewModelProvider.Factory
             catch(NoSuchMethodException e) {
                 throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that only takes an Authenticator");
             }
-            catch(IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new IllegalArgumentException("Cannot instantiate an instance of the class " + modelClass.getSimpleName());
+            catch(IllegalAccessException | InstantiationException | InvocationTargetException e) {throw new IllegalArgumentException("Cannot instantiate an instance of the class " + modelClass.getSimpleName());
             }
         }
         throw new IllegalArgumentException("ViewModel class is not a superclass of AuthViewModel");
