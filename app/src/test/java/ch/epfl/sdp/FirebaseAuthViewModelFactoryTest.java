@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -15,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,7 +42,8 @@ public class FirebaseAuthViewModelFactoryTest {
 
     @Test
     public void FirebaseAuthViewModelFactory_ConstructorFailsIfParameterIsNull() {
-        //when(FirebaseAuth.getInstance()).thenReturn(null);
+        FirebaseAuth mockedFirebase = mock(FirebaseAuth.class);
+        //when(new FirebaseAuthViewModelFactory()).thenReturn(null);
         //doNothing().when(mAuth).signOut();
         //when(new FirebaseAuthenticator(mAuth)).thenReturn(new Authenticator<String>());
 
