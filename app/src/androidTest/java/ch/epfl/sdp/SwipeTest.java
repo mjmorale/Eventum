@@ -2,6 +2,8 @@ package ch.epfl.sdp;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+import ch.epfl.sdp.ui.main.MainActivity;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

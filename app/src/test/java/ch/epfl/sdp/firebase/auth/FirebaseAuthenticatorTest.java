@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.epfl.sdp.auth.User;
+import ch.epfl.sdp.User;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;

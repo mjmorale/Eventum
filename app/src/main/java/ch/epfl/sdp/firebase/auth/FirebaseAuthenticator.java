@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.epfl.sdp.auth.AuthenticationResult;
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.auth.User;
+import ch.epfl.sdp.User;
 
 public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
 
