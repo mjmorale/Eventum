@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -32,7 +31,7 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     private float mZoomLevel;
     private GoogleMap mMap = null;
 
-    GoogleMapProvider(Fragment fragment, MapView mapView){
+    public GoogleMapProvider(Fragment fragment, MapView mapView){
         this.mMapView = mapView;
         this.mContext = fragment.getContext();
         this.mActivity = fragment.getActivity();
@@ -67,9 +66,13 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googlemap) {
         mMap = googlemap;
-        googlemap.setMyLocationEnabled(mLocationEnabled&&mHavePermission);
-        for(MarkerOptions markerOptions: mMarkerOptions)googlemap.addMarker(markerOptions);
+        setMapSettings(mMap, mMarkerOptions, mLocationEnabled&&mHavePermission);
         googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mZoomLevel));
+    }
+
+    static public void setMapSettings(GoogleMap googlemap, List<MarkerOptions> markerOptionsList, boolean locationEnabled) {
+        googlemap.setMyLocationEnabled(locationEnabled);
+        for(MarkerOptions markerOptions: markerOptionsList)googlemap.addMarker(markerOptions);
     }
 
     @Override

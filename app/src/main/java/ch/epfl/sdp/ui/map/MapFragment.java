@@ -27,15 +27,12 @@ public class MapFragment extends Fragment{
         mDataBase = db;
     }
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mEvents = mDataBase.query("events").liveData(Event.class);
     }
 
-    
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
