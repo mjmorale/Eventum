@@ -80,12 +80,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
                 try {
                     EventBuilder eventBuilder = new EventBuilder();
-                    Event newEvent = eventBuilder.setTitle(title)
-                                                 .setDescription(description)
-                                                 .setDate(date)
-                                                 .setAddress(address)
-                                                 .setLocation(mLocation)
-                                                 .build();
+                    Event newEvent = eventBuilder.setTitle(title).setDescription(description).setDate(date).setAddress(address).setLocation(mLocation).build();
 
                     LiveData<String> ref = mViewModel.createEvent(newEvent);
                     ref.observe(getViewLifecycleOwner(), result -> {
