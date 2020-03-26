@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -63,13 +64,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.createButton:
-                String title = mBinding.title.getText().toString();
-                String description = mBinding.description.getText().toString();
-                String date = mBinding.date.getDayOfMonth() + "/" + mBinding.date.getMonth() + "/" + mBinding.date.getYear();
-
                 try {
-                    checkInput(title, description, date);
-                    mViewModel.insertEvent(title, description, date, new CreateEventViewModel.OnEventCreatedCallback() {
+                    tryCreateEvent(new CreateEventViewModel.OnEventCreatedCallback() {
                         @Override
                         public void onSuccess(String eventRef) {
                             Intent resultIntent = new Intent();
@@ -93,5 +89,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
         }
+    }
+
+    private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) throws ParseException {
+        String title = mBinding.title.getText().toString();
+        String description = mBinding.description.getText().toString();
+        String date = mBinding.date.getDayOfMonth() + "/" + mBinding.date.getMonth() + "/" + mBinding.date.getYear();
+        checkInput(title, description, date);
+
+        mViewModel.insertEvent(title, description, date, callback);
     }
 }
