@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import java.text.SimpleDateFormat;
 
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.ui.createevent.CreateEventActivity;
+import ch.epfl.sdp.ui.createevent.CreateEventViewModel;
 import ch.epfl.sdp.ui.main.MainActivity;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -29,7 +31,6 @@ import static org.hamcrest.Matchers.is;
 @RunWith(AndroidJUnit4.class)
 public class CreateEventFragmentTest {
 
-    private Database mDb = new MockDatabase();
     private static SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     private static final Event mMockEvent = MockEvents.getCurrentEvent();
@@ -42,20 +43,11 @@ public class CreateEventFragmentTest {
     private static final int YEAR = 2017;
 
     @Rule
-    public final ActivityTestRule<MainActivity> mActivityRule =
-            new ActivityTestRule<>(MainActivity.class);
-
-    @Before
-    public void setup() {
-        onView(withText("Create"))
-                .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
-                .perform(click());
-    }
+    public final ActivityTestRule<CreateEventActivity> mActivityRule =
+            new ActivityTestRule<>(CreateEventActivity.class);
 
     @Test
-    public void testCreateEventFragment() throws InterruptedException {
-        launchEventFragment();
-
+    public void testCreateEventFragment() {
         // Now try with correct values
         onView(withId(R.id.title)).perform(
                 clearText(),
@@ -73,23 +65,10 @@ public class CreateEventFragmentTest {
 
         onView(withId(R.id.createButton))
                 .perform(click());
-
-        // Check the created event page
-        onView(withId(R.id.description))
-                .check(matches(withText(DESCRIPTION)));
-
-        onView(withId(R.id.date))
-                .check(matches(withText(DATE)));
-
-        onView(withId(R.id.title))
-                .check(matches(withText(TITLE)));
-
     }
 
     @Test
     public void testCreateIncorrectEventFragment() {
-        launchEventFragment();
-
         // Try with incorrect values
         onView(withHint(is("Title"))).perform(
                 clearText(),
@@ -98,20 +77,5 @@ public class CreateEventFragmentTest {
 
         onView(withId(R.id.createButton)).perform(
                 click());
-    }
-
-    private void launchEventFragment() {
-        mActivityRule.getActivity().runOnUiThread(() -> {
-            CreateEventFragment createEventFragment = startCreateEventFragment();
-            createEventFragment.getViewModel().setDb(mDb);
-        });
-    }
-
-    private CreateEventFragment startCreateEventFragment() {
-        CreateEventFragment createEventFragment = new CreateEventFragment(new MockDatabase());
-        mActivityRule.getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, createEventFragment)
-                .commitNow();
-        return createEventFragment;
     }
 }

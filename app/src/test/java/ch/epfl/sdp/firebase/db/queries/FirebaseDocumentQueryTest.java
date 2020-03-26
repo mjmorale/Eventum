@@ -128,7 +128,6 @@ public class FirebaseDocumentQueryTest {
         when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
         when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
         when(mDocumentSnapshot.exists()).thenReturn(false);
-        when(mDocumentSnapshot.getData()).thenReturn(null);
         when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
         when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
 
@@ -180,7 +179,6 @@ public class FirebaseDocumentQueryTest {
         when(mDocumentReference.delete()).thenReturn(mVoidTask);
         when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
         when(mVoidTask.isSuccessful()).thenReturn(true);
-        when(mVoidTask.getResult()).thenReturn(null);
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.delete(result -> {

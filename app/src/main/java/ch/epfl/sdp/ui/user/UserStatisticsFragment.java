@@ -36,5 +36,7 @@ public class UserStatisticsFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, factory).get(UserStatisticsViewModel.class);
     }
 
+    //TODO:@Dorian Remove this method as it is only there to satisfy CodeClimate code
+    // duplication detection.
     private void test() {}
 }
