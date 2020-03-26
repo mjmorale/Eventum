@@ -1,22 +1,17 @@
 package ch.epfl.sdp.db;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.Map;
 
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.EventDatabaseBuilder;
 
 import static org.junit.Assert.assertEquals;
 
 public class EventDatabaseObjectBuilderTest {
 
-    @Before
-    public void setup() throws IllegalAccessException, InstantiationException {
-        DatabaseObjectBuilderFactory.registerBuilder(Event.class, EventDatabaseBuilder.class);
-    }
+    //TODO @Corentin: More tests
 
     @Test
     public void testEventDatabaseObjectBuilder() {
@@ -24,8 +19,8 @@ public class EventDatabaseObjectBuilderTest {
                 "This is really happening",
                 new Date(2020, 11, 10));
         Map<String, Object> data =
-                DatabaseObjectBuilderFactory.getBuilder(Event.class).serializeToMap(event);
-        Event resultEvent = DatabaseObjectBuilderFactory.getBuilder(Event.class).buildFromMap(data);
+                DatabaseObjectBuilderRegistry.getBuilder(Event.class).serializeToMap(event);
+        Event resultEvent = DatabaseObjectBuilderRegistry.getBuilder(Event.class).buildFromMap(data);
 
         assertEquals(event.getDate().toString(), resultEvent.getDate().toString());
         assertEquals(event.getDescription(), resultEvent.getDescription());

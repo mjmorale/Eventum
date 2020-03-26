@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.epfl.sdp.db.DatabaseObjectBuilderFactory;
-import ch.epfl.sdp.firebase.db.MockStringBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
+import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -37,10 +37,9 @@ public class FirebaseDocumentLiveDataTest {
     private ArgumentCaptor<EventListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
 
     @Before
-    public void setup() throws IllegalAccessException, InstantiationException {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        DatabaseObjectBuilderFactory.clear();
-        DatabaseObjectBuilderFactory.registerBuilder(String.class, MockStringBuilder.class);
+        DatabaseObjectBuilderRegistry.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -72,7 +71,6 @@ public class FirebaseDocumentLiveDataTest {
     @Test
     public void FirebaseDocumentLiveData_OnInactive_RemovesListenerRegistrationIfSet() {
         when(mDocumentReference.addSnapshotListener(any())).thenReturn(mListenerRegistration);
-        when(mDocumentSnapshot.getData()).thenReturn(null);
 
         FirebaseDocumentLiveData<String> stringLiveData = new FirebaseDocumentLiveData<>(mDocumentReference, String.class);
         stringLiveData.onActive();
