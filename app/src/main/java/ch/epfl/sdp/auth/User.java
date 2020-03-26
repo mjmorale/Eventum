@@ -1,8 +1,11 @@
 package ch.epfl.sdp.auth;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
-public class User {
+public class User implements Parcelable {
 
     private final String mUid;
     private final String mName;
@@ -21,6 +24,22 @@ public class User {
         this.mEmail = email;
     }
 
+    protected User(Parcel in) {
+        this(in.readString(), in.readString(), in.readString());
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
     public String getUid() {
         return mUid;
     }
@@ -35,15 +54,24 @@ public class User {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(this == obj) {
-            return true;
-        }
-        if(obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+        if(obj == null) return false;
+        if(obj.getClass() != this.getClass()) return false;
+        final User user = (User)obj;
+        return (user.mUid.equals(mUid) &
+                user.mName.equals(mName) &
+                user.mEmail.equals(mEmail));
+    }
 
-        User user = (User)obj;
 
-        return user.mUid == this.mUid && user.mName == this.mName && user.mEmail == this.mEmail;
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mUid);
+        dest.writeString(mName);
+        dest.writeString(mEmail);
     }
 }
