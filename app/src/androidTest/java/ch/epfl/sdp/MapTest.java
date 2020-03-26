@@ -26,15 +26,15 @@ public class MapTest{
 
     @Before
     public void setup(){
-//        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
-//        onView(withText("Map"))
-//                .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
-//                .perform(click());
+        TestUtils.dismissSystemPopups(mActivityRule.getActivity());
+        onView(withText("Map"))
+                .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
+                .perform(click());
     }
 
     @Test
     public void checkThatMapIsDisplayed() {
-//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 
 }
