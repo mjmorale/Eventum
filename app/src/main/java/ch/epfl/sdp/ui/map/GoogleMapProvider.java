@@ -19,28 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
-    private  boolean mLocationButtonEnabled=false;
     private  boolean mLocationEnabled=false;
     private List<MarkerOptions> mMarkerOptions;
     private  final static int PERMISSION_LOCATION=0;
     private Context mContext;
-    private boolean mHavePermission=false;
-    private MapView mMapView;
+    private boolean mHavePermission;
     private Activity mActivity;
-    private Location mCurrentLocation;
+    private LatLng mCurrentLatLng;
     private float mZoomLevel;
     private GoogleMap mMap = null;
 
     public GoogleMapProvider(Fragment fragment, MapView mapView){
-        this.mMapView = mapView;
         this.mContext = fragment.getContext();
         this.mActivity = fragment.getActivity();
         mMarkerOptions = new ArrayList<>();
 
         // default current location
-        mCurrentLocation = new Location("Europe");
-        mCurrentLocation.setLatitude(46.520564);
-        mCurrentLocation.setLongitude(6.567827);
+        mCurrentLatLng = new LatLng(46.520564, 6.567827);
         mZoomLevel = 4;
 
         ActivityCompat.requestPermissions((Activity)mContext,
@@ -54,22 +49,23 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
         if (mHavePermission){
             LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
-            mCurrentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             mZoomLevel = 12;
         }
         mapView.getMapAsync(this);
     }
 
     @Override
-    public void onMapReady(GoogleMap googlemap) {
-        mMap = googlemap;
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         setMapSettings(mMap, mMarkerOptions, mLocationEnabled&&mHavePermission);
-        googlemap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mZoomLevel));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, mZoomLevel));
     }
 
-    static public void setMapSettings(GoogleMap googlemap, List<MarkerOptions> markerOptionsList, boolean locationEnabled) {
-        googlemap.setMyLocationEnabled(locationEnabled);
-        for(MarkerOptions markerOptions: markerOptionsList)googlemap.addMarker(markerOptions);
+    static public void setMapSettings(GoogleMap googleMap, List<MarkerOptions> markerOptionsList, boolean locationEnabled) {
+        googleMap.setMyLocationEnabled(locationEnabled);
+        for(MarkerOptions markerOptions: markerOptionsList)googleMap.addMarker(markerOptions);
     }
 
     @Override

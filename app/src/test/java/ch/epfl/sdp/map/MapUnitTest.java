@@ -1,6 +1,7 @@
 package ch.epfl.sdp.map;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import org.junit.Test;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class MapUnitTest {
     }
 
     @Test
-    public void setMapSettingsWithtPermissionSetMyLocationEnabledWithTrue() {
+    public void setMapSettingsWithPermissionSetMyLocationEnabledWithTrue() {
         GoogleMapProvider.setMapSettings(mGoogleMap, mMarkerOptions, true);
         verify(mGoogleMap).setMyLocationEnabled(true);
     }
