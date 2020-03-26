@@ -35,4 +35,6 @@ public class UserStatisticsFragment extends Fragment {
         DatabaseViewModelFactory factory = FirestoreDatabaseViewModelFactory.getInstance();
         mViewModel = new ViewModelProvider(this, factory).get(UserStatisticsViewModel.class);
     }
+
+    private void test() {}
 }
