@@ -80,7 +80,7 @@
                 android:id="@+id/geo_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:imeOptions="flagNoExtractUi|actionSearch"
+                android:imeOptions="actionSearch"
                 android:inputType="textCapSentences"
                 android:background="@color/white"
                 android:hint="address"
@@ -117,25 +117,15 @@
                 android:background="@color/colorPrimary"
                 android:layout_marginBottom="80dp"
                 android:text="+"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/createButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="16dp"
+                android:src="@drawable/check"
+                app:layout_anchorGravity="bottom|center" />
         </LinearLayout>
-
     </ScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="1dp">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/createButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="16dp"
-            android:src="@drawable/check"
-            app:layout_anchorGravity="bottom|center" />
-    </LinearLayout>
-
 </RelativeLayout>
