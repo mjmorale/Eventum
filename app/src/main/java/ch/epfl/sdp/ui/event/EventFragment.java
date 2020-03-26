@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.FacebookSdk;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
@@ -40,7 +41,7 @@ import java.io.File;
 import java.util.List;
 
 
-public class EventFragment extends Fragment  implements View.OnClickListener{
+public class EventFragment extends Fragment  implements View.OnClickListener {
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
@@ -48,7 +49,7 @@ public class EventFragment extends Fragment  implements View.OnClickListener{
     private Database mDb;
 
     private ShareContent mShareContent;
-
+    private ShareDialog mSharedDialog;
 
 
     public static EventFragment newInstance(String ref, Database db) {
@@ -77,7 +78,7 @@ public class EventFragment extends Fragment  implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
         mViewModel.setDb(mDb);
-
+        mSharedDialog = new ShareDialog(this);
 
     }
 
@@ -89,12 +90,17 @@ public class EventFragment extends Fragment  implements View.OnClickListener{
         View view = mBinding.getRoot();
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
-            mBinding.description.setText(event.getDescription());
-            mBinding.title.setText(event.getTitle());
-        });
+//        mViewModel.getEvent(mRef).observe(getViewLifecycleOwner(), event -> {
+//            mBinding.date.setText(mViewModel.formatDate(event.getDate()));
+//            mBinding.description.setText(event.getDescription());
+//            mBinding.title.setText(event.getTitle());
+//        });
 
+        return view;
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
         BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
         Bitmap bitmap = bitmapDrawable.getBitmap();
         mShareContent = new ShareMediaContent.Builder()
@@ -104,15 +110,15 @@ public class EventFragment extends Fragment  implements View.OnClickListener{
                                         mBinding.description.getText().toString()).build())
                 .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
                 .build();
-
         mBinding.sharingButton.setOnClickListener(this);
 
-        return view;
     }
 
     @Override
-    public void onClick(View view) {
-        ShareDialog.show(this,mShareContent);
+    public void onClick(View view){
+        if(mSharedDialog.canShow(mShareContent)) {
+            mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
+        }
     }
 
     @Override

@@ -47,9 +47,7 @@ public class EventDetailFragment extends Fragment {
             public void onClick(View v){
                 getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit();
             }
-                                               }
-
-        );
+        });
 
         return mBinding.getRoot();
     }
