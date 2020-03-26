@@ -80,12 +80,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                             finish();
                         }
                     });
-                } catch (ParseException e) {
-                    Toast.makeText(this,
-                            "Invalid date", Toast.LENGTH_SHORT).show();
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(this,
-                            "Invalid input", Toast.LENGTH_SHORT).show();
+                } catch (ParseException | IllegalArgumentException e) {
+                    Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
