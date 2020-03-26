@@ -1,8 +1,18 @@
 package ch.epfl.sdp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 public class UserTest {
 
@@ -13,6 +23,16 @@ public class UserTest {
     private final static String DUMMY_UID2 = "sdkfgjhsdflkgjh2";
     private final static String DUMMY_NAME2 = "name2 surname2";
     private final static String DUMMY_EMAIL2 = "name2.surname2@mail.com";
+
+    private final static String DUMMY_PARCEL_TEXT = "dummy text";
+
+    @Mock
+    private Parcel mParcel;
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void user_ConstructorFailsIfUidIsNull() {
@@ -117,4 +137,30 @@ public class UserTest {
 
         assertTrue(user1.equals(user2));
     }
+
+    @Test
+    public void user_Parcel() {
+        when(mParcel.readString()).thenReturn(DUMMY_PARCEL_TEXT);
+        User user1 = new User(mParcel);
+        User user2 = new User(DUMMY_PARCEL_TEXT, DUMMY_PARCEL_TEXT, DUMMY_PARCEL_TEXT);
+        assertTrue(user1.equals(user2));
+    }
+
+    @Test
+    public void user_describeContentsReturns0() {
+        User user1 = new User(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
+
+        assertEquals(user1.describeContents(), 0);
+    }
+
+    @Test
+    public void user_writeToParcel() {
+        Mockito.doNothing().when(mParcel).writeString(DUMMY_UID);
+        User user1 = new User(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
+        user1.writeToParcel(mParcel,3);
+        //we can't really test that parcel do is job
+    }
+
+
+
 }
