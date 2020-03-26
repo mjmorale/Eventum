@@ -3,11 +3,16 @@ package ch.epfl.sdp;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.google.firebase.firestore.GeoPoint;
+
+import org.imperiumlabs.geofirestore.GeoFirestore;
+
 import java.util.List;
 
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
+import ch.epfl.sdp.db.queries.GeoFirestoreQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
 
 public class MockCollectionQuery implements CollectionQuery {
@@ -33,6 +38,11 @@ public class MockCollectionQuery implements CollectionQuery {
     }
 
     @Override
+    public GeoFirestoreQuery queryAtLocation(GeoPoint geoPoint, double radius) {
+        return null;
+    }
+
+    @Override
     public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
 
     }
@@ -45,5 +55,10 @@ public class MockCollectionQuery implements CollectionQuery {
     @Override
     public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
         callback.onQueryComplete(QueryResult.success(REF_SUCCESS));
+    }
+
+    @Override
+    public <T> void createWithLocation(@NonNull T object, @NonNull GeoFirestore.CompletionCallback callback, @NonNull GeoPoint geoPoint) {
+
     }
 }
