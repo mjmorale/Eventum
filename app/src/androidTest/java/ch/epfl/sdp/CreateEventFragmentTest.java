@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.content.Intent;
+
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -52,6 +54,8 @@ public class CreateEventFragmentTest {
 
     @Before
     public void setup() {
+        mActivityRule.getActivity().sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+
         onView(withText("Create"))
                 .inRoot(withDecorView(is(mActivityRule.getActivity().getWindow().getDecorView())))
                 .perform(click());
