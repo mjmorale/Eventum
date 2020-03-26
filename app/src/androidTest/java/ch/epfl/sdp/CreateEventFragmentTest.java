@@ -21,6 +21,7 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -66,7 +67,7 @@ public class CreateEventFragmentTest {
         sleep(5000);
 
         onView(withId(R.id.geo_search_result_text))
-                .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
+                .inRoot(isPlatformPopup())
                 .check(matches(isDisplayed()))
                 .perform(click());
 

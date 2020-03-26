@@ -88,7 +88,7 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
         try {
             addresses = geocoder.getFromLocationName(queryText, MAX_RESULTS);
-            for(int i = 0; i < addresses.size(); i++){
+            for(int i = 0; i < addresses.size(); i++) {
                 Address address = addresses.get(i);
                 if(address.getMaxAddressLineIndex() != -1) {
                     geoSearchResults.add(new GeoSearchResult(address));
