@@ -29,7 +29,6 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -41,7 +40,7 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void MainActivity_CreatingEventLaunchesEventActivity() {
+    public void MainActivity_CreatingEventLaunchesEventActivity() throws InterruptedException {
         Intents.init();
 
         Intent resultIntent = new Intent();
@@ -53,7 +52,9 @@ public class MainActivityTest {
 
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
-        onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
+        Thread.sleep(5000);
+
+        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
 
         Intents.release();
     }
