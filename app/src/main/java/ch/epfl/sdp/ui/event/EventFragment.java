@@ -22,16 +22,12 @@ import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.db.Database;
 
 
-public class EventFragment extends Fragment  implements View.OnClickListener {
+public class EventFragment extends Fragment {
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
     private String mRef;
     private Database mDb;
-
-    private ShareContent mShareContent;
-    private ShareDialog mSharedDialog;
-
 
     public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
@@ -74,13 +70,8 @@ public class EventFragment extends Fragment  implements View.OnClickListener {
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
         });
-        prepareShare();
+        configureShare();
         return view;
-    }
-
-    @Override
-    public void onClick(View view){
-            mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
     }
 
     @Override
@@ -95,17 +86,24 @@ public class EventFragment extends Fragment  implements View.OnClickListener {
         return mViewModel;
     }
 
-    private void prepareShare(){
-        mSharedDialog = new ShareDialog(this);
+
+    private void configureShare(){
+        ShareDialog mSharedDialog = new ShareDialog(this);
         BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
         Bitmap bitmap = bitmapDrawable.getBitmap();
-        mShareContent = new ShareMediaContent.Builder()
+        ShareContent mShareContent = new ShareMediaContent.Builder()
                 .setShareHashtag(
                         new ShareHashtag.Builder().setHashtag(
                                 mBinding.title.getText().toString() + " :\n\n " +
                                         mBinding.description.getText().toString()).build())
                 .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
                 .build();
-        mBinding.sharingButton.setOnClickListener(this);
+        mBinding.sharingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId()==mBinding.sharingButton.getId() && mSharedDialog.canShow(mShareContent))
+                    mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
+            }
+        });
     }
 }
