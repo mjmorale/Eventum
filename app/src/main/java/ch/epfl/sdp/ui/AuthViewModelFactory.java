@@ -19,6 +19,9 @@ public class AuthViewModelFactory<CredType> implements ViewModelProvider.Factory
         mAuthenticator = authenticator;
     }
 
+    //TODO: Remove this once the class is generic
+    public void test() {}
+
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
