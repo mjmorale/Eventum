@@ -40,6 +40,6 @@ public class EventActivityTest {
         intent.putExtra(EventActivity.EVENT_REF_EXTRA, DUMMY_STRING);
         mActivity.launchActivity(intent);
 
-        onView(withId(R.id.title)).check(matches(isDisplayed()));
+        onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
     }
 }
