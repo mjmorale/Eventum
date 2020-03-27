@@ -82,12 +82,15 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     private List<GeoSearchResult> findLocations(Context context, String queryText) {
         List<GeoSearchResult> geoSearchResults = new ArrayList<>();
-
         Geocoder geocoder = new Geocoder(context, context.getResources().getConfiguration().locale);
-        List<Address> addresses;
+
+        if (!Geocoder.isPresent()) {
+            geoSearchResults.add(getDefaultSearchResult(context));
+            return geoSearchResults;
+        }
 
         try {
-            addresses = geocoder.getFromLocationName(queryText, MAX_RESULTS);
+            List<Address> addresses = geocoder.getFromLocationName(queryText, MAX_RESULTS);
             for(int i = 0; i < addresses.size(); i++) {
                 Address address = addresses.get(i);
                 if(address.getMaxAddressLineIndex() != -1) {
@@ -95,14 +98,17 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
                 }
             }
         } catch (IOException e) {
-            Address localAddress = new Address(context.getResources().getConfiguration().locale);
-            localAddress.setLongitude(10);
-            localAddress.setLatitude(10);
-            localAddress.setAddressLine(0, "EPFL, Lausanne");
-            GeoSearchResult result = new GeoSearchResult(localAddress);
-            geoSearchResults.add(result);
+            e.printStackTrace();
         }
 
         return geoSearchResults;
+    }
+
+    private GeoSearchResult getDefaultSearchResult(Context context) {
+        Address localAddress = new Address(context.getResources().getConfiguration().locale);
+        localAddress.setLongitude(10);
+        localAddress.setLatitude(10);
+        localAddress.setAddressLine(0, "EPFL, Lausanne");
+        return new GeoSearchResult(localAddress);
     }
 }
