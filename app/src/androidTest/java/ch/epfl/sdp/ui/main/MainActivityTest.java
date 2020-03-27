@@ -53,9 +53,7 @@ public class MainActivityTest {
 
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
-        intended(allOf(hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
-                hasExtra(EventActivity.EVENT_REF_EXTRA, DUMMY_STRING),
-                hasExtra(EventActivity.EVENT_MODE_EXTRA, EventActivity.EventActivityMode.ORGANIZER)));
+        onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
 
         Intents.release();
     }
