@@ -32,7 +32,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
     }
 
     private SwipeFragment mSwipeFragment;
-    private AuthFragment mAuthFragment;
     private EventFragment mEventFragment;
     private MapFragment mMapFragment;
     private CreateEventFragment mCreateEventFragment;
@@ -43,7 +42,6 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
 
         Database db = new FirestoreDatabase(FirebaseFirestore.getInstance());
         mSwipeFragment = new SwipeFragment();
-        mAuthFragment = new AuthFragment();
         mMapFragment = new MapFragment(db);
         mEventFragment = EventFragment.newInstance("fake", db);
         mCreateEventFragment = new CreateEventFragment(db);
@@ -77,15 +75,12 @@ public class MainFragment extends Fragment implements TabLayout.BaseOnTabSelecte
                 toInsert = mSwipeFragment;
                 break;
             case 1:
-                toInsert = mAuthFragment;
-                break;
-            case 2:
                 toInsert = mEventFragment;
                 break;
-            case 3:
+            case 2:
                 toInsert = mMapFragment;
                break;
-            case 4:
+            case 3:
                 toInsert = mCreateEventFragment;
                 break;
         }

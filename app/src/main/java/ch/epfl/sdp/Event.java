@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class Event {
     private String mDescription;
@@ -31,6 +32,24 @@ public class Event {
         mAddress = address;
         mLocation = location;
         mImageID = imageID;
+    }
+
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date) {
+        this(title, description, date, R.mipmap.ic_launcher);
+    }
+
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID){
+        this(title,description,date,imageID,new LatLng(new Random().nextInt(100), new Random().nextInt(100)));
+    }
+
+    public Event(String title, String description, Date date, int imageID, LatLng location){
+        if (title == null || description == null || date == null || location == null)
+            throw new IllegalArgumentException();
+        this.mTitle = title;
+        this.mDescription = description;
+        this.mDate = date;
+        this.mImageID = imageID;
+        this.mLocation = location;
     }
 
     public String getTitle() {

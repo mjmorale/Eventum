@@ -61,13 +61,12 @@
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:text="Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !"
-                    android:textAlignment="textStart"
+                    android:background="@color/white"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="30dp"
+                    android:text="Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !"
+                    android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:background="@color/white"
                     tools:text="description">
                 </TextView>
 
@@ -86,9 +85,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="314dp"
-                    android:src="@drawable/zoom_sur_archizoom"
-                    android:scaleType="centerCrop">
-                </ImageView>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/zoom_sur_archizoom"></ImageView>
+
 
             </LinearLayout>
 
@@ -111,6 +110,18 @@
             android:src="@drawable/check"
             android:id="@id/back_button"
             app:layout_anchorGravity="bottom|center" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/sharingButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:src="@drawable/com_facebook_favicon_blue"
+            app:backgroundTint="@color/white"
+            app:layout_anchorGravity="bottom|right" />
     </LinearLayout>
 
 </RelativeLayout>

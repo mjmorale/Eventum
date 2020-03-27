@@ -1,7 +1,5 @@
 package ch.epfl.sdp;
 
-import android.content.Intent;
-
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -30,11 +28,8 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static java.lang.Thread.sleep;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
 
 @RunWith(AndroidJUnit4.class)
 public class CreateEventFragmentTest {
@@ -64,7 +59,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void testCreateEventFragment() throws InterruptedException {
+    public void testCreateEventFragment() {
         launchEventFragment();
 
         // Now try with correct values

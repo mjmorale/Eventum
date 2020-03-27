@@ -1,23 +1,37 @@
 package ch.epfl.sdp.ui.event;
 
-import androidx.lifecycle.ViewModelProvider;
-
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareMediaContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.widget.ShareDialog;
+
 import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.db.Database;
 
-public class EventFragment extends Fragment {
+
+public class EventFragment extends Fragment  implements View.OnClickListener {
 
     private EventViewModel mViewModel;
     private EventFragmentBinding mBinding;
     private String mRef;
     private Database mDb;
+
+    private ShareContent mShareContent;
+    private ShareDialog mSharedDialog;
+
 
     public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
@@ -61,8 +75,13 @@ public class EventFragment extends Fragment {
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
         });
-
+        prepareShare();
         return view;
+    }
+
+    @Override
+    public void onClick(View view){
+            mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
     }
 
     @Override
@@ -71,7 +90,23 @@ public class EventFragment extends Fragment {
         mBinding = null;
     }
 
+
+
     public EventViewModel getViewModel() {
         return mViewModel;
+    }
+
+    private void prepareShare(){
+        mSharedDialog = new ShareDialog(this);
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        mShareContent = new ShareMediaContent.Builder()
+                .setShareHashtag(
+                        new ShareHashtag.Builder().setHashtag(
+                                mBinding.title.getText().toString() + " :\n\n " +
+                                        mBinding.description.getText().toString()).build())
+                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
+                .build();
+        mBinding.sharingButton.setOnClickListener(this);
     }
 }
