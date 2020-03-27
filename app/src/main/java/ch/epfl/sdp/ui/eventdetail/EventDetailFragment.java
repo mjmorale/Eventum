@@ -12,8 +12,7 @@ import androidx.fragment.app.Fragment;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.ui.swipe.SwipeFragment;
-
-public class EventDetailFragment extends Fragment {
+public class EventDetailFragment extends Fragment{
     private EventFragmentBinding mBinding;
     private Event mEvent;
     private SwipeFragment mSwipeFragment;
@@ -21,8 +20,6 @@ public class EventDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-
     }
 
     public EventDetailFragment(Event event, SwipeFragment swipeFragment){
@@ -31,7 +28,6 @@ public class EventDetailFragment extends Fragment {
         this.mSwipeFragment = swipeFragment;
 
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,12 +43,8 @@ public class EventDetailFragment extends Fragment {
             public void onClick(View v){
                 getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit();
             }
-                                               }
-
-        );
+        });
         return mBinding.getRoot();
     }
-
-
 
 }
