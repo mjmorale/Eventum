@@ -1,4 +1,4 @@
-package ch.epfl.sdp;
+package ch.epfl.sdp.utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.view.Gravity;
 
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import ch.epfl.sdp.R;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -21,7 +23,7 @@ public class TestUtils {
     }
 
     public static void selectNavigation(int id) {
-        onView(withId(R.id.main_drawer_layout))
+        onView(ViewMatchers.withId(R.id.main_drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT)))
                 .perform(DrawerActions.open());
 

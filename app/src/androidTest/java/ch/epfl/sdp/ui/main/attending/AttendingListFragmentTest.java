@@ -1,77 +1,74 @@
 package ch.epfl.sdp.ui.main.attending;
 
-import android.view.Gravity;
-import android.view.View;
+import android.os.Bundle;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.ViewAssertion;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentFactory;
+import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.MutableLiveData;
+import ch.epfl.sdp.Event;
+import ch.epfl.sdp.MockEventLiveData;
+import ch.epfl.sdp.MockEvents;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.ui.main.MainActivity;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.utils.MockFragmentFactory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AttendingListFragmentTest {
 
-    private static class RecyclerViewItemCountAssertion implements ViewAssertion {
-        private final Matcher<Integer> matcher;
+    @Mock
+    private Database mDatabase;
 
-        public static RecyclerViewItemCountAssertion withItemCount(int expectedCount) {
-            return withItemCount(is(expectedCount));
-        }
-
-        public static RecyclerViewItemCountAssertion withItemCount(Matcher<Integer> matcher) {
-            return new RecyclerViewItemCountAssertion(matcher);
-        }
-
-        private RecyclerViewItemCountAssertion(Matcher<Integer> matcher) {
-            this.matcher = matcher;
-        }
-
-        @Override
-        public void check(View view, NoMatchingViewException noViewFoundException) {
-            if (noViewFoundException != null) {
-                throw noViewFoundException;
-            }
-
-            RecyclerView recyclerView = (RecyclerView) view;
-            RecyclerView.Adapter adapter = recyclerView.getAdapter();
-            assertThat(adapter.getItemCount(), matcher);
-        }
-    }
-
-    @Rule
-    public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class);
+    @Mock
+    private CollectionQuery mCollectionQuery;
 
     @Before
     public void setup() {
-        onView(withId(R.id.main_drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.main_nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_attending));
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void AttendingListFragment() {
-        onView(withId(R.id.attending_list_view)).check(matches(isDisplayed()));
+        MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
+
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.liveData(Event.class)).thenReturn(eventLiveData);
+
+        FragmentScenario<AttendingListFragment> scenario = FragmentScenario.launchInContainer(
+                AttendingListFragment.class,
+                new Bundle(),
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(AttendingListFragment.class, new ParameterizedViewModelFactory(mDatabase)));
+
+        List<Event> events = new ArrayList<>();
+        events.add(new Event("testtitle", "description", new Date()));
+        eventLiveData.postValue(events);
+
+        onView(withText("testtitle")).check(matches(isDisplayed()));
     }
 }

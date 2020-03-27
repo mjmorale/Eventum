@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
-import ch.epfl.sdp.TestUtils;
+import ch.epfl.sdp.utils.TestUtils;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;

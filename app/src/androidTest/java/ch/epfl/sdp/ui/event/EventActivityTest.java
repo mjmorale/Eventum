@@ -3,7 +3,6 @@ package ch.epfl.sdp.ui.event;
 import android.app.Activity;
 import android.content.Intent;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,7 @@ import org.junit.runner.RunWith;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.TestUtils;
+import ch.epfl.sdp.utils.TestUtils;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;

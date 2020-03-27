@@ -1,9 +1,5 @@
 package ch.epfl.sdp;
 
-import android.view.Gravity;
-
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.ui.main.MainActivity;
@@ -21,7 +17,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static ch.epfl.sdp.TestUtils.selectNavigation;
+import static ch.epfl.sdp.utils.TestUtils.selectNavigation;
 
 @RunWith(AndroidJUnit4.class)
 public class SwipeTest {

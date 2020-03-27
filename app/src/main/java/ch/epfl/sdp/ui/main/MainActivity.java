@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_attending:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new AttendingListFragment()).commit();
+                        .replace(mBinding.mainContainer.getId(), new AttendingListFragment(null)).commit();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
