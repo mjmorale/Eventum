@@ -11,14 +11,12 @@ import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment{
     private MapView mMapView;
     private GoogleMapProvider mGoogleMapProvider;
     private Database mDataBase;
@@ -42,10 +40,11 @@ public class MapFragment extends Fragment {
 
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+
+        mGoogleMapProvider = new GoogleMapProvider(this ,mMapView);
+        mGoogleMapProvider.setMyLocationEnabled(true);
+        
         mEvents.observe(getViewLifecycleOwner(), event -> {
-            mGoogleMapProvider = new GoogleMapProvider(this.getContext(),mMapView);
-            mGoogleMapProvider.setMyLocationButtonEnabled(true);
-            mGoogleMapProvider.setMyLocationEnabled(true);
             for(Event e: event){
                 addMarker(e.getTitle(),e.getLocation(), mGoogleMapProvider);
             }

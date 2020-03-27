@@ -4,10 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-
+import android.location.Location;
+import android.location.LocationManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
+import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -15,46 +16,58 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
+    private  boolean mLocationEnabled=false;
+    private List<MarkerOptions> mMarkerOptions;
+    private  final static int PERMISSION_LOCATION=0;
+    private Context mContext;
+    private boolean mHavePermission;
+    private Activity mActivity;
+    private Location mLocation;
+    private float mZoomLevel;
+    private GoogleMap mMap = null;
 
-    private final static int PERMISSION_LOCATION = 0;
+    public GoogleMapProvider(Fragment fragment, MapView mapView){
+        this.mContext = fragment.getContext();
+        this.mActivity = fragment.getActivity();
+        mMarkerOptions = new ArrayList<>();
 
-    private boolean mLocationButtonEnabled = false;
-    private boolean mLocationEnabled = false;
-    private boolean mHavePermission = false;
+        // default current location
+        mLocation = new Location("Europe");
+        mLocation.setLatitude(46.520564);
+        mLocation.setLongitude(6.567827);
+        mZoomLevel = 4;
 
-    private GoogleMap mMap;
-    private Set<MarkerOptions> mMarkerOptionsToBeAdded = new HashSet<>();
-
-    GoogleMapProvider(Context context,MapView mapView){
-        if (!mHavePermission) {
-            ActivityCompat.requestPermissions((Activity)context,
-                    new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION },
+        ActivityCompat.requestPermissions((Activity)mContext,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_LOCATION);
-        }
-        mHavePermission =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
+        mHavePermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+
+        if (mHavePermission){
+            LocationManager locationManager = (LocationManager) mActivity.getSystemService(mContext.LOCATION_SERVICE);
+            mLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mZoomLevel = 12;
+        }
         mapView.getMapAsync(this);
     }
 
     @Override
-    public void onMapReady(GoogleMap googlemap) {
-        mMap = googlemap;
-        mMap.getUiSettings().setMyLocationButtonEnabled(mLocationButtonEnabled && mHavePermission);
-        mMap.setMyLocationEnabled(mLocationEnabled && mHavePermission);
-        mMap.addMarker(mMarkerOptionsToBeAdded.iterator().next());
-        // for now display the french part of Switzerland on launch, to be modified
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.520564, 6.567827), 9));
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        setMapSettings(mMap, mMarkerOptions, mLocationEnabled&&mHavePermission);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), mZoomLevel));
     }
 
-    @Override
-    public void setMyLocationButtonEnabled(boolean enabled) {
-        mLocationButtonEnabled = enabled;
+    static public void setMapSettings(GoogleMap googleMap, List<MarkerOptions> markerOptionsList, boolean locationEnabled) {
+        googleMap.setMyLocationEnabled(locationEnabled);
+        for(MarkerOptions markerOptions: markerOptionsList)googleMap.addMarker(markerOptions);
     }
 
     @Override
@@ -64,6 +77,10 @@ public class GoogleMapProvider implements MapProvider, OnMapReadyCallback {
 
     @Override
     public void addMarker(MarkerOptions markerOptions) {
-        mMarkerOptionsToBeAdded.add(markerOptions);
+        if(mMap==null){
+            mMarkerOptions.add(markerOptions);
+        }else{
+            mMap.addMarker(markerOptions);
+        }
     }
 }

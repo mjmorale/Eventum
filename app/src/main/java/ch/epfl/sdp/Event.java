@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
+import java.util.Random;
 
 public class Event {
 
@@ -19,7 +20,7 @@ public class Event {
     }
 
     public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID){
-        this(title,description,date,imageID,new LatLng(46.520553, 6.567821));
+        this(title,description,date,imageID,new LatLng(new Random().nextInt(100), new Random().nextInt(100)));
     }
 
     public Event(String title, String description, Date date, int imageID, LatLng location){
