@@ -27,16 +27,13 @@ public class EventActivityTest {
     @Rule
     public ActivityTestRule<EventActivity> mActivity = new ActivityTestRule<>(EventActivity.class, false, false);
 
-    @Before
-    public void setup() {
-        TestUtils.dismissSystemPopups(mActivity.getActivity());
-    }
-
     @Test
     public void EventActivity_FailsToLaunchWithNullEventRef() {
         Intent intent = new Intent();
         intent.putExtra(EventActivity.EVENT_MODE_EXTRA, EventActivity.EventActivityMode.ORGANIZER);
         mActivity.launchActivity(intent);
+
+        TestUtils.dismissSystemPopups(mActivity.getActivity());
 
         assertEquals(Activity.RESULT_CANCELED, mActivity.getActivityResult().getResultCode());
     }
@@ -46,6 +43,8 @@ public class EventActivityTest {
         Intent intent = new Intent();
         intent.putExtra(EventActivity.EVENT_REF_EXTRA, DUMMY_STRING);
         mActivity.launchActivity(intent);
+
+        TestUtils.dismissSystemPopups(mActivity.getActivity());
 
         onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
     }
