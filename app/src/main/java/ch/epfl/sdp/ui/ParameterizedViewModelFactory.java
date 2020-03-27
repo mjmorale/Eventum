@@ -52,14 +52,15 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
 
     private boolean constructorMatchesParameterTypes(Constructor<?> constructor) {
         Class<?> types[] = constructor.getParameterTypes();
-        if(types.length == mParameters.size()) {
-            for(int i = 0; i < types.length; i++) {
-                if(!types[i].isAssignableFrom(mParameters.get(i).getClass())) {
-                    return false;
-                }
-            }
-            return true;
+        if(types.length != mParameters.size()) {
+            return false;
         }
-        return false;
+        for(int i = 0; i < types.length; i++) {
+            if(!types[i].isAssignableFrom(mParameters.get(i).getClass())) {
+                return false;
+            }
+        }
+        return true;
     }
+
 }
