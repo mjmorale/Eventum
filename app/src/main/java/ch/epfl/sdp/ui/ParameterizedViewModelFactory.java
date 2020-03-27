@@ -30,9 +30,10 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
             try {
                 return constructor.newInstance(mParameters.toArray());
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
+                throw new IllegalArgumentException("Cannot instantiate " + modelClass.getSimpleName() + " class");
             }
         }
+        throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
     }
 
     @SuppressWarnings("unchecked")
@@ -40,7 +41,7 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
         if(modelClass == null) {
             throw new IllegalArgumentException("ViewModel class cannot be null");
         }
-        
+
         for(Constructor<?> constructor: modelClass.getConstructors()) {
             if(constructorMatchesParameterTypes(constructor)) {
                 return (Constructor<T>) constructor;
