@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.auth.AuthenticationResult;
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.auth.User;
 import ch.epfl.sdp.ui.auth.AuthActivity;
 import ch.epfl.sdp.ui.auth.LoginAuthViewModel;
 

@@ -10,13 +10,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.auth.User;
 import ch.epfl.sdp.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.ui.AuthViewModelFactory;
 import ch.epfl.sdp.ui.AuthViewModel;
-import ch.epfl.sdp.ui.event.EventViewModel;
-
-import static org.junit.Assert.assertEquals;
+import ch.epfl.sdp.ui.EventViewModel;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthViewModelFactoryTest {

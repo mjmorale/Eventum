@@ -12,10 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.auth.User;
 import ch.epfl.sdp.ui.auth.LoginAuthViewModel;
 
 @RunWith(MockitoJUnitRunner.class)
