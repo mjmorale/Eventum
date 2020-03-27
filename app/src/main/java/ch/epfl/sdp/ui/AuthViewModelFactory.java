@@ -19,15 +19,13 @@ public class AuthViewModelFactory<CredType> implements ViewModelProvider.Factory
         mAuthenticator = authenticator;
     }
 
-    //TODO: Remove this once the class is generic
-    public void test() {}
-
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (AuthViewModel.class.isAssignableFrom(modelClass)) {
             try {
                 Constructor<T> constructor = modelClass.getConstructor(Authenticator.class);
+                String s = new String("test");
                 return constructor.newInstance(mAuthenticator);
             }
             catch(NoSuchMethodException e) {
