@@ -71,6 +71,8 @@ public class MainActivityTest {
 
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
+        intended(hasComponent("ch.epfl.sdp.ui.createevent.CreateEventActivity"));
+
         onView(withText("Failed to create event")).inRoot(withDecorView(not(mActivity.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
 
         Intents.release();
