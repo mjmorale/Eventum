@@ -25,24 +25,40 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
             throw new IllegalArgumentException("ViewModel class cannot be null");
         }
 
-        try {
-            Constructor<?> constructors[] = modelClass.getConstructors();
-            for(Constructor<?> constructor: constructors) {
-                Class<?> types[] = constructor.getParameterTypes();
-                if(types.length == mParameters.size()) {
-                    boolean matches = true;
-                    for(int i = 0; i < types.length; i++) {
-                        if(!types[i].isAssignableFrom(mParameters.get(i).getClass())) {
-                            matches = false;
-                        }
-                    }
-                    if(matches) return (T) constructor.newInstance(mParameters.toArray());
+        Constructor<T> constructor = getMatchingConstructor(modelClass);
+        if(constructor != null) {
+            try {
+                return constructor.newInstance(mParameters.toArray());
+            } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends ViewModel> Constructor<T> getMatchingConstructor(@NonNull Class<T> modelClass) {
+        if(modelClass == null) {
+            throw new IllegalArgumentException("ViewModel class cannot be null");
+        }
+        
+        for(Constructor<?> constructor: modelClass.getConstructors()) {
+            if(constructorMatchesParameterTypes(constructor)) {
+                return (Constructor<T>) constructor;
+            }
+        }
+        return null;
+    }
+
+    private boolean constructorMatchesParameterTypes(Constructor<?> constructor) {
+        Class<?> types[] = constructor.getParameterTypes();
+        if(types.length == mParameters.size()) {
+            for(int i = 0; i < types.length; i++) {
+                if(!types[i].isAssignableFrom(mParameters.get(i).getClass())) {
+                    return false;
                 }
             }
-            throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
+            return true;
         }
-        catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new IllegalArgumentException("Cannot instantiate " + modelClass.getSimpleName() + " class");
-        }
+        return false;
     }
 }
