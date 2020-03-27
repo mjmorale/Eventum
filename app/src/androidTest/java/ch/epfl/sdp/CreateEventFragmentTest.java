@@ -70,10 +70,10 @@ public class CreateEventFragmentTest {
         // Now try with correct values
         doCorrectInput();
 
-        onData(instanceOf(GeoSearchResult.class))
+/*        onData(instanceOf(GeoSearchResult.class))
                 .inRoot(isPlatformPopup())
                 .check(matches(isDisplayed()))
-                .perform(click());
+                .perform(click());*/
 
        onView(withId(R.id.createButton))
                 .perform(scrollTo(), click());
@@ -138,6 +138,7 @@ public class CreateEventFragmentTest {
 
         onView(withId(R.id.geo_autocomplete)).perform(
                 scrollTo(),
-                typeText("Lausanne"));
+                typeText("Lausanne"),
+                clearText());
     }
 }
