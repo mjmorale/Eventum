@@ -3,4 +3,6 @@
 
     <string name="navigation_main_drawer_open">Open navigation drawer</string>
     <string name="navigation_main_drawer_close">Close navigation drawer</string>
+
+    <string name="facebook_app_id">683489682480326</string>
 </resources>
