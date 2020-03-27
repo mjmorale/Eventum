@@ -5,9 +5,11 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.view.Gravity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
@@ -15,6 +17,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.TestUtils;
 import ch.epfl.sdp.ui.event.EventActivity;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -31,7 +34,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class MainActivityTest {
 
     private static final String DUMMY_STRING = "test";
@@ -39,10 +42,15 @@ public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class);
 
+    @Before
+    public void setup() {
+        TestUtils.dismissSystemPopups(mActivity.getActivity());
+    }
+
     @Test
     public void MainActivity_CreatingEventLaunchesEventActivity() {
         //TODO: Uncomment once migrated to CirrusCI
-        /*Intents.init();
+        Intents.init();
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(EventActivity.EVENT_MODE_EXTRA, EventActivity.EventActivityMode.ORGANIZER);
@@ -53,11 +61,9 @@ public class MainActivityTest {
 
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
-        Thread.sleep(5000);
-
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
 
-        Intents.release();*/
+        Intents.release();
     }
 
     @Test
