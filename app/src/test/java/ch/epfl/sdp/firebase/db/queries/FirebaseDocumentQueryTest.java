@@ -1,3 +1,4 @@
+
 package ch.epfl.sdp.firebase.db.queries;
 
 import androidx.lifecycle.LiveData;
