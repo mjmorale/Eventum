@@ -21,7 +21,7 @@ public interface CollectionQuery extends Query {
 
     FilterQuery limitCount(int count);
 
-    GeoFirestoreQuery queryAtLocation(GeoPoint geoPoint, double radius);
+    GeoFirestoreQuery atLocation(GeoPoint geoPoint, double radius);
 
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
 

@@ -38,7 +38,7 @@ public class MockCollectionQuery implements CollectionQuery {
     }
 
     @Override
-    public GeoFirestoreQuery queryAtLocation(GeoPoint geoPoint, double radius) {
+    public GeoFirestoreQuery atLocation(GeoPoint geoPoint, double radius) {
         return null;
     }
 

@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
 import org.imperiumlabs.geofirestore.GeoFirestore.CompletionCallback;
+import org.imperiumlabs.geofirestore.GeoQuery;
 
 
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
@@ -69,8 +70,8 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
-    public GeoFirestoreQuery queryAtLocation(GeoPoint geoPoint, double radius) {
-        return null;
+    public GeoFirestoreQuery atLocation(GeoPoint geoPoint, double radius) {
+        return new FirebaseGeoFirestoreQuery(mDb, new GeoFirestore(mCollection).queryAtLocation(geoPoint, radius));
     }
 
 
