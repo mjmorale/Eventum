@@ -1,13 +1,10 @@
 package ch.epfl.sdp;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.Nullable;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-public class User implements Parcelable {
+public class User {
 
     private final String mUid;
     private final String mName;
@@ -21,22 +18,6 @@ public class User implements Parcelable {
             throw new IllegalArgumentException();
         }
     }
-
-    protected User(Parcel in) {
-        this(in.readString(), in.readString(), in.readString());
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     public String getUid() {
         return mUid;
@@ -58,18 +39,5 @@ public class User implements Parcelable {
         return (user.mUid.equals(mUid) &
                 user.mName.equals(mName) &
                 user.mEmail.equals(mEmail));
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mUid);
-        dest.writeString(mName);
-        dest.writeString(mEmail);
     }
 }
