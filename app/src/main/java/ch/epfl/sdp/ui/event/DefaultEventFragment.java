@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Bitmap;
@@ -17,23 +18,45 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.widget.ShareDialog;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.DefaultEventFragmentBinding;
-import ch.epfl.sdp.ui.EventViewModelFactory;
-import ch.epfl.sdp.ui.FirestoreEventViewModelFactory;
+import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.ui.UIConstants;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class DefaultEventFragment extends Fragment implements View.OnClickListener {
 
-    protected DefaultEventViewModel mViewModel;
-    private DefaultEventFragmentBinding mBinding;
+    static class DefaultEventViewModelFactory extends ParameterizedViewModelFactory {
+
+        public DefaultEventViewModelFactory() {
+            super(Database.class, String.class);
+        }
+
+        public void setDatabase(@NonNull Database database) {
+            setValue(0, verifyNotNull(database));
+        }
+
+        public void setEventRef(@NonNull String eventRef) {
+            setValue(1, verifyNotNull(eventRef));
+        }
+    }
+
+    private DefaultEventViewModel mViewModel;
+    private FragmentDefaultEventBinding mBinding;
+    private final DefaultEventViewModelFactory mFactory;
 
     private ShareContent mShareContent;
     private ShareDialog mSharedDialog;
 
-    public static DefaultEventFragment newInstance(String eventRef) {
+    public static DefaultEventFragment getInstance(@NonNull String eventRef) {
+        verifyNotNull(eventRef);
         Bundle bundle = new Bundle();
-        bundle.putString(EventActivity.EVENT_REF_EXTRA, eventRef);
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
 
         DefaultEventFragment fragment = new DefaultEventFragment();
         fragment.setArguments(bundle);
@@ -41,10 +64,22 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
         return fragment;
     }
 
+    public DefaultEventFragment() {
+        mFactory = new DefaultEventViewModelFactory();
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+    }
+
+    @VisibleForTesting
+    public DefaultEventFragment(@NonNull Database database, @NonNull String eventRef) {
+        mFactory = new DefaultEventViewModelFactory();
+        mFactory.setDatabase(database);
+        mFactory.setEventRef(eventRef);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DefaultEventFragmentBinding.inflate(inflater, container, false);
+        mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 
@@ -54,24 +89,18 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
 
         Bundle args = getArguments();
         if(args != null) {
-            String eventRef = args.getString(EventActivity.EVENT_REF_EXTRA);
-            if(eventRef != null) {
-                EventViewModelFactory factory = FirestoreEventViewModelFactory.getInstance(eventRef);
-                mViewModel = new ViewModelProvider(this, factory).get(DefaultEventViewModel.class);
-
-                mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-                    mBinding.date.setText(event.getDate().toString());
-                    mBinding.description.setText(event.getDescription());
-                    mBinding.title.setText(event.getTitle());
-                });
-
-                prepareShare();
-
-                mBinding.defaultEventErrorLayout.setVisibility(View.INVISIBLE);
-                return;
-            }
+            mFactory.setEventRef(args.getString(UIConstants.BUNDLE_EVENT_REF));
         }
-        mBinding.defaultEventLayout.setVisibility(View.INVISIBLE);
+
+        mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(event.getDate().toString());
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
+        });
+
+        prepareShare();
     }
 
     @Override

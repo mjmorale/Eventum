@@ -15,34 +15,50 @@ import android.view.ViewGroup;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import ch.epfl.sdp.databinding.AttendingListFragmentBinding;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.DatabaseViewModelFactory;
-import ch.epfl.sdp.ui.FirestoreDatabaseViewModelFactory;
+import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class AttendingListFragment extends Fragment {
 
-    private ParameterizedViewModelFactory mFactory;
+    static class AttendingListViewModelFactory extends ParameterizedViewModelFactory {
+
+        public AttendingListViewModelFactory() {
+            super(Database.class);
+        }
+
+        public void setDatabase(@NonNull Database database) {
+            setValue(0, verifyNotNull(database));
+        }
+    }
+
+    private final AttendingListViewModelFactory mFactory;
     private AttendingListViewModel mViewModel;
-    private AttendingListFragmentBinding mBinding;
+    private FragmentAttendingListBinding mBinding;
 
     private AttendingEventAdapter mAdapter;
 
-    public AttendingListFragment() {}
+    public AttendingListFragment() {
+        mFactory = new AttendingListViewModelFactory();
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+    }
 
-    public AttendingListFragment(ParameterizedViewModelFactory factory) {
-        mFactory = factory;
+    @VisibleForTesting
+    public AttendingListFragment(@NonNull Database database) {
+        mFactory = new AttendingListViewModelFactory();
+        mFactory.setDatabase(database);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = AttendingListFragmentBinding.inflate(inflater, container, false);
+        mBinding = FragmentAttendingListBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 
@@ -54,9 +70,6 @@ public class AttendingListFragment extends Fragment {
         mBinding.attendingListView.setAdapter(mAdapter);
         mBinding.attendingListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if(mFactory == null) {
-            mFactory = new ParameterizedViewModelFactory(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        }
         mViewModel = new ViewModelProvider(this, mFactory).get(AttendingListViewModel.class);
 
         if(mViewModel.getAttendingEvents().hasObservers()) {
@@ -65,5 +78,11 @@ public class AttendingListFragment extends Fragment {
         mViewModel.getAttendingEvents().observe(getViewLifecycleOwner(), events -> {
             mAdapter.setAttendingEvents(events);
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }

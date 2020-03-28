@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.epfl.sdp.User;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class AuthenticationResult {
 
     private final Exception mException;
@@ -17,17 +19,11 @@ public class AuthenticationResult {
     }
 
     public static AuthenticationResult success(@NonNull User user) {
-        if(user == null) {
-            throw new IllegalArgumentException();
-        }
-        return new AuthenticationResult(user, true, null);
+        return new AuthenticationResult(verifyNotNull(user), true, null);
     }
 
     public static AuthenticationResult failure(@NonNull Exception exception) {
-        if(exception == null) {
-            throw new IllegalArgumentException();
-        }
-        return new AuthenticationResult(null, false, exception);
+        return new AuthenticationResult(null, false, verifyNotNull(exception));
     }
 
     public boolean isSuccessful() {

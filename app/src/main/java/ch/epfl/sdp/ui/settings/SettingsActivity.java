@@ -11,19 +11,19 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.SettingsActivityBinding;
+import ch.epfl.sdp.databinding.ActivitySettingsBinding;
 
 public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private static final String TITLE_TAG = "settingsActivityTitle";
 
-    private SettingsActivityBinding mBinding;
+    private ActivitySettingsBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = SettingsActivityBinding.inflate(getLayoutInflater());
+        mBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         setContentView(view);
 

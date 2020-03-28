@@ -5,12 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.ui.DatabaseViewModel;
 
-public class CreateEventViewModel extends DatabaseViewModel {
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
+public class CreateEventViewModel extends ViewModel {
 
     interface OnEventCreatedCallback {
         void onSuccess(String eventRef);
@@ -18,16 +20,15 @@ public class CreateEventViewModel extends DatabaseViewModel {
     }
 
     private final CollectionQuery mEventCollection;
+    private final Database mDatabase;
 
     public CreateEventViewModel(@NonNull Database database) {
-        super(database);
+        mDatabase = verifyNotNull(database);
         mEventCollection = mDatabase.query("events");
     }
 
     public void insertEvent(@NonNull String name, @NonNull String description, @NonNull String date, @NonNull OnEventCreatedCallback callback) throws ParseException {
-        if(callback == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyNotNull(name, description, date, callback);
         Date parsedDate = new SimpleDateFormat("dd/MM/yyyy").parse(date);
         Event event = new Event(name, description, parsedDate);
         mEventCollection.create(event, res -> {

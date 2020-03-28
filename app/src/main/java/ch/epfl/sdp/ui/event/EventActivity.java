@@ -2,7 +2,8 @@ package ch.epfl.sdp.ui.event;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.databinding.EventActivityBinding;
+import ch.epfl.sdp.databinding.ActivityEventBinding;
+import ch.epfl.sdp.ui.UIConstants;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,20 +12,17 @@ import android.view.View;
 
 public class EventActivity extends AppCompatActivity {
 
-    public static final String EVENT_MODE_EXTRA = "event_mode_extra";
-    public static final String EVENT_REF_EXTRA = "event_ref_extra";
-
     public enum EventActivityMode {
         ORGANIZER,
         ATTENDEE
     }
 
-    private EventActivityBinding mBinding;
+    private ActivityEventBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = EventActivityBinding.inflate(getLayoutInflater());
+        mBinding = ActivityEventBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         setContentView(view);
 
@@ -35,11 +33,11 @@ public class EventActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        EventActivityMode mode = (EventActivityMode) intent.getSerializableExtra(EVENT_MODE_EXTRA);
+        EventActivityMode mode = (EventActivityMode) intent.getSerializableExtra(UIConstants.BUNDLE_EVENT_MODE_REF);
         if(mode == null) {
             mode = EventActivityMode.ATTENDEE;
         }
-        String eventRef = intent.getStringExtra(EVENT_REF_EXTRA);
+        String eventRef = intent.getStringExtra(UIConstants.BUNDLE_EVENT_REF);
         if(eventRef == null) {
             setResult(Activity.RESULT_CANCELED);
             finish();
@@ -48,13 +46,13 @@ public class EventActivity extends AppCompatActivity {
         switch(mode) {
             default:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.eventContent.getId(), DefaultEventFragment.newInstance(eventRef)).commit();
+                        .replace(mBinding.eventContent.getId(), DefaultEventFragment.getInstance(eventRef)).commit();
         }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mBinding = null;
+        super.onDestroy();
     }
 }

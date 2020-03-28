@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class User implements Parcelable {
 
     private final String mUid;
@@ -12,16 +14,12 @@ public class User implements Parcelable {
     private final String mEmail;
 
     public User(String uid, String name, String email) {
-        if(uid == null || name == null || email == null) {
-            throw new IllegalArgumentException();
-        }
+        this.mUid = verifyNotNull(uid);
+        this.mName = verifyNotNull(name);
+        this.mEmail = verifyNotNull(email);
         if(uid.isEmpty() || name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
-        this.mUid = uid;
-        this.mName = name;
-        this.mEmail = email;
     }
 
     protected User(Parcel in) {

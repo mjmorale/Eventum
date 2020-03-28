@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:widgetLayout="@layout/settings_account_profile_picture_layout"
+        app:widgetLayout="@layout/layout_settings_account_profile_picture"
         app:key="account_picture"
         app:title="Avatar"
         app:summary="Your profile picture" />

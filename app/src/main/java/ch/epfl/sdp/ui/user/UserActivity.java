@@ -1,26 +1,22 @@
 package ch.epfl.sdp.ui.user;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.databinding.UserActivityBinding;
+import ch.epfl.sdp.databinding.ActivityUserBinding;
 
 import com.google.android.material.tabs.TabLayout;
 
 public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
-    private UserActivityBinding mBinding;
+    private ActivityUserBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = UserActivityBinding.inflate(getLayoutInflater());
+        mBinding = ActivityUserBinding.inflate(getLayoutInflater());
         View root = mBinding.getRoot();
         setContentView(root);
 

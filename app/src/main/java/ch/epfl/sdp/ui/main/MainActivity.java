@@ -16,27 +16,26 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.core.view.GravityCompat;
-import ch.epfl.sdp.databinding.MainActivityBinding;
+import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
-import ch.epfl.sdp.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.user.UserActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-    private MainActivityBinding mBinding;
-
-    private static final int RC_CREATE_EVENT = 8000;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = MainActivityBinding.inflate(getLayoutInflater());
+        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         setContentView(view);
 
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_actionbar_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_main_actionbar, menu);
         return true;
     }
 
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId()) {
             case R.id.main_actionbar_add:
                 Intent intent = new Intent(this, CreateEventActivity.class);
-                startActivityForResult(intent, RC_CREATE_EVENT);
+                startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -84,12 +83,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == RC_CREATE_EVENT) {
+        if(requestCode == UIConstants.RC_CREATE_EVENT) {
             if(resultCode == RESULT_OK) {
-                String eventRef = data.getStringExtra(CreateEventActivity.EVENT_REF_EXTRA);
+                String eventRef = data.getStringExtra(UIConstants.BUNDLE_EVENT_REF);
                 Intent eventIntent = new Intent(this, EventActivity.class);
-                eventIntent.putExtra(EventActivity.EVENT_MODE_EXTRA, EventActivity.EventActivityMode.ORGANIZER);
-                eventIntent.putExtra(EventActivity.EVENT_REF_EXTRA, eventRef);
+                eventIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER);
+                eventIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
                 startActivity(eventIntent);
             }
             else {
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_attending:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new AttendingListFragment(null)).commit();
+                        .replace(mBinding.mainContainer.getId(), new AttendingListFragment()).commit();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);

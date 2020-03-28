@@ -1,12 +1,16 @@
 package ch.epfl.sdp.ui.user;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.ui.DatabaseViewModel;
 
-public class UserEventsViewModel extends DatabaseViewModel {
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
+public class UserEventsViewModel extends ViewModel {
+
+    private final Database mDatabase;
 
     public UserEventsViewModel(@NonNull Database database) {
-        super(database);
+        mDatabase = verifyNotNull(database);
     }
 }

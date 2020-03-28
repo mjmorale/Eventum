@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAdapter.AttendingEventViewHolder> {
 
     private List<Event> mAttendingEvents;
@@ -27,24 +29,18 @@ public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAd
     }
 
     public AttendingEventAdapter(@NonNull List<Event> attendingEvents) {
-        if(attendingEvents == null) {
-            throw new IllegalArgumentException();
-        }
-        mAttendingEvents = attendingEvents;
+        mAttendingEvents = verifyNotNull(attendingEvents);
     }
 
     public void setAttendingEvents(@NonNull List<Event> attendingEvents) {
-        if(attendingEvents == null) {
-            throw new IllegalArgumentException();
-        }
-        mAttendingEvents = attendingEvents;
+        mAttendingEvents = verifyNotNull(attendingEvents);
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public AttendingEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.attending_item_cardview, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_attending_item, parent, false);
         AttendingEventViewHolder attendingEventViewHolder = new AttendingEventViewHolder(v);
         return attendingEventViewHolder;
     }

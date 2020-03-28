@@ -15,6 +15,7 @@ import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.google.map.GoogleMapProvider;
 
 public class MapFragment extends Fragment{
     private MapView mMapView;
@@ -36,7 +37,7 @@ public class MapFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapView= view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);

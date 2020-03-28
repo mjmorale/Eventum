@@ -15,12 +15,11 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.EventcardBinding;
 
 public class CardArrayAdapter extends ArrayAdapter<Event> {
 
     public CardArrayAdapter(Context context, List<Event> items){
-        super(context, R.layout.card, items);
+        super(context, R.layout.cardview_swipe_item, items);
     }
 
     @NonNull
@@ -28,7 +27,7 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Event event = getItem(position);
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.card, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.cardview_swipe_item, parent, false);
         }
 
         TextView name = convertView.findViewById(R.id.eventName);
