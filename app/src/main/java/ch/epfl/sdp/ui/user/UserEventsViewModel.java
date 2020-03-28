@@ -18,6 +18,9 @@ public class UserEventsViewModel extends ViewModel {
         void setDatabase(@NonNull Database database) {
             setValue(0, verifyNotNull(database));
         }
+
+        //TODO: @Dorian remove once this viewmodel is fully implemented
+        void test() {}
     }
 
     private final Database mDatabase;
