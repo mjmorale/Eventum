@@ -17,35 +17,21 @@ import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.databinding.FragmentUserEventsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class UserEventsFragment extends Fragment {
 
-    static class UserEventsViewModelFactory extends ParameterizedViewModelFactory {
-
-        public UserEventsViewModelFactory() {
-            super(Database.class);
-        }
-
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-    }
-
     private FragmentUserEventsBinding mBinding;
     private UserEventsViewModel mViewModel;
-    private final UserEventsViewModelFactory mFactory;
+    private final UserEventsViewModel.UserEventsViewModelFactory mFactory;
 
     public UserEventsFragment() {
-        mFactory = new UserEventsViewModelFactory();
+        mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
     public UserEventsFragment(@NonNull Database database) {
-        mFactory = new UserEventsViewModelFactory();
+        mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
         mFactory.setDatabase(database);
     }
 

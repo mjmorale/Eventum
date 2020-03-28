@@ -28,41 +28,27 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.main.MainActivity;
 
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-
 public class AuthFragment extends Fragment implements View.OnClickListener {
-
-    static class AuthViewModelFactory extends ParameterizedViewModelFactory {
-
-        public AuthViewModelFactory() {
-            super(Authenticator.class);
-        }
-
-        public void setAuthenticator(@NonNull Authenticator authenticator) {
-            setValue(0, verifyNotNull(authenticator));
-        }
-    }
 
     private final static String TAG = "AuthFragment";
 
-    private final AuthViewModelFactory mFactory;
+    private final AuthViewModel.AuthViewModelFactory mFactory;
     private FragmentAuthBinding mBinding;
     private AuthViewModel<AuthCredential> mViewModel;
 
     private GoogleSignInClient mGoogleSignInClient;
 
     public AuthFragment() {
-        mFactory = new AuthViewModelFactory();
+        mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
     }
 
     @VisibleForTesting
     public AuthFragment(@NonNull Authenticator authenticator) {
-        mFactory = new AuthViewModelFactory();
+        mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(authenticator);
     }
 

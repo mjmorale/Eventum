@@ -24,31 +24,15 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class DefaultEventFragment extends Fragment implements View.OnClickListener {
 
-    static class DefaultEventViewModelFactory extends ParameterizedViewModelFactory {
-
-        public DefaultEventViewModelFactory() {
-            super(Database.class, String.class);
-        }
-
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-
-        public void setEventRef(@NonNull String eventRef) {
-            setValue(1, verifyNotNull(eventRef));
-        }
-    }
-
     private DefaultEventViewModel mViewModel;
     private FragmentDefaultEventBinding mBinding;
-    private final DefaultEventViewModelFactory mFactory;
+    private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
 
     private ShareContent mShareContent;
     private ShareDialog mSharedDialog;
@@ -65,13 +49,13 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
     }
 
     public DefaultEventFragment() {
-        mFactory = new DefaultEventViewModelFactory();
+        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
     public DefaultEventFragment(@NonNull Database database, @NonNull String eventRef) {
-        mFactory = new DefaultEventViewModelFactory();
+        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
     }

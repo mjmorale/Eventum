@@ -9,10 +9,22 @@ import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventViewModel extends ViewModel {
+
+    static class CreateEventViewModelFactory extends ParameterizedViewModelFactory {
+
+        CreateEventViewModelFactory() {
+            super(Database.class);
+        }
+
+        void setDatabase(@NonNull Database database) {
+            setValue(0, verifyNotNull(database));
+        }
+    }
 
     interface OnEventCreatedCallback {
         void onSuccess(String eventRef);

@@ -8,10 +8,22 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class AuthViewModel<CredType> extends ViewModel {
+
+    static class AuthViewModelFactory extends ParameterizedViewModelFactory {
+
+        AuthViewModelFactory() {
+            super(Authenticator.class);
+        }
+
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(0, verifyNotNull(authenticator));
+        }
+    }
 
     private final static String TAG = "LoginAuthViewModel";
 

@@ -8,10 +8,22 @@ import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class AttendingListViewModel extends ViewModel {
+
+    static class AttendingListViewModelFactory extends ParameterizedViewModelFactory {
+
+        AttendingListViewModelFactory() {
+            super(Database.class);
+        }
+
+        void setDatabase(@NonNull Database database) {
+            setValue(0, verifyNotNull(database));
+        }
+    }
 
     private final CollectionQuery mAttendingQuery;
     private final Database mDatabase;

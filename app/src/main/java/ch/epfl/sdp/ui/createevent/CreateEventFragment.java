@@ -23,36 +23,24 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
 
-    static class CreateEventViewModelFactory extends ParameterizedViewModelFactory {
-
-        public CreateEventViewModelFactory() {
-            super(Database.class);
-        }
-
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-    }
-
     private FragmentCreateEventBinding mBinding;
     private CreateEventViewModel mViewModel;
-    private final CreateEventViewModelFactory mFactory;
+    private final CreateEventViewModel.CreateEventViewModelFactory mFactory;
 
     public CreateEventFragment() {
-        mFactory = new CreateEventViewModelFactory();
+        mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
     public CreateEventFragment(@NonNull Database database) {
-        mFactory = new CreateEventViewModelFactory();
+        mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
     }
 

@@ -17,35 +17,21 @@ import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.databinding.FragmentUserStatisticsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class UserStatisticsFragment extends Fragment {
 
-    static class UserStatisticsViewModelFactory extends ParameterizedViewModelFactory {
-
-        public UserStatisticsViewModelFactory() {
-            super(Database.class);
-        }
-
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-    }
-
     private FragmentUserStatisticsBinding mBinding;
     private UserStatisticsViewModel mViewModel;
-    private final UserStatisticsViewModelFactory mFactory;
+    private final UserStatisticsViewModel.UserStatisticsViewModelFactory mFactory;
 
     public UserStatisticsFragment() {
-        mFactory = new UserStatisticsViewModelFactory();
+        mFactory = new UserStatisticsViewModel.UserStatisticsViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
     public UserStatisticsFragment(@NonNull Database database) {
-        mFactory = new UserStatisticsViewModelFactory();
+        mFactory = new UserStatisticsViewModel.UserStatisticsViewModelFactory();
         mFactory.setDatabase(database);
     }
 

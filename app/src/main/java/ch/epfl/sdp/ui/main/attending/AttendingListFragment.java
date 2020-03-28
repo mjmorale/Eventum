@@ -21,37 +21,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class AttendingListFragment extends Fragment {
 
-    static class AttendingListViewModelFactory extends ParameterizedViewModelFactory {
-
-        public AttendingListViewModelFactory() {
-            super(Database.class);
-        }
-
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-    }
-
-    private final AttendingListViewModelFactory mFactory;
+    private final AttendingListViewModel.AttendingListViewModelFactory mFactory;
     private AttendingListViewModel mViewModel;
     private FragmentAttendingListBinding mBinding;
 
     private AttendingEventAdapter mAdapter;
 
     public AttendingListFragment() {
-        mFactory = new AttendingListViewModelFactory();
+        mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
     public AttendingListFragment(@NonNull Database database) {
-        mFactory = new AttendingListViewModelFactory();
+        mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setDatabase(database);
     }
 
