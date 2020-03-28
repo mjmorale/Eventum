@@ -27,6 +27,8 @@ public class SwipeFragment extends Fragment {
     private List<Event> mEventList;
     private Event mCurrentEvent;
 
+    private ArrayAdapter mSavedArrayAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -55,7 +57,8 @@ public class SwipeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.swipe_fragment, container, false);
-
+        if(mSavedArrayAdapter != null)
+            mArrayAdapter = mSavedArrayAdapter;
         return view;
     }
 
@@ -89,5 +92,11 @@ public class SwipeFragment extends Fragment {
             mInfoFragment = new EventDetailFragment(mCurrentEvent,this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mSavedArrayAdapter = mArrayAdapter;
     }
 }
