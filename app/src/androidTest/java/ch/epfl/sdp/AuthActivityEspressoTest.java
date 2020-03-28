@@ -18,8 +18,7 @@ import androidx.test.uiautomator.UiDevice;
 public class AuthActivityEspressoTest {
     @Rule
     public ActivityTestRule<AuthActivity> mActivityTestRule = new ActivityTestRule<>(AuthActivity.class);
-
-
+    
     @Test
     public void AuthActivity_test_button() {
         onView(withId(R.id.btn_google_sign_in)).perform(click());
