@@ -1,0 +1,29 @@
+on: [push]
+jobs:
+  android_instrumented_tests:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        api-level: [21, 23, 25, 26, 28]
+        target: [default]
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: Android instrumented tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: ${{ matrix.target }}
+        arch: x86
+        script: ./gradlew connectedCheck jacocoTestReport
+        
+    - name: Test & publish code coverage
+      uses: paambaati/codeclimate-action@v2.5.6
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+        JACOCO_SOURCE_PATH: "${{ github.workspace }}/app/src/main/java"
+      with:
+        coverageCommand: "ls" # Hack to avoid running default coverage command
+        coverageLocations:
+          "${{ github.workspace }}/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml:jacoco"
