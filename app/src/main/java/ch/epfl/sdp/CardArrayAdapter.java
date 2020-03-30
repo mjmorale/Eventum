@@ -1,6 +1,5 @@
 package ch.epfl.sdp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,7 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.card, parent, false);
         }
 
-        TextView name = convertView.findViewById(R.id.eventName);
+        TextView name = convertView.findViewById(R.id.eventCardName);
         ImageView imageView = convertView.findViewById(R.id.imageCard);
         TextView description = convertView.findViewById(R.id.eventDescription);
 

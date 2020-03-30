@@ -37,7 +37,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/eventName"
+                    android:id="@+id/eventCardName"
                     android:textSize="20sp"
                     android:textColor="@color/colorPrimary"
                     android:gravity="start"

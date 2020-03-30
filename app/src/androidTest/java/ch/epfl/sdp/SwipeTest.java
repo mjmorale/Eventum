@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
@@ -16,6 +17,9 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
@@ -57,17 +61,31 @@ public class SwipeTest {
     }
 
     @Test
-    public void clickSwapsToDetailled(){
+    public void clickSwapsToDetailed(){
         onView(withId(R.id.frame)).perform(click());
         onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void clickSwapsToDetailledAndBack(){
+    public void clickSwapsToDetailedAndBack(){
         onView(withId(R.id.frame)).perform(click());
         onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
         onView(withId(R.id.back_button)).perform(click());
         onView(withId(R.id.frame)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void clickSwapsToDetailedAndSavesSwipeState(){
+        onView(withId(R.id.frame)).perform(swipeRight());
+//        onView(withId(R.id.eventCardName)).check(matches(withText("Duck themed party")));
+//        onView(withText("Duck themed party")).check(matches(isDisplayed()));
+//        onData(allOf(is(instanceOf(String.class)))).inAdapterView(withId(R.id.frame)).check(matches(withText(containsString("Duck"))));
+        onView(withId(R.id.frame)).perform(click());
+        onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
+        onView(withText("Duck themed party")).check(matches(isDisplayed()));
+        onView(withId(R.id.back_button)).perform(click());
+        onView(withId(R.id.frame)).check(matches(isDisplayed()));
+        onView(withText("Duck themed party")).check(matches(isDisplayed()));
     }
 }
 
