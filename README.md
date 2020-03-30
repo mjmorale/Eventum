@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/mjmorale/Eventum.svg?branch=master)](https://travis-ci.org/mjmorale/Eventum)
 [![Build Status](https://api.cirrus-ci.com/github/mjmorale/Eventum.svg)](https://cirrus-ci.com/github/mjmorale/Eventum)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/17f55cc9180ef915e021/maintainability)](https://codeclimate.com/github/mjmorale/Eventum/maintainability)
