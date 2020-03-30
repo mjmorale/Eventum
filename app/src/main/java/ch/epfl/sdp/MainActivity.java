@@ -1,8 +1,14 @@
 package ch.epfl.sdp;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import ch.epfl.sdp.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.event.EventFragment;
 import ch.epfl.sdp.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +24,13 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e){}
 
         setContentView(R.layout.main_activity);
+
+        Uri uri = getIntent().getData();
+        if(uri!=null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, EventFragment.newInstance("fake", new FirestoreDatabase(FirebaseFirestore.getInstance())))
+                    .commitNow();
+        }else
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareHashtag;
-import com.facebook.share.model.ShareMediaContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.widget.ShareDialog;
 
 import ch.epfl.sdp.databinding.EventFragmentBinding;
 import ch.epfl.sdp.db.Database;
@@ -88,21 +81,29 @@ public class EventFragment extends Fragment {
 
 
     private void configureShare(){
-        ShareDialog mSharedDialog = new ShareDialog(this);
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        ShareContent mShareContent = new ShareMediaContent.Builder()
-                .setShareHashtag(
-                        new ShareHashtag.Builder().setHashtag(
-                                mBinding.title.getText().toString() + " :\n\n " +
-                                        mBinding.description.getText().toString()).build())
-                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
-                .build();
+//        ShareDialog mSharedDialog = new ShareDialog(this);
+//        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
+//        Bitmap bitmap = bitmapDrawable.getBitmap();
+//        ShareContent mShareContent = new ShareMediaContent.Builder()
+//                .setShareHashtag(
+//                        new ShareHashtag.Builder().setHashtag(
+//                                mBinding.title.getText().toString() + " :\n\n " +
+//                                        mBinding.description.getText().toString()).build())
+//                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
+//                .build();
         mBinding.sharingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId()==mBinding.sharingButton.getId() && mSharedDialog.canShow(mShareContent))
-                    mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
+//                if(v.getId()==mBinding.sharingButton.getId() && mSharedDialog.canShow(mShareContent))
+//                    mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.eventum.com/");
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+
             }
         });
     }
