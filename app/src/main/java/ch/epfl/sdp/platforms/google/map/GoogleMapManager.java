@@ -3,13 +3,10 @@ package ch.epfl.sdp.platforms.google.map;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import ch.epfl.sdp.map.MapManager;
 
 public class GoogleMapManager implements MapManager {
-
     private GoogleMap mGoogleMap;
-
 
     public GoogleMapManager(GoogleMap googleMap){
         mGoogleMap= googleMap;

@@ -5,7 +5,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
-import ch.epfl.sdp.platforms.google.map.GoogleMapProvider;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atMost;
