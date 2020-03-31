@@ -71,8 +71,10 @@ public class MapFragment extends Fragment {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
             mLastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if (mLastKnowLocation != null) mViewModel.moveCameraOnMapManager(mLastKnowLocation, 12);
-            mViewModel.setLocationOnMapManager();
+            if (mLastKnowLocation != null) {
+                mViewModel.moveCameraOnMapManager(mLastKnowLocation, 12);
+                mViewModel.setLocationOnMapManager();
+            }
         } else {
             mViewModel.moveCameraOnMapManagerDefaultLocation();
         }
