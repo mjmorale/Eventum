@@ -61,4 +61,8 @@ public class MapViewModel extends ViewModel {
         location.setLongitude(6.567827);
         this.moveCameraOnMapManager(location, 4);
     }
+
+    public void setLocationOnMapManager() {
+        mMapManager.setMyLocation();
+    }
 }

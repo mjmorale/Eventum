@@ -9,4 +9,5 @@ public interface MapManager {
     void addMarker(MarkerOptions markerOptions);
     void addMarker(String title, LatLng location);
     void moveCamera(Location location, float zoomLevel);
+    void setMyLocation();
 }
