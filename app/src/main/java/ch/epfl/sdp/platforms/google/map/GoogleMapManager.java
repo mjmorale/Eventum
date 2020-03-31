@@ -1,5 +1,8 @@
 package ch.epfl.sdp.platforms.google.map;
 
+import android.location.Location;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -20,5 +23,9 @@ public class GoogleMapManager implements MapManager {
     @Override
     public void addMarker(String title, LatLng location) {
         addMarker(new MarkerOptions().position(location).title(title));
+    }
+
+    public void moveCamera(Location location, float zoomLevel) {
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel));
     }
 }

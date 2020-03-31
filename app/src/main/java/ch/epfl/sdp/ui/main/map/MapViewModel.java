@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.main.map;
 
+import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -9,7 +10,6 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 // This is an example of a minimal implementation of a ViewModel.
@@ -43,12 +43,22 @@ public class MapViewModel extends ViewModel {
         return mEventsLive;
     }
 
-
     public void addMarkers(LifecycleOwner lifecycleOwner) {
         getEvents().observe(lifecycleOwner, events -> {
             for(Event event: events){
-                mMapManager.addMarker(event.getTitle(),event.getLocation());
+                mMapManager.addMarker(event.getTitle(), event.getLocation());
             }
         });
+    }
+
+    public void moveCameraOnMapManager(Location location, float zoomLevel) {
+        mMapManager.moveCamera(location, zoomLevel);
+    }
+
+    public void moveCameraOnMapManagerDefaultLocation() {
+        Location location = new Location("Europe");
+        location.setLatitude(46.520564);
+        location.setLongitude(6.567827);
+        this.moveCameraOnMapManager(location, 4);
     }
 }

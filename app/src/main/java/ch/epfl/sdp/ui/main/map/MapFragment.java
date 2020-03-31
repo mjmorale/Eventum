@@ -1,5 +1,9 @@
 package ch.epfl.sdp.ui.main.map;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.MapView;
@@ -23,6 +28,9 @@ public class MapFragment extends Fragment {
     private final MapViewModel.MapViewModelFactory mFactory;
     private FragmentMapBinding mBinding;
     private MapView mMapView;
+    private  final static int PERMISSION_LOCATION=0;
+    private boolean mLocationPermission = false;
+    private Location mLastKnowLocation;
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
@@ -38,6 +46,8 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
@@ -51,13 +61,27 @@ public class MapFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mLocationPermission =
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        if (mLocationPermission) {
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
+            mLastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (mLastKnowLocation != null) mViewModel.moveCameraOnMapManager(mLastKnowLocation, 12);
+        } else {
+            mViewModel.moveCameraOnMapManagerDefaultLocation();
+        }
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
     }
-
 
     @Override
     public void onResume() {
