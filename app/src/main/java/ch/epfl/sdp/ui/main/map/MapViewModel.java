@@ -1,17 +1,15 @@
 package ch.epfl.sdp.ui.main.map;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.map.MapProvider;
+import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -22,25 +20,25 @@ public class MapViewModel extends ViewModel {
     static class MapViewModelFactory extends ParameterizedViewModelFactory {
 
         MapViewModelFactory() {
-            super(Database.class, MapProvider.class);
+            super(Database.class, MapManager.class);
         }
 
         void setDatabase(@NonNull Database database) {
             setValue(0, verifyNotNull(database));
         }
 
-        void setMapProvider(@NonNull MapProvider mapProvider){setValue(1,verifyNotNull(mapProvider));}
+        void setMapManager(@NonNull MapManager mapManager ){setValue(1,verifyNotNull(mapManager));}
     }
 
     private LiveData<List<Event>> mEventsLive;
     private final Database mDatabase;
-    private MapProvider mMapProvider;
+    private MapManager mMapManager;
 
 
-    public MapViewModel(@NonNull Database database, @NonNull MapProvider mapProvider) {
+    public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
         mDatabase = database;
         mEventsLive = mDatabase.query("events").liveData(Event.class);
-        mMapProvider = mapProvider;
+        mMapManager = mapManager;
     }
 
     public LiveData<List<Event>> getEvents() {
@@ -48,9 +46,11 @@ public class MapViewModel extends ViewModel {
     }
 
 
-    public void addMarker(Event event) {
-            LatLng coordinates = event.getLocation();
-            String name = event.getTitle();
-            mMapProvider.addMarker(new MarkerOptions().position(coordinates).title(name));
+    public void addMarkers(LifecycleOwner lifecycleOwner) {
+        getEvents().observe(lifecycleOwner, events -> {
+            for(Event event: events){
+                mMapManager.addMarker(event.getTitle(),event.getLocation());
+            }
+        });
     }
 }

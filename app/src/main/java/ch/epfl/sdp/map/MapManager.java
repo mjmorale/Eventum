@@ -1,11 +1,9 @@
 package ch.epfl.sdp.map;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public interface MapProvider {
-
-    void setMyLocationEnabled(boolean enabled);
-
+public interface MapManager {
     void addMarker(MarkerOptions markerOptions);
-
+    void addMarker(String title, LatLng location);
 }

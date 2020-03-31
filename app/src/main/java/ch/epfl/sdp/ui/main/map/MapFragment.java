@@ -14,12 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.platforms.google.map.GoogleMapProvider;
+import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 
 
 public class MapFragment extends Fragment {
@@ -46,24 +45,16 @@ public class MapFragment extends Fragment {
 
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
-        mFactory.setMapProvider( new GoogleMapProvider(mMapView));
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(googleMap -> {
+            mFactory.setMapManager(new GoogleMapManager(googleMap));
+            mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+            mViewModel.addMarkers(getViewLifecycleOwner());
+        });
 
         return mBinding.getRoot();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
-
-        mViewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
-            for(Event event: events){
-                mViewModel.addMarker(event);
-            }
-        });
-
-    }
 
     @Override
     public void onDestroyView() {
@@ -74,8 +65,8 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
         mMapView.onResume();
+        super.onResume();
     }
 
     @Override
