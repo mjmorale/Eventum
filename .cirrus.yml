@@ -6,7 +6,7 @@ connected_check_task:
     ARCH: x86
     CC_TEST_REPORTER_ID: ENCRYPTED[7518a272c4e5b87e1e27538fac2468cd7ffb98cbfc140234a14812c4e468540a75b54ce32c52ae0e84d5d208e1cd5443]
   container:
-    image: reactivecircus/android-emulator-28:latest
+    image: reactivecircus/android-emulator-22:latest
     kvm: true
     cpu: 8
     memory: 24G
