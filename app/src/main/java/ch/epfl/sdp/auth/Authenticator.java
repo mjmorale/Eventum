@@ -2,6 +2,7 @@ package ch.epfl.sdp.auth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import ch.epfl.sdp.User;
 
 public interface Authenticator<T> {
 
