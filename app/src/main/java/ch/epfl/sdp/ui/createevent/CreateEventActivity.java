@@ -24,6 +24,9 @@ public class CreateEventActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(mBinding.createEventFragment.getId(), new CreateEventFragment()).commit();
     }
 
     @Override

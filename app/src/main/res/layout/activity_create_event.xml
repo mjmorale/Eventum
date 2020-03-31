@@ -16,9 +16,8 @@
         android:theme="?attr/actionBarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/create_event_fragment"
-        android:name="ch.epfl.sdp.ui.createevent.CreateEventFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
