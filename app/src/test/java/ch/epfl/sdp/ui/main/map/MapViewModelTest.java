@@ -34,7 +34,7 @@ public class MapViewModelTest {
     }
 
     @Test
-    public void MapViewModel_Constructor_DoTheRightQuerry() {
+    public void MapViewModel_Constructor_DoTheRightQuery() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         MapViewModel vm = new MapViewModel(mDatabase, mMapManager);
         verify(mDatabase).query("events");
