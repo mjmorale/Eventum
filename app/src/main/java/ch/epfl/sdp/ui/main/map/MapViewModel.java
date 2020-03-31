@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -31,15 +32,17 @@ public class MapViewModel extends ViewModel {
     private LiveData<List<Event>> mEventsLive;
     private final Database mDatabase;
     private MapManager mMapManager;
+    private CollectionQuery mCollectionQuery;
 
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
         mDatabase = database;
-        mEventsLive = mDatabase.query("events").liveData(Event.class);
+        mCollectionQuery = database.query("events");
         mMapManager = mapManager;
     }
 
     public LiveData<List<Event>> getEvents() {
+        mEventsLive = mCollectionQuery.liveData(Event.class);
         return mEventsLive;
     }
 
