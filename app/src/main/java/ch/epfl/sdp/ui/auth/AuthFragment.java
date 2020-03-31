@@ -82,6 +82,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 Intent mainActivityIntent = new Intent(getActivity(), MainActivity.class);
                 mainActivityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
                 startActivity(mainActivityIntent);
+                getActivity().finish();
             }
         });
     }
