@@ -61,8 +61,11 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> b9adddfd3309de70cd3cc8b973c7fdbbca630ebd
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -74,6 +77,9 @@ public class MapFragment extends Fragment {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
         });
+
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
@@ -89,6 +95,7 @@ public class MapFragment extends Fragment {
         if (mLocationPermission) {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
 
+<<<<<<< HEAD
             Location mylocation =locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             mLastKnowLocation= new LatLng(mylocation.getLatitude(), mylocation.getLongitude());
 
@@ -96,6 +103,14 @@ public class MapFragment extends Fragment {
                 mViewModel.moveCamera(mLastKnowLocation, 12);
                 mViewModel.setMyLocationEnabled();
             }
+=======
+            if (mLastKnowLocation != null) {
+                mViewModel.moveCameraOnMapManager(mLastKnowLocation, 12);
+                mViewModel.setLocationOnMapManager();
+            }
+        } else {
+            mViewModel.moveCameraOnMapManagerDefaultLocation();
+>>>>>>> b9adddfd3309de70cd3cc8b973c7fdbbca630ebd
         }
     }
 
