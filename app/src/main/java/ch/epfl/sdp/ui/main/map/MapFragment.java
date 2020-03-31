@@ -46,9 +46,6 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
-
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -57,6 +54,9 @@ public class MapFragment extends Fragment {
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
             mViewModel.addMarkers(getViewLifecycleOwner());
         });
+
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
