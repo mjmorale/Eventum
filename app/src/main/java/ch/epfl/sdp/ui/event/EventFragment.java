@@ -98,7 +98,7 @@ public class EventFragment extends Fragment {
 //                    mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.eventum.com/");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://eventum.com/");
                 sendIntent.setType("text/plain");
 
                 Intent shareIntent = Intent.createChooser(sendIntent, null);
