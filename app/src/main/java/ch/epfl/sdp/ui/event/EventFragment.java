@@ -21,6 +21,8 @@ public class EventFragment extends Fragment {
     private EventFragmentBinding mBinding;
     private String mRef;
     private Database mDb;
+    private Intent mSendIntent, mShareIntent;
+
 
     public static EventFragment newInstance(String ref, Database db) {
         Bundle bundle = new Bundle();
@@ -48,6 +50,11 @@ public class EventFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(EventViewModel.class);
         mViewModel.setDb(mDb);
+        mSendIntent = new Intent();
+        mSendIntent.setAction(Intent.ACTION_SEND);
+        mSendIntent.putExtra(Intent.EXTRA_TEXT, "https://eventum.com/");
+        mSendIntent.setType("text/plain");
+        mShareIntent = Intent.createChooser(mSendIntent, null);
     }
 
     @Override
@@ -63,7 +70,10 @@ public class EventFragment extends Fragment {
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
         });
-        configureShare();
+
+        mBinding.sharingButton.setOnClickListener(v -> {
+            startActivity(mShareIntent);
+        });
         return view;
     }
 
@@ -73,38 +83,8 @@ public class EventFragment extends Fragment {
         mBinding = null;
     }
 
-
-
     public EventViewModel getViewModel() {
         return mViewModel;
     }
 
-
-    private void configureShare(){
-//        ShareDialog mSharedDialog = new ShareDialog(this);
-//        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
-//        Bitmap bitmap = bitmapDrawable.getBitmap();
-//        ShareContent mShareContent = new ShareMediaContent.Builder()
-//                .setShareHashtag(
-//                        new ShareHashtag.Builder().setHashtag(
-//                                mBinding.title.getText().toString() + " :\n\n " +
-//                                        mBinding.description.getText().toString()).build())
-//                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
-//                .build();
-        mBinding.sharingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                if(v.getId()==mBinding.sharingButton.getId() && mSharedDialog.canShow(mShareContent))
-//                    mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://eventum.com/");
-                sendIntent.setType("text/plain");
-
-                Intent shareIntent = Intent.createChooser(sendIntent, null);
-                startActivity(shareIntent);
-
-            }
-        });
-    }
 }
