@@ -26,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
         Uri uri = getIntent().getData();
+        EventFragment eventFragment = EventFragment.newInstance("fake", new FirestoreDatabase(FirebaseFirestore.getInstance()));
+  
         if(uri!=null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, EventFragment.newInstance("fake", new FirestoreDatabase(FirebaseFirestore.getInstance()))).commitNow();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, eventFragment).commitNow();
         }else 
             if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
