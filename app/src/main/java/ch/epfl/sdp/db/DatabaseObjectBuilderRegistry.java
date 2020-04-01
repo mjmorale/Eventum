@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventDatabaseBuilder;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class DatabaseObjectBuilderRegistry {
 
     private static Map<Class<?>, DatabaseObjectBuilder<?>> mBuilders = new HashMap<>();
@@ -16,9 +18,7 @@ public class DatabaseObjectBuilderRegistry {
     }
 
     public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<? extends DatabaseObjectBuilder<T>> builder) {
-        if(type == null || builder == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyNotNull(type, builder);
         if(!mBuilders.containsKey(type)) {
             try {
                 mBuilders.put(type, builder.newInstance());
@@ -31,9 +31,7 @@ public class DatabaseObjectBuilderRegistry {
 
     @NonNull
     public static <T, R extends DatabaseObjectBuilder<T>> R getBuilder(@NonNull Class<T> type) {
-        if(type == null) {
-            throw new IllegalArgumentException();
-        }
+        verifyNotNull(type);
         if(!mBuilders.containsKey(type)) {
             throw new IllegalArgumentException("Missing builder for type " + type.getSimpleName());
         }

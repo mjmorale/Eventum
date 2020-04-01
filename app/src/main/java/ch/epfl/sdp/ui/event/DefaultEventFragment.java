@@ -1,0 +1,90 @@
+package ch.epfl.sdp.ui.event;
+
+
+import android.content.Intent;
+
+import androidx.annotation.VisibleForTesting;
+import androidx.lifecycle.ViewModelProvider;
+
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
+import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
+
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.UIConstants;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+import static ch.epfl.sdp.ui.event.EventSharingButton.ConfigureSharingButton;
+
+public class DefaultEventFragment extends Fragment{
+
+    private DefaultEventViewModel mViewModel;
+    private FragmentDefaultEventBinding mBinding;
+    private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
+
+
+    public static DefaultEventFragment getInstance(@NonNull String eventRef) {
+        verifyNotNull(eventRef);
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
+
+        DefaultEventFragment fragment = new DefaultEventFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    public DefaultEventFragment() {
+        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+    }
+
+    @VisibleForTesting
+    public DefaultEventFragment(@NonNull Database database, @NonNull String eventRef) {
+        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
+        mFactory.setDatabase(database);
+        mFactory.setEventRef(eventRef);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+   }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Bundle args = getArguments();
+        if(args != null) {
+            mFactory.setEventRef(args.getString(UIConstants.BUNDLE_EVENT_REF));
+        }
+
+        mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(event.getDate().toString());
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+    }
+
+}
