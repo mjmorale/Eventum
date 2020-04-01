@@ -66,10 +66,8 @@ public class MapFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         // ici ???
-         if (mGoogleMapManager != null) mFactory.setMapManager(mGoogleMapManager); // if nécessaire ?
+        if (mGoogleMapManager != null) mFactory.setMapManager(mGoogleMapManager);
         mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
-
-
 
         mLocationPermission =
                 ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -79,8 +77,10 @@ public class MapFragment extends Fragment {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
             mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if (mLastKnownLocation != null) mViewModel.initializeMapManagerWithLastKnowLocation(mLastKnownLocation, getViewLifecycleOwner());
-        } else mViewModel.initializeMapManagerWithoutLastKnowLocation(getViewLifecycleOwner());
+            // if (mLastKnownLocation != null) mViewModel.initializeMapManagerWithLastKnowLocation(mLastKnownLocation, getViewLifecycleOwner());
+        }  // else mViewModel.initializeMapManagerWithoutLastKnowLocation(getViewLifecycleOwner());
+
+        mViewModel.moveCameraDefault(); // temp
     }
 
     @Override
