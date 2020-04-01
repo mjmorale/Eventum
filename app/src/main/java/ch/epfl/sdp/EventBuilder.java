@@ -10,7 +10,7 @@ public class EventBuilder {
     private String mTitle;
     private String mDescription;
     private Date mDate;
-    private String mAddress = "EPFL, Lausanne";
+    private String mAddress = "Lausanne, Switzerland";
     private LatLng mLocation = new LatLng(10, 10);
     private int mImageId = R.mipmap.ic_launcher;
 

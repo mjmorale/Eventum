@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.event;
+package ch.epfl.sdp.ui.createevent;
 
 import android.location.Address;
 

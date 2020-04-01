@@ -82,6 +82,7 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
             mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
+            mBinding.address.setText(event.getAddress());
         });
 
         prepareShare();

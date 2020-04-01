@@ -40,14 +40,7 @@ public class CreateEventViewModel extends ViewModel {
         mEventCollection = mDatabase.query("events");
     }
 
-    public void insertEvent(@NonNull String name, @NonNull String description, @NonNull String date, @NonNull OnEventCreatedCallback callback) throws ParseException {
-        verifyNotNull(name, description, date, callback);
-
-        EventBuilder eventBuilder = new EventBuilder();
-        Event event = eventBuilder.setTitle(name)
-                                  .setDescription(description)
-                                  .setDate(date)
-                                  .build();
+    public void insertEvent(@NonNull Event event, @NonNull OnEventCreatedCallback callback) {
         mEventCollection.create(event, res -> {
             if(res.isSuccessful()) {
                 callback.onSuccess(res.getData());

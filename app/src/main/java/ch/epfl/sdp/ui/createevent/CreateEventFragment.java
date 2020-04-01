@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,16 +9,22 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 
 import androidx.lifecycle.ViewModelProvider;
+
+import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
@@ -29,10 +34,12 @@ import ch.epfl.sdp.ui.UIConstants;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
-
     private FragmentCreateEventBinding mBinding;
     private CreateEventViewModel mViewModel;
     private final CreateEventViewModel.CreateEventViewModelFactory mFactory;
+
+    private static final int THRESHOLD = 2;
+    private LatLng mLocation;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -49,6 +56,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = FragmentCreateEventBinding.inflate(inflater, container, false);
+        setupGeoAutoComplete();
         return mBinding.getRoot();
     }
 
@@ -94,9 +102,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding = null;
     }
 
-    private void checkInput(String title, String description, String date) throws IllegalArgumentException {
+    private void checkInput(String title, String description, String date, String address) throws IllegalArgumentException {
         verifyNotNull(title, description, date);
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty()) {
+        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || address.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
@@ -105,8 +113,50 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
         String date = mBinding.date.getDayOfMonth() + "/" + mBinding.date.getMonth() + "/" + mBinding.date.getYear();
-        checkInput(title, description, date);
+        String address = mBinding.geoAutocomplete.getText().toString();
+        checkInput(title, description, date, address);
 
-        mViewModel.insertEvent(title, description, date, callback);
+        EventBuilder eventBuilder = new EventBuilder();
+        Event event = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setLocation(mLocation)
+                .setAddress(address)
+                .build();
+
+        mViewModel.insertEvent(event, callback);
+    }
+
+
+    public void setupGeoAutoComplete() {
+        mBinding.geoAutocomplete.setThreshold(THRESHOLD);
+        mBinding.geoAutocomplete.setAdapter(new GeoAutoCompleteAdapter(getContext()));
+
+        mBinding.geoAutocomplete.setOnItemClickListener((adapterView, view, position, id) -> {
+            GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
+            mBinding.geoAutocomplete.setText(result.getAddress());
+            mLocation = result.getLocation();
+        });
+
+        mBinding.geoAutocomplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() > 0) {
+                    mBinding.geoAutocompleteClear.setVisibility(View.VISIBLE);
+                } else {
+                    mBinding.geoAutocompleteClear.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mBinding.geoAutocompleteClear.setOnClickListener(v -> mBinding.geoAutocomplete.setText(""));
     }
 }

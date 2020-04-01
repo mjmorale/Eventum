@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.event;
+package ch.epfl.sdp.ui.createevent;
 
 import android.content.Context;
 import android.location.Address;
@@ -99,6 +99,8 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            geoSearchResults.add(getDefaultSearchResult(context));
+            return geoSearchResults;
         }
 
         return geoSearchResults;
@@ -108,7 +110,7 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
         Address localAddress = new Address(context.getResources().getConfiguration().locale);
         localAddress.setLongitude(10);
         localAddress.setLatitude(10);
-        localAddress.setAddressLine(0, "EPFL, Lausanne");
+        localAddress.setAddressLine(0, "Lausanne, Switzerland");
         return new GeoSearchResult(localAddress);
     }
 }

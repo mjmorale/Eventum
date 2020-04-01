@@ -72,6 +72,39 @@
                 android:layout_marginTop="20dp">
             </DatePicker>
 
+            <TextView
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Address: "
+                android:textColor="@color/grey"
+                android:layout_marginTop="20dp"
+                android:textSize="25sp"
+                android:layout_width="match_parent">
+            </TextView>
+
+            <ch.epfl.sdp.ui.createevent.DelayAutoCompleteTextView
+                android:id="@+id/geo_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:imeOptions="actionSearch"
+                android:inputType="textCapSentences"
+                android:background="@color/white"
+                android:hint="address"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
+                android:dropDownWidth="fill_parent"
+                />
+
+            <ImageView
+                android:id="@+id/geo_autocomplete_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_remove"
+                android:contentDescription="delete button"
+                android:layout_gravity="center_vertical|end"
+                android:visibility="gone"
+                android:layout_marginEnd="12dp"/>
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
@@ -90,25 +123,15 @@
                 android:background="@color/colorPrimary"
                 android:layout_marginBottom="80dp"
                 android:text="+"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/createButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="16dp"
+                android:src="@drawable/check"
+                app:layout_anchorGravity="bottom|center" />
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="1dp">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/createButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="16dp"
-            android:src="@drawable/check"
-            app:layout_anchorGravity="bottom|center" />
-    </LinearLayout>
-
 </RelativeLayout>

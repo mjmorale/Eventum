@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 
 public class MockEvents {
@@ -21,7 +22,7 @@ public class MockEvents {
 
         eventList.add(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
-                new Date(2021, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.oss_117));
+                new Date(2020, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.oss_117));
         eventList.add(new Event("Duck themed party",
                 "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
                 new Date(2020, 3, 7), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.duck));
