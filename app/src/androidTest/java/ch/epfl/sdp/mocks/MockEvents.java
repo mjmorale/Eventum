@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.R;
 
 public class MockEvents {
     private static List<Event> eventList = populateEvents();

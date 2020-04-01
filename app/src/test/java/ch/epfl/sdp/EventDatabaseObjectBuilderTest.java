@@ -16,9 +16,12 @@ public class EventDatabaseObjectBuilderTest {
 
     @Test
     public void testEventDatabaseObjectBuilder() {
-        Event event = new Event("Real Fake Party",
-                "This is really happening",
-                new Date(2020, 11, 10));
+        EventBuilder eventBuilder = new EventBuilder();
+        Event event = eventBuilder.setTitle("Real Fake Party")
+                .setDescription("This is really happening")
+                .setDate(new Date(2020, 11, 10))
+                .build();
+
         Map<String, Object> data =
                 DatabaseObjectBuilderRegistry.getBuilder(Event.class).serializeToMap(event);
         Event resultEvent = DatabaseObjectBuilderRegistry.getBuilder(Event.class).buildFromMap(data);

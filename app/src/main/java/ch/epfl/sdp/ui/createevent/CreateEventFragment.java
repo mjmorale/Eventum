@@ -46,7 +46,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = FragmentCreateEventBinding.inflate(inflater, container, false);
         return mBinding.getRoot();

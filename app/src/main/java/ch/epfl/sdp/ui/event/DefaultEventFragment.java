@@ -79,7 +79,7 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDate().toString());
+            mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
         });

@@ -19,6 +19,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -35,9 +36,9 @@ public class CreateEventFragmentTest {
     private static final String TITLE = mMockEvent.getTitle();
     private static final String DESCRIPTION = mMockEvent.getDescription();
     private static final String EMPTY = "";
-    private static final int DAY = 30;
-    private static final int MONTH = 6;
-    private static final int YEAR = 2017;
+    private static final int DAY = mMockEvent.getDate().getDay();
+    private static final int MONTH = mMockEvent.getDate().getMonth();
+    private static final int YEAR = mMockEvent.getDate().getYear();
 
     @Rule
     public final ActivityTestRule<CreateEventActivity> mActivityRule =
@@ -73,6 +74,7 @@ public class CreateEventFragmentTest {
                 closeSoftKeyboard());
 
         onView(withId(R.id.createButton)).perform(
+                scrollTo(),
                 click());
     }
 }

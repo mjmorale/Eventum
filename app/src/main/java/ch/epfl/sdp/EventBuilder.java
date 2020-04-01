@@ -13,12 +13,11 @@ public class EventBuilder {
     private String mAddress = "EPFL, Lausanne";
     private LatLng mLocation = new LatLng(10, 10);
     private int mImageId = R.mipmap.ic_launcher;
-    private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public Event build() {
-        if (mTitle == "") throw new IllegalStateException("No title specified");
-        if (mDescription == "") throw new IllegalStateException("No description specified");
-        if (mDate == null) throw new IllegalStateException("No date specified");
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
+        if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
+        if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
         return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
     }
 
@@ -38,7 +37,7 @@ public class EventBuilder {
     }
 
     public EventBuilder setDate(String date) throws ParseException {
-        this.mDate = mFormatter.parse(date);
+        this.mDate = Event.parseDate(date);
         return this;
     }
 
