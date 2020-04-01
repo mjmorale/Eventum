@@ -51,6 +51,8 @@ public class MapFragment extends Fragment {
         mMapView.getMapAsync(googleMap -> {
             mFactory.setMapManager(new GoogleMapManager(googleMap));
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
             mViewModel.addMarkers(getViewLifecycleOwner());
         });
 

@@ -5,6 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
@@ -66,4 +69,8 @@ public class MapViewModel extends ViewModel {
     public void setMyLocation() {
         mMapManager.setMyLocation();
     }
+
+//    public void setMapManager(MapManager mapManager) {
+//        this.mMapManager = mapManager;
+//    }
 }
