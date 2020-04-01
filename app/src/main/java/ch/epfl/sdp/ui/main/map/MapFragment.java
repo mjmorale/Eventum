@@ -29,7 +29,7 @@ public class MapFragment extends Fragment {
     private MapView mMapView;
     private  final static int PERMISSION_LOCATION=0;
     private boolean mLocationPermission = false;
-    private Location mLastKnowLocation;
+    private Location mLastKnownLocation;
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
@@ -66,17 +66,10 @@ public class MapFragment extends Fragment {
 
         if (mLocationPermission) {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
-            mLastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if (mLastKnowLocation != null) {
-                mViewModel.moveCamera(mLastKnowLocation, 12);
-                mViewModel.setMyLocation();
-                mViewModel.addMarkersNearLocation(getViewLifecycleOwner(), mLastKnowLocation, 100);
-            }
-        } else {
-            mViewModel.moveCameraDefault();
-            mViewModel.addMarkers(getViewLifecycleOwner());
-        }
+            if (mLastKnownLocation != null) mViewModel.initializeMapManagerWithLastKnowLocation(mLastKnownLocation, getViewLifecycleOwner());
+        } else mViewModel.initializeMapManagerWithoutLastKnowLocation(getViewLifecycleOwner());
     }
 
     @Override

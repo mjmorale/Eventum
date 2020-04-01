@@ -46,6 +46,17 @@ public class MapViewModel extends ViewModel {
         mMapManager = mapManager;
     }
 
+    public void initializeMapManagerWithLastKnowLocation(Location lastKnownLocation, LifecycleOwner lifecycleOwner) {
+        this.moveCamera(lastKnownLocation, 12);
+        this.setMyLocation();
+        this.addMarkersNearLocation(lifecycleOwner, lastKnownLocation, 100);
+    }
+
+    public void initializeMapManagerWithoutLastKnowLocation(LifecycleOwner lifecycleOwner) {
+        this.moveCameraDefault();
+        this.addMarkers(lifecycleOwner);
+    }
+
     public LiveData<List<Event>> getEvents() {
         mEventsLive = mCollectionQuery.liveData(Event.class);
         return mEventsLive;
