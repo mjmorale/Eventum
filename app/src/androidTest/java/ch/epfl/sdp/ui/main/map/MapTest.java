@@ -40,7 +40,7 @@ public class MapTest {
     private LiveData<List<Event>> mEventsLive;
 
     @Mock
-    private MapManager mapManager;
+    private MapManager mMapManager;
 
     @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -68,7 +68,7 @@ public class MapTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mDatabaseMock, mapManager)
+                new MockFragmentFactory(MapFragment.class, mDatabaseMock, mMapManager)
         );
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));

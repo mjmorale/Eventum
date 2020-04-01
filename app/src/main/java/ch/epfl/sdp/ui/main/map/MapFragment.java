@@ -31,7 +31,7 @@ public class MapFragment extends Fragment {
     private  final static int PERMISSION_LOCATION=0;
     private boolean mLocationPermission = false;
     private Location mLastKnownLocation;
-    private GoogleMapManager mGoogleMapManager;
+    private GoogleMapManager mGoogleMapManager = null;
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
@@ -66,7 +66,7 @@ public class MapFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         // ici ???
-        mFactory.setMapManager(mGoogleMapManager);
+        if (mGoogleMapManager== null) mFactory.setMapManager(mGoogleMapManager); // if nécessaire ?
         mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
 
