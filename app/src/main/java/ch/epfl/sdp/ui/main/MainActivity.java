@@ -22,7 +22,7 @@ import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
-import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
+import ch.epfl.sdp.ui.main.swipe.SwipeFragment2;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.main.map.MapFragment;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new SwipeFragment())
+                    .replace(R.id.main_container, new SwipeFragment2())
                     .commit();
         }
     }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(menuItem.getItemId()) {
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new SwipeFragment()).commit();
+                        .replace(mBinding.mainContainer.getId(), new SwipeFragment2()).commit();
                 break;
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()

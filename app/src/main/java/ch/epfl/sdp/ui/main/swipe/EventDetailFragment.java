@@ -15,9 +15,9 @@ import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 public class EventDetailFragment extends Fragment {
     private FragmentDefaultEventBinding mBinding;
     private Event mEvent;
-    private SwipeFragment mSwipeFragment;
+    private SwipeFragment2 mSwipeFragment;
 
-    public EventDetailFragment(Event event, SwipeFragment swipeFragment){
+    public EventDetailFragment(Event event, SwipeFragment2 swipeFragment){
         super();
         this.mEvent = event;
         this.mSwipeFragment = swipeFragment;

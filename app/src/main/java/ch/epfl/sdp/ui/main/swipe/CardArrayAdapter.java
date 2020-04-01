@@ -16,6 +16,8 @@ import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class CardArrayAdapter extends ArrayAdapter<Event> {
 
     public CardArrayAdapter(Context context, List<Event> items){
@@ -39,4 +41,5 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
         description.setText(event.getDescription());
         return convertView;
     }
+
 }

@@ -57,6 +57,8 @@ public class SwipeFragment extends Fragment {
         return view;
     }
 
+
+    /*
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
@@ -87,5 +89,5 @@ public class SwipeFragment extends Fragment {
             mInfoFragment = new EventDetailFragment(mCurrentEvent,this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
-    }
+    }*/
 }
