@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.GeoPoint;
 
-import org.imperiumlabs.geofirestore.GeoQuery;
-
 import java.util.List;
 
-import ch.epfl.sdp.firebase.db.queries.FirebaseGeoFirestoreQuery;
+import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseGeoFirestoreQuery;
 
 public interface GeoFirestoreQuery extends  Query{
 
