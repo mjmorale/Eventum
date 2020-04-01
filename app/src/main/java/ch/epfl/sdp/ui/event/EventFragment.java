@@ -71,9 +71,7 @@ public class EventFragment extends Fragment {
             mBinding.title.setText(event.getTitle());
         });
 
-        mBinding.sharingButton.setOnClickListener(v -> {
-            startActivity(mShareIntent);
-        });
+        mBinding.sharingButton.setOnClickListener(v -> {startActivity(mShareIntent);});
         return view;
     }
 
