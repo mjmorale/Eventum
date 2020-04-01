@@ -7,6 +7,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 import ch.epfl.sdp.Event;
@@ -35,6 +38,7 @@ public class MapViewModel extends ViewModel {
     private final Database mDatabase;
     private MapManager mMapManager;
     private CollectionQuery mCollectionQuery;
+    private static final double DEGREE_IN_KM = 111.11;
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
         mDatabase = database;
@@ -51,6 +55,29 @@ public class MapViewModel extends ViewModel {
         getEvents().observe(lifecycleOwner, events -> {
             for(Event event: events){
                 mMapManager.addMarker(event.getTitle(), event.getLocation());
+            }
+        });
+    }
+
+    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
+        getEvents().observe(lifecycleOwner, events -> {
+            for(Event event: events){
+                LatLng coordinates = event.getLocation();
+
+                if (location != null) {
+                    double lLat = location.getLatitude();
+                    double lLong = location.getLongitude();
+                    double eLat = coordinates.latitude;
+                    double eLong = coordinates.longitude;
+                    double diffLat = Math.abs(lLat - eLat);
+                    double diffLong = Math.abs(lLong - eLong);
+                    double LatKm = DEGREE_IN_KM * diffLat;
+                    double LongKm = DEGREE_IN_KM * diffLong * Math.cos(diffLat);
+                    if ((LatKm < distanceInKm) && (LongKm < distanceInKm)) {
+                        String name = event.getTitle();
+                        Marker marker = mMapManager.addMarker(new MarkerOptions().position(coordinates).title(name));
+                    }
+                }
             }
         });
     }

@@ -5,6 +5,7 @@ import android.location.Location;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import ch.epfl.sdp.map.MapManager;
@@ -17,13 +18,13 @@ public class GoogleMapManager implements MapManager {
     }
 
     @Override
-    public void addMarker(MarkerOptions markerOptions) {
-        mGoogleMap.addMarker(markerOptions);
+    public Marker addMarker(MarkerOptions markerOptions) {
+        return mGoogleMap.addMarker(markerOptions);
     }
 
     @Override
-    public void addMarker(String title, LatLng location) {
-        addMarker(new MarkerOptions().position(location).title(title));
+    public Marker addMarker(String title, LatLng location) {
+        return addMarker(new MarkerOptions().position(location).title(title));
     }
 
     @Override

@@ -53,11 +53,7 @@ public class MapFragment extends Fragment {
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
-            mViewModel.addMarkers(getViewLifecycleOwner());
         });
-
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
@@ -75,9 +71,11 @@ public class MapFragment extends Fragment {
             if (mLastKnowLocation != null) {
                 mViewModel.moveCamera(mLastKnowLocation, 12);
                 mViewModel.setMyLocation();
+                mViewModel.addMarkersNearLocation(getViewLifecycleOwner(), mLastKnowLocation, 100);
             }
         } else {
             mViewModel.moveCameraDefault();
+            mViewModel.addMarkers(getViewLifecycleOwner());
         }
     }
 
