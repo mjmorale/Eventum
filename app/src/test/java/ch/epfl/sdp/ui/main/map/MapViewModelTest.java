@@ -1,10 +1,14 @@
 package ch.epfl.sdp.ui.main.map;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
@@ -28,6 +32,9 @@ public class MapViewModelTest {
     @Mock
     private CollectionQuery mCollectionQuery;
 
+    @Mock
+    private LifecycleOwner mLifecycleOwner;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -37,6 +44,22 @@ public class MapViewModelTest {
     public void MapViewModel_Constructor_DoTheRightQuery() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         MapViewModel vm = new MapViewModel(mDatabase, mMapManager);
+        verify(mDatabase).query("events");
+    }
+
+    @Test
+    public void test() {
+        List<Event> list = new ArrayList<Event>();
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+
+
+
+
+        MapViewModel vm = new MapViewModel(mDatabase, mMapManager);
+
+
+
+
         verify(mDatabase).query("events");
     }
 

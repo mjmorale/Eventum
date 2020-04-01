@@ -30,6 +30,7 @@ public class MapFragment extends Fragment {
     private  final static int PERMISSION_LOCATION=0;
     private boolean mLocationPermission = false;
     private Location mLastKnownLocation;
+    private GoogleMapManager mGoogleMapManager;
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
@@ -49,17 +50,25 @@ public class MapFragment extends Fragment {
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(googleMap -> {
-            mFactory.setMapManager(new GoogleMapManager(googleMap));
-            mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
+            mGoogleMapManager = new GoogleMapManager(googleMap);
         });
+
+
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        // ici ???
+        mFactory.setMapManager(mGoogleMapManager);
+        mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+
+
+
         mLocationPermission =
                 ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
