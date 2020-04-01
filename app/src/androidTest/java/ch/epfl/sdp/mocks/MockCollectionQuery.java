@@ -12,7 +12,7 @@ import java.util.List;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.db.queries.GeoFirestoreQuery;
+import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
 
 public class MockCollectionQuery implements CollectionQuery {
@@ -38,7 +38,7 @@ public class MockCollectionQuery implements CollectionQuery {
     }
 
     @Override
-    public GeoFirestoreQuery atLocation(GeoPoint geoPoint, double radius) {
+    public LocationQuery atLocation(GeoPoint geoPoint, double radius) {
         return null;
     }
 

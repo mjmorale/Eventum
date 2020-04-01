@@ -11,6 +11,8 @@ import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -54,8 +56,8 @@ public class MapFragment extends Fragment{
         return view;
     }
 
-    public void addMarker(String eventName, LatLng coordinates, GoogleMapProvider googleMapProvider) {
-        googleMapProvider.addMarker(new MarkerOptions().position(coordinates).title(eventName));
+    public void addMarker(String eventName, GeoPoint coordinates, GoogleMapProvider googleMapProvider) {
+        googleMapProvider.addMarker(new MarkerOptions().position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude())).title(eventName));
     }
 
     @Override

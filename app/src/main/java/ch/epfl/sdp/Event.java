@@ -2,7 +2,7 @@ package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Date;
 import java.util.Random;
@@ -15,17 +15,17 @@ public class Event {
     private Date mDate;
     private String mTitle;
     private int mImageID;
-    private LatLng mLocation;
+    private GeoPoint mLocation;
 
     public Event(@NonNull String title, @NonNull String description, @NonNull Date date) {
         this(title, description, date, R.mipmap.ic_launcher);
     }
 
-    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, @NonNull int imageID){
-        this(title,description,date,imageID,new LatLng(new Random().nextInt(100), new Random().nextInt(100)));
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, int imageID){
+        this(title, description, date, imageID, new GeoPoint(new Random().nextInt(90), new Random().nextInt(180)));
     }
 
-    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, int imageID, @NonNull LatLng location) {
+    public Event(@NonNull String title, @NonNull String description, @NonNull Date date, int imageID, @NonNull GeoPoint location) {
         this.mTitle = verifyNotNull(title);
         this.mDescription = verifyNotNull(description);
         this.mDate = verifyNotNull(date);
@@ -49,7 +49,7 @@ public class Event {
     }
 
     @NonNull
-    public LatLng getLocation() {
+    public GeoPoint getLocation() {
         return mLocation;
     }
 
@@ -69,11 +69,11 @@ public class Event {
         this.mDate = verifyNotNull(date);
     }
 
-    public void setLocation(LatLng location) {
+    public void setLocation(GeoPoint location) {
         this.mLocation = verifyNotNull(location);
     }
 
-    public void setImageID(@NonNull int imageName) {
+    public void setImageID(int imageName) {
         this.mImageID = imageName;
     }
 }
