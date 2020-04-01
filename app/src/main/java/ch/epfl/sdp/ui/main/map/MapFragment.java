@@ -66,7 +66,7 @@ public class MapFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         // ici ???
-        // if (mGoogleMapManager == null) mFactory.setMapManager(mGoogleMapManager); // if nécessaire ?
+         if (mGoogleMapManager == null) mFactory.setMapManager(mGoogleMapManager); // if nécessaire ?
         mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
 
