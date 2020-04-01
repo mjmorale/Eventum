@@ -5,7 +5,6 @@ import com.google.firebase.firestore.GeoPoint;
 
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.imperiumlabs.geofirestore.listeners.GeoQueryDataEventListener;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,20 +36,20 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
         mGeoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
             @Override
-            public void onDocumentEntered(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) {
+            public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
                 addDocument(documentSnapshot);
             }
 
             @Override
-            public void onDocumentExited(@NotNull DocumentSnapshot documentSnapshot) {
+            public void onDocumentExited(DocumentSnapshot documentSnapshot) {
                 removeDocument(documentSnapshot);
             }
 
             @Override
-            public void onDocumentMoved(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) { }
+            public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) { }
 
             @Override
-            public void onDocumentChanged(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) {
+            public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
                 addDocument(documentSnapshot);
             }
 
@@ -58,7 +57,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
             public void onGeoQueryReady() { }
 
             @Override
-            public void onGeoQueryError(@NotNull Exception e) { }
+            public void onGeoQueryError(Exception e) { }
 
         });
     }

@@ -12,9 +12,7 @@ import java.util.Map;
 import androidx.lifecycle.LiveData;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
-import org.jetbrains.annotations.Nullable;
 
-import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;

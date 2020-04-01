@@ -1,7 +1,5 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentSnapshot;
