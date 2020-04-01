@@ -3,6 +3,9 @@ package ch.epfl.sdp.ui.main.map;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+
+import com.google.android.gms.maps.model.Marker;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,6 +38,9 @@ public class MapViewModelTest {
     @Mock
     private LifecycleOwner mLifecycleOwner;
 
+    @Mock
+    private Marker mMarker;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -51,6 +57,7 @@ public class MapViewModelTest {
     public void test() {
         List<Event> list = new ArrayList<Event>();
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+
 
 
 

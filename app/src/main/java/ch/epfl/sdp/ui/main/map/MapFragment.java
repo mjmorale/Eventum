@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 
@@ -38,9 +39,10 @@ public class MapFragment extends Fragment {
     }
 
     @VisibleForTesting
-    public MapFragment(@NonNull Database database) {
+    public MapFragment(@NonNull Database database, @NonNull MapManager mapManager) {
         mFactory = new MapViewModel.MapViewModelFactory();
         mFactory.setDatabase(database);
+        mFactory.setMapManager(mapManager);
     }
 
     @Override
