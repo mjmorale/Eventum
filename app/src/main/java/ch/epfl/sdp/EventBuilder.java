@@ -15,7 +15,7 @@ public class EventBuilder {
     private int mImageId = R.mipmap.ic_launcher;
 
     public Event build() {
-        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
         return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);

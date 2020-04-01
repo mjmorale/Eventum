@@ -1,15 +1,12 @@
 package ch.epfl.sdp.ui.createevent;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.contrib.PickerActions;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -26,7 +23,6 @@ import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
-import ch.epfl.sdp.ui.main.MainActivity;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -61,17 +57,11 @@ public class CreateEventFragmentTest {
     private static final int MONTH = mMockEvent.getDate().getMonth();
     private static final int YEAR = mMockEvent.getDate().getYear();
 
-    private Activity mActivity;
-
     @Mock
     private Database mDatabase;
 
     @Mock
     private CollectionQuery mCollectionQuery;
-
-    @Rule
-    public IntentsTestRule<MainActivity> intentsTestRule =
-            new IntentsTestRule<>(MainActivity.class);
 
     @Before
     public void setup() {
@@ -96,11 +86,6 @@ public class CreateEventFragmentTest {
                 new Bundle(),
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory<>(CreateEventFragment.class, mDatabase));
-
-        scenario.onFragment( fragment -> {
-            mActivity = fragment.getActivity();
-            mActivity.getIntent();
-        });
     }
 
     @Test

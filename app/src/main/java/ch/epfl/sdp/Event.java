@@ -69,38 +69,4 @@ public class Event {
     public String getAddress() {
         return mAddress;
     }
-
-/*    public void setTitle(String title) {
-        if (title == null)
-            throw new IllegalArgumentException();
-        this.mTitle = title;
-    }
-
-    public void setDescription(String description) {
-        if (description == null)
-            throw new IllegalArgumentException();
-        this.mDescription = description;
-    }
-
-    public void setDate(Date date) {
-        if (date == null)
-            throw new IllegalArgumentException();
-        this.mDate = date;
-    }
-
-    public void setDate(String date) throws ParseException {
-        this.mDate = parseDate(date);
-    }
-
-    public void setLocation(LatLng location) {
-        this.mLocation = location;
-    }
-
-    public void setImageID(@NonNull int imageName) {
-        this.mImageID = imageName;
-    }
-
-    public void setAddress(String mAddress) { this.mAddress = mAddress; }
-
-    private SimpleDateFormat getFormatter() { return mFormatter; }*/
 }
