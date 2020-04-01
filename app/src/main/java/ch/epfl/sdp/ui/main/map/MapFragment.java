@@ -52,9 +52,10 @@ public class MapFragment extends Fragment {
             mFactory.setMapManager(new GoogleMapManager(googleMap));
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
             mViewModel.addMarkers(getViewLifecycleOwner());
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
         });
+
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
