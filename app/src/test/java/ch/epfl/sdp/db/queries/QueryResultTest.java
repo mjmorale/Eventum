@@ -30,11 +30,6 @@ public class QueryResultTest {
         assertNull(res.getException());
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void QueryResult_failure_FailsIfNullValue() {
-        QueryResult.failure(null);
-    }
-
     @Test
     public void QueryResult_failure_ExceptionIsCorrectlySet() {
         Exception e = new Exception();
