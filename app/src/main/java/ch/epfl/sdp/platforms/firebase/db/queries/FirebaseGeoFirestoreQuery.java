@@ -12,13 +12,15 @@ import java.util.List;
 
 import ch.epfl.sdp.db.queries.GeoFirestoreQuery;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements GeoFirestoreQuery {
 
     private GeoQuery mQuery;
 
     FirebaseGeoFirestoreQuery(@NonNull FirebaseFirestore firebaseFirestore, GeoQuery geoQuery){
         super(firebaseFirestore);
-        mQuery = geoQuery;
+        mQuery = verifyNotNull(geoQuery);
     }
 
     @Override
