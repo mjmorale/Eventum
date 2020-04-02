@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.location.Location;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -64,4 +63,6 @@ public class MapViewModel extends ViewModel {
     public Event getEventFromMarker(Marker marker) {
         return  mEventsMarkers.get(marker);
     }
+
+    public void setMyLocation() { mMapManager.setMyLocation(); }
 }

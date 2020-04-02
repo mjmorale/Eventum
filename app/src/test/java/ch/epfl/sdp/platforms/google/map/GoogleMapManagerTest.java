@@ -57,19 +57,10 @@ public class GoogleMapManagerTest {
         verify(mGoogleMap).addMarker(any());
     }
 
-//    @Test
-//    public void checkThatMoveCameraUseMoveCameraOnTheMap() {
-//        float zoomLevel = 4;
-//        doNothing().when(mGooogleMap).moveCamera(any());
-//        GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
-//        mapManager.moveCamera(mLocation, zoomLevel);
-//        verify(mGooogleMap).moveCamera(any());
-//    }
-
-//    @Test
-//    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
-//        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
-//        mapManager.setMyLocation();
-//        verify(mGoogleMap).setMyLocationEnabled(true);
-//    }
+    @Test
+    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
+        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
+        mapManager.setMyLocation();
+        verify(mGoogleMap).setMyLocationEnabled(true);
+    }
 }

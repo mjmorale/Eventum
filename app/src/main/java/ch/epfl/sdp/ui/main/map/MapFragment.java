@@ -59,7 +59,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(googleMap -> {
             googleMap.setOnMarkerClickListener(this);
-            googleMap.setMyLocationEnabled(true);
             mGoogleMapManager = new GoogleMapManager(googleMap);
         });
 
@@ -90,6 +89,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             }
 
             mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+            mViewModel.setMyLocation();
             mViewModel.addMarkers();
         }
     }
