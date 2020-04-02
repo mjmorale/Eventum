@@ -43,11 +43,7 @@ public class MapViewModel extends ViewModel {
         mMapManager = verifyNotNull(mapManager);
 
         mEventsLive = database.query("events").liveData(Event.class);
-        mEventObserver = events -> {
-            for(Event e: events) {
-                addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);
-            }
-        };
+        mEventObserver = events -> { for(Event e: events) { addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);}};
         mEventsLive.observeForever(mEventObserver);
     }
 
@@ -64,7 +60,5 @@ public class MapViewModel extends ViewModel {
     }
 
     @Override
-    protected void onCleared() {
-        mEventsLive.removeObserver(mEventObserver);
-    }
+    protected void onCleared() { mEventsLive.removeObserver(mEventObserver);}
 }
