@@ -120,28 +120,6 @@ public class AuthFragmentTest {
     }
 
     @Test
-    public void AuthFragment_LoginButtonStartsGoogleIntent() {
-        Intents.init();
-
-        when(mAuthenticator.getCurrentUser()).thenReturn(null);
-
-        FragmentScenario.launchInContainer(
-                AuthFragment.class,
-                new Bundle(),
-                R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase)
-        );
-
-        intending(allOf(hasAction("com.google.android.gms.auth.GOOGLE_SIGN_IN"), hasPackage("ch.epfl.sdp"))).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
-
-        onView(withId(R.id.btn_google_sign_in)).perform(click());
-
-        intended(allOf(hasAction("com.google.android.gms.auth.GOOGLE_SIGN_IN"), hasPackage("ch.epfl.sdp")));
-
-        Intents.release();
-    }
-
-    @Test
     public void AuthFragment_CallsAuthListenerIfUserIsConnected() {
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
