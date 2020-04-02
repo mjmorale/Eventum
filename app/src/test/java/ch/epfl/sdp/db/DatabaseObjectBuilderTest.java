@@ -14,7 +14,7 @@ public class DatabaseObjectBuilderTest {
     private static class MockBuilder extends DatabaseObjectBuilder<String> {
 
         public MockBuilder(String... required) {
-            super(required);
+            super(false, required);
         }
 
         @Override

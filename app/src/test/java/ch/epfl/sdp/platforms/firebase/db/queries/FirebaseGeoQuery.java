@@ -4,6 +4,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import org.imperiumlabs.geofirestore.GeoFirestore;
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,15 +13,30 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Collection;
+
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseGeoFirestoreQuery;
+import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.utils.MockStringBuilder;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class FirebaseGeoQuery {
 
-    private final static GeoPoint DUMMY_LOCATION= new GeoPoint(12, 12);
 
+
+    private final static double DUMMY_RADIUS = 12;
+
+    private static final Class mClass = Event.class;
+
+    @Mock
+    private GeoPoint mLocation;
 
     @Mock
     private FirebaseFirestore mDb;
@@ -30,6 +46,15 @@ public class FirebaseGeoQuery {
 
     @Mock
     private FirebaseGeoFirestoreQuery mFirebaseGeoFirestoreQuery;
+
+    @Mock
+    private GeoFirestore mGeoFirestore;
+
+    @Mock
+    private Query.OnQueryCompleteCallback mCallback;
+
+    @Mock
+    private GeoFirestoreLiveData mGeoFirestoreLiveData;
 
     @Mock
     private GeoQuery mGeoQuery;
@@ -42,18 +67,39 @@ public class FirebaseGeoQuery {
 
     @Test(expected = IllegalArgumentException.class)
     public void firebaseGeoQueryFailsNullFirebase(){
-        FirebaseGeoFirestoreQuery firebaseGeoQuery = new FirebaseGeoFirestoreQuery(null, mGeoQuery);
+        FirebaseGeoFirestoreQuery firebaseGeoQuery = new FirebaseGeoFirestoreQuery(null, mGeoFirestore, mLocation, DUMMY_RADIUS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fireBaseGeoQueryFailsNullGeoQuery(){
-        FirebaseGeoFirestoreQuery firebaseGeoQuery = new FirebaseGeoFirestoreQuery(mDb, null);
+        FirebaseGeoFirestoreQuery firebaseGeoQuery = new FirebaseGeoFirestoreQuery(mDb, null, mLocation, DUMMY_RADIUS);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void firebaseGeoQueryFailsNullGeopoint(){
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, null, DUMMY_RADIUS);
     }
 
     @Test
-    public void test(){
-        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoQuery);
+    public void firebaseGeoQueryCorrectlyCallsGet(){
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+        firebaseGeoFirestoreQuery.get(Event.class, mCallback);
+
+//        verify(mGeoFirestore).getAtLocation(DUMMY_LOCATION, DUMMY_RADIUS, (list, e) -> {
+//            firebaseGeoFirestoreQuery.handleLocationQuerySnapshot(list, e, Event.class, mCallback);
+//        });
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void firebaseGeoFirestoreQueryLiveDataFailsOnNullArgument(){
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+        firebaseGeoFirestoreQuery.liveData(null);
+    }
+
+    @Test
+    public void setmFirebaseGeoFirestoreQueryLiveDataReturnsLiveData(){
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+        firebaseGeoFirestoreQuery.liveData(String.class);
+    }
 
 }

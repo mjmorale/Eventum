@@ -57,8 +57,4 @@ public class MockCollectionQuery implements CollectionQuery {
         callback.onQueryComplete(QueryResult.success(REF_SUCCESS));
     }
 
-    @Override
-    public <T> void createWithLocation(@NonNull T object, @NonNull GeoFirestore.CompletionCallback callback, @NonNull GeoPoint geoPoint) {
-
-    }
 }
