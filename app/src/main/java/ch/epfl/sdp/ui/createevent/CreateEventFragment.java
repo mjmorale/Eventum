@@ -90,7 +90,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                         }
                     });
                 } catch (ParseException | IllegalArgumentException e) {
-                    Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

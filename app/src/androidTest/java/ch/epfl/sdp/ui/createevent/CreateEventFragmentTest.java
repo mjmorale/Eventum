@@ -1,7 +1,9 @@
 package ch.epfl.sdp.ui.createevent;
 
+import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.contrib.PickerActions;
@@ -33,12 +35,15 @@ import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,6 +61,8 @@ public class CreateEventFragmentTest {
     private static final int DAY = mMockEvent.getDate().getDay();
     private static final int MONTH = mMockEvent.getDate().getMonth();
     private static final int YEAR = mMockEvent.getDate().getYear();
+
+    private Activity mActivity;
 
     @Mock
     private Database mDatabase;
@@ -85,6 +92,10 @@ public class CreateEventFragmentTest {
                 new Bundle(),
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory<>(CreateEventFragment.class, mDatabase));
+
+        scenario.onFragment(fragment -> {
+            mActivity = fragment.getActivity();
+        });
     }
 
     @Test
@@ -100,6 +111,11 @@ public class CreateEventFragmentTest {
                 closeSoftKeyboard());
 
         clickCreateButton();
+
+        // Check Toast message is displayed
+        onView(withText(R.string.toast_incorrect_input))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
     }
 
     private void doCorrectInput() {
