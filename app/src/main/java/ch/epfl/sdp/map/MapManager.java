@@ -1,7 +1,6 @@
 package ch.epfl.sdp.map;
 
 import android.location.Location;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;

@@ -52,9 +52,7 @@ public class MapFragment extends Fragment {
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(googleMap -> {
-            mGoogleMapManager = new GoogleMapManager(googleMap);
-        });
+        mMapView.getMapAsync(googleMap -> { mGoogleMapManager = new GoogleMapManager(googleMap); });
 
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);

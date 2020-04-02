@@ -55,9 +55,7 @@ public class MapViewModel extends ViewModel {
     }
 
     public void addMarkers(LifecycleOwner lifecycleOwner) {
-        getEvents().observe(lifecycleOwner, events -> {
-            for(Event event: events) mMapManager.addMarker(event.getTitle(), event.getLocation());
-        });
+        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) mMapManager.addMarker(e.getTitle(), e.getLocation()); });
     }
 
 //    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
