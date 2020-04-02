@@ -10,16 +10,16 @@ public class AuthenticationResult {
 
     private final Exception mException;
     private final boolean mIsSuccess;
-    private final User mUser;
+    private final UserInfo mUserInfo;
 
-    private AuthenticationResult(@Nullable User user, boolean success, @Nullable Exception exception) {
-        this.mUser = user;
+    private AuthenticationResult(@Nullable UserInfo user, boolean success, @Nullable Exception exception) {
+        this.mUserInfo = user;
         this.mIsSuccess = success;
         this.mException = exception;
     }
 
-    public static AuthenticationResult success(@NonNull User user) {
-        return new AuthenticationResult(verifyNotNull(user), true, null);
+    public static AuthenticationResult success(@NonNull UserInfo userInfo) {
+        return new AuthenticationResult(verifyNotNull(userInfo), true, null);
     }
 
     public static AuthenticationResult failure(@NonNull Exception exception) {
@@ -30,8 +30,8 @@ public class AuthenticationResult {
         return mIsSuccess;
     }
 
-    public User getUser() {
-        return mUser;
+    public UserInfo getUserInfo() {
+        return mUserInfo;
     }
 
     public Exception getException() {

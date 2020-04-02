@@ -2,10 +2,15 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
@@ -28,9 +33,38 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     }
 
     @Override
+    public void exists(@NonNull OnQueryCompleteCallback<Boolean> callback) {
+        verifyNotNull(callback);
+        mDocument.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                DocumentSnapshot doc = task.getResult();
+                callback.onQueryComplete(QueryResult.success(doc.exists()));
+            }
+            else {
+                callback.onQueryComplete(QueryResult.failure(task.getException()));
+            }
+        });
+    }
+
+    @Override
     public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback) {
         verifyNotNull(type, callback);
         handleDocumentSnapshot(mDocument.get(), type, callback);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {
+        verifyNotNull(object, callback);
+        DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder((Class<T>)object.getClass());
+        mDocument.set(builder.serializeToMap(object)).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                callback.onQueryComplete(QueryResult.success(null));
+            }
+            else {
+                callback.onQueryComplete(QueryResult.failure(task.getException()));
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

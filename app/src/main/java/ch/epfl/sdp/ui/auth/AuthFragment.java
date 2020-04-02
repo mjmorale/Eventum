@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.auth;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,18 +23,27 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.main.MainActivity;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 
+    public interface OnAuthFragmentResultListener {
+        void onLoggedIn(String userRef);
+    }
+
     private final static String TAG = "AuthFragment";
+
+    private OnAuthFragmentResultListener mAuthListener;
 
     private final AuthViewModel.AuthViewModelFactory mFactory;
     private FragmentAuthBinding mBinding;
@@ -44,12 +54,14 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
-    public AuthFragment(@NonNull Authenticator authenticator) {
+    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(authenticator);
+        mFactory.setDatabase(database);
     }
 
     @Override
@@ -74,17 +86,34 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         mBinding.btnGoogleSignIn.setOnClickListener(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(AuthViewModel.class);
-        mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if(user == null) {
+        mViewModel.getUserRef().observe(getViewLifecycleOwner(), userRef -> {
+            if(userRef == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
-                Intent mainActivityIntent = new Intent(getActivity(), MainActivity.class);
-                mainActivityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
-                startActivity(mainActivityIntent);
-                getActivity().finish();
+                if(mAuthListener != null) {
+                    mAuthListener.onLoggedIn(userRef);
+                }
+                else {
+                    Log.d(TAG, "Logged in successful but no AuthListener");
+                }
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof OnAuthFragmentResultListener) {
+            mAuthListener = (OnAuthFragmentResultListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mAuthListener = null;
     }
 
     @Override
