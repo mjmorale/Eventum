@@ -55,6 +55,7 @@
             android:value="@string/map_key" />
         <uses-library
             android:name="org.apache.http.legacy"/>
+            android:required="false" />
 
     </application>
 
