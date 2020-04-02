@@ -64,6 +64,11 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         mFactory.setDatabase(database);
     }
 
+    @VisibleForTesting
+    protected void setAuthListener(OnAuthFragmentResultListener listener) {
+        mAuthListener = listener;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
