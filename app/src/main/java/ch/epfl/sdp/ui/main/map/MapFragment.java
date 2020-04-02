@@ -56,7 +56,6 @@ public class MapFragment extends Fragment {
             mGoogleMapManager = new GoogleMapManager(googleMap);
         });
 
-
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
 
@@ -65,8 +64,6 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        // ici ???
         if (mGoogleMapManager != null) mFactory.setMapManager(mGoogleMapManager);
         mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
@@ -79,12 +76,17 @@ public class MapFragment extends Fragment {
             mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             if (mLastKnownLocation == null) {
-                mLastKnownLocation = mViewModel.getDefaultLocation();
+                mLastKnownLocation = new Location("Europe");
+                mLastKnownLocation.setLatitude(46.520564);
+                mLastKnownLocation.setLongitude(6.567827);
                 mZoomLevel = 4;
             }
 
             mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+            mViewModel.setMyLocation();
+            mViewModel.addMarkersNearLocation(getViewLifecycleOwner(), mLastKnownLocation, 100);
         }
+        // else? add something when permission denied ???
     }
 
     @Override

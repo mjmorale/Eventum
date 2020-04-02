@@ -49,29 +49,18 @@ public class MapViewModel extends ViewModel {
         mMapManager = mapManager;
     }
 
-    public void initializeMapManagerWithLastKnowLocation(Location lastKnownLocation, LifecycleOwner lifecycleOwner) {
-        this.moveCamera(lastKnownLocation, 12);
-        this.setMyLocation();
-        this.addMarkersNearLocation(lifecycleOwner, lastKnownLocation, 100);
-    }
-
-    public void initializeMapManagerWithoutLastKnowLocation(LifecycleOwner lifecycleOwner) {
-        this.moveCameraDefault();
-        this.addMarkers(lifecycleOwner);
-    }
-
     public LiveData<List<Event>> getEvents() {
         mEventsLive = mCollectionQuery.liveData(Event.class);
         return mEventsLive;
     }
 
-    public void addMarkers(LifecycleOwner lifecycleOwner) {
-        getEvents().observe(lifecycleOwner, events -> {
-            for(Event event: events){
-                mMapManager.addMarker(event.getTitle(), event.getLocation());
-            }
-        });
-    }
+//    public void addMarkers(LifecycleOwner lifecycleOwner) {
+//        getEvents().observe(lifecycleOwner, events -> {
+//            for(Event event: events){
+//                mMapManager.addMarker(event.getTitle(), event.getLocation());
+//            }
+//        });
+//    }
 
     public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
         getEvents().observe(lifecycleOwner, events -> {
@@ -100,25 +89,8 @@ public class MapViewModel extends ViewModel {
         mMapManager.moveCamera(location, zoomLevel);
     }
 
-    public void moveCameraDefault() {
-        Location location = new Location("Europe");
-        location.setLatitude(46.520564);
-        location.setLongitude(6.567827);
-        this.moveCamera(location, 4);
-    }
-
-    public Location getDefaultLocation() {
-        Location location = new Location("Europe");
-        location.setLatitude(46.520564);
-        location.setLongitude(6.567827);
-        return location;
-    }
-
     public void setMyLocation() {
         mMapManager.setMyLocation();
     }
 
-//    public void setMapManager(MapManager mapManager) {
-//        this.mMapManager = mapManager;
-//    }
 }
