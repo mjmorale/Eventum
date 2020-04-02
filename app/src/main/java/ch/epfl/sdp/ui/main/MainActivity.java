@@ -62,18 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
 
-
-
-        Uri uri = getIntent().getData();
-        if(uri!=null){
-            List<String> params= uri.getPathSegments();
-            int imageID = Integer.parseInt(params.get(params.size()-1));
-            Event event = new EventBuilder().setTitle("Title").setDescription("Description").setDate(new Date()).setImageId(imageID).build();
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new EventDetailFragment(event, new SwipeFragment()))
-                    .commit();
-        }else if (savedInstanceState == null) {
+     if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_container, new SwipeFragment())
                     .commit();

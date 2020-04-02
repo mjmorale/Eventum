@@ -11,13 +11,11 @@ import androidx.fragment.app.Fragment;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
-import ch.epfl.sdp.ui.event.EventSharingButton;
 
 public class EventDetailFragment extends Fragment {
     private FragmentDefaultEventBinding mBinding;
     private Event mEvent;
     private SwipeFragment mSwipeFragment;
-    private EventSharingButton mEventSharingButton;
     public EventDetailFragment(Event event, SwipeFragment swipeFragment){
         super();
         this.mEvent = event;
@@ -36,7 +34,7 @@ public class EventDetailFragment extends Fragment {
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
         mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit());
-        mEventSharingButton= new EventSharingButton(getContext(), mBinding.sharingButton, mEvent);
+
         return mBinding.getRoot();
     }
 

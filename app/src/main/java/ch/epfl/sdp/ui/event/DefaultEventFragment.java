@@ -22,6 +22,8 @@ import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.sharing.Sharing;
+import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -31,7 +33,7 @@ public class DefaultEventFragment extends Fragment{
     private DefaultEventViewModel mViewModel;
     private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
-
+    private Sharing mEventSharing;
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
@@ -40,7 +42,6 @@ public class DefaultEventFragment extends Fragment{
 
         DefaultEventFragment fragment = new DefaultEventFragment();
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -73,6 +74,9 @@ public class DefaultEventFragment extends Fragment{
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
+
+        mEventSharing = new SharingBuilder().setContext(getContext()).setRef(mViewModel.getEventRef()).build();
+        mBinding.sharingButton.setOnClickListener(v->mEventSharing.share());
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDateStr());

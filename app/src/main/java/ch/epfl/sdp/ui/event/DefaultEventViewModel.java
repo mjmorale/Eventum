@@ -32,10 +32,12 @@ public class DefaultEventViewModel extends ViewModel {
 
     private final DocumentQuery mEventDocumentQuery;
     private final Database mDatabase;
+    private final String mEventRef;
 
     public DefaultEventViewModel(@NonNull Database database, @NonNull String eventRef) {
         verifyNotNull(database, eventRef);
         mDatabase = database;
+        mEventRef = eventRef;
         mEventDocumentQuery = database.query("events").document(eventRef);
     }
 
@@ -46,4 +48,7 @@ public class DefaultEventViewModel extends ViewModel {
         return mEvent;
     }
 
+    public String getEventRef(){
+        return mEventRef;
+    }
 }
