@@ -1,13 +1,11 @@
 package ch.epfl.sdp.platforms.google.map;
 
 import android.location.Location;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import ch.epfl.sdp.map.MapManager;
 
 public class GoogleMapManager implements MapManager {

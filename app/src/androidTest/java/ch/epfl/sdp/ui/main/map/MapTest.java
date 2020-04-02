@@ -24,7 +24,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static ch.epfl.sdp.utils.TestUtils.selectNavigation;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -51,18 +50,11 @@ public class MapTest {
         MockitoAnnotations.initMocks(this);
     }
 
-//    @Test
-//    public void checkThatMapIsDisplayed() {
-//        selectNavigation(R.id.nav_map);
-//        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
-//    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void checkThatMapIsDisplayedWithMockDatabase() {
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLive);
-
 
         FragmentScenario<MapFragment> scenario = FragmentScenario.launchInContainer(
                 MapFragment.class,
@@ -73,6 +65,5 @@ public class MapTest {
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
-
 }
 

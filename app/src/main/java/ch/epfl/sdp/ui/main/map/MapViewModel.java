@@ -2,17 +2,11 @@ package ch.epfl.sdp.ui.main.map;
 
 import android.location.Location;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -59,31 +53,8 @@ public class MapViewModel extends ViewModel {
     }
 
     public void addMarkers(LifecycleOwner lifecycleOwner) {
-        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) mEventsMarkers.put(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
+        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
     }
-
-//    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
-//        getEvents().observe(lifecycleOwner, events -> {
-//            for(Event event: events){
-//                LatLng coordinates = event.getLocation();
-//
-//                if (location != null) {
-//                    double lLat = location.getLatitude();
-//                    double lLong = location.getLongitude();
-//                    double eLat = coordinates.latitude;
-//                    double eLong = coordinates.longitude;
-//                    double diffLat = Math.abs(lLat - eLat);
-//                    double diffLong = Math.abs(lLong - eLong);
-//                    double LatKm = DEGREE_IN_KM * diffLat;
-//                    double LongKm = DEGREE_IN_KM * diffLong * Math.cos(diffLat);
-//                    if ((LatKm < distanceInKm) && (LongKm < distanceInKm)) {
-//                        String name = event.getTitle();
-//                        Marker marker = mMapManager.addMarker(new MarkerOptions().position(coordinates).title(name));
-//                    }
-//                }
-//            }
-//        });
-//    }
 
     public void moveCamera(Location location, float zoomLevel) {
         mMapManager.moveCamera(location, zoomLevel);
@@ -93,6 +64,11 @@ public class MapViewModel extends ViewModel {
         mMapManager.setMyLocation();
     }
 
-    public Event getEventFromMarker(Marker marker) { return  mEventsMarkers.get(marker); }
+    public void addEvent(Marker marker, Event event) {
+        mEventsMarkers.put(marker, event);
+    }
 
+    public Event getEventFromMarker(Marker marker) {
+        return  mEventsMarkers.get(marker);
+    }
 }
