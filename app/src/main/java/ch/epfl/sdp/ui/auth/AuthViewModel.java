@@ -13,24 +13,21 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class AuthViewModel<CredType> extends ViewModel {
 
-    static class AuthViewModelFactory extends ParameterizedViewModelFactory {
+    static class AuthViewModelFactory extends DatabaseViewModelFactory {
 
         AuthViewModelFactory() {
-            super(Authenticator.class, Database.class);
+            super(Authenticator.class);
         }
 
         void setAuthenticator(@NonNull Authenticator authenticator) {
             setValue(0, verifyNotNull(authenticator));
-        }
-
-        void setDatabase(@NonNull Database database) {
-            setValue(1, verifyNotNull(database));
         }
     }
 
