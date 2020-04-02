@@ -69,6 +69,18 @@
                     android:textSize="20sp"
                     tools:text="date" />
 
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textAlignment="textStart"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="30dp"
+                    android:textColor="@color/black"
+                    android:background="@color/white">
+                </TextView>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.core.widget.NestedScrollView>

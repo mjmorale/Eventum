@@ -17,8 +17,7 @@ import ch.epfl.sdp.ui.auth.AuthActivity;
 public class AuthActivityEspressoTest {
     @Rule
     public ActivityTestRule<AuthActivity> mActivityTestRule = new ActivityTestRule<>(AuthActivity.class);
-
-
+    
     @Test
     public void AuthActivity_test_button() {
         onView(ViewMatchers.withId(R.id.btn_google_sign_in)).perform(click());
