@@ -82,28 +82,36 @@
                 android:layout_width="match_parent">
             </TextView>
 
-            <ch.epfl.sdp.ui.createevent.DelayAutoCompleteTextView
-                android:id="@+id/geo_autocomplete"
+            <FrameLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:imeOptions="actionSearch"
-                android:inputType="textCapSentences"
-                android:background="@color/white"
-                android:hint="address"
-                android:layout_gravity="center_vertical"
-                android:padding="10dp"
-                android:dropDownWidth="fill_parent"
-                />
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/geo_autocomplete_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_remove"
-                android:contentDescription="delete button"
-                android:layout_gravity="center_vertical|end"
-                android:visibility="gone"
-                android:layout_marginEnd="12dp"/>
+                <ch.epfl.sdp.ui.createevent.DelayAutoCompleteTextView
+                    android:id="@+id/geo_autocomplete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textCapSentences"
+                    android:background="@color/white"
+                    android:hint="address"
+                    android:padding="10dp"
+                    android:dropDownWidth="fill_parent"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/geo_autocomplete_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_remove"
+                    android:contentDescription="delete button"
+                    android:layout_gravity="center_vertical|end"
+                    android:visibility="gone"
+                    android:layout_marginEnd="12dp"/>
+
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/imageView"
