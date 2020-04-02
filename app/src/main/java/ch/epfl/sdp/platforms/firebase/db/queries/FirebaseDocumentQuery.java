@@ -35,7 +35,7 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     @Override
     public void exists(@NonNull OnQueryCompleteCallback<Boolean> callback) {
         verifyNotNull(callback);
-        mDocument.get().addOnCompleteListener(task -> {
+        documentPerformAction(mDocument.get(), task -> {
             if(task.isSuccessful()) {
                 DocumentSnapshot doc = task.getResult();
                 callback.onQueryComplete(QueryResult.success(doc.exists()));
@@ -57,7 +57,7 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {
         verifyNotNull(object, callback);
         DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder((Class<T>)object.getClass());
-        mDocument.set(builder.serializeToMap(object)).addOnCompleteListener(task -> {
+        documentPerformAction(mDocument.set(builder.serializeToMap(object)), task -> {
             if(task.isSuccessful()) {
                 callback.onQueryComplete(QueryResult.success(null));
             }
@@ -76,12 +76,16 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     @Override
     public void delete(@NonNull OnQueryCompleteCallback<Void> callback) {
         verifyNotNull(callback);
-        mDocument.delete().addOnCompleteListener(task -> {
+        documentPerformAction(mDocument.delete(), task -> {
             if(task.isSuccessful()) {
                 callback.onQueryComplete(QueryResult.success(null));
             } else {
                 callback.onQueryComplete(QueryResult.failure(task.getException()));
             }
         });
+    }
+
+    private <T> void documentPerformAction(@NonNull Task<T> queryTask, @NonNull OnCompleteListener<T> completeListener) {
+        queryTask.addOnCompleteListener(completeListener);
     }
 }
