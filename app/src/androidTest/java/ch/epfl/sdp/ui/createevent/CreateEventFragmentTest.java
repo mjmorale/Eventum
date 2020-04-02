@@ -1,58 +1,129 @@
 package ch.epfl.sdp.ui.createevent;
 
-import androidx.test.espresso.contrib.PickerActions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import android.app.Activity;
+import android.os.Bundle;
 
-import org.junit.Rule;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.contrib.PickerActions;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.mocks.MockEvents;
+import ch.epfl.sdp.mocks.MockFragmentFactory;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CreateEventFragmentTest {
-
-    private static SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
-
-    private static final Event mMockEvent = MockEvents.getCurrentEvent();
-    private static final String DATE = mFormatter.format(mMockEvent.getDate());
+    private static final Event mMockEvent = MockEvents.getNextEvent();
+    private static final String DATE = mMockEvent.getDateStr();
     private static final String TITLE = mMockEvent.getTitle();
     private static final String DESCRIPTION = mMockEvent.getDescription();
+    private static final String ADDRESS = mMockEvent.getAddress();
     private static final String EMPTY = "";
-    private static final int DAY = 30;
-    private static final int MONTH = 6;
-    private static final int YEAR = 2017;
+    private static final int DAY = mMockEvent.getDate().getDay();
+    private static final int MONTH = mMockEvent.getDate().getMonth();
+    private static final int YEAR = mMockEvent.getDate().getYear();
 
-    @Rule
-    public final ActivityTestRule<CreateEventActivity> mActivityRule =
-            new ActivityTestRule<>(CreateEventActivity.class);
+    private Activity mActivity;
+
+    @Mock
+    private Database mDatabase;
+
+    @Mock
+    private CollectionQuery mCollectionQuery;
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            Event event = (Event) args[0];
+
+            assertThat(event.getTitle(), is(TITLE));
+            assertThat(event.getDescription(), is(DESCRIPTION));
+            assertThat(event.getAddress(), containsString(ADDRESS));
+
+            ((Query.OnQueryCompleteCallback) args[1]).onQueryComplete(QueryResult.success("fake"));
+            return null;
+        }).when(mCollectionQuery).create(any(), any());
+
+        FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
+                CreateEventFragment.class,
+                new Bundle(),
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory<>(CreateEventFragment.class, mDatabase));
+
+        scenario.onFragment(fragment -> {
+            mActivity = fragment.getActivity();
+        });
+    }
 
     @Test
-    public void testCreateEventFragment() {
-        // Now try with correct values
-        onView(ViewMatchers.withId(R.id.title)).perform(
+    public void CreateEventFragment_CorrectInput() {
+        doCorrectInput();
+    }
+
+    @Test
+    public void CreateEventFragment_IncorrectInput() {
+        onView(withHint(is("Title"))).perform(
                 clearText(),
+                typeText(EMPTY),
+                closeSoftKeyboard());
+
+        clickCreateButton();
+
+        // Check Toast message is displayed
+        onView(withText(R.string.toast_incorrect_input))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+    }
+
+    private void doCorrectInput() {
+        onView(withId(R.id.title)).perform(
                 typeText(TITLE),
                 closeSoftKeyboard());
 
         onView(withId(R.id.description)).perform(
-                clearText(),
                 typeText(DESCRIPTION),
                 closeSoftKeyboard());
 
@@ -60,19 +131,21 @@ public class CreateEventFragmentTest {
                 PickerActions.setDate(YEAR, MONTH, DAY),
                 closeSoftKeyboard());
 
-        onView(withId(R.id.createButton))
+        onView(withId(R.id.geo_autocomplete)).perform(
+                scrollTo(),
+                typeText("Lausanne"));
+
+        onData(instanceOf(GeoSearchResult.class))
+                .inRoot(isPlatformPopup())
+                .check(matches(isDisplayed()))
                 .perform(click());
+
+        clickCreateButton();
     }
 
-    @Test
-    public void testCreateIncorrectEventFragment() {
-        // Try with incorrect values
-        onView(withHint(is("Title"))).perform(
-                clearText(),
-                typeText(EMPTY),
-                closeSoftKeyboard());
-
+    private void clickCreateButton() {
         onView(withId(R.id.createButton)).perform(
+                scrollTo(),
                 click());
     }
 }

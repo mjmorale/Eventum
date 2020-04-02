@@ -18,7 +18,17 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         String description = (String) data.get("description");
         Timestamp timestamp = (Timestamp)data.get("date");
         GeoPoint location = (GeoPoint)data.get("location");
-        return new Event(title, description, timestamp.toDate(),R.mipmap.ic_launcher,new LatLng(location.getLatitude(), location.getLongitude()));
+        String address = (String)data.get("address");
+
+        EventBuilder eventBuilder = new EventBuilder();
+        Event newEvent = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(timestamp.toDate())
+                .setAddress(address)
+                .setLocation(new LatLng(location.getLatitude(), location.getLongitude()))
+                .build();
+
+        return newEvent;
     }
 
     @Override
@@ -27,6 +37,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
             put("title", event.getTitle());
             put("description", event.getDescription());
             put("date", new Timestamp(event.getDate()));
+            put("address", event.getAddress());
             put("location", new GeoPoint(event.getLocation().latitude, event.getLocation().longitude));
         }};
     }

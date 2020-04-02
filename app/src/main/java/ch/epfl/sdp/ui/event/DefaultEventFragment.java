@@ -75,9 +75,10 @@ public class DefaultEventFragment extends Fragment{
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDate().toString());
+            mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
+            mBinding.address.setText(event.getAddress());
         });
     }
 

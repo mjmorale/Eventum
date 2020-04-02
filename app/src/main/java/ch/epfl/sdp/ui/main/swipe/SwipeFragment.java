@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -32,16 +33,16 @@ public class SwipeFragment extends Fragment {
         mEventList = new ArrayList<>();
         mEventList.add(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
-                new Date(2021, 1, 16), R.drawable.oss_117));
+                new Date(2021, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.oss_117));
         mEventList.add(new Event("Duck themed party",
                 "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
-                new Date(2020, 3, 7), R.drawable.duck));
+                new Date(2020, 3, 7), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.duck));
         mEventList.add(new Event("Make Internet great again",
                 "At this meeting we will debate on how to make pepe the frog memes great again",
-                new Date(2020, 4, 20), R.drawable.frog));
+                new Date(2020, 4, 20), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
         mEventList.add(new Event("Real Fake Party",
                 "This is really happening",
-                new Date(2020, 11, 10)));
+                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
 
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
         mCurrentEvent = mEventList.get(0);
