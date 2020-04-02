@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
@@ -41,12 +43,14 @@ public class MapViewModel extends ViewModel {
     private final Database mDatabase;
     private MapManager mMapManager;
     private CollectionQuery mCollectionQuery;
+    private Dictionary<Marker, Event> mEventsMarkers;
     private static final double DEGREE_IN_KM = 111.11;
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
         mDatabase = database;
         mCollectionQuery = database.query("events");
         mMapManager = mapManager;
+        mEventsMarkers = new Hashtable<Marker, Event>();
     }
 
     public LiveData<List<Event>> getEvents() {
@@ -55,7 +59,7 @@ public class MapViewModel extends ViewModel {
     }
 
     public void addMarkers(LifecycleOwner lifecycleOwner) {
-        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) mMapManager.addMarker(e.getTitle(), e.getLocation()); });
+        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) mEventsMarkers.put(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
     }
 
 //    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
@@ -88,5 +92,7 @@ public class MapViewModel extends ViewModel {
     public void setMyLocation() {
         mMapManager.setMyLocation();
     }
+
+    public Event getEventFromMarker(Marker marker) { return  mEventsMarkers.get(marker); }
 
 }

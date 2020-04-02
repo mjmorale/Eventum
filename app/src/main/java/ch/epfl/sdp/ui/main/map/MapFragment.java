@@ -14,7 +14,10 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.firestore.FirebaseFirestore;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
@@ -22,8 +25,9 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     private MapViewModel mViewModel = null;
     private final MapViewModel.MapViewModelFactory mFactory;
     private FragmentMapBinding mBinding;
@@ -52,7 +56,10 @@ public class MapFragment extends Fragment {
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(googleMap -> { mGoogleMapManager = new GoogleMapManager(googleMap); });
+        mMapView.getMapAsync(googleMap -> {
+            googleMap.setOnMarkerClickListener(this);
+            mGoogleMapManager = new GoogleMapManager(googleMap);
+        });
 
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
@@ -109,5 +116,12 @@ public class MapFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        EventDetailFragment infoFragment = new EventDetailFragment(mViewModel.getEventFromMarker(marker), this);
+        this.getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), infoFragment).commit();
+        return true;
     }
 }

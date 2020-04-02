@@ -1,16 +1,12 @@
 package ch.epfl.sdp.ui.main.map;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-
 import com.google.android.gms.maps.model.Marker;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.util.ArrayList;
 import java.util.List;
 import ch.epfl.sdp.Event;
