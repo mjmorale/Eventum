@@ -67,10 +67,10 @@ public class MapViewModel extends ViewModel {
         return  mEventsMarkers.get(marker);
     }
 
-    public void setMyLocation() { ((GoogleMapManager)mMapManager).setMyLocation(); }
+    public void setMyLocation() { mMapManager.setMyLocation(); }
 
-//    @Override
-//    protected void onCleared() {
-//        mEventsLive.removeObserver(events -> {});
-//    }
+    @Override
+    protected void onCleared() {
+        mEventsLive.removeObserver(events -> {});
+    }
 }
