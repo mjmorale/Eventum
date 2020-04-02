@@ -48,7 +48,7 @@ public class MapFragmentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void checkThatMapIsDisplayedWithMockDatabase() {
+    public void MapFragment_CheckThatMapIsDisplayedWithMockDatabase() {
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLive);
 

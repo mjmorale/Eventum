@@ -15,7 +15,6 @@ public class GoogleMapManager implements MapManager {
         mGoogleMap = googleMap;
     }
 
-    @Override
     public Marker addMarker(MarkerOptions markerOptions) {
         return mGoogleMap.addMarker(markerOptions);
     }

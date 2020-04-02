@@ -41,14 +41,14 @@ public class MapViewModelTest {
     }
 
     @Test
-    public void mapViewModelConstructorDoTheRightQuery() {
+    public void MapViewModel_MapViewModelConstructorDoTheRightQuery() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         verify(mDatabase).query("events");
     }
 
     @Test
-    public void moveCameraMoveTheCameraOnTheMapManagerWithTheRightParameters() {
+    public void MapViewModel_MoveCameraMoveTheCameraOnTheMapManagerWithTheRightParameters() {
         float zoomLevel = 4;
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         viewModel.moveCamera(mLocation, zoomLevel);
@@ -56,7 +56,7 @@ public class MapViewModelTest {
     }
 
     @Test
-    public void addAndGetAnEventFromTheDictionaryReturnTheRightEvent() {
+    public void MapViewModel_AddAndGetAnEventFromTheDictionaryReturnTheRightEvent() {
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         viewModel.addEvent(mMarker, mEvent);
         Event event = viewModel.getEventFromMarker(mMarker);

@@ -26,6 +26,8 @@ import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     private MapViewModel mViewModel = null;
     private final MapViewModel.MapViewModelFactory mFactory;
@@ -45,8 +47,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @VisibleForTesting
     public MapFragment(@NonNull Database database, @NonNull MapManager mapManager) {
         mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setDatabase(database);
-        mFactory.setMapManager(mapManager);
+        mFactory.setDatabase(verifyNotNull(database));
+        mFactory.setMapManager(verifyNotNull(mapManager));
     }
 
     @Override

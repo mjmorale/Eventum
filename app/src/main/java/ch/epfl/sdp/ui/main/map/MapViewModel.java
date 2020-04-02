@@ -40,9 +40,9 @@ public class MapViewModel extends ViewModel {
     private Dictionary<Marker, Event> mEventsMarkers;
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
-        mDatabase = database;
+        mDatabase = verifyNotNull(database);
         mCollectionQuery = database.query("events");
-        mMapManager = mapManager;
+        mMapManager = verifyNotNull(mapManager);
         mEventsMarkers = new Hashtable<Marker, Event>();
     }
 

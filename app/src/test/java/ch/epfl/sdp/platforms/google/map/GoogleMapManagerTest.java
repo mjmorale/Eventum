@@ -44,7 +44,7 @@ public class GoogleMapManagerTest {
     }
 
     @Test
-    public void checkAddMarkerWithMarkerOptions() {
+    public void GoogleMapManager_CheckAddMarkerWithMarkerOptions() {
         when(mGooogleMap.addMarker(mMarkerOptions)).thenReturn(mMarker);
         GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
         mapManager.addMarker(mMarkerOptions);
@@ -52,7 +52,7 @@ public class GoogleMapManagerTest {
     }
 
     @Test
-    public void checkAddMarkerWithLocation() {
+    public void GoogleMapManager_CheckAddMarkerWithLocation() {
         String locationName = "location name";
         when(mGooogleMap.addMarker(any())).thenReturn(mMarker);
         GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
@@ -70,7 +70,7 @@ public class GoogleMapManagerTest {
 //    }
 
     @Test
-    public void checkThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
+    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
         GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
         mapManager.setMyLocation();
         verify(mGooogleMap).setMyLocationEnabled(true);
