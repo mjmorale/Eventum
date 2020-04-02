@@ -8,10 +8,13 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Observer;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
+import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -49,7 +52,7 @@ public class MapViewModel extends ViewModel {
     }
 
     public void addMarkers() {
-        getEvents().observeForever(events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
+        getEvents().observeForever(events -> { for(Event e: events) addEvent((Marker)mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
     }
 
     public void moveCamera(Location location, float zoomLevel) {
@@ -64,5 +67,10 @@ public class MapViewModel extends ViewModel {
         return  mEventsMarkers.get(marker);
     }
 
-    public void setMyLocation() { mMapManager.setMyLocation(); }
+    public void setMyLocation() { ((GoogleMapManager)mMapManager).setMyLocation(); }
+
+    @Override
+    protected void onCleared() {
+        mEventsLive.removeObserver(events -> {});
+    }
 }
