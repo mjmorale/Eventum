@@ -36,8 +36,12 @@ public class EventBuilder {
         return this;
     }
 
-    public EventBuilder setDate(String date) throws ParseException {
-        this.mDate = Event.parseDate(date);
+    public EventBuilder setDate(String date) {
+        try {
+            this.mDate = Event.parseDate(date);
+        } catch (ParseException e) {
+            this.mDate = new Date();
+        }
         return this;
     }
 

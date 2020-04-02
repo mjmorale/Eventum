@@ -22,7 +22,7 @@ public class EventTest {
 
 
     @Test
-    public void testDummyEvent()
+    public void EventBuilder_CheckCorrectData()
     {
         EventBuilder eventBuilder = new EventBuilder();
         Event e = eventBuilder.setTitle(title)

@@ -66,7 +66,6 @@ public class CreateEventFragmentTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         doAnswer(invocation -> {
@@ -89,12 +88,12 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void testCreateEventFragment() {
+    public void CreateEventFragment_CorrectInput() {
         doCorrectInput();
     }
 
     @Test
-    public void testCreateIncorrectEventFragment() {
+    public void CreateEventFragment_IncorrectInput() {
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 typeText(EMPTY),

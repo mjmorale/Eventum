@@ -15,7 +15,7 @@ public class EventDatabaseObjectBuilderTest {
     //TODO @Corentin: More tests
 
     @Test
-    public void testEventDatabaseObjectBuilder() {
+    public void EventDatabaseObjectBuilder_CheckSymmetry() {
         EventBuilder eventBuilder = new EventBuilder();
         Event event = eventBuilder.setTitle("Real Fake Party")
                 .setDescription("This is really happening")

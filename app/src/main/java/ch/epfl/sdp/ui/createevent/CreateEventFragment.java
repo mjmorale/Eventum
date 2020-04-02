@@ -39,7 +39,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private final CreateEventViewModel.CreateEventViewModelFactory mFactory;
 
     private static final int THRESHOLD = 2;
-    private LatLng mLocation;
+    private LatLng mSelectedLocation;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -120,7 +120,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         Event event = eventBuilder.setTitle(title)
                 .setDescription(description)
                 .setDate(date)
-                .setLocation(mLocation)
+                .setLocation(mSelectedLocation)
                 .setAddress(address)
                 .build();
 
@@ -135,7 +135,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding.geoAutocomplete.setOnItemClickListener((adapterView, view, position, id) -> {
             GeoSearchResult result = (GeoSearchResult) adapterView.getItemAtPosition(position);
             mBinding.geoAutocomplete.setText(result.getAddress());
-            mLocation = result.getLocation();
+            mSelectedLocation = result.getLocation();
         });
 
         mBinding.geoAutocomplete.addTextChangedListener(new TextWatcher() {
