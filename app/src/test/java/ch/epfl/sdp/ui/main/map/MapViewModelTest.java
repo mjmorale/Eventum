@@ -6,12 +6,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +41,9 @@ public class MapViewModelTest {
     @Mock
     private Location mLocation;
 
+    @Mock
+    private LiveData<List<Event>> mEventsLiveData;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -43,12 +52,19 @@ public class MapViewModelTest {
     @Test
     public void MapViewModel_MapViewModelConstructorDoTheRightQuery() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
+        doNothing().when(mEventsLiveData).observeForever(any());
+
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         verify(mDatabase).query("events");
     }
 
     @Test
     public void MapViewModel_MoveCameraMoveTheCameraOnTheMapManagerWithTheRightParameters() {
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
+        doNothing().when(mEventsLiveData).observeForever(any());
+
         float zoomLevel = 4;
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         viewModel.moveCamera(mLocation, zoomLevel);
@@ -57,6 +73,10 @@ public class MapViewModelTest {
 
     @Test
     public void MapViewModel_AddAndGetAnEventFromTheDictionaryReturnTheRightEvent() {
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
+        doNothing().when(mEventsLiveData).observeForever(any());
+
         MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
         viewModel.addEvent(mMarker, mEvent);
         Event event = viewModel.getEventFromMarker(mMarker);

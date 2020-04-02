@@ -3,12 +3,12 @@ package ch.epfl.sdp.ui.main.map;
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.google.android.gms.maps.model.Marker;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Observer;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
@@ -34,25 +34,21 @@ public class MapViewModel extends ViewModel {
     }
 
     private LiveData<List<Event>> mEventsLive;
-    private final Database mDatabase;
     private MapManager<Marker> mMapManager;
-    private CollectionQuery mCollectionQuery;
-    private Dictionary<Marker, Event> mEventsMarkers;
+    private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();;
+    private final Observer<List<Event>> mEventObserver;
 
-    public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
-        mDatabase = verifyNotNull(database);
-        mCollectionQuery = database.query("events");
+    public MapViewModel(@NonNull Database database, @NonNull MapManager<Marker> mapManager) {
+        verifyNotNull(database);
         mMapManager = verifyNotNull(mapManager);
-        mEventsMarkers = new Hashtable<Marker, Event>();
-    }
 
-    private LiveData<List<Event>> getEvents() {
-        mEventsLive = mCollectionQuery.liveData(Event.class);
-        return mEventsLive;
-    }
-
-    public void addMarkers() {
-        getEvents().observeForever(events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
+        mEventsLive = database.query("events").liveData(Event.class);
+        mEventObserver = events -> {
+            for(Event e: events) {
+                addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);
+            }
+        };
+        mEventsLive.observeForever(mEventObserver);
     }
 
     public void moveCamera(Location location, float zoomLevel) {
@@ -64,13 +60,11 @@ public class MapViewModel extends ViewModel {
     }
 
     public Event getEventFromMarker(Marker marker) {
-        return  mEventsMarkers.get(marker);
+        return mEventsMarkers.get(marker);
     }
-
-    public void setMyLocation() { mMapManager.setMyLocation(); }
 
     @Override
     protected void onCleared() {
-        mEventsLive.removeObserver(events -> {});
+        mEventsLive.removeObserver(mEventObserver);
     }
 }

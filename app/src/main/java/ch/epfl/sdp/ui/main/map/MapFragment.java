@@ -29,14 +29,14 @@ import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
-    private MapViewModel mViewModel = null;
+
+    private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactory;
     private FragmentMapBinding mBinding;
+
     private MapView mMapView;
-    private  final static int PERMISSION_LOCATION=0;
-    private boolean mLocationPermission = false;
+    private final static int PERMISSION_LOCATION = 0;
     private Location mLastKnownLocation;
-    private GoogleMapManager mGoogleMapManager = null;
     private float mZoomLevel = 12;
 
     public MapFragment() {
@@ -57,27 +57,21 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(googleMap -> {
-            googleMap.setOnMarkerClickListener(this);
-            mGoogleMapManager = new GoogleMapManager(googleMap);
-        });
 
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
+        requestPermissions(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION },
+                PERMISSION_LOCATION);
 
         return mBinding.getRoot();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (mGoogleMapManager != null) mFactory.setMapManager(mGoogleMapManager);
-        mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
-
-        mLocationPermission =
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        boolean hasPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
-        if (mLocationPermission) {
+        if (hasPermission) {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
             mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -88,9 +82,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 mZoomLevel = 4;
             }
 
-            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
-            mViewModel.setMyLocation();
-            mViewModel.addMarkers();
+            mMapView.getMapAsync(googleMap -> {
+                googleMap.setOnMarkerClickListener(this);
+                googleMap.setMyLocationEnabled(true);
+
+                mFactory.setMapManager(new GoogleMapManager(googleMap));
+                mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+
+                mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+            });
         }
     }
 
@@ -121,7 +121,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public boolean onMarkerClick(Marker marker) {
         EventDetailFragment infoFragment = new EventDetailFragment(mViewModel.getEventFromMarker(marker),this);
-        this.getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), infoFragment).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), infoFragment).commit();
         return true;
     }
 }

@@ -20,6 +20,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GoogleMapManagerTest {
 
+    private final static String DUMMY_STRING = "test";
+    private final static LatLng DUMMY_LOCATION = new LatLng(10.0, 20.0);
+
     @Mock
     private GoogleMap mGoogleMap;
 
@@ -42,10 +45,10 @@ public class GoogleMapManagerTest {
 
     @Test
     public void GoogleMapManager_CheckAddMarkerWithMarkerOptions() {
-        when(mGoogleMap.addMarker(mMarkerOptions)).thenReturn(mMarker);
         GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
-        mapManager.addMarker(mMarkerOptions);
-        verify(mGoogleMap).addMarker(mMarkerOptions);
+        mapManager.addMarker(DUMMY_STRING, DUMMY_LOCATION);
+
+        verify(mGoogleMap).addMarker(any());
     }
 
     @Test
@@ -55,12 +58,5 @@ public class GoogleMapManagerTest {
         GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
         mapManager.addMarker(locationName, mLatLng);
         verify(mGoogleMap).addMarker(any());
-    }
-
-    @Test
-    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
-        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
-        mapManager.setMyLocation();
-        verify(mGoogleMap).setMyLocationEnabled(true);
     }
 }
