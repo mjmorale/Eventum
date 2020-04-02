@@ -52,7 +52,7 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void handleLocationQuerySnapshot(@Nullable List<? extends DocumentSnapshot> documents,
+    protected <T> void handleLocationQuerySnapshot(@Nullable List<? extends DocumentSnapshot> documents,
                                                  @Nullable Exception e,
                                                  @NonNull Class<T> type,
                                                  @NonNull Query.OnQueryCompleteCallback callback) {

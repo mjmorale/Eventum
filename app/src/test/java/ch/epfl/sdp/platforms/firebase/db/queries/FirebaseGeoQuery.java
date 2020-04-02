@@ -59,6 +59,7 @@ public class FirebaseGeoQuery {
     @Mock
     private GeoQuery mGeoQuery;
 
+
     @Before
     public void setup(){
         MockitoAnnotations.initMocks(this);
@@ -81,8 +82,11 @@ public class FirebaseGeoQuery {
 
     @Test
     public void firebaseGeoQueryCorrectlyCallsGet(){
+
         FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+
         firebaseGeoFirestoreQuery.get(Event.class, mCallback);
+
 
 //        verify(mGeoFirestore).getAtLocation(DUMMY_LOCATION, DUMMY_RADIUS, (list, e) -> {
 //            firebaseGeoFirestoreQuery.handleLocationQuerySnapshot(list, e, Event.class, mCallback);
@@ -96,7 +100,7 @@ public class FirebaseGeoQuery {
     }
 
     @Test
-    public void setmFirebaseGeoFirestoreQueryLiveDataReturnsLiveData(){
+    public void firebaseGeoFirestoreQueryLiveDataReturnsLiveData(){
         FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
         when(mGeoFirestore.queryAtLocation(mLocation, DUMMY_RADIUS)).thenReturn(mGeoQuery);
         firebaseGeoFirestoreQuery.liveData(String.class);
