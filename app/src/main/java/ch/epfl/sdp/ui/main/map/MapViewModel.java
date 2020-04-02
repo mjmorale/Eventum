@@ -35,7 +35,7 @@ public class MapViewModel extends ViewModel {
 
     private LiveData<List<Event>> mEventsLive;
     private final Database mDatabase;
-    private MapManager mMapManager;
+    private MapManager<Marker> mMapManager;
     private CollectionQuery mCollectionQuery;
     private Dictionary<Marker, Event> mEventsMarkers;
 
@@ -52,7 +52,7 @@ public class MapViewModel extends ViewModel {
     }
 
     public void addMarkers() {
-        getEvents().observeForever(events -> { for(Event e: events) addEvent((Marker)mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
+        getEvents().observeForever(events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
     }
 
     public void moveCamera(Location location, float zoomLevel) {
