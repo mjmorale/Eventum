@@ -33,8 +33,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private EventSwipeViewModel mViewModel;
     private ArrayAdapter<Event> mArrayAdapter;
     private List<Event> mEventList;
-    private int numberSwipe = 0;
-    private boolean firstEvent;
+    private int mNumberSwipe = 0;
+    private boolean mFirstEvent;
 
     private EventDetailFragment mInfoFragment;
     private Event mCurrentEvent;
@@ -46,10 +46,10 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     }
 
     @Override
-    public void onLeftCardExit(Object o) {numberSwipe +=1;}
+    public void onLeftCardExit(Object o) {mNumberSwipe +=1;}
 
     @Override
-    public void onRightCardExit(Object o) {numberSwipe +=1;}
+    public void onRightCardExit(Object o) {mNumberSwipe +=1;}
 
     @Override
     public void onAdapterAboutToEmpty(int i) {}
@@ -75,7 +75,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
-        firstEvent = true;
+        mFirstEvent = true;
         return mBinding.getRoot();
     }
 
@@ -94,11 +94,11 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         }
 
         mViewModel.getNewEvents().observe(getViewLifecycleOwner(), events -> {
-            if (numberSwipe > 10 || firstEvent) {
+            if (mNumberSwipe > 10 || mFirstEvent) {
                 mArrayAdapter.clear();
                 mArrayAdapter.addAll(events);
-                numberSwipe = 0;
-                firstEvent = false;
+                mNumberSwipe = 0;
+                mFirstEvent = false;
             }
         });
 
