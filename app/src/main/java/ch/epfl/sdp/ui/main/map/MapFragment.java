@@ -78,9 +78,9 @@ public class MapFragment extends Fragment {
             mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             // if (mLastKnownLocation != null) mViewModel.initializeMapManagerWithLastKnowLocation(mLastKnownLocation, getViewLifecycleOwner());
+            if (mLastKnownLocation != null) mViewModel.moveCameraDefault();
         }  // else mViewModel.initializeMapManagerWithoutLastKnowLocation(getViewLifecycleOwner());
-
-        mViewModel.moveCameraDefault(); // temp
+        else mViewModel.moveCameraDefault();
     }
 
     @Override

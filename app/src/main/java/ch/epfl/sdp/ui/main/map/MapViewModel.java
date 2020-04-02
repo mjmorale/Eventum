@@ -1,6 +1,8 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.location.Location;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -25,6 +27,7 @@ public class MapViewModel extends ViewModel {
 
         MapViewModelFactory() {
             super(Database.class, MapManager.class);
+            Log.d("factory", "factory used");
         }
 
         void setDatabase(@NonNull Database database) {
