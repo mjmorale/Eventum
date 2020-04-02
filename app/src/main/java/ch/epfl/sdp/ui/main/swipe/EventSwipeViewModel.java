@@ -32,14 +32,12 @@ public class EventSwipeViewModel extends ViewModel {
     private LiveData<List<Event>> mSwipeLiveData;
 
     public EventSwipeViewModel(@NonNull Database database) {
-        mDatabase = verifyNotNull(database);
+        mDatabase = database;
         mSwipeQuery = database.query("events");
     }
 
     public LiveData<List<Event>> getNewEvents() {
-        if(mSwipeLiveData == null) {
-            mSwipeLiveData = mSwipeQuery.liveData(Event.class);
-        }
+        if(mSwipeLiveData == null) { mSwipeLiveData = mSwipeQuery.liveData(Event.class); }
         return mSwipeLiveData;
     }
 }

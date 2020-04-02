@@ -13,7 +13,6 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.ui.main.MainActivity;
-import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,12 +29,11 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static ch.epfl.sdp.utils.TestUtils.selectNavigation;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -82,12 +80,13 @@ public class SwipeFragmentTest {
         events.add(eventTest1);
         eventLiveData.postValue(events);
 
+        Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
         //Thread.sleep(15000);
     }
 
     @Test
-    public void swipeLeftAndRightRemoveCard() {
+    public void swipeLeftAndRightRemoveCard() throws InterruptedException {
         MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         scenario(eventLiveData);
@@ -96,9 +95,11 @@ public class SwipeFragmentTest {
         events.add(eventTest1);
         eventLiveData.postValue(events);
 
+        Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
         onView(withId(R.id.cards_list_view)).perform(swipeLeft());
-        onView(withText("title")).check(matches(not(isDisplayed())));
+        Thread.sleep(1500);
+        onView(withText("title")).check(doesNotExist());
     }
 
     @Test
@@ -112,9 +113,11 @@ public class SwipeFragmentTest {
         events.add(eventTest2);
         eventLiveData.postValue(events);
 
+        Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
         onView(withId(R.id.cards_list_view)).perform(swipeRight());
-        onView(withText("title")).check(matches(not(isDisplayed())));
+        Thread.sleep(1500);
+        onView(withText("title")).check(doesNotExist());
         onView(withText("title2")).check(matches(isDisplayed()));
     }
 
