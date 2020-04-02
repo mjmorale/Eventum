@@ -38,7 +38,6 @@ public class MapViewModel extends ViewModel {
     private MapManager mMapManager;
     private CollectionQuery mCollectionQuery;
     private Dictionary<Marker, Event> mEventsMarkers;
-    private static final double DEGREE_IN_KM = 111.11;
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager mapManager) {
         mDatabase = database;

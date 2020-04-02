@@ -1,14 +1,11 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.location.Location;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import com.google.android.gms.maps.model.Marker;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
@@ -24,25 +21,16 @@ public class MapViewModelTest {
     private Database mDatabase;
 
     @Mock
-    private LiveData<List<Event>> mEventsLive;
-
-    @Mock
     private MapManager mMapManager;
 
     @Mock
     private CollectionQuery mCollectionQuery;
 
     @Mock
-    private LifecycleOwner mLifecycleOwner;
-
-    @Mock
     private Marker mMarker;
 
     @Mock
     private Event mEvent;
-
-    @Mock
-    private Event mEvent2;
 
     @Mock
     Location mLocation;

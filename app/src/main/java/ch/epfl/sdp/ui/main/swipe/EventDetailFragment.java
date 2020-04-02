@@ -29,11 +29,11 @@ public class EventDetailFragment extends Fragment {
         mBinding.date.setText(mEvent.getDate().toString());
         mBinding.description.setText(mEvent.getDescription());
         mBinding.title.setText(mEvent.getTitle());
+        mBinding.address.setText(mEvent.getAddress());
         mBinding.imageView.setImageResource(mEvent.getImageID());
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
         mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mFragment).commit());
         return mBinding.getRoot();
     }
-
 }

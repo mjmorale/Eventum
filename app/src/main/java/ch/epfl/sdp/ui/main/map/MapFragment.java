@@ -90,7 +90,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             mViewModel.setMyLocation();
             mViewModel.addMarkers(getViewLifecycleOwner());
         }
-        // else? add something when permission denied ???
     }
 
     @Override
@@ -119,7 +118,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        EventDetailFragment infoFragment = new EventDetailFragment(mViewModel.getEventFromMarker(marker), this);
+        EventDetailFragment infoFragment = new EventDetailFragment(mViewModel.getEventFromMarker(marker),this);
         this.getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), infoFragment).commit();
         return true;
     }
