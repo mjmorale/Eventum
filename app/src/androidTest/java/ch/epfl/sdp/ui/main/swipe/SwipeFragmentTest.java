@@ -8,6 +8,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
@@ -47,8 +48,9 @@ public class SwipeFragmentTest {
     @Mock
     private CollectionQuery mCollectionQuery;
 
-    private Event eventTest1 = new Event("title", "description", new Date());
-    private Event eventTest2 = new Event("title2", "description2", new Date());
+    EventBuilder eventBuilder = new EventBuilder();
+    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").build();
+    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("01/01/2020").build();
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
