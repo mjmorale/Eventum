@@ -32,6 +32,9 @@ public class SwipeFragment extends Fragment {
     private ArrayAdapter<Event> mArrayAdapter;
     private List<Event> mEventList;
 
+    private EventDetailFragment mInfoFragment;
+    private Event mCurrentEvent;
+
     private SwipeFlingAdapterView.onFlingListener flingListener = new SwipeFlingAdapterView.onFlingListener() {
         @Override
         public void removeFirstObjectInAdapter() {
@@ -89,6 +92,11 @@ public class SwipeFragment extends Fragment {
         mViewModel.getNewEvents().observe(getViewLifecycleOwner(), events -> {
             mArrayAdapter.clear();
             mArrayAdapter.addAll(events);
+        });
+
+        mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
+            mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
     }
 
