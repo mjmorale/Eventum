@@ -32,6 +32,7 @@ public class MapFragment extends Fragment {
     private boolean mLocationPermission = false;
     private Location mLastKnownLocation;
     private GoogleMapManager mGoogleMapManager = null;
+    private float mZoomLevel = 12;
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
@@ -77,10 +78,13 @@ public class MapFragment extends Fragment {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
             mLastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            // if (mLastKnownLocation != null) mViewModel.initializeMapManagerWithLastKnowLocation(mLastKnownLocation, getViewLifecycleOwner());
-            if (mLastKnownLocation != null) mViewModel.moveCameraDefault();
-        }  // else mViewModel.initializeMapManagerWithoutLastKnowLocation(getViewLifecycleOwner());
-        else mViewModel.moveCameraDefault();
+            if (mLastKnownLocation == null) {
+                mLastKnownLocation = mViewModel.getDefaultLocation();
+                mZoomLevel = 4;
+            }
+
+            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+        }
     }
 
     @Override

@@ -15,12 +15,12 @@ import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 public class EventDetailFragment extends Fragment {
     private FragmentDefaultEventBinding mBinding;
     private Event mEvent;
-    private SwipeFragment mSwipeFragment;
+    private Fragment mFragment;
 
-    public EventDetailFragment(Event event, SwipeFragment swipeFragment){
+    public EventDetailFragment(Event event, Fragment fragment){
         super();
         this.mEvent = event;
-        this.mSwipeFragment = swipeFragment;
+        this.mFragment = fragment;
     }
 
     @Nullable
@@ -34,7 +34,7 @@ public class EventDetailFragment extends Fragment {
         mBinding.imageView.setImageResource(mEvent.getImageID());
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
-        mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mSwipeFragment).commit());
+        mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mFragment).commit());
         return mBinding.getRoot();
     }
 

@@ -107,6 +107,13 @@ public class MapViewModel extends ViewModel {
         this.moveCamera(location, 4);
     }
 
+    public Location getDefaultLocation() {
+        Location location = new Location("Europe");
+        location.setLatitude(46.520564);
+        location.setLongitude(6.567827);
+        return location;
+    }
+
     public void setMyLocation() {
         mMapManager.setMyLocation();
     }
