@@ -62,7 +62,6 @@ public class FirebaseGeoQuery {
     @Before
     public void setup(){
         MockitoAnnotations.initMocks(this);
-        DatabaseObjectBuilderRegistry.registerBuilder(String.class, MockStringBuilder.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -99,6 +98,7 @@ public class FirebaseGeoQuery {
     @Test
     public void setmFirebaseGeoFirestoreQueryLiveDataReturnsLiveData(){
         FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+        when(mGeoFirestore.queryAtLocation(mLocation, DUMMY_RADIUS)).thenReturn(mGeoQuery);
         firebaseGeoFirestoreQuery.liveData(String.class);
     }
 

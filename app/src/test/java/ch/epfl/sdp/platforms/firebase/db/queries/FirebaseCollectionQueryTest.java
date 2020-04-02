@@ -6,9 +6,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.imperiumlabs.geofirestore.GeoQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,7 @@ import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -45,6 +48,7 @@ public class FirebaseCollectionQueryTest {
     private final static Integer DUMMY_INT = 4;
     private final static Exception DUMMY_EXCEPTION = new Exception();
     private final static String DUMMY_ID = "slkdfjghsdflkjg354sadf45";
+    private final static double DUMMY_DOUBLE = 42;
 
     @Mock
     private FirebaseFirestore mDb;
@@ -73,6 +77,9 @@ public class FirebaseCollectionQueryTest {
 
     @Mock
     private Query mQuery;
+
+    @Mock
+    private GeoPoint mGeoPoint;
 
     @Captor
     private ArgumentCaptor<OnCompleteListener<QuerySnapshot>> mQuerySnapshotCompleteListenerCaptor;
@@ -290,4 +297,20 @@ public class FirebaseCollectionQueryTest {
 
         mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void FirebaseCollectionQuery_AtLocation_failsWhenNullArgument(){
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        firebaseCollectionQuery.atLocation(null, DUMMY_DOUBLE);
+    }
+
+    @Test
+    public void FirebaseCollectionQuery_AtLocation_ReturnsFirebaseGeoFirestoreQuery(){
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = (FirebaseGeoFirestoreQuery) firebaseCollectionQuery.atLocation(mGeoPoint, DUMMY_DOUBLE);
+        assertNotEquals(firebaseGeoFirestoreQuery, null);
+        assertEquals(firebaseGeoFirestoreQuery.getmLocation(), mGeoPoint);
+        assertTrue(firebaseGeoFirestoreQuery.getmRadius() ==  DUMMY_DOUBLE);
+    }
+
 }

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
@@ -47,7 +48,7 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
 
     @Override
     public <T> LiveData<Collection<T>> liveData(@NonNull Class<T> type) {
-        return new GeoFirestoreLiveData<T>(mGeoFirestore.queryAtLocation(mLocation, mRadius), type);
+        return new GeoFirestoreLiveData<T>(mGeoFirestore.queryAtLocation(mLocation, mRadius), verifyNotNull(type));
     }
 
     @SuppressWarnings("unchecked")
@@ -68,5 +69,15 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
             }
             callback.onQueryComplete(QueryResult.success(data));
         }
+    }
+
+    @VisibleForTesting
+    public GeoPoint getmLocation(){
+        return mLocation;
+    }
+
+    @VisibleForTesting
+    public double getmRadius(){
+        return mRadius;
     }
 }
