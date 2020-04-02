@@ -7,6 +7,7 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
@@ -39,10 +40,7 @@ public class CreateEventViewModel extends ViewModel {
         mEventCollection = mDatabase.query("events");
     }
 
-    public void insertEvent(@NonNull String name, @NonNull String description, @NonNull String date, @NonNull OnEventCreatedCallback callback) throws ParseException {
-        verifyNotNull(name, description, date, callback);
-        Date parsedDate = new SimpleDateFormat("dd/MM/yyyy").parse(date);
-        Event event = new Event(name, description, parsedDate);
+    public void insertEvent(@NonNull Event event, @NonNull OnEventCreatedCallback callback) {
         mEventCollection.create(event, res -> {
             if(res.isSuccessful()) {
                 callback.onSuccess(res.getData());
