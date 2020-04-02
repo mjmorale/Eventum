@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = new SwipeFragment();
 
         if(uri!=null)
-            fragment =  new EventDetailFragment( new Event("", "", new Date(), Integer.parseInt(uri.getPathSegments().get(uri.getPathSegments().size()-1))), new SwipeFragment());
+            fragment =  new EventDetailFragment( 
+                new Event("", "", new Date(), Integer.parseInt(uri.getPathSegments().get(uri.getPathSegments().size()-1))), 
+                    new SwipeFragment());
 
         if (savedInstanceState == null || uri !=null) {
             getSupportFragmentManager().beginTransaction()
