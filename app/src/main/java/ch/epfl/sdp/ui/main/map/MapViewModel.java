@@ -51,8 +51,8 @@ public class MapViewModel extends ViewModel {
         return mEventsLive;
     }
 
-    public void addMarkers(LifecycleOwner lifecycleOwner) {
-        getEvents().observe(lifecycleOwner, events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
+    public void addMarkers() {
+        getEvents().observeForever(events -> { for(Event e: events) addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);});
     }
 
     public void moveCamera(Location location, float zoomLevel) {

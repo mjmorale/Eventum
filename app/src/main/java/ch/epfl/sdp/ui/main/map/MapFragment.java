@@ -90,7 +90,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             }
 
             mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
-            mViewModel.addMarkers(getViewLifecycleOwner());
+            mViewModel.addMarkers();
         }
     }
 
