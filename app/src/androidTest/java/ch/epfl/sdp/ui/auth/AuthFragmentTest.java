@@ -147,12 +147,7 @@ public class AuthFragmentTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         doNothing().when(mDocumentQuery).exists(mBooleanQueryCompleteCallbackCaptor.capture());
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            assertEquals(DUMMY_USERINFO.getUid(), args[0]);
-
-            return null;
-        }).when(mAuthFragmentResultListener).onLoggedIn(anyString());
+        setupAuthResultListener();
 
         FragmentScenario<AuthFragment> scenario = FragmentScenario.launchInContainer(
                 AuthFragment.class,
@@ -175,12 +170,7 @@ public class AuthFragmentTest {
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         doNothing().when(mDocumentQuery).set(mUserCaptor.capture(), mVoidQueryCompleteCallbackCaptor.capture());
         doNothing().when(mDocumentQuery).exists(mBooleanQueryCompleteCallbackCaptor.capture());
-        doAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            assertEquals(DUMMY_USERINFO.getUid(), args[0]);
-
-            return null;
-        }).when(mAuthFragmentResultListener).onLoggedIn(anyString());
+        setupAuthResultListener();
 
         FragmentScenario<AuthFragment> scenario = FragmentScenario.launchInContainer(
                 AuthFragment.class,
@@ -200,5 +190,14 @@ public class AuthFragmentTest {
         assertEquals(DUMMY_USERINFO.getEmail(), user.getEmail());
 
         mVoidQueryCompleteCallbackCaptor.getValue().onQueryComplete(QueryResult.success(null));
+    }
+
+    private void setupAuthResultListener() {
+        doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            assertEquals(DUMMY_USERINFO.getUid(), args[0]);
+
+            return null;
+        }).when(mAuthFragmentResultListener).onLoggedIn(anyString());
     }
 }
