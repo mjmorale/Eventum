@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
@@ -64,16 +65,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         Uri uri = getIntent().getData();
-        Fragment fragment = new SwipeFragment();
+        if(uri!=null){
+            List<String> params= uri.getPathSegments();
+            int imageID = Integer.parseInt(params.get(params.size()-1));
+            Event event = new EventBuilder().setTitle("Title").setDescription("Description").setDate(new Date()).setImageId(imageID).build();
 
-        if(uri!=null)
-            fragment =  new EventDetailFragment( 
-                new Event("", "", new Date(), Integer.parseInt(uri.getPathSegments().get(uri.getPathSegments().size()-1))), 
-                    new SwipeFragment());
-
-        if (savedInstanceState == null || uri !=null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, fragment)
+                    .replace(R.id.main_container, new EventDetailFragment(event, new SwipeFragment()))
+                    .commit();
+        }else if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new SwipeFragment())
                     .commit();
         }
     }
