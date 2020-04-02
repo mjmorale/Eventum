@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +40,7 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SwipeFragmentTest {
 
     @Mock
@@ -48,7 +49,7 @@ public class SwipeFragmentTest {
     @Mock
     private CollectionQuery mCollectionQuery;
 
-    EventBuilder eventBuilder = new EventBuilder();
+    private EventBuilder eventBuilder = new EventBuilder();
     private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").build();
     private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("01/01/2020").build();
 
@@ -57,7 +58,6 @@ public class SwipeFragmentTest {
 
     @Before
     public void setup() {
-        //selectNavigation(R.id.nav_home);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -73,7 +73,7 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void newCardIsShow() throws InterruptedException {
+    public void SwipeFragment_NewCardIsShow() throws InterruptedException {
         MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         scenario(eventLiveData);
@@ -84,11 +84,10 @@ public class SwipeFragmentTest {
 
         Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
-        //Thread.sleep(15000);
     }
 
     @Test
-    public void swipeLeftAndRightRemoveCard() throws InterruptedException {
+    public void SwipeFragment_SwipeLeftAndRightRemoveCard() throws InterruptedException {
         MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         scenario(eventLiveData);
@@ -105,7 +104,7 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void secondCardIsShowAfterSwipe() throws InterruptedException {
+    public void SwipeFragment_SecondCardIsShowAfterSwipe() throws InterruptedException {
         MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         scenario(eventLiveData);
@@ -124,9 +123,8 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void clickSwapsToDetailled(){
+    public void SwipeFragment_ClickSToDetailled(){
         onView(withId(R.id.cards_list_view)).perform(click());
-        //onView(withId(R.id.cardView_event)).check(matches(isDisplayed()));
     }
 
 }

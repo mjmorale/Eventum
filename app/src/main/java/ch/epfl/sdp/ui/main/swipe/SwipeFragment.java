@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.lorentzos.flingswipe.FlingCardListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -25,40 +26,40 @@ import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
-public class SwipeFragment extends Fragment {
+public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
     private final EventSwipeViewModel.EventSwipeViewModelFactory mFactory;
     private FragmentSwipeBinding mBinding;
     private EventSwipeViewModel mViewModel;
     private ArrayAdapter<Event> mArrayAdapter;
     private List<Event> mEventList;
+    private int numberSwipe = 0;
+    private boolean firstEvent;
 
     private EventDetailFragment mInfoFragment;
     private Event mCurrentEvent;
 
-    private SwipeFlingAdapterView.onFlingListener flingListener = new SwipeFlingAdapterView.onFlingListener() {
-        @Override
-        public void removeFirstObjectInAdapter() {
-            mEventList.remove(0);
-            mArrayAdapter.notifyDataSetChanged();
-        }
+    @Override
+    public void removeFirstObjectInAdapter() {
+        mEventList.remove(0);
+        mArrayAdapter.notifyDataSetChanged();
+    }
 
-        @Override
-        public void onLeftCardExit(Object o) {}
+    @Override
+    public void onLeftCardExit(Object o) {numberSwipe +=1;}
 
-        @Override
-        public void onRightCardExit(Object o) {}
+    @Override
+    public void onRightCardExit(Object o) {numberSwipe +=1;}
 
-        @Override
-        public void onAdapterAboutToEmpty(int i) {}
+    @Override
+    public void onAdapterAboutToEmpty(int i) {}
 
-        @Override
-        public void onScroll(float scrollProgressPercent) {
-            SwipeFlingAdapterView flingContainer = mBinding.cardsListView;
-            flingContainer.getSelectedView().findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-            flingContainer.getSelectedView().findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
-        }
-    };
+    @Override
+    public void onScroll(float scrollProgressPercent) {
+        SwipeFlingAdapterView flingContainer = mBinding.cardsListView;
+        flingContainer.getSelectedView().findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+        flingContainer.getSelectedView().findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+    }
 
     public SwipeFragment() {
         mFactory = new EventSwipeViewModel.EventSwipeViewModelFactory();
@@ -74,6 +75,7 @@ public class SwipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
+        firstEvent = true;
         return mBinding.getRoot();
     }
 
@@ -84,15 +86,20 @@ public class SwipeFragment extends Fragment {
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
         mBinding.cardsListView.setAdapter( mArrayAdapter);
-        mBinding.cardsListView.setFlingListener(flingListener);
+        mBinding.cardsListView.setFlingListener(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(EventSwipeViewModel.class);
         if(mViewModel.getNewEvents().hasObservers()) {
             mViewModel.getNewEvents().removeObservers(getViewLifecycleOwner());
         }
+
         mViewModel.getNewEvents().observe(getViewLifecycleOwner(), events -> {
-            mArrayAdapter.clear();
-            mArrayAdapter.addAll(events);
+            if (numberSwipe > 10 || firstEvent) {
+                mArrayAdapter.clear();
+                mArrayAdapter.addAll(events);
+                numberSwipe = 0;
+                firstEvent = false;
+            }
         });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
