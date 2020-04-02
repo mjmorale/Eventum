@@ -28,9 +28,4 @@ public class GoogleMapManager implements MapManager {
     public void moveCamera(Location location, float zoomLevel) {
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel));
     }
-
-    @Override
-    public void setMyLocation() {
-        mGoogleMap.setMyLocationEnabled(true);
-    }
 }

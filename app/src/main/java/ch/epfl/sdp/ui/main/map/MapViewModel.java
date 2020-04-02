@@ -59,10 +59,6 @@ public class MapViewModel extends ViewModel {
         mMapManager.moveCamera(location, zoomLevel);
     }
 
-    public void setMyLocation() {
-        mMapManager.setMyLocation();
-    }
-
     public void addEvent(Marker marker, Event event) {
         mEventsMarkers.put(marker, event);
     }

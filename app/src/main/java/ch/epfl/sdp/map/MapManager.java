@@ -8,5 +8,4 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public interface MapManager {
     Marker addMarker(String title, LatLng location);
     void moveCamera(Location location, float zoomLevel);
-    void setMyLocation();
 }

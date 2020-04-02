@@ -66,10 +66,10 @@ public class GoogleMapManagerTest {
 //        verify(mGooogleMap).moveCamera(any());
 //    }
 
-    @Test
-    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
-        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
-        mapManager.setMyLocation();
-        verify(mGoogleMap).setMyLocationEnabled(true);
-    }
+//    @Test
+//    public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
+//        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
+//        mapManager.setMyLocation();
+//        verify(mGoogleMap).setMyLocationEnabled(true);
+//    }
 }
