@@ -14,7 +14,7 @@ public class GoogleMapManager implements MapManager {
     private GoogleMap mGoogleMap;
 
     public GoogleMapManager(GoogleMap googleMap){
-        mGoogleMap= googleMap;
+        mGoogleMap = googleMap;
     }
 
     @Override

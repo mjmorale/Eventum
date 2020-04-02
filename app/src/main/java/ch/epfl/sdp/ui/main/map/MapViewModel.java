@@ -54,36 +54,34 @@ public class MapViewModel extends ViewModel {
         return mEventsLive;
     }
 
-//    public void addMarkers(LifecycleOwner lifecycleOwner) {
+    public void addMarkers(LifecycleOwner lifecycleOwner) {
+        getEvents().observe(lifecycleOwner, events -> {
+            for(Event event: events) mMapManager.addMarker(event.getTitle(), event.getLocation());
+        });
+    }
+
+//    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
 //        getEvents().observe(lifecycleOwner, events -> {
 //            for(Event event: events){
-//                mMapManager.addMarker(event.getTitle(), event.getLocation());
+//                LatLng coordinates = event.getLocation();
+//
+//                if (location != null) {
+//                    double lLat = location.getLatitude();
+//                    double lLong = location.getLongitude();
+//                    double eLat = coordinates.latitude;
+//                    double eLong = coordinates.longitude;
+//                    double diffLat = Math.abs(lLat - eLat);
+//                    double diffLong = Math.abs(lLong - eLong);
+//                    double LatKm = DEGREE_IN_KM * diffLat;
+//                    double LongKm = DEGREE_IN_KM * diffLong * Math.cos(diffLat);
+//                    if ((LatKm < distanceInKm) && (LongKm < distanceInKm)) {
+//                        String name = event.getTitle();
+//                        Marker marker = mMapManager.addMarker(new MarkerOptions().position(coordinates).title(name));
+//                    }
+//                }
 //            }
 //        });
 //    }
-
-    public void addMarkersNearLocation(LifecycleOwner lifecycleOwner, Location location, double distanceInKm) {
-        getEvents().observe(lifecycleOwner, events -> {
-            for(Event event: events){
-                LatLng coordinates = event.getLocation();
-
-                if (location != null) {
-                    double lLat = location.getLatitude();
-                    double lLong = location.getLongitude();
-                    double eLat = coordinates.latitude;
-                    double eLong = coordinates.longitude;
-                    double diffLat = Math.abs(lLat - eLat);
-                    double diffLong = Math.abs(lLong - eLong);
-                    double LatKm = DEGREE_IN_KM * diffLat;
-                    double LongKm = DEGREE_IN_KM * diffLong * Math.cos(diffLat);
-                    if ((LatKm < distanceInKm) && (LongKm < distanceInKm)) {
-                        String name = event.getTitle();
-                        Marker marker = mMapManager.addMarker(new MarkerOptions().position(coordinates).title(name));
-                    }
-                }
-            }
-        });
-    }
 
     public void moveCamera(Location location, float zoomLevel) {
         mMapManager.moveCamera(location, zoomLevel);

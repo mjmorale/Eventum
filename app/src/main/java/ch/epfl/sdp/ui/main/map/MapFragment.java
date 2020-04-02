@@ -84,7 +84,7 @@ public class MapFragment extends Fragment {
 
             mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
             mViewModel.setMyLocation();
-            mViewModel.addMarkersNearLocation(getViewLifecycleOwner(), mLastKnownLocation, 100);
+            mViewModel.addMarkers(getViewLifecycleOwner());
         }
         // else? add something when permission denied ???
     }

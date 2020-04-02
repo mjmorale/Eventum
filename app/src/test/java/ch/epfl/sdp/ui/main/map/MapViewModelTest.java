@@ -57,16 +57,7 @@ public class MapViewModelTest {
     public void test() {
         List<Event> list = new ArrayList<Event>();
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
-
-
-
-
-
         MapViewModel vm = new MapViewModel(mDatabase, mMapManager);
-
-
-
-
         verify(mDatabase).query("events");
     }
 
