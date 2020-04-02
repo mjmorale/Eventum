@@ -33,7 +33,7 @@ public class MapViewModelTest {
     private Event mEvent;
 
     @Mock
-    Location mLocation;
+    private Location mLocation;
 
     @Before
     public void setup() {

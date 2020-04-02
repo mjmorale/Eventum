@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class GoogleMapManagerTest {
 
     @Mock
-    private GoogleMap mGooogleMap;
+    private GoogleMap mGoogleMap;
 
     @Mock
     private Marker mMarker;
@@ -30,13 +30,10 @@ public class GoogleMapManagerTest {
     MarkerOptions mMarkerOptions;
 
     @Mock
-    LatLng mLatLng;
+    private LatLng mLatLng;
 
     @Mock
-    Location mLocation;
-
-    @Mock
-    CameraUpdateFactory mCamFactory;
+    private Location mLocation;
 
     @Before
     public void setup(){
@@ -45,19 +42,19 @@ public class GoogleMapManagerTest {
 
     @Test
     public void GoogleMapManager_CheckAddMarkerWithMarkerOptions() {
-        when(mGooogleMap.addMarker(mMarkerOptions)).thenReturn(mMarker);
-        GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
+        when(mGoogleMap.addMarker(mMarkerOptions)).thenReturn(mMarker);
+        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
         mapManager.addMarker(mMarkerOptions);
-        verify(mGooogleMap).addMarker(mMarkerOptions);
+        verify(mGoogleMap).addMarker(mMarkerOptions);
     }
 
     @Test
     public void GoogleMapManager_CheckAddMarkerWithLocation() {
         String locationName = "location name";
-        when(mGooogleMap.addMarker(any())).thenReturn(mMarker);
-        GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
+        when(mGoogleMap.addMarker(any())).thenReturn(mMarker);
+        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
         mapManager.addMarker(locationName, mLatLng);
-        verify(mGooogleMap).addMarker(any());
+        verify(mGoogleMap).addMarker(any());
     }
 
 //    @Test
@@ -71,8 +68,8 @@ public class GoogleMapManagerTest {
 
     @Test
     public void GoogleMapManager_CheckThatSetMyLocationSetLocationEnabledWithTrueOnTheMap() {
-        GoogleMapManager mapManager = new GoogleMapManager(mGooogleMap);
+        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
         mapManager.setMyLocation();
-        verify(mGooogleMap).setMyLocationEnabled(true);
+        verify(mGoogleMap).setMyLocationEnabled(true);
     }
 }

@@ -46,7 +46,7 @@ public class MapViewModel extends ViewModel {
         mEventsMarkers = new Hashtable<Marker, Event>();
     }
 
-    public LiveData<List<Event>> getEvents() {
+    private LiveData<List<Event>> getEvents() {
         mEventsLive = mCollectionQuery.liveData(Event.class);
         return mEventsLive;
     }
