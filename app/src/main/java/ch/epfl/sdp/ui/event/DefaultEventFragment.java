@@ -1,7 +1,7 @@
 package ch.epfl.sdp.ui.event;
 
 
-import android.content.Intent;
+
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,7 +24,7 @@ import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-import static ch.epfl.sdp.ui.event.EventSharingButton.ConfigureSharingButton;
+
 
 public class DefaultEventFragment extends Fragment{
 

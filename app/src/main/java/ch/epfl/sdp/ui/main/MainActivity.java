@@ -17,6 +17,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
 
 import java.util.Date;
 import java.util.List;
@@ -63,15 +64,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         Uri uri = getIntent().getData();
+        Fragment fragment = new SwipeFragment();
 
-        if(uri!=null){
-            Event event = new Event("", "", new Date(), Integer.parseInt(uri.getPathSegments().get(uri.getPathSegments().size()-1)));
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new EventDetailFragment(event, new SwipeFragment())).commit();
-        }else
+        if(uri!=null)
+            fragment =  new EventDetailFragment( new Event("", "", new Date(), Integer.parseInt(uri.getPathSegments().get(uri.getPathSegments().size()-1))), new SwipeFragment());
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || uri !=null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new SwipeFragment())
+                    .replace(R.id.main_container, fragment)
                     .commit();
         }
     }
