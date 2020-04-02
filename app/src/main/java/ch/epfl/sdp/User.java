@@ -24,13 +24,4 @@ public class User {
     public String getEmail() {
         return mEmail;
     }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if(obj == null) return false;
-        if(obj.getClass() != this.getClass()) return false;
-        final User user = (User)obj;
-        return (user.mName.equals(mName) &
-                user.mEmail.equals(mEmail));
-    }
 }

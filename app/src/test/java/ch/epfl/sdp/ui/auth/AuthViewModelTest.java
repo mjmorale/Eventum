@@ -14,7 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.ui.auth.AuthViewModel;
+import ch.epfl.sdp.db.Database;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthViewModelTest {
@@ -25,8 +25,8 @@ public class AuthViewModelTest {
     @Mock
     private Authenticator<String> mAuthenticator;
 
-    //@Mock
-    //private String mString;
+    @Mock
+    private Database mDatabase;
 
     @Before
     public void setup() {
@@ -34,25 +34,30 @@ public class AuthViewModelTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void LoginAuthViewModel_ConstructorFailsIfParameterIsNull() {
-        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<String>(null);
+    public void LoginAuthViewModel_ConstructorFailsIfFirstParameterIsNull() {
+        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(null, mDatabase);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void LoginAuthViewModel_ConstructorFailsIfSecondParameterIsNull() {
+        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, null);
     }
 
     @Test
     public void LoginAuthViewModel_ConstructorSucceed() {
-        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<String>(mAuthenticator);
+        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, mDatabase);
     }
 
     @Test
     public void LoginAuthViewModel_LoginSucceed() {
-        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<String>(mAuthenticator);
+        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, mDatabase);
         String mString = "test";
         mLoginAuthViewModel.login(mString);
     }
 
     @Test
     public void LoginAuthViewModel_getUser() {
-        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<String>(mAuthenticator);
-        LiveData<User> result = mLoginAuthViewModel.getUser();
+        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, mDatabase);
+        LiveData<String> result = mLoginAuthViewModel.getUserRef();
     }
 }

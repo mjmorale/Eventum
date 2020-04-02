@@ -29,8 +29,8 @@ public class DefaultEventViewModel extends ViewModel {
     private final DocumentQuery mEventDocumentQuery;
     private final Database mDatabase;
 
-    public DefaultEventViewModel(@NonNull Database database, @NonNull String eventRef) {
-        verifyNotNull(database, eventRef);
+    public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
+        verifyNotNull(eventRef, database);
         mDatabase = database;
         mEventDocumentQuery = database.query("events").document(eventRef);
     }

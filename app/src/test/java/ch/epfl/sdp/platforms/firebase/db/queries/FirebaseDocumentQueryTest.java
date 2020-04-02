@@ -4,6 +4,8 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,7 +62,13 @@ public class FirebaseDocumentQueryTest {
     private ArgumentCaptor<OnCompleteListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
 
     @Captor
-    private ArgumentCaptor<OnCompleteListener<Void>> mVoidCompleteListenerCaptor;
+    private ArgumentCaptor<OnSuccessListener<DocumentSnapshot>> mDocumentSnapshotSuccessListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnFailureListener> mOnFailureListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnSuccessListener<Void>> mVoidSuccessListenerCaptor;
 
     @Before
     public void setup() {
@@ -179,8 +187,8 @@ public class FirebaseDocumentQueryTest {
     @Test
     public void FirebaseDocumentQuery_Delete_CallsCallbackWithSuccessAndNullValue() {
         when(mDocumentReference.delete()).thenReturn(mVoidTask);
-        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mVoidTask.isSuccessful()).thenReturn(true);
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(any())).thenReturn(mVoidTask);
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.delete(result -> {
@@ -188,15 +196,14 @@ public class FirebaseDocumentQueryTest {
             assertNull(result.getData());
         });
 
-        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
+        mVoidSuccessListenerCaptor.getValue().onSuccess(null);
     }
 
     @Test
     public void FirebaseDocumentQuery_Delete_CallsCallbackWithExceptionIfAnErrorOccurred() {
         when(mDocumentReference.delete()).thenReturn(mVoidTask);
-        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mVoidTask.isSuccessful()).thenReturn(false);
-        when(mVoidTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mVoidTask.addOnSuccessListener(any())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.delete(result -> {
@@ -204,7 +211,7 @@ public class FirebaseDocumentQueryTest {
             assertEquals(DUMMY_EXCEPTION, result.getException());
         });
 
-        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
+        mOnFailureListenerCaptor.getValue().onFailure(DUMMY_EXCEPTION);
     }
 
 }
