@@ -21,7 +21,6 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 public class MapViewModel extends ViewModel {
 
     static class MapViewModelFactory extends ParameterizedViewModelFactory {
-
         MapViewModelFactory() {
             super(Database.class, MapManager.class);
         }
@@ -30,7 +29,9 @@ public class MapViewModel extends ViewModel {
             setValue(0, verifyNotNull(database));
         }
 
-        void setMapManager(@NonNull MapManager mapManager ){setValue(1,verifyNotNull(mapManager));}
+        void setMapManager(@NonNull MapManager mapManager ){
+            setValue(1,verifyNotNull(mapManager));
+        }
     }
 
     private LiveData<List<Event>> mEventsLive;

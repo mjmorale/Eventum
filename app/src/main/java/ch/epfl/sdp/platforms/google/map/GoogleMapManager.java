@@ -22,8 +22,10 @@ public class GoogleMapManager implements MapManager<Marker> {
 
     @Override
     public Marker addMarker(@NonNull String title, @NonNull LatLng location) {
-        verifyNotNull(title, location);
-        return mGoogleMap.addMarker(new MarkerOptions().position(location).title(title));
+        verifyNotNull(title);
+        verifyNotNull(location);
+        MarkerOptions markerOptions = new MarkerOptions().position(location).title(title);
+        return mGoogleMap.addMarker(markerOptions);
     }
 
     @Override
