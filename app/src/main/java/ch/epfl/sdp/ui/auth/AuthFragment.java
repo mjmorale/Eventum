@@ -32,6 +32,7 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
+import ch.epfl.sdp.ObjectUtils;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
@@ -100,19 +101,14 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
             else {
 
                 Intent activityIntent;
-                Uri uri = getActivity().getIntent().getData();
-                if(mUri!=null)uri=mUri;
+                activityIntent= new Intent(getActivity(), MainActivity.class);
+                activityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
 
-                if(uri!=null){
-                    List<String> params= uri.getPathSegments();
-                    String eventRef = params.get(params.size()-1);
-                    activityIntent = new Intent(getActivity(), EventActivity.class);
-                    activityIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
-                    activityIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
-                }else {
-                    activityIntent= new Intent(getActivity(), MainActivity.class);
-                    activityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
-                }
+                Uri uri = getActivity().getIntent().getData();
+                if(mUri!=null)
+                    uri=mUri;
+                if(uri!=null)
+                    activityIntent=getEventIntent(uri);
 
                 startActivity(activityIntent);
                 getActivity().finish();
@@ -120,6 +116,15 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    private Intent getEventIntent(Uri uri){
+        ObjectUtils.verifyNotNull(uri);
+        List<String> params= uri.getPathSegments();
+        String eventRef = params.get(params.size()-1);
+        Intent eventIntent = new Intent(getActivity(), EventActivity.class);
+        eventIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
+        eventIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
+        return eventIntent;
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

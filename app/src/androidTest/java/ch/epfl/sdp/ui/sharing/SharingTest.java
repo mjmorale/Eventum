@@ -58,17 +58,14 @@ public class SharingTest {
     @Test
     public void MyFragment_Test_CanDisplayAMessage() {
         when(mAuthenticatorMock.getCurrentUser()).thenReturn(new User("Uid","Name", "Email"));
-        Bundle bundle = new Bundle();
-        bundle.putString("uri","https://eventum.com/D6ONoAKeGRAtAGJ9hBC1/");
         FragmentScenario<AuthFragment> scenario = FragmentScenario.launchInContainer(
                 AuthFragment.class,
-                bundle,
+                new Bundle(),
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(AuthFragment.class, mAuthenticatorMock,Uri.parse("https://eventum.com/D6ONoAKeGRAtAGJ9hBC1/"))
         );
 
         onView(withId(R.id.imageView)).check(matches((isDisplayed())));
-
     }
 
     @Test
