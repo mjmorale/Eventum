@@ -23,6 +23,7 @@ import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
+
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 

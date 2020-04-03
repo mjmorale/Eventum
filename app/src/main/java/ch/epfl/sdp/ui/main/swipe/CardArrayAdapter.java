@@ -10,11 +10,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.ui.main.attending.AttendingEventAdapter;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 
 public class CardArrayAdapter extends ArrayAdapter<Event> {
 
@@ -39,4 +44,5 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
         description.setText(event.getDescription());
         return convertView;
     }
+
 }
