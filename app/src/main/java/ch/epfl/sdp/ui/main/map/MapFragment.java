@@ -89,8 +89,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 mFactory.setMapManager(new GoogleMapManager(googleMap));
                 mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
-                mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
-            });
+                mViewModel.moveCamera(mLastKnownLocation, mZoomLevel); });
         }
     }
 

@@ -1,5 +1,7 @@
 package ch.epfl.sdp.platforms.google.map;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -10,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +27,9 @@ public class GoogleMapManagerTest {
 
     @Mock
     private Marker mMarker;
+
+    @Mock
+    private Location mLocation;
 
     @Before
     public void setup(){
@@ -45,5 +51,12 @@ public class GoogleMapManagerTest {
         GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
         mapManager.addMarker(locationName, DUMMY_LOCATION);
         verify(mGoogleMap).addMarker(any());
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void GoogleMapManager_moveCameraFailWithoutCameraUpdateFactory() {
+        GoogleMapManager mapManager = new GoogleMapManager(mGoogleMap);
+        mapManager.moveCamera(mLocation, 14);
+        verify(mGoogleMap).moveCamera(any());
     }
 }
