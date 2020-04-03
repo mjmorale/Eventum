@@ -9,7 +9,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/default_event_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
@@ -80,12 +80,6 @@
                     android:textColor="@color/black"
                     android:background="@color/white">
                 </TextView>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="314dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/zoom_sur_archizoom" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
