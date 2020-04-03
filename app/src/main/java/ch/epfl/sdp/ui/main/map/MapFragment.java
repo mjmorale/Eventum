@@ -125,8 +125,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        EventDetailFragment infoFragment = new EventDetailFragment(mViewModel.getEventFromMarker(marker),this);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), infoFragment).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), new EventDetailFragment(mViewModel.getEventFromMarker(marker),this)).commit();
         return true;
     }
 }
