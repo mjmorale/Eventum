@@ -97,11 +97,6 @@ public class FirebaseGeoQuery {
         FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
 
         firebaseGeoFirestoreQuery.get(Event.class, mCallback);
-
-
-//        verify(mGeoFirestore).getAtLocation(DUMMY_LOCATION, DUMMY_RADIUS, (list, e) -> {
-//            firebaseGeoFirestoreQuery.handleLocationQuerySnapshot(list, e, Event.class, mCallback);
-//        });
     }
 
     @Test(expected = IllegalArgumentException.class)

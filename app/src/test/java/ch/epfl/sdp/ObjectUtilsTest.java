@@ -37,8 +37,8 @@ public class ObjectUtilsTest {
 
     @Test
     public void ObjectUtils_toGeoPoint_works(){
-        GeoPoint geoPoint = ObjectUtils.toGeoPoint(new LatLng(65, 64));
-        assertTrue(geoPoint.getLatitude() == 65);
-        assertTrue(geoPoint.getLongitude() == 64);
+        GeoPoint geoPoint = ObjectUtils.toGeoPoint(new LatLng(LAT, LNG));
+        assertTrue(geoPoint.getLatitude() == LAT);
+        assertTrue(geoPoint.getLongitude() == LNG);
     }
 }
