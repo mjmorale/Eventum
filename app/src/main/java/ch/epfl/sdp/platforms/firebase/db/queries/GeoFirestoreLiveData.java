@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
@@ -21,7 +22,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
     private final DatabaseObjectBuilder<TType> mBuilder;
     private final GeoQuery mGeoQuery;
-    private final Map<String, TType> mData = new HashMap<>();
+    private Map<String, TType> mData = new HashMap<>();
 
     GeoFirestoreLiveData(@NonNull GeoQuery geoQuery, @NonNull Class<TType> type) {
         verifyNotNull(geoQuery, type);
@@ -83,5 +84,10 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
     private void postCurrentValue() {
         postValue(mData.values());
+    }
+
+    @VisibleForTesting
+    public void setmData(Map<String, TType> mData){
+        this.mData = mData;
     }
 }
