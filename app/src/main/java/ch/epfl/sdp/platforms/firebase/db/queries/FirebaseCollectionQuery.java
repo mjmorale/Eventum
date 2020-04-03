@@ -9,6 +9,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
@@ -20,12 +21,15 @@ import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.platforms.firebase.db.GeoFirestoreFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class FirebaseCollectionQuery extends FirebaseQuery implements CollectionQuery {
 
     private final CollectionReference mCollection;
+
+    private GeoFirestoreFactory mGeoFirestoreFactory = GeoFirestoreFactory.getInstance();
 
     public FirebaseCollectionQuery(@NonNull FirebaseFirestore database, @NonNull CollectionReference collection) {
         super(database);
@@ -58,7 +62,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
 
     @Override
     public LocationQuery atLocation(@NonNull GeoPoint geoPoint, double radius) {
-        return new FirebaseGeoFirestoreQuery(mDb, new GeoFirestore(mCollection), geoPoint, radius);
+        return new FirebaseGeoFirestoreQuery(mDb, mGeoFirestoreFactory.createGeoFirestore(mCollection), geoPoint, radius);
     }
 
 
@@ -83,7 +87,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
             if(task.isSuccessful()) {
                 String ref = task.getResult().getId();
                 if(builder.hasLocation()) {
-                    GeoFirestore geoFirestore = new GeoFirestore(mCollection);
+                    GeoFirestore geoFirestore = mGeoFirestoreFactory.createGeoFirestore(mCollection);
                     geoFirestore.setLocation(ref, builder.getLocation(object), e -> {
                         if(e == null) {
                             callback.onQueryComplete(QueryResult.success(ref));
@@ -100,5 +104,10 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
                 callback.onQueryComplete(QueryResult.failure(task.getException()));
             }
         });
+    }
+
+    @VisibleForTesting
+    public void setmGeoFirestoreFactory(GeoFirestoreFactory mGeoFirestoreFactory){
+        this.mGeoFirestoreFactory = mGeoFirestoreFactory;
     }
 }
