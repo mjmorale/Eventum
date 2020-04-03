@@ -1,6 +1,7 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
@@ -45,5 +46,11 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
             put("address", event.getAddress());
             put("location", new GeoPoint(event.getLocation().latitude, event.getLocation().longitude));
         }};
+    }
+
+    @Nullable
+    @Override
+    public LatLng getLocation(@NonNull Event object) {
+        return object.getLocation();
     }
 }

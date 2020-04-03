@@ -325,6 +325,11 @@ public class FirebaseCollectionQueryTest {
 
     @Test
     public void FirebaseCollectionQuery_Create_CreatesWithLocation(){
+        when(mDocumentReferenceTask.isSuccessful()).thenReturn(false);
+        when(mDocumentReferenceTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mDocumentReferenceTask.addOnCompleteListener(mDocumentReferenceCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
+
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
         firebaseCollectionQuery.setmGeoFirestoreFactory(mGeoFirestoreFactory);
         when(mEvent.getLocation()).thenReturn(new LatLng(80, 80));
@@ -332,9 +337,9 @@ public class FirebaseCollectionQueryTest {
         when(mEvent.getAddress()).thenReturn("Chemin");
         when(mEvent.getDescription()).thenReturn("Desc");
         when(mEvent.getTitle()).thenReturn("Title");
-        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
         firebaseCollectionQuery.create(mEvent,  result -> {
 
         });
+        mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
     }
 }

@@ -23,6 +23,7 @@ import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.platforms.firebase.db.GeoFirestoreFactory;
 
+import static ch.epfl.sdp.ObjectUtils.toGeoPoint;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class FirebaseCollectionQuery extends FirebaseQuery implements CollectionQuery {
@@ -88,7 +89,7 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
                 String ref = task.getResult().getId();
                 if(builder.hasLocation()) {
                     GeoFirestore geoFirestore = mGeoFirestoreFactory.createGeoFirestore(mCollection);
-                    geoFirestore.setLocation(ref, builder.getLocation(object), e -> {
+                    geoFirestore.setLocation(ref, toGeoPoint(builder.getLocation(object)), e -> {
                         if(e == null) {
                             callback.onQueryComplete(QueryResult.success(ref));
                         }

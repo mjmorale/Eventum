@@ -1,5 +1,6 @@
 package ch.epfl.sdp.db;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Arrays;
@@ -21,26 +22,13 @@ public abstract class DatabaseObjectBuilder<T> {
 
     public abstract boolean hasLocation();
     @Nullable
-    public T buildFromMap(@NonNull Map<String, Object> data) {
-        verifyNotNull(data);
-
-        checkRequiredFields(data);
-        return null;
-    }
+    public abstract T buildFromMap(@NonNull Map<String, Object> data);
 
     @Nullable
-    public Map<String, Object> serializeToMap(@NonNull T object) {
-        verifyNotNull(object);
-
-        return null;
-    }
+    public abstract Map<String, Object> serializeToMap(@NonNull T object);
 
     @Nullable
-    public GeoPoint getLocation(@NonNull T object) {
-        verifyNotNull(object);
-
-        return null;
-    }
+    public abstract LatLng getLocation(@NonNull T object);
 
     protected void checkRequiredFields(Map<String, Object> data) {
         for(String field: mRequiredFields) {

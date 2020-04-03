@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 public class MockStringBuilder extends DatabaseObjectBuilder<String> {
@@ -28,5 +32,11 @@ public class MockStringBuilder extends DatabaseObjectBuilder<String> {
         Map<String, Object> result = new HashMap<>();
         result.put("mock", object);
         return result;
+    }
+
+    @Nullable
+    @Override
+    public LatLng getLocation(@NonNull String object) {
+        return null;
     }
 }
