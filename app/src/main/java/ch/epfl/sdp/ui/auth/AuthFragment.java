@@ -51,12 +51,19 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private AuthViewModel<AuthCredential> mViewModel;
 
     private GoogleSignInClient mGoogleSignInClient;
+    private Uri mUri;
 
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
     }
 
+    @VisibleForTesting
+    public AuthFragment(@NonNull Authenticator authenticator, Uri uri) {
+        mFactory = new AuthViewModel.AuthViewModelFactory();
+        mFactory.setAuthenticator(authenticator);
+        mUri = uri;
+    }
     @VisibleForTesting
     public AuthFragment(@NonNull Authenticator authenticator) {
         mFactory = new AuthViewModel.AuthViewModelFactory();
@@ -79,7 +86,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
         mBinding.btnGoogleSignIn.setEnabled(false);
@@ -87,13 +93,16 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
         mViewModel = new ViewModelProvider(this, mFactory).get(AuthViewModel.class);
         mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+
             if(user == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
-                Intent activityIntent;
 
+                Intent activityIntent;
                 Uri uri = getActivity().getIntent().getData();
+                if(mUri!=null)uri=mUri;
+
                 if(uri!=null){
                     List<String> params= uri.getPathSegments();
                     String eventRef = params.get(params.size()-1);
@@ -101,7 +110,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                     activityIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
                     activityIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
                 }else {
-                     activityIntent= new Intent(getActivity(), MainActivity.class);
+                    activityIntent= new Intent(getActivity(), MainActivity.class);
                     activityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
                 }
 

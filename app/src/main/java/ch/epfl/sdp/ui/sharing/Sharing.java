@@ -7,31 +7,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import ch.epfl.sdp.ObjectUtils;
+
 import static androidx.core.content.ContextCompat.startActivity;
 
 
 public class Sharing {
 
-    private Intent mShareIntent;
-    private Context mContext;
 
-    public Sharing(Context context, List<String> ref){
+    private Intent mSendIntent;
 
-        mContext = context;
+    public Sharing(List<String> ref){
+        ObjectUtils.verifyNotNull(ref);
 
-        String url = new String("https://eventum.com/");
+        String url = "https://eventum.com/";
         for(String r: ref)
             url+= r+"/";
 
-        Intent mSendIntent = new Intent();
+        mSendIntent = new Intent();
         mSendIntent.setAction(Intent.ACTION_SEND);
         mSendIntent.putExtra(Intent.EXTRA_TEXT, url);
         mSendIntent.setType("text/plain");
-        mShareIntent = Intent.createChooser(mSendIntent, "Share via");
 
     }
-    public void share(){
-        startActivity(mContext, mShareIntent, null);
+    public Intent getShareIntent(){
+        return  Intent.createChooser(mSendIntent, "Share via");
     }
 
 }

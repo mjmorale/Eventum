@@ -75,8 +75,8 @@ public class DefaultEventFragment extends Fragment{
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
-        mEventSharing = new SharingBuilder().setContext(getContext()).setRef(mViewModel.getEventRef()).build();
-        mBinding.sharingButton.setOnClickListener(v->mEventSharing.share());
+        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
+        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDateStr());
