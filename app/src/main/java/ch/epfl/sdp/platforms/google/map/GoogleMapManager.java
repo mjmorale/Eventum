@@ -17,7 +17,8 @@ public class GoogleMapManager implements MapManager<Marker> {
     private final GoogleMap mGoogleMap;
 
     public GoogleMapManager(@NonNull GoogleMap googleMap){
-        mGoogleMap = verifyNotNull(googleMap);
+        verifyNotNull(googleMap);
+        mGoogleMap = googleMap;
     }
 
     @Override
