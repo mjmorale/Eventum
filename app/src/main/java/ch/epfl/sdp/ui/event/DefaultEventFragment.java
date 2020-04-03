@@ -1,10 +1,11 @@
 package ch.epfl.sdp.ui.event;
 
+
+
+
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,29 +14,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareHashtag;
-import com.facebook.share.model.ShareMediaContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import ch.epfl.sdp.R;
+
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
+
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.sharing.Sharing;
+import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-public class DefaultEventFragment extends Fragment implements View.OnClickListener {
+
+public class DefaultEventFragment extends Fragment{
 
     private DefaultEventViewModel mViewModel;
     private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
-
-    private ShareContent mShareContent;
-    private ShareDialog mSharedDialog;
+    private Sharing mEventSharing;
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
@@ -44,7 +42,6 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
 
         DefaultEventFragment fragment = new DefaultEventFragment();
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -65,7 +62,7 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
-    }
+   }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -78,14 +75,15 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
+        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
+        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
+
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
         });
-
-        prepareShare();
     }
 
     @Override
@@ -94,26 +92,4 @@ public class DefaultEventFragment extends Fragment implements View.OnClickListen
         mBinding = null;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.sharingButton:
-                mSharedDialog.show(mShareContent, ShareDialog.Mode.AUTOMATIC);
-                break;
-        }
-    }
-
-    private void prepareShare(){
-        mSharedDialog = new ShareDialog(this);
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) mBinding.imageView.getDrawable());
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        mShareContent = new ShareMediaContent.Builder()
-                .setShareHashtag(
-                        new ShareHashtag.Builder().setHashtag(
-                                mBinding.title.getText().toString() + " :\n\n " +
-                                        mBinding.description.getText().toString()).build())
-                .addMedium(new SharePhoto.Builder().setBitmap(bitmap).build())
-                .build();
-        mBinding.sharingButton.setOnClickListener(this);
-    }
 }

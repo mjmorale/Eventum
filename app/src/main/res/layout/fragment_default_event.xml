@@ -108,9 +108,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#47ECAA"
             android:clickable="true"
-            android:src="@drawable/com_facebook_favicon_blue"
+            android:src="@android:drawable/ic_menu_share"
             app:backgroundTint="@color/white"
             app:layout_anchorGravity="bottom|right" />
     </LinearLayout>
