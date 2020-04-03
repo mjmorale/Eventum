@@ -8,13 +8,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import ch.epfl.sdp.Event;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GeoFirestoreLiveDataTest {
 
-    private static final Class mClass = String.class;
+    private static final Class mClass = Event.class;
 
     @Mock
     private GeoQuery mGeoQuery;
