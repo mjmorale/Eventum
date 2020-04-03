@@ -15,10 +15,10 @@ import androidx.core.view.GravityCompat;
 
 import com.google.android.material.navigation.NavigationView;
 
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (savedInstanceState == null) {
+
+     if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_container, new SwipeFragment())
                     .commit();
