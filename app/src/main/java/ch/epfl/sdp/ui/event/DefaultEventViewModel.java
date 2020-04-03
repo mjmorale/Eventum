@@ -1,14 +1,12 @@
 package ch.epfl.sdp.ui.event;
 
 import androidx.annotation.NonNull;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class DefaultEventViewModel extends ViewModel {

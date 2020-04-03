@@ -8,85 +8,109 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.lorentzos.flingswipe.FlingCardListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.databinding.FragmentSwipeBinding;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
-public class SwipeFragment extends Fragment {
+public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
+    private final EventSwipeViewModel.EventSwipeViewModelFactory mFactory;
+    private FragmentSwipeBinding mBinding;
+    private EventSwipeViewModel mViewModel;
     private ArrayAdapter<Event> mArrayAdapter;
-    private EventDetailFragment mInfoFragment;
     private List<Event> mEventList;
+    private int mNumberSwipe = 0;
+    private boolean mFirstEvent;
+
+    private EventDetailFragment mInfoFragment;
     private Event mCurrentEvent;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        mEventList = new ArrayList<>();
-        mEventList.add(new Event("OSS-117 Movie watching",
-                "We will watch OSS-117: Cairo, Nest of Spies and then we can exchange about why this is the best movie of all times",
-                new Date(2021, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.oss_117));
-        mEventList.add(new Event("Duck themed party",
-                "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
-                new Date(2020, 3, 7), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.duck));
-        mEventList.add(new Event("Make Internet great again",
-                "At this meeting we will debate on how to make pepe the frog memes great again",
-                new Date(2020, 4, 20), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
-        mEventList.add(new Event("Real Fake Party",
-                "This is really happening",
-                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), R.drawable.frog));
-
-        mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
-        mCurrentEvent = mEventList.get(0);
-
+    public void removeFirstObjectInAdapter() {
+        mEventList.remove(0);
+        mArrayAdapter.notifyDataSetChanged();
     }
 
-    @Nullable
+    @Override
+    public void onLeftCardExit(Object o) {mNumberSwipe +=1;}
+
+    @Override
+    public void onRightCardExit(Object o) {mNumberSwipe +=1;}
+
+    @Override
+    public void onAdapterAboutToEmpty(int i) {}
+
+    @Override
+    public void onScroll(float scrollProgressPercent) {
+        SwipeFlingAdapterView flingContainer = mBinding.cardsListView;
+        flingContainer.getSelectedView().findViewById(R.id.deny_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+        flingContainer.getSelectedView().findViewById(R.id.accept_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+    }
+
+    public SwipeFragment() {
+        mFactory = new EventSwipeViewModel.EventSwipeViewModelFactory();
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+    }
+
+    @VisibleForTesting
+    public SwipeFragment(@NonNull Database database) {
+        mFactory = new EventSwipeViewModel.EventSwipeViewModelFactory();
+        mFactory.setDatabase(database);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_swipe, container, false);
-
-        return view;
+        mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
+        mFirstEvent = true;
+        return mBinding.getRoot();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState){
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        SwipeFlingAdapterView flingAdapterView = getView().findViewById(R.id.frame);
-        flingAdapterView.setAdapter(mArrayAdapter);
-        flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-                                              @Override
-                                              public void removeFirstObjectInAdapter() {
-                                                  mEventList.remove(0);
-                                                  mArrayAdapter.notifyDataSetChanged();
-                                                  mCurrentEvent = mEventList.get(0);
-                                              }
 
-                                              @Override
-                                              public void onLeftCardExit(Object o) {}
+        mEventList = new ArrayList<>();
+        mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
+        mBinding.cardsListView.setAdapter( mArrayAdapter);
+        mBinding.cardsListView.setFlingListener(this);
 
-                                              @Override
-                                              public void onRightCardExit(Object o) {}
+        mViewModel = new ViewModelProvider(this, mFactory).get(EventSwipeViewModel.class);
+        if(mViewModel.getNewEvents().hasObservers()) {
+            mViewModel.getNewEvents().removeObservers(getViewLifecycleOwner());
+        }
 
-                                              @Override
-                                              public void onAdapterAboutToEmpty(int i) {}
+        mViewModel.getNewEvents().observe(getViewLifecycleOwner(), events -> {
+            if (mNumberSwipe > 10 || mFirstEvent) {
+                mArrayAdapter.clear();
+                mArrayAdapter.addAll(events);
+                mNumberSwipe = 0;
+                mFirstEvent = false;
+            }
+        });
 
-                                              @Override
-                                              public void onScroll(float v) {}
-                                          }
-        );
-        flingAdapterView.setOnItemClickListener((itemPosition, dataObject) -> {
-            mInfoFragment = new EventDetailFragment(mCurrentEvent,this);
+        mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
+            mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }
