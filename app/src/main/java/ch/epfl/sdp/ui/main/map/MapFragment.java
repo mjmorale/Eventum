@@ -46,9 +46,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @VisibleForTesting
     public MapFragment(@NonNull Database database, @NonNull MapManager mapManager) {
+        verifyNotNull(database);
+        verifyNotNull(mapManager);
         mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setDatabase(verifyNotNull(database));
-        mFactory.setMapManager(verifyNotNull(mapManager));
+        mFactory.setDatabase(database);
+        mFactory.setMapManager(mapManager);
     }
 
     @Override
@@ -68,8 +70,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        boolean hasPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean hasPermission = ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED;
 
         if (hasPermission) {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);

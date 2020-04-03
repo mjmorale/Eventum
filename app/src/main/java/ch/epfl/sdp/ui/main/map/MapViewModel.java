@@ -40,7 +40,8 @@ public class MapViewModel extends ViewModel {
 
     public MapViewModel(@NonNull Database database, @NonNull MapManager<Marker> mapManager) {
         verifyNotNull(database);
-        mMapManager = verifyNotNull(mapManager);
+        verifyNotNull(mapManager);
+        mMapManager = mapManager;
 
         mEventsLive = database.query("events").liveData(Event.class);
         mEventObserver = events -> { for(Event e: events) { addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);}};
