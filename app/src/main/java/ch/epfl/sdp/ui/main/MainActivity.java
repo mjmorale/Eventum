@@ -1,10 +1,5 @@
 package ch.epfl.sdp.ui.main;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,20 +7,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+
+import com.google.android.material.navigation.NavigationView;
+
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
+import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.user.UserActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -106,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_map:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.mainContainer.getId(), new MapFragment(new FirestoreDatabase(FirebaseFirestore.getInstance()))).commit();
+                        .replace(mBinding.mainContainer.getId(), new MapFragment()).commit();
                 break;
             case R.id.nav_attending:
                 getSupportFragmentManager().beginTransaction()
