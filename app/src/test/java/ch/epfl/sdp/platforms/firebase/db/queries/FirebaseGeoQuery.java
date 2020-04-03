@@ -1,6 +1,8 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -13,13 +15,19 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -58,6 +66,9 @@ public class FirebaseGeoQuery {
 
     @Mock
     private GeoQuery mGeoQuery;
+
+    @Mock
+    private DocumentSnapshot mDocumentSnapshot;
 
 
     @Before
@@ -106,4 +117,30 @@ public class FirebaseGeoQuery {
         firebaseGeoFirestoreQuery.liveData(String.class);
     }
 
+    @Test
+    public void firebaseGeoFirestoreQuery_Get_CallsCallback(){
+
+
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
+        when(mDocumentSnapshot.getData()).thenReturn(
+                new HashMap<String, Object>(){{
+                    this.put("title", "title");
+                    this.put("description", "description");
+                    this.put("date", new Timestamp(20, 20));
+                    this.put("address", "Chemin");
+                    this.put("location", new GeoPoint(64, 65));
+                }}
+        );
+        ArrayList mDocuments = new ArrayList(){{this.add(mDocumentSnapshot); }};
+        doAnswer(invocation -> {
+             firebaseGeoFirestoreQuery.handleLocationQuerySnapshot(mDocuments, null, Event.class, result -> {mLocation.getLatitude();});
+            return null;
+        }).when(mGeoFirestore).getAtLocation(any(), anyDouble(), any());
+
+        firebaseGeoFirestoreQuery.get(Event.class, result -> {
+            firebaseGeoFirestoreQuery.handleLocationQuerySnapshot(mDocuments, null, Event.class, result1 -> { });
+        });
+
+        verify(mLocation).getLatitude();
+    }
 }

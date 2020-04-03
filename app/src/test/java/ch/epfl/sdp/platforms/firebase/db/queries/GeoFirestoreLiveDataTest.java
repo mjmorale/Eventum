@@ -99,7 +99,7 @@ public class GeoFirestoreLiveDataTest {
         geoFirestoreLiveData.onActive();
 
         verify(mData, times(2)).put(any(),any());
-        verify(mData, times(1)).remove(any());
+        verify(mData, times(2)).remove(any());
 
     }
 

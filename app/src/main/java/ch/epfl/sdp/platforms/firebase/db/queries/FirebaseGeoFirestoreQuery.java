@@ -42,8 +42,8 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
         verifyNotNull(type, callback);
 
         mGeoFirestore.getAtLocation(mLocation, mRadius, (list, e) -> {
-            handleLocationQuerySnapshot(list, e, type, callback);
-        });
+            handleLocationQuerySnapshot(list, e, type, callback); }
+            );
     }
 
     @Override

@@ -51,6 +51,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
             @Override
             public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                removeDocument(documentSnapshot);
                 addDocument(documentSnapshot);
             }
 
