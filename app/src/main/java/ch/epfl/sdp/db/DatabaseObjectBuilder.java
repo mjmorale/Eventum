@@ -14,17 +14,12 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 public abstract class DatabaseObjectBuilder<T> {
 
     private final List<String> mRequiredFields;
-    private final boolean mHasLocation;
 
-    protected DatabaseObjectBuilder(boolean hasLocation, String... requiredFields) {
-        mHasLocation = hasLocation;
+    protected DatabaseObjectBuilder(String... requiredFields) {
         mRequiredFields = Arrays.asList(requiredFields);
     }
 
-    public boolean hasLocation() {
-        return mHasLocation;
-    }
-
+    public abstract boolean hasLocation();
     @Nullable
     public T buildFromMap(@NonNull Map<String, Object> data) {
         verifyNotNull(data);

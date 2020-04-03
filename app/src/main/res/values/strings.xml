@@ -5,4 +5,6 @@
     <string name="navigation_main_drawer_close">Close navigation drawer</string>
 
     <string name="facebook_app_id">683489682480326</string>
+
+    <string name="toast_incorrect_input">Invalid input</string>
 </resources>

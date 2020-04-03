@@ -56,8 +56,8 @@ public class MapFragment extends Fragment{
         return view;
     }
 
-    public void addMarker(String eventName, GeoPoint coordinates, GoogleMapProvider googleMapProvider) {
-        googleMapProvider.addMarker(new MarkerOptions().position(new LatLng(coordinates.getLatitude(), coordinates.getLongitude())).title(eventName));
+    public void addMarker(String eventName, LatLng coordinates, GoogleMapProvider googleMapProvider) {
+        googleMapProvider.addMarker(new MarkerOptions().position(coordinates).title(eventName));
     }
 
     @Override

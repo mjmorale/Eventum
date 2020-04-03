@@ -14,7 +14,12 @@ public class DatabaseObjectBuilderTest {
     private static class MockBuilder extends DatabaseObjectBuilder<String> {
 
         public MockBuilder(String... required) {
-            super(false, required);
+            super(required);
+        }
+
+        @Override
+        public boolean hasLocation() {
+            return false;
         }
 
         @Override

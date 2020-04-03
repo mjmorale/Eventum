@@ -9,7 +9,12 @@ import ch.epfl.sdp.db.DatabaseObjectBuilder;
 public class MockStringBuilder extends DatabaseObjectBuilder<String> {
 
     public MockStringBuilder() {
-        super(false,"mock");
+        super("mock");
+    }
+
+    @Override
+    public boolean hasLocation() {
+        return false;
     }
 
     @Override
