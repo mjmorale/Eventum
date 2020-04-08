@@ -21,7 +21,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.text.ParseException;
+import java.util.UUID;
+
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -46,6 +51,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int PERMISSION_STORAGE = 100;
     private static final int CHOOSE_PHOTO = 200;
     private Uri mImage;
+    private StorageReference mImageRef;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -125,7 +131,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         if (requestCode == CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
                 this.mImage = data.getData();
-                // this.uploadImageInFirebase()
+                this.uploadImageInFirebase();
 
             } else {
                 Toast.makeText(getContext(), "No image chosen !", Toast.LENGTH_SHORT).show();
@@ -134,7 +140,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void uploadImageInFirebase() {
-        // to do
+        String uuid = UUID.randomUUID().toString();
+        StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
+        mImageRef.putFile(this.mImage);
     }
 
     @Override
