@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,18 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.text.ParseException;
 import java.util.UUID;
-
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -39,8 +36,6 @@ import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
-
-
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -55,9 +50,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int PERMISSION_STORAGE = 100;
     private static final int CHOOSE_PHOTO = 200;
     private Uri mImageUri;
-    private StorageReference mImageRef;
     private String mImageUrl;
-    private String mImagePath;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -136,9 +129,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                this.mImageUri = data.getData();
+                mImageUri = data.getData();
                 this.uploadImageInFirebase();
-                mImagePath = mImageUri.getPath();
             } else {
                 Toast.makeText(getContext(), "No image chosen !", Toast.LENGTH_SHORT).show();
             }
@@ -147,18 +139,19 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private void uploadImageInFirebase() {
         String uuid = UUID.randomUUID().toString();
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference(uuid);
-        imageRef.putFile(this.mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageReference reference = FirebaseStorage.getInstance().getReference(uuid);
+        reference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                 while (!urlTask.isSuccessful());
                 mImageUrl = urlTask.getResult().toString();
-                Toast.makeText(getContext(), mImageUrl, Toast.LENGTH_SHORT).show();
+
+                Glide.with(getContext())
+                        .load(reference)
+                        .into(mBinding.imageView);
             }
         });
-
-        
     }
 
     @Override
@@ -224,4 +217,5 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
         mBinding.geoAutocompleteClear.setOnClickListener(v -> mBinding.geoAutocomplete.setText(""));
     }
+
 }
