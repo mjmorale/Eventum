@@ -1,28 +1,28 @@
 package ch.epfl.sdp.ui.createevent;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.ParseException;
-
 import androidx.lifecycle.ViewModelProvider;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
@@ -31,6 +31,8 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 
+
+import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
@@ -40,6 +42,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private static final int THRESHOLD = 2;
     private LatLng mSelectedLocation;
+
+    private static final int PERMISSION_STORAGE = 100;
+    private static final int CHOOSE_PHOTO = 200;
+    private Uri mImage;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -67,6 +73,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mViewModel = new ViewModelProvider(this, mFactory).get(CreateEventViewModel.class);
 
         mBinding.createButton.setOnClickListener(this);
+        mBinding.addImageButton.setOnClickListener(this);
     }
 
     @Override
@@ -79,7 +86,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                         public void onSuccess(String eventRef) {
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
-                            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                            getActivity().setResult(RESULT_OK, resultIntent);
                             getActivity().finish();
                         }
 
@@ -93,7 +100,41 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.addImageButton:
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_STORAGE);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean hasPermission = ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED;
+
+        if (hasPermission) {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, CHOOSE_PHOTO);
+
+        } else {
+            Toast.makeText(getContext(), "Permission not granted !", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == CHOOSE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                this.mImage = data.getData();
+                // this.uploadImageInFirebase()
+
+            } else {
+                Toast.makeText(getContext(), "No image chosen !", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void uploadImageInFirebase() {
+        // to do
     }
 
     @Override
