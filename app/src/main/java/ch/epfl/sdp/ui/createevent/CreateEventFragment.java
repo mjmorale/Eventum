@@ -20,9 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.ParseException;
 import java.util.UUID;
@@ -50,8 +54,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private static final int PERMISSION_STORAGE = 100;
     private static final int CHOOSE_PHOTO = 200;
-    private Uri mImage;
+    private Uri mImageUri;
     private StorageReference mImageRef;
+    private String mImageUrl;
+    private String mImagePath;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -130,9 +136,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                this.mImage = data.getData();
+                this.mImageUri = data.getData();
                 this.uploadImageInFirebase();
-
+                mImagePath = mImageUri.getPath();
             } else {
                 Toast.makeText(getContext(), "No image chosen !", Toast.LENGTH_SHORT).show();
             }
@@ -141,8 +147,18 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private void uploadImageInFirebase() {
         String uuid = UUID.randomUUID().toString();
-        StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
-        mImageRef.putFile(this.mImage);
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference(uuid);
+        imageRef.putFile(this.mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!urlTask.isSuccessful());
+                mImageUrl = urlTask.getResult().toString();
+                Toast.makeText(getContext(), mImageUrl, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        
     }
 
     @Override
