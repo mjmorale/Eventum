@@ -7,6 +7,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
@@ -30,7 +35,16 @@ public class EventDetailFragment extends Fragment {
         mBinding.description.setText(mEvent.getDescription());
         mBinding.title.setText(mEvent.getTitle());
         mBinding.address.setText(mEvent.getAddress());
-        mBinding.imageView.setImageResource(mEvent.getImageID());
+
+        //mBinding.imageView.setImageResource(mEvent.getImageID());
+        if (mEvent.getImageID() != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference(mEvent.getImageID());
+            Glide.with(getContext())
+                    .load(reference)
+                    .into(mBinding.imageView);
+        }
+
+
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
         mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mFragment).commit());

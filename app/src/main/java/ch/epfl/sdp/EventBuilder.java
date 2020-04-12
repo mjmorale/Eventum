@@ -12,10 +12,10 @@ public class EventBuilder {
     private Date mDate;
     private String mAddress = "Lausanne, Switzerland";
     private LatLng mLocation = new LatLng(10, 10);
-    private int mImageId = R.mipmap.ic_launcher;
+    private String mImageId;
 
     public Event build() {
-        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId);
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
         return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
@@ -55,7 +55,7 @@ public class EventBuilder {
         return this;
     }
 
-    public EventBuilder setImageId(int imageId) {
+    public EventBuilder setImageId(String imageId) {
         this.mImageId = imageId;
         return this;
     }

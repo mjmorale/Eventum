@@ -12,6 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -40,7 +44,15 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
         TextView description = convertView.findViewById(R.id.eventDescription);
 
         name.setText(event.getTitle());
-        imageView.setImageResource(event.getImageID());
+
+        //imageView.setImageResource(event.getImageID());
+        if (event.getImageID() != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference(event.getImageID());
+            Glide.with(getContext())
+                    .load(reference)
+                    .into(imageView);
+        }
+
         description.setText(event.getDescription());
         return convertView;
     }

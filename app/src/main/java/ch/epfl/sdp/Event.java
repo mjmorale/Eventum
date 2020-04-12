@@ -15,7 +15,7 @@ public class Event {
     private String mDescription;
     private Date mDate;
     private String mTitle;
-    private int mImageID;
+    private String mImageID;
     private String mAddress;
     private LatLng mLocation;
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -25,7 +25,7 @@ public class Event {
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
-                 @NonNull int imageID) {
+                 @NonNull String imageID) {
         mTitle = title;
         mDescription = description;
         mDate = date;
@@ -62,7 +62,7 @@ public class Event {
         return mLocation;
     }
 
-    public int getImageID() {
+    public String getImageID() {
         return mImageID;
     }
 
