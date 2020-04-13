@@ -37,8 +37,8 @@ public class EventDetailFragment extends Fragment {
         mBinding.address.setText(mEvent.getAddress());
 
         //mBinding.imageView.setImageResource(mEvent.getImageID());
-        if (mEvent.getImageID() != null) {
-            StorageReference reference = FirebaseStorage.getInstance().getReference(mEvent.getImageID());
+        if (mEvent.getImageId() != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference(mEvent.getImageId());
             Glide.with(getContext())
                     .load(reference)
                     .into(mBinding.imageView);

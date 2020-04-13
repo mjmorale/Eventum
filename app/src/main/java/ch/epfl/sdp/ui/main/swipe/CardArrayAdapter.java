@@ -46,8 +46,8 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
         name.setText(event.getTitle());
 
         //imageView.setImageResource(event.getImageID());
-        if (event.getImageID() != null) {
-            StorageReference reference = FirebaseStorage.getInstance().getReference(event.getImageID());
+        if (event.getImageId() != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference(event.getImageId());
             Glide.with(getContext())
                     .load(reference)
                     .into(imageView);
