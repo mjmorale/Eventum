@@ -1,8 +1,5 @@
 package ch.epfl.sdp.ui.event;
 
-
-
-
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -22,11 +20,11 @@ import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-
 
 public class DefaultEventFragment extends Fragment{
 
@@ -61,6 +59,9 @@ public class DefaultEventFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
+
+        mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), new SwipeFragment()).commit());
+
         return mBinding.getRoot();
    }
 
@@ -83,6 +84,11 @@ public class DefaultEventFragment extends Fragment{
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
+            if (event.getImageId() != null) {
+                Glide.with(getContext())
+                        .load(event.getImageId())
+                        .into(mBinding.imageView);
+            }
         });
     }
 

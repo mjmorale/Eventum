@@ -32,7 +32,7 @@
                 <EditText
                     android:id="@+id/title"
                     android:layout_height="wrap_content"
-                    android:hint="Title"
+                    android:hint="title"
                     android:inputType="text"
                     android:layout_weight="0.4"
                     android:textSize="20sp"

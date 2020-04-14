@@ -51,7 +51,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int CHOOSE_PHOTO = 200;
     private Uri mImageUri;
     private String mImageUrl;
-    private String mImageId;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -140,8 +139,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void uploadImageInFirebase() {
-        mImageId = UUID.randomUUID().toString();
-        StorageReference reference = FirebaseStorage.getInstance().getReference(mImageId);
+        String imageUUID = UUID.randomUUID().toString();
+        StorageReference reference = FirebaseStorage.getInstance().getReference(imageUUID);
         reference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -150,7 +149,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 mImageUrl = urlTask.getResult().toString();
 
                 Glide.with(getContext())
-                        .load(reference)
+                        .load(mImageUrl)
                         .into(mBinding.imageView);
             }
         });
@@ -182,7 +181,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setDate(date)
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
-                .setImageId(mImageId)
+                .setImageId(mImageUrl)
                 .build();
 
         mViewModel.insertEvent(event, callback);

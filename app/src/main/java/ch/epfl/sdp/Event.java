@@ -1,15 +1,10 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.maps.model.LatLng;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class Event {
     private String mDescription;

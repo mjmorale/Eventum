@@ -7,23 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.ui.main.attending.AttendingEventAdapter;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-
 
 public class CardArrayAdapter extends ArrayAdapter<Event> {
 
@@ -45,11 +34,9 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
 
         name.setText(event.getTitle());
 
-        //imageView.setImageResource(event.getImageID());
         if (event.getImageId() != null) {
-            StorageReference reference = FirebaseStorage.getInstance().getReference(event.getImageId());
             Glide.with(getContext())
-                    .load(reference)
+                    .load(event.getImageId())
                     .into(imageView);
         }
 
