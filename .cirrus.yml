@@ -8,8 +8,8 @@ connected_check_task:
   container:
     image: reactivecircus/android-emulator-${API_LEVEL}:latest
     kvm: true
-    cpu: 4
-    memory: 8G
+    cpu: 8
+    memory: 16G
   create_device_script:
     - sdkmanager "system-images;android-${API_LEVEL};${TARGET};${ARCH}"
     - sdkmanager --licenses
