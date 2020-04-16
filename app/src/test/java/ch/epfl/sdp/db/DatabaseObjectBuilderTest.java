@@ -1,6 +1,9 @@
 package ch.epfl.sdp.db;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
 
@@ -15,6 +18,11 @@ public class DatabaseObjectBuilderTest {
 
         public MockBuilder(String... required) {
             super(required);
+        }
+
+        @Override
+        public boolean hasLocation() {
+            return false;
         }
 
         @Override
@@ -35,6 +43,12 @@ public class DatabaseObjectBuilderTest {
                 put("mock1", object);
                 put("mock2", "test2");
             }};
+        }
+
+        @Nullable
+        @Override
+        public LatLng getLocation(@NonNull String object) {
+            return null;
         }
     }
 
