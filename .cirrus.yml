@@ -2,16 +2,18 @@ connected_check_task:
   name: Run Android instrumented tests
   env:
     API_LEVEL: 22
-    TARGET: default
+    TARGET: google_apis
     ARCH: x86
     CC_TEST_REPORTER_ID: ENCRYPTED[7518a272c4e5b87e1e27538fac2468cd7ffb98cbfc140234a14812c4e468540a75b54ce32c52ae0e84d5d208e1cd5443]
   container:
-    image: reactivecircus/android-emulator-22:latest
+    image: reactivecircus/android-emulator-${API_LEVEL}:latest
     kvm: true
-    cpu: 8
-    memory: 24G
+    cpu: 4
+    memory: 8G
   create_device_script:
-    echo no | avdmanager create avd --force --name "api-${API_LEVEL}" --abi "${TARGET}/${ARCH}" --package "system-images;android-${API_LEVEL};${TARGET};${ARCH}"
+    - sdkmanager "system-images;android-${API_LEVEL};${TARGET};${ARCH}"
+    - sdkmanager --licenses
+    - echo no | avdmanager create avd --force --name "api-${API_LEVEL}" --abi "${TARGET}/${ARCH}" --package "system-images;android-${API_LEVEL};${TARGET};${ARCH}"
   start_emulator_background_script:
     $ANDROID_HOME/emulator/emulator -avd "api-${API_LEVEL}" -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
   gradle_build_script:
@@ -32,4 +34,4 @@ connected_check_task:
     # Report test coverage to Code Climate
     - export JACOCO_SOURCE_PATH=app/src/main/java/
     - ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
-    - ./cc-test-reporter upload-coverage
+    #- ./cc-test-reporter upload-coverage
