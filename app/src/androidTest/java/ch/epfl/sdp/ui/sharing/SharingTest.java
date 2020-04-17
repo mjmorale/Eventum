@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui.sharing;
 
-
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
