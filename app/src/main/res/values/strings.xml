@@ -5,5 +5,7 @@
     <string name="navigation_main_drawer_close">Close navigation drawer</string>
 
     <string name="toast_incorrect_input">Invalid input</string>
+    <string name="enter_message">Enter message</string>
+    <string name="send">SEND</string>
 
 </resources>
