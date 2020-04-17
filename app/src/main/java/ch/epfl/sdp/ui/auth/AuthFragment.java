@@ -104,8 +104,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 activityIntent= new Intent(getActivity(), MainActivity.class);
                 activityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
 
-                Uri uri = getActivity().getIntent().getData();
-                if(mUri!=null) uri=mUri;
+                Uri uri = (mUri!=null)? mUri :getActivity().getIntent().getData();
                 if(uri!=null) activityIntent=getEventIntent(uri);
 
                 startActivity(activityIntent);

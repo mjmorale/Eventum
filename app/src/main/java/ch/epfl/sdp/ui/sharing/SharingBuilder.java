@@ -1,8 +1,6 @@
 package ch.epfl.sdp.ui.sharing;
 
-
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import ch.epfl.sdp.ObjectUtils;
 
@@ -15,10 +13,9 @@ public class SharingBuilder {
     }
 
     public SharingBuilder setRef(String ... ref){
-        ObjectUtils.verifyNotNull(ref);
-        mRef = new ArrayList<>();
-        for(String s: ref)
-            mRef.add(s);
+        for(String r :ref)
+            ObjectUtils.verifyNotNull(r);
+        mRef = Arrays.asList(ref);
         return this;
     }
 }

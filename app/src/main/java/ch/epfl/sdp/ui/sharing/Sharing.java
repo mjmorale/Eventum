@@ -1,16 +1,8 @@
 package ch.epfl.sdp.ui.sharing;
 
-
-import android.content.Context;
 import android.content.Intent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
-
 import ch.epfl.sdp.ObjectUtils;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
 
 public class Sharing {
 
