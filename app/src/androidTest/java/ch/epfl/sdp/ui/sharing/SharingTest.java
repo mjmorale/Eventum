@@ -40,15 +40,7 @@ public class SharingTest {
     @SuppressWarnings("unchecked")
     @Test
     public void MyFragment_Test_CanDisplayAMessage() {
-        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("Uid","Name", "Email"));
-        FragmentScenario<AuthFragment> scenario = FragmentScenario.launchInContainer(
-                AuthFragment.class,
-                new Bundle(),
-                R.style.Theme_AppCompat,
-                new MockFragmentFactory(AuthFragment.class, mAuthenticatorMock, Uri.parse("https://eventum.com/D6ONoAKeGRAtAGJ9hBC1/"))
-        );
 
-        onView(withId(R.id.imageView)).check(matches((isDisplayed())));
     }
 
     @Test
