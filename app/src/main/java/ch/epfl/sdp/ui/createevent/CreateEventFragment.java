@@ -50,7 +50,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int PERMISSION_STORAGE = 100;
     private static final int CHOOSE_PHOTO = 200;
     private Uri mImageUri;
-    private String mImageUrl;
+    private String mImageId;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
@@ -146,10 +146,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                 while (!urlTask.isSuccessful());
-                mImageUrl = urlTask.getResult().toString();
+                mImageId = urlTask.getResult().toString();
 
                 Glide.with(getContext())
-                        .load(mImageUrl)
+                        .load(mImageId)
                         .into(mBinding.imageView);
             }
         });
@@ -181,7 +181,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setDate(date)
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
-                .setImageId(mImageUrl)
+                .setImageId(mImageId)
                 .build();
 
         mViewModel.insertEvent(event, callback);

@@ -105,7 +105,7 @@ public class CreateEventFragmentTest {
 
     @Test
     public void CreateEventFragment_IncorrectInput() {
-        onView(withHint(is("Title"))).perform(
+        onView(withHint(is("title"))).perform(
                 clearText(),
                 typeText(EMPTY),
                 closeSoftKeyboard());
