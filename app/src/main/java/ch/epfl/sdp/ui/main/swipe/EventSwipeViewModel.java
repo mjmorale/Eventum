@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Collection;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -29,15 +32,21 @@ public class EventSwipeViewModel extends ViewModel {
     private final CollectionQuery mSwipeQuery;
     private final Database mDatabase;
 
-    private LiveData<List<Event>> mSwipeLiveData;
+    private LiveData<Collection<Event>> mSwipeLiveData;
 
     public EventSwipeViewModel(@NonNull Database database) {
         mDatabase = database;
         mSwipeQuery = database.query("events");
     }
 
-    public LiveData<List<Event>> getNewEvents() {
-        if(mSwipeLiveData == null) { mSwipeLiveData = mSwipeQuery.liveData(Event.class); }
+    public LiveData<Collection<Event>> getNewEvents(GeoPoint location, double radius) {
+        if(mSwipeLiveData == null) {
+            mSwipeLiveData = mSwipeQuery.atLocation(location, radius).liveData(Event.class);
+        }
+        return mSwipeLiveData;
+    }
+
+    public LiveData<Collection<Event>> getSwipeLiveData() {
         return mSwipeLiveData;
     }
 }

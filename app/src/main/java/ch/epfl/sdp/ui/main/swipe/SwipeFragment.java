@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,8 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.lorentzos.flingswipe.FlingCardListener;
+import com.google.firebase.firestore.GeoPoint;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private ArrayAdapter<Event> mArrayAdapter;
     private List<Event> mEventList;
     private int mNumberSwipe = 0;
-    private boolean mFirstEvent;
 
     private EventDetailFragment mInfoFragment;
     private Event mCurrentEvent;
@@ -75,31 +74,39 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
-        mFirstEvent = true;
         return mBinding.getRoot();
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
-        mBinding.cardsListView.setAdapter( mArrayAdapter);
+        mBinding.cardsListView.setAdapter(mArrayAdapter);
         mBinding.cardsListView.setFlingListener(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(EventSwipeViewModel.class);
-        if(mViewModel.getNewEvents().hasObservers()) {
-            mViewModel.getNewEvents().removeObservers(getViewLifecycleOwner());
+        if(mViewModel.getSwipeLiveData() != null && mViewModel.getSwipeLiveData().hasObservers()) {
+            mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-        mViewModel.getNewEvents().observe(getViewLifecycleOwner(), events -> {
-            if (mNumberSwipe > 10 || mFirstEvent) {
-                mArrayAdapter.clear();
-                mArrayAdapter.addAll(events);
-                mNumberSwipe = 0;
-                mFirstEvent = false;
+        mBinding.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                GeoPoint location = new GeoPoint(46.519799, 6.569343);
+                mViewModel.getNewEvents(location, progress).observe(getViewLifecycleOwner(), events -> {
+                    mArrayAdapter.clear();
+                    mArrayAdapter.addAll(events);
+                    mNumberSwipe = 0;
+                    mBinding.seekBarValue.setText(Integer.toString(progress));
+                });
             }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
