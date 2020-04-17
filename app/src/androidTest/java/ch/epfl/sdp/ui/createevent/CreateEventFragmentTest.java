@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.contrib.PickerActions;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -63,6 +65,9 @@ public class CreateEventFragmentTest {
     private static final int YEAR = mMockEvent.getDate().getYear();
 
     private Activity mActivity;
+
+    @Rule
+    public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Mock
     private Database mDatabase;
