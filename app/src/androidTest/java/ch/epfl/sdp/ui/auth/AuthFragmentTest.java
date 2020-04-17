@@ -1,8 +1,5 @@
 package ch.epfl.sdp.ui.auth;
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.firebase.auth.AuthCredential;
@@ -14,14 +11,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.test.espresso.intent.Intents;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
@@ -34,22 +27,15 @@ import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.Intents.intending;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -80,8 +66,6 @@ public class AuthFragmentTest {
 
     @Captor
     private ArgumentCaptor<User> mUserCaptor;
-
-    private MutableLiveData<UserInfo> mUserInfoLiveData = new MutableLiveData<>();
 
     @Before
     public void setup() {
