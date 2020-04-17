@@ -2,7 +2,6 @@ package ch.epfl.sdp.ui.event.chat;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -21,7 +20,6 @@ import ch.epfl.sdp.databinding.FragmentChatBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.event.DefaultEventViewModel;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
