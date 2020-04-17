@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
 import androidx.annotation.NonNull;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
@@ -28,10 +27,12 @@ public class DefaultEventViewModel extends ViewModel {
 
     private final DocumentQuery mEventDocumentQuery;
     private final Database mDatabase;
+    private final String mEventRef;
 
     public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
         verifyNotNull(eventRef, database);
         mDatabase = database;
+        mEventRef = eventRef;
         mEventDocumentQuery = database.query("events").document(eventRef);
     }
 
@@ -42,4 +43,7 @@ public class DefaultEventViewModel extends ViewModel {
         return mEvent;
     }
 
+    public String getEventRef(){
+        return mEventRef;
+    }
 }

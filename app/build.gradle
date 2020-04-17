@@ -21,6 +21,11 @@ android {
     viewBinding {
         enabled = true
     }
+
+    // This fixes a default behaviour causing failure in test GeoFirestoreLiveDataTest
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 android {
@@ -46,6 +51,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.1'
+    // Firebase Geostore dependencies
+    implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
     // Google Material
     implementation 'com.google.android.material:material:1.1.0'
     // Maps dependency

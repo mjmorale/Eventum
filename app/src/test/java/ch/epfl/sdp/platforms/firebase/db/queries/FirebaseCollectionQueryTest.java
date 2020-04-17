@@ -1,11 +1,13 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -20,20 +22,25 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseCollectionQuery;
+import ch.epfl.sdp.platforms.firebase.db.GeoFirestoreFactory;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +53,7 @@ public class FirebaseCollectionQueryTest {
     private final static Integer DUMMY_INT = 4;
     private final static Exception DUMMY_EXCEPTION = new Exception();
     private final static String DUMMY_ID = "slkdfjghsdflkjg354sadf45";
+    private final static double DUMMY_DOUBLE = 42;
 
     @Mock
     private FirebaseFirestore mDb;
@@ -74,6 +82,15 @@ public class FirebaseCollectionQueryTest {
 
     @Mock
     private Query mQuery;
+
+    @Mock
+    private GeoPoint mGeoPoint;
+
+    @Mock
+    private GeoFirestoreFactory mGeoFirestoreFactory;
+
+    @Mock
+    private Event mEvent;
 
     @Captor
     private ArgumentCaptor<OnCompleteListener<QuerySnapshot>> mQuerySnapshotCompleteListenerCaptor;
@@ -288,6 +305,41 @@ public class FirebaseCollectionQueryTest {
             assertEquals(DUMMY_EXCEPTION, result.getException());
         });
 
+        mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void FirebaseCollectionQuery_AtLocation_failsWhenNullArgument(){
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        firebaseCollectionQuery.atLocation(null, DUMMY_DOUBLE);
+    }
+
+    @Test
+    public void FirebaseCollectionQuery_AtLocation_ReturnsFirebaseGeoFirestoreQuery(){
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = (FirebaseGeoFirestoreQuery) firebaseCollectionQuery.atLocation(mGeoPoint, DUMMY_DOUBLE);
+        assertNotEquals(firebaseGeoFirestoreQuery, null);
+        assertEquals(firebaseGeoFirestoreQuery.getmLocation(), mGeoPoint);
+        assertTrue(firebaseGeoFirestoreQuery.getmRadius() ==  DUMMY_DOUBLE);
+    }
+
+    @Test
+    public void FirebaseCollectionQuery_Create_CreatesWithLocation(){
+        when(mDocumentReferenceTask.isSuccessful()).thenReturn(false);
+        when(mDocumentReferenceTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mDocumentReferenceTask.addOnCompleteListener(mDocumentReferenceCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
+
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        firebaseCollectionQuery.setmGeoFirestoreFactory(mGeoFirestoreFactory);
+        when(mEvent.getLocation()).thenReturn(new LatLng(80, 80));
+        when(mEvent.getDate()).thenReturn(new Date(2020, 10, 10));
+        when(mEvent.getAddress()).thenReturn("Chemin");
+        when(mEvent.getDescription()).thenReturn("Desc");
+        when(mEvent.getTitle()).thenReturn("Title");
+        firebaseCollectionQuery.create(mEvent,  result -> {
+
+        });
         mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
     }
 }

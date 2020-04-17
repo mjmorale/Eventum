@@ -26,6 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.ViewModelProvider;
+
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
@@ -33,7 +34,6 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.main.MainActivity;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 
