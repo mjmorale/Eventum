@@ -171,23 +171,23 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
-    @Test
-    public void CreateEventFragment_CorrectIntentStoragePermissions() {
-        clickAddImageButton();
-
-        intended(toPackage("com.google.android.permissioncontroller"));
-
-        mDevice.pressBack();
-    }
-
-    @Test
-    public void CreateEventFragment_CorrectIntentImageSelection() {
-        clickAddImageButton();
-
-        intended(toPackage("com.google.android.apps.photos"));
-
-        mDevice.pressBack();
-    }
+//    @Test
+//    public void CreateEventFragment_CorrectIntentStoragePermissions() {
+//        clickAddImageButton();
+//
+//        intended(toPackage("com.google.android.permissioncontroller"));
+//
+//        mDevice.pressBack();
+//    }
+//
+//    @Test
+//    public void CreateEventFragment_CorrectIntentImageSelection() {
+//        clickAddImageButton();
+//
+//        intended(toPackage("com.google.android.apps.photos"));
+//
+//        mDevice.pressBack();
+//    }
 
 //    @Test
 //    public void CreateEventFragment_CorrectImageSelection() {
