@@ -122,7 +122,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             startActivityForResult(intent, CHOOSE_PHOTO);
 
         } else {
-            Toast.makeText(getContext(), "Permission not granted !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -133,7 +133,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 this.uploadImageInFirebase();
 
             } else {
-                Toast.makeText(getContext(), "No image chosen !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
         }
     }

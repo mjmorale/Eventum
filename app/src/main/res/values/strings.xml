@@ -6,4 +6,6 @@
 
     <string name="toast_incorrect_input">Invalid input</string>
 
+    <string name="permission_not_granted">Permission not granted !</string>
+    <string name="no_image_chosen">No image chosen !</string>
 </resources>
