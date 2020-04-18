@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -56,13 +58,21 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
+
         mBinding.buttonChatboxSend.setOnClickListener(v->{
-            String message = mBinding.edittextChatbox.getText().toString();
-            if(message.length()>0){
-                //to databse
-                mBinding.edittextChatbox.getText().clear();
-            }
+            trySendMessage(new ChatViewModel.OnMessageAddedCallback() {
+                @Override
+                public void onSuccess(String messageRef) {
+
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+
         return mBinding.getRoot();
     }
 
@@ -82,6 +92,18 @@ public class ChatFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
+    }
+
+    private void trySendMessage(@NonNull ChatViewModel.OnMessageAddedCallback callback) {
+
+        String message = mBinding.edittextChatbox.getText().toString();
+        if(!message.isEmpty()){
+            mBinding.edittextChatbox.getText().clear();
+
+            //to database
+            mViewModel.addMessage(message, callback);
+        }
+
     }
 
 }
