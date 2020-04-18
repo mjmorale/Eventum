@@ -1,13 +1,19 @@
 package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.PickerActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
@@ -17,9 +23,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.File;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -40,6 +48,8 @@ import static androidx.test.espresso.action.ViewActions.pressBack;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
@@ -69,9 +79,15 @@ public class CreateEventFragmentTest {
     private static final int YEAR = mMockEvent.getDate().getYear();
 
     private Activity mActivity;
+    private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
     @Rule
-    public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+    public GrantPermissionRule mPermissionFine =
+            GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    @Rule
+    public IntentsTestRule<CreateEventActivity> mIntentsTestRule =
+            new IntentsTestRule<>(CreateEventActivity.class);
 
     @Mock
     private Database mDatabase;
@@ -129,12 +145,9 @@ public class CreateEventFragmentTest {
 
     @Test
     public void CreateEventFragment_ImageNotSelected() {
-        onView(withId(R.id.addImageButton)).perform(
-                scrollTo(),
-                click());
+        clickAddImageButton();
 
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        device.pressBack();
+        mDevice.pressBack();
 
         // Check Toast message is displayed
         onView(withText(R.string.no_image_chosen))
@@ -142,6 +155,23 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
+    @Test
+    public void CreateEventFragment_CorrectIntentPermissions() {
+        clickAddImageButton();
+
+        intended(toPackage("com.google.android.permissioncontroller"));
+
+        mDevice.pressBack();
+    }
+
+    @Test
+    public void CreateEventFragment_CorrectIntentImageSelection() {
+        clickAddImageButton();
+
+        intended(toPackage("com.google.android.apps.photos"));
+
+        mDevice.pressBack();
+    }
 
     private void doCorrectInput() {
         onView(withId(R.id.title)).perform(
@@ -170,6 +200,12 @@ public class CreateEventFragmentTest {
 
     private void clickCreateButton() {
         onView(withId(R.id.createButton)).perform(
+                scrollTo(),
+                click());
+    }
+
+    private void clickAddImageButton() {
+        onView(withId(R.id.addImageButton)).perform(
                 scrollTo(),
                 click());
     }
