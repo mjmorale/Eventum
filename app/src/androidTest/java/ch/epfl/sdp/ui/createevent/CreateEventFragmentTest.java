@@ -2,6 +2,7 @@ package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,7 +19,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
@@ -92,7 +97,7 @@ public class CreateEventFragmentTest {
     public GrantPermissionRule mPermissionFine =
             GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
-    @Rule
+    @Rule // delete if intents tests deleted
     public ActivityTestRule<CreateEventActivity> mIntentsTestRule =
             new ActivityTestRule<>(CreateEventActivity.class);
 
@@ -104,7 +109,8 @@ public class CreateEventFragmentTest {
 
     @Before
     public void setup() {
-        Intents.init();
+
+        Intents.init(); // delete if intents tests deleted
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
@@ -129,10 +135,12 @@ public class CreateEventFragmentTest {
         scenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();
         });
+
+//        addImageInStorage(); // keep here ???????????????????????
     }
 
     @After
-    public void after() {
+    public void after() { // delete if intents tests deleted
         Intents.release();
     }
 
@@ -189,25 +197,19 @@ public class CreateEventFragmentTest {
 //        mDevice.pressBack();
 //    }
 
-//    @Test
-//    public void CreateEventFragment_CorrectImageSelection() {
-//        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.mipmap.ic_launcher);
-//        File dir = mActivity.getExternalCacheDir();
-//        File file = new File(dir, "imageTest.jpeg");
-//        try {
-//            FileOutputStream out = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-//            out.flush();
-//            out.close();
+    @Test
+    public void CreateEventFragment_CorrectImageSelection() {
+//        addImageInStorage();
+
+
+        clickAddImageButton();
 //
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        clickAddImageButton();
-//
-//
-//    }
+//        UiSelector selector = new UiSelector().text("Download");
+//        UiObject download = mDevice.findObject(selector);
+//        download.click();
+
+
+    }
 
     private void doCorrectInput() {
         onView(withId(R.id.title)).perform(
@@ -244,5 +246,20 @@ public class CreateEventFragmentTest {
         onView(withId(R.id.addImageButton)).perform(
                 scrollTo(),
                 click());
+    }
+
+    private void addImageInStorage() {
+        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.duck);
+        File dir = mActivity.getExternalCacheDir();
+        File file = new File(dir, "imageTest.jpeg");
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
