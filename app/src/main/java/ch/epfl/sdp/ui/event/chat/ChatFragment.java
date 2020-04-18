@@ -56,6 +56,13 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
+        mBinding.buttonChatboxSend.setOnClickListener(v->{
+            String message = mBinding.edittextChatbox.getText().toString();
+            if(message.length()>0){
+                //to databse
+                mBinding.edittextChatbox.getText().clear();
+            }
+        });
         return mBinding.getRoot();
     }
 
