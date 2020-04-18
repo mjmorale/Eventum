@@ -2,7 +2,6 @@ package ch.epfl.sdp.ui.event.chat;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Date;
 
@@ -11,7 +10,6 @@ import ch.epfl.sdp.User;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
-import ch.epfl.sdp.ui.auth.AuthViewModel;
 
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -56,7 +54,7 @@ public class ChatViewModel extends ViewModel {
 
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
 
-        ChatMessage chatMessage = new ChatMessage(message, new Date(), "a", "b");
+        ChatMessage chatMessage = new ChatMessage(message, new Date(), "noUid", "John Doe");
         mEventCollection.create(chatMessage, res -> {
             if(res.isSuccessful()) {
                 callback.onSuccess(res.getData());
