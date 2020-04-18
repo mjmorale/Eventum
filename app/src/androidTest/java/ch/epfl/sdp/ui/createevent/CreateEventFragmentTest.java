@@ -156,7 +156,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_CorrectIntentPermissions() {
+    public void CreateEventFragment_CorrectIntentStoragePermissions() {
         clickAddImageButton();
 
         intended(toPackage("com.google.android.permissioncontroller"));
@@ -172,6 +172,12 @@ public class CreateEventFragmentTest {
 
         mDevice.pressBack();
     }
+
+//    @Test
+//    public void CreateEventFragment_CorrectImageSelection() {
+//
+//
+//    }
 
     private void doCorrectInput() {
         onView(withId(R.id.title)).perform(
