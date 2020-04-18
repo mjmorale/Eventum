@@ -13,11 +13,17 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.PickerActions;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
+import androidx.test.uiautomator.UiSelector;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,6 +34,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -86,8 +93,8 @@ public class CreateEventFragmentTest {
             GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Rule
-    public IntentsTestRule<CreateEventActivity> mIntentsTestRule =
-            new IntentsTestRule<>(CreateEventActivity.class);
+    public ActivityTestRule<CreateEventActivity> mIntentsTestRule =
+            new ActivityTestRule<>(CreateEventActivity.class);
 
     @Mock
     private Database mDatabase;
@@ -97,6 +104,7 @@ public class CreateEventFragmentTest {
 
     @Before
     public void setup() {
+        Intents.init();
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
@@ -123,13 +131,21 @@ public class CreateEventFragmentTest {
         });
     }
 
+    @After
+    public void after() {
+        Intents.release();
+    }
+
     @Test
     public void CreateEventFragment_CorrectInput() {
         doCorrectInput();
     }
 
     @Test
-    public void CreateEventFragment_IncorrectInput() {
+    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException {
+        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
+        appViews.scrollIntoView(new UiSelector().text("title"));
+
         onView(withHint(is("title"))).perform(
                 clearText(),
                 typeText(EMPTY),
@@ -175,6 +191,20 @@ public class CreateEventFragmentTest {
 
 //    @Test
 //    public void CreateEventFragment_CorrectImageSelection() {
+//        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.mipmap.ic_launcher);
+//        File dir = mActivity.getExternalCacheDir();
+//        File file = new File(dir, "imageTest.jpeg");
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+//            out.flush();
+//            out.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        clickAddImageButton();
 //
 //
 //    }
