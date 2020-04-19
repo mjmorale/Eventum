@@ -9,8 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
+/**
+ * Class that can convert a User instance to a database compatible object.
+ * @see User
+ */
 public class UserDatabaseBuilder extends DatabaseObjectBuilder<User> {
 
+    /**
+     * Construct a new UserDatabaseBuilder instance.
+     */
     public UserDatabaseBuilder() {
         super("username", "email");
     }

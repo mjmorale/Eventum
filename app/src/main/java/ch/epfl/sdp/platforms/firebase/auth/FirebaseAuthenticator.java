@@ -10,15 +10,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import ch.epfl.sdp.auth.AuthenticationResult;
 import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.UserInfo;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Authenticator service for Firebase.
+ */
 public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
 
     private final FirebaseAuth mAuth;
 
+    /**
+     * Construct a new FirebaseAuthenticator.
+     *
+     * @param firebaseAuth A reference to the firebase authentication API.
+     * @throws IllegalArgumentException The firebase authentication object is null.
+     */
     public FirebaseAuthenticator(@NonNull FirebaseAuth firebaseAuth) {
         this.mAuth = verifyNotNull(firebaseAuth);
     }
