@@ -35,3 +35,7 @@ connected_check_task:
     - export JACOCO_SOURCE_PATH=app/src/main/java/
     - ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
     - ./cc-test-reporter upload-coverage
+  always:
+    junit_artifacts:
+      path: "./app/build/reports/jacoco/jacocoTestReport/**/*.html"
+      type: text/html
