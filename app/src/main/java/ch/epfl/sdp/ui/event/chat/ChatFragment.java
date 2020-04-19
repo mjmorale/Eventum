@@ -68,7 +68,7 @@ public class ChatFragment extends Fragment {
 
                 @Override
                 public void onFailure(Exception exception) {
-                    Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), exception.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
