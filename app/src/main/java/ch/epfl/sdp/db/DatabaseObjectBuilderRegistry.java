@@ -6,6 +6,8 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventDatabaseBuilder;
+import ch.epfl.sdp.User;
+import ch.epfl.sdp.UserDatabaseBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -15,6 +17,7 @@ public class DatabaseObjectBuilderRegistry {
 
     static {
         mBuilders.put(Event.class, new EventDatabaseBuilder());
+        mBuilders.put(User.class, new UserDatabaseBuilder());
     }
 
     public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<? extends DatabaseObjectBuilder<T>> builder) {

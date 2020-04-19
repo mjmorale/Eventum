@@ -35,3 +35,14 @@ connected_check_task:
     - export JACOCO_SOURCE_PATH=app/src/main/java/
     - ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
     - ./cc-test-reporter upload-coverage
+  always:
+    android-lint_artifacts:
+      path: "./app/build/reports/lint-results.xml"
+      type: text/xml
+      format: android-lint
+    junit_artifacts:
+      path: "./app/build/test-results/**/*.xml"
+      type: text/xml
+      format: junit
+    jacoco_artifacts:
+      path: "./app/build/reports/jacoco/jacocoTestReport/**/*.*"

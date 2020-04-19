@@ -6,23 +6,20 @@ import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
+
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class DefaultEventViewModel extends ViewModel {
 
-    static class DefaultEventViewModelFactory extends ParameterizedViewModelFactory {
+    static class DefaultEventViewModelFactory extends DatabaseViewModelFactory {
 
         DefaultEventViewModelFactory() {
-            super(Database.class, String.class);
-        }
-
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
+            super(String.class);
         }
 
         void setEventRef(@NonNull String eventRef) {
-            setValue(1, verifyNotNull(eventRef));
+            setValue(0, verifyNotNull(eventRef));
         }
     }
 
@@ -32,8 +29,8 @@ public class DefaultEventViewModel extends ViewModel {
     private final Database mDatabase;
     private final String mEventRef;
 
-    public DefaultEventViewModel(@NonNull Database database, @NonNull String eventRef) {
-        verifyNotNull(database, eventRef);
+    public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
+        verifyNotNull(eventRef, database);
         mDatabase = database;
         mEventRef = eventRef;
         mEventDocumentQuery = database.query("events").document(eventRef);
