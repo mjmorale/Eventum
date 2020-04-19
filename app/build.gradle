@@ -62,6 +62,7 @@ dependencies {
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
 
     // Unit test dependencies
     testImplementation 'junit:junit:4.12'
