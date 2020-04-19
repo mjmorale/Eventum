@@ -37,11 +37,11 @@ connected_check_task:
     - ./cc-test-reporter upload-coverage
   always:
     android-lint_artifacts:
-      path: ".app/build/reports/lint-results.xml"
+      path: "./app/build/reports/lint-results.xml"
       type: text/xml
       format: android-lint
     junit_artifacts:
-      path: ".app/build/test-results/**/*.xml"
+      path: "./app/build/test-results/**/*.xml"
       type: text/xml
       format: junit
     jacoco_artifacts:
