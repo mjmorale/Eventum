@@ -98,11 +98,11 @@ public class CreateEventFragmentTest {
     private Activity mActivity;
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-    @Rule
-    public GrantPermissionRule mPermissionWriteStorage =
-            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//    @Rule // delete ? in manifest too !!!
+//    public GrantPermissionRule mPermissionWriteStorage =
+//            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-    @Rule // delete ? in manifest too !!!
+    @Rule
     public GrantPermissionRule mPermissionReadStorage =
             GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 

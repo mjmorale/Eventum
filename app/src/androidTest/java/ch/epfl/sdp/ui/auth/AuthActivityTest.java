@@ -1,79 +1,63 @@
 package ch.epfl.sdp.ui.auth;
 
-import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
+import android.net.Uri;
 
-import com.google.firebase.auth.AuthCredential;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
-import ch.epfl.sdp.User;
-import ch.epfl.sdp.auth.AuthenticationResult;
-import ch.epfl.sdp.auth.Authenticator;
-import ch.epfl.sdp.ui.auth.AuthActivity;
-import ch.epfl.sdp.ui.auth.AuthViewModel;
+import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.event.EventActivity;
+import ch.epfl.sdp.ui.sharing.Sharing;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static androidx.test.espresso.intent.Intents.intending;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage;
-import static org.hamcrest.Matchers.allOf;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static org.hamcrest.core.AllOf.allOf;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthActivityTest {
 
-    private final static User DUMMY_USER = new User("uid", "name", "email");
+    private final static String DUMMY_USER_REF = "abcdefghijkl123";
+    private final static String DUMMY_EVENT_REF = "dummyeventref987654321";
 
-    static class MockAuthenticator implements Authenticator<AuthCredential> {
+    @Rule
+    public ActivityTestRule<AuthActivity> mActivity = new ActivityTestRule<>(AuthActivity.class, false, false);
 
-        private User mUser;
-        private OnLoginCallback mLoginCallback;
+    @Test
+    public void AuthActivity_OnLoggedIn_LaunchesMainActivityWithEmptyBundle() {
+        mActivity.launchActivity(new Intent());
+        Intents.init();
 
-        MockAuthenticator(@Nullable User user, @Nullable OnLoginCallback loginCallback) {
-            mUser = user;
-            mLoginCallback = loginCallback;
-        }
+        mActivity.getActivity().onLoggedIn(DUMMY_USER_REF);
+        intended(allOf(
+                hasComponent("ch.epfl.sdp.ui.main.MainActivity"),
+                hasExtra(UIConstants.BUNDLE_USER_REF, DUMMY_USER_REF)
+        ));
 
-        @Override
-        public void login(@NonNull String email, @NonNull String password, @Nullable OnLoginCallback callback) { }
-
-        @Override
-        public void login(@NonNull AuthCredential credential, @Nullable OnLoginCallback callback) {
-            mLoginCallback.onLoginComplete(AuthenticationResult.success(mUser));
-        }
-
-        @Override
-        public void logout() { }
-
-        @Override
-        public User getCurrentUser() {
-            return mUser;
-        }
-    }
-
-    static class MockLoginViewModel extends AuthViewModel<AuthCredential> {
-        public MockLoginViewModel(User user, Authenticator.OnLoginCallback callback) {
-            super(new MockAuthenticator(user, callback));
-        }
+        Intents.release();
     }
 
     @Test
-    public void AuthActivity_test_launch() {
+    public void AuthActivity_OnLoggedIn_LaunchesEventActivityWithSendActionIntent() {
+        Intent sendAction = new Intent();
+        sendAction.setAction(Intent.ACTION_SEND);
+        sendAction.setDataAndTypeAndNormalize(Uri.parse(Sharing.DOMAIN_URL + "/" + DUMMY_EVENT_REF), "text/plain");
+
+        mActivity.launchActivity(sendAction);
         Intents.init();
 
-        Intent intent = new Intent();
-        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
-        intending(hasComponent("ch.epfl.sdp.MainActivity")).respondWith(result);
-        intending(allOf(hasPackage("ch.epfl.sdp"), hasAction("com.google.android.gms.auth.GOOGLE_SIGN_IN"))).respondWith(result);
-
-        ActivityScenario<AuthActivity> scenario = ActivityScenario.launch(AuthActivity.class);
+        mActivity.getActivity().onLoggedIn(DUMMY_USER_REF);
+        intended(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_USER_REF, DUMMY_USER_REF),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENT_REF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE)
+        ));
 
         Intents.release();
     }

@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -173,16 +174,15 @@ public class FirebaseCollectionQueryTest {
         firebaseCollectionQuery.limitCount(-1);
     }
 
-    /* TODO need to be changed
     @Test
     public void FirebaseCollectionQuery_LimitCount_ReturnsNewFilterQueryWithCorrectParameters() {
         when(mCollectionReference.limit(anyLong())).thenReturn(mQuery);
+
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        FilterQuery filterQuery = firebaseCollectionQuery.limitCount(DUMMY_INT);
-        verify(mCollectionReference).limit(DUMMY_INT);
-        filterQuery.limitCount(1);
-        verify(mQuery).limit(1);
-    }*/
+        firebaseCollectionQuery.limitCount(DUMMY_INT);
+
+        verify(mCollectionReference).limit((long)DUMMY_INT);
+    }
 
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseCollectionQuery_Get_FailsWithNullFirstArgument() {

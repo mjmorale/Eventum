@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -35,6 +34,7 @@ public class DefaultEventFragment extends Fragment{
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
+
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
 
