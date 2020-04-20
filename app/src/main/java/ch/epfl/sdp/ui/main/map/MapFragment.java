@@ -1,24 +1,23 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
 import ch.epfl.sdp.db.Database;
@@ -42,8 +41,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private Location mLastKnownLocation;
     private float mZoomLevel = 12;
 
-    private final static int PERMISSION_LOCATION = 0;
-
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
@@ -66,36 +63,24 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        requestPermissions(new String[] {
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION },
-                PERMISSION_LOCATION);
+        mLastKnownLocation = mLocationService.getLastKnownLocation(getContext());
+        if (mLastKnownLocation == null) {
+            mLastKnownLocation = new Location("Europe");
+            mLastKnownLocation.setLatitude(46.520564);
+            mLastKnownLocation.setLongitude(6.567827);
+            mZoomLevel = 4;
+        }
+
+        mMapView.getMapAsync(googleMap -> {
+            googleMap.setOnMarkerClickListener(this);
+            googleMap.setMyLocationEnabled(true);
+
+            mFactory.setMapManager(new GoogleMapManager(googleMap));
+            mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+
+            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel); });
 
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        try {
-            mLastKnownLocation = mLocationService.getLastKnownLocation(getContext());
-            if (mLastKnownLocation == null) {
-                mLastKnownLocation = new Location("Europe");
-                mLastKnownLocation.setLatitude(46.520564);
-                mLastKnownLocation.setLongitude(6.567827);
-                mZoomLevel = 4;
-            }
-
-            mMapView.getMapAsync(googleMap -> {
-                googleMap.setOnMarkerClickListener(this);
-                googleMap.setMyLocationEnabled(true);
-
-                mFactory.setMapManager(new GoogleMapManager(googleMap));
-                mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
-
-                mViewModel.moveCamera(mLastKnownLocation, mZoomLevel); });
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

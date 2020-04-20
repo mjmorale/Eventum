@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.main;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
 import com.google.android.material.navigation.NavigationView;
@@ -29,9 +32,10 @@ import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private ActivityMainBinding mBinding;
+    private final static int PERMISSION_LOCATION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +54,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        GoogleLocationService.initService((LocationManager) getSystemService(getBaseContext().LOCATION_SERVICE));
+        GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
-     if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new SwipeFragment())
-                    .commit();
+        if (savedInstanceState == null) {
+            ActivityCompat.requestPermissions(this, new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    PERMISSION_LOCATION);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new SwipeFragment())
+                .commit();
     }
 
     @Override
