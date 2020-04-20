@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 DialogCustomViewExtKt.customView(dialog, 0, customView, false, false, true, false);
 
                 dialog.message(null, "Which categories  ? ", null);
-                int[] selected = new int[]{};
+                int[] selected = new int[]{0};
                 DialogMultiChoiceExtKt.listItemsMultiChoice(dialog, null, list, null, selected, true, false, (materialDialog, ints, strings) -> null);
                 dialog.positiveButton(null, "Done", null);
                 dialog.show();
@@ -120,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         mBinding = null;
+    }
+
+    public TextView getSeekBarValue(){
+        return mBinding.menuMainSearch.seekBarValue;
+    }
+
+    public SeekBar getSeekBarRange(){
+        return mBinding.menuMainSearch.seekBarRange;
     }
 
     @Override

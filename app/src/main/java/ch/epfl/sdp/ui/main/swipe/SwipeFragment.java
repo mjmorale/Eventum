@@ -26,10 +26,12 @@ import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
+import ch.epfl.sdp.databinding.MenuMainSearchBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
+import ch.epfl.sdp.ui.main.MainActivity;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
@@ -103,31 +105,30 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-        View rootView = mBinding.getRoot().getRootView();
-        SeekBar seekBarRange = rootView.findViewById(R.id.seekBar_range);
-
-
+        SeekBar seekBarRange = ((MainActivity) getActivity()).getSeekBarRange();
         seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Location location = mLocationService.getLastKnownLocation(getContext());
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                geoPoint = new GeoPoint(46.519799, 6.569343);
+                TextView seekBarValue = ((MainActivity) getActivity()).getSeekBarValue();
+                seekBarValue.setText(progress + "km");
                 mViewModel.getNewEvents(geoPoint, progress).observe(getViewLifecycleOwner(), events -> {
                     mArrayAdapter.clear();
                     mArrayAdapter.addAll(events);
                     mNumberSwipe = 0;
-                    TextView seekBarValue = rootView.findViewById(R.id.seekBar_value);
-                    //seekBarValue.setText(progress +"km");
                 });
             }
 
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
@@ -139,6 +140,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        SeekBar seekBarRange = ((MainActivity) getActivity()).getSeekBarRange();
+        seekBarRange.setOnSeekBarChangeListener(null);
         mBinding = null;
     }
 }
