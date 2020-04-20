@@ -221,6 +221,8 @@ public class CreateEventFragmentTest {
         intending(toPackage("com.google.android.apps.photos")).respondWith(result);
         clickAddImageButton();
 
+        Intents.release();
+
 
 //
 //        UiSelector selector = new UiSelector().text("Download");
