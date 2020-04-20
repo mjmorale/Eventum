@@ -5,22 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.swipe.SwipeFragment">
 
-    <LinearLayout
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/cards_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <ch.epfl.sdp.ui.settings.FilterView
-            android:id="@+id/filter_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.lorentzos.flingswipe.SwipeFlingAdapterView
-            android:id="@+id/cards_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white" />
-    </LinearLayout>
+        android:background="@color/white" />
 
 </FrameLayout>

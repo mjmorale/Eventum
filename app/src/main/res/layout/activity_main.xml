@@ -9,6 +9,9 @@
     android:layout_height="match_parent"
     android:id="@+id/main_drawer_layout">
 
+    <include layout="@layout/menu_main_search"
+        android:id="@+id/menu_main_search"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

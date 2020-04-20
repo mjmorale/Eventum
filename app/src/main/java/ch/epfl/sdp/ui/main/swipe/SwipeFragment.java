@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.main.swipe;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +85,14 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+    }
+
+    @SuppressLint("CheckResult")
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
@@ -96,33 +104,40 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-        mBinding.filterView.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+        //******************************** TODO
+        //mBinding.menuMainSearch.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        View rootView = mBinding.getRoot().getRootView();
+        SeekBar seekBarRange = rootView.findViewById(R.id.seekBar_range);
+
+
+        seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBinding.filterView.mSeekBarValue.setText(String.format(getResources().getConfiguration().locale, "%dkm", progress));
-
                 Location location = mLocationService.getLastKnownLocation(getContext());
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 mViewModel.getNewEvents(geoPoint, progress).observe(getViewLifecycleOwner(), events -> {
                     mArrayAdapter.clear();
                     mArrayAdapter.addAll(events);
                     mNumberSwipe = 0;
+                    TextView seekBarValue = rootView.findViewById(R.id.seekBar_value);
+                    //seekBarValue.setText(progress +"km");
                 });
             }
+
+
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        });//*******************/
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
             mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
-
-        return mBinding.getRoot();
     }
 
     @Override
