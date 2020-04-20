@@ -1,6 +1,10 @@
 package ch.epfl.sdp.ui.main;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.R;
@@ -33,9 +39,10 @@ import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private ActivityMainBinding mBinding;
+    private final static int PERMISSION_LOCATION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +61,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
-     if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new SwipeFragment())
-                    .commit();
+        if (savedInstanceState == null) {
+            ActivityCompat.requestPermissions(this, new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    PERMISSION_LOCATION);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int result: grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                finish();
+            }
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new SwipeFragment())
+                .commit();
     }
 
     @Override

@@ -1,17 +1,14 @@
 package ch.epfl.sdp.ui.main.swipe;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,27 +16,20 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
-import com.afollestad.materialdialogs.list.DialogListExtKt;
-import com.afollestad.materialdialogs.list.DialogMultiChoiceExtKt;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-import com.afollestad.materialdialogs.*;
-
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.createevent.CreateEventActivity;
-import ch.epfl.sdp.ui.main.MainActivity;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
@@ -51,7 +41,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private int mNumberSwipe = 0;
 
     private EventDetailFragment mInfoFragment;
-    private Event mCurrentEvent;
+    private LocationService mLocationService;
 
     @Override
     public void removeFirstObjectInAdapter() {
@@ -60,10 +50,14 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     }
 
     @Override
-    public void onLeftCardExit(Object o) {mNumberSwipe +=1;}
+    public void onLeftCardExit(Object o) {
+        mNumberSwipe += 1;
+    }
 
     @Override
-    public void onRightCardExit(Object o) {mNumberSwipe +=1;}
+    public void onRightCardExit(Object o) {
+        mNumberSwipe += 1;
+    }
 
     @Override
     public void onAdapterAboutToEmpty(int i) {}
@@ -78,12 +72,14 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     public SwipeFragment() {
         mFactory = new EventSwipeViewModel.EventSwipeViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mLocationService = GoogleLocationService.getInstance();
     }
 
     @VisibleForTesting
-    public SwipeFragment(@NonNull Database database) {
+    public SwipeFragment(@NonNull Database database, @NonNull LocationService locationService) {
         mFactory = new EventSwipeViewModel.EventSwipeViewModelFactory();
         mFactory.setDatabase(database);
+        mLocationService = locationService;
     }
 
     @Override
@@ -114,8 +110,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                GeoPoint location = new GeoPoint(46.519799, 6.569343);
-                mViewModel.getNewEvents(location, progress).observe(getViewLifecycleOwner(), events -> {
+                Location location = mLocationService.getLastKnownLocation(getContext());
+                GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                mViewModel.getNewEvents(geoPoint, progress).observe(getViewLifecycleOwner(), events -> {
                     mArrayAdapter.clear();
                     mArrayAdapter.addAll(events);
                     mNumberSwipe = 0;
