@@ -18,8 +18,7 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
 
     public ParameterizedViewModelFactory(Class<?>... types) {
         for(Class<?> type: types) {
-            mTypes.add(verifyNotNull(type));
-            mParameters.add(null);
+            addType(type);
         }
     }
 
@@ -51,6 +50,11 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
             }
         }
         throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
+    }
+
+    protected void addType(@NonNull Class<?> type) {
+        mTypes.add(verifyNotNull(type));
+        mParameters.add(null);
     }
 
     @SuppressWarnings("unchecked")
