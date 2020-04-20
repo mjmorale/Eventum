@@ -1,12 +1,15 @@
 package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
@@ -40,6 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -61,6 +65,7 @@ import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
@@ -94,7 +99,11 @@ public class CreateEventFragmentTest {
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
     @Rule
-    public GrantPermissionRule mPermissionFine =
+    public GrantPermissionRule mPermissionWriteStorage =
+            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+    @Rule // delete ? in manifest too !!!
+    public GrantPermissionRule mPermissionReadStorage =
             GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Rule // delete if intents tests deleted
@@ -136,7 +145,7 @@ public class CreateEventFragmentTest {
             mActivity = fragment.getActivity();
         });
 
-//        addImageInStorage(); // keep here ???????????????????????
+        // addImageInStorage(); // keep here ???????????????????????
     }
 
     @After
@@ -198,11 +207,21 @@ public class CreateEventFragmentTest {
 //    }
 
     @Test
-    public void CreateEventFragment_CorrectImageSelection() {
-//        addImageInStorage();
+    public void CreateEventFragment_CorrectImageSelection() throws IOException {
+        // addImageInStorage();
+        // clickAddImageButton();
+
+        Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
+        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver() , Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image"));
+
+        Intent intent = new Intent();
+        intent.setData(uri);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
+        intending(toPackage("com.google.android.apps.photos")).respondWith(result);
+        clickAddImageButton();
 
 
-//        clickAddImageButton();
 //
 //        UiSelector selector = new UiSelector().text("Download");
 //        UiObject download = mDevice.findObject(selector);
@@ -249,17 +268,28 @@ public class CreateEventFragmentTest {
     }
 
     private void addImageInStorage() {
-        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.duck);
-        File dir = mActivity.getExternalCacheDir();
-        File file = new File(dir, "imageTest.jpeg");
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
+        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.add_image);
+//        File dir = mActivity.getExternalCacheDir();
+//        File file = new File(dir, "imageTest.jpeg");
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+//            out.flush();
+//            out.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), bitmap, "testImage" , "for testing");  // Saves the image.
+
+//        ContentValues values = new ContentValues();
+//        values.put(MediaStore.Images.Media.DISPLAY_NAME, "testImage");
+//        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+//        values.put(MediaStore.Images.Media.IS_PENDING, 1);
+//        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+
+
     }
 }
