@@ -2,12 +2,15 @@ package ch.epfl.sdp.ui.main.swipe;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,8 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.ui.main.MainActivity;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
@@ -91,23 +96,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        String[] args = {"All","Party", "Sport", "AA", "Concert"};
-        List<String> list = Arrays.asList(args);
-
-        MaterialDialog dialog = new MaterialDialog(getContext(), MaterialDialog.getDEFAULT_BEHAVIOR());
-        dialog.title(null, "Event parameter");
-
-        View customView = mBinding.seekBar;
-        DialogCustomViewExtKt.customView(dialog, 0, customView, false, false, true, true);
-
-        dialog.message(null, "More precices  ? ", null);
-        int[] selected = new int[]{};
-        DialogMultiChoiceExtKt.listItemsMultiChoice(dialog, null, list, null, selected, true, false, (materialDialog, ints, strings) -> null);
-        dialog.positiveButton(null, "Choose", null);
-        dialog.show();
-
-
+        setHasOptionsMenu(true);
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
@@ -119,7 +108,14 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-        mBinding.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+        /******************************** TODO
+        //mBinding.menuMainSearch.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        View rootView = mBinding.getRoot().getRootView();
+        SeekBar seekBarRange = rootView.findViewById(R.id.seekBar_range);
+
+
+        seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 GeoPoint location = new GeoPoint(46.519799, 6.569343);
@@ -127,16 +123,19 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
                     mArrayAdapter.clear();
                     mArrayAdapter.addAll(events);
                     mNumberSwipe = 0;
-                    mBinding.seekBarValue.setText(progress +"km");
+                    TextView seekBarValue = rootView.findViewById(R.id.seekBar_value);
+                    //seekBarValue.setText(progress +"km");
                 });
             }
+
+
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        });*******************/
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
             mInfoFragment = new EventDetailFragment(mEventList.get(0),this);

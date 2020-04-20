@@ -13,7 +13,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
+import com.afollestad.materialdialogs.list.DialogMultiChoiceExtKt;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Arrays;
+import java.util.List;
 
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.ui.UIConstants;
@@ -68,6 +74,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.main_actionbar_add:
                 Intent intent = new Intent(this, CreateEventActivity.class);
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
+                break;
+            case R.id.main_actionbar_search:
+                String[] args = {"All","Party", "Sport", "AA", "Concert"};
+                List<String> list = Arrays.asList(args);
+
+                MaterialDialog dialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR());
+                dialog.title(null, "Event search");
+
+                View customView = mBinding.menuMainSearch.seekBar;
+                DialogCustomViewExtKt.customView(dialog, 0, customView, false, false, true, false);
+
+                dialog.message(null, "Which categories  ? ", null);
+                int[] selected = new int[]{};
+                DialogMultiChoiceExtKt.listItemsMultiChoice(dialog, null, list, null, selected, true, false, (materialDialog, ints, strings) -> null);
+                dialog.positiveButton(null, "Done", null);
+                dialog.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
