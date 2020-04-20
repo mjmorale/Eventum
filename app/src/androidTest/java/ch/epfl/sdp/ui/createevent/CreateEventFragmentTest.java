@@ -202,7 +202,7 @@ public class CreateEventFragmentTest {
 //        addImageInStorage();
 
 
-        clickAddImageButton();
+//        clickAddImageButton();
 //
 //        UiSelector selector = new UiSelector().text("Download");
 //        UiObject download = mDevice.findObject(selector);
