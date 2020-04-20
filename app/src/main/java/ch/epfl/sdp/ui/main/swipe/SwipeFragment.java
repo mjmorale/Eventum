@@ -96,7 +96,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
@@ -108,9 +107,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-
-        //******************************** TODO
-        //mBinding.menuMainSearch.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
         View rootView = mBinding.getRoot().getRootView();
         SeekBar seekBarRange = rootView.findViewById(R.id.seekBar_range);
 
@@ -135,7 +131,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
-        });//*******************/
+        });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
             mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
