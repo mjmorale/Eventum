@@ -1,7 +1,5 @@
 package ch.epfl.sdp.ui.main.swipe;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,17 +15,12 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
-import com.afollestad.materialdialogs.list.DialogListExtKt;
-import com.afollestad.materialdialogs.list.DialogMultiChoiceExtKt;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-import com.afollestad.materialdialogs.*;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -37,7 +30,6 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
-import ch.epfl.sdp.ui.main.MainActivity;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
@@ -93,27 +85,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
-        return mBinding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        String[] args = {"All","Party", "Sport", "AA", "Concert"};
-        List<String> list = Arrays.asList(args);
-
-        MaterialDialog dialog = new MaterialDialog(getContext(), MaterialDialog.getDEFAULT_BEHAVIOR());
-        dialog.title(null, "Event parameter");
-
-        View customView = mBinding.seekBar;
-        DialogCustomViewExtKt.customView(dialog, 0, customView, false, false, true, true);
-
-        dialog.message(null, "More precices  ? ", null);
-        int[] selected = new int[]{};
-        DialogMultiChoiceExtKt.listItemsMultiChoice(dialog, null, list, null, selected, true, false, (materialDialog, ints, strings) -> null);
-        dialog.positiveButton(null, "Choose", null);
-        dialog.show();
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
@@ -125,12 +96,10 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
 
-        mBinding.seekBarValue.getText();
-
-        mBinding.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mBinding.filterView.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBinding.seekBarValue.setText(String.format(getResources().getConfiguration().locale, "%dkm", progress));
+                mBinding.filterView.mSeekBarValue.setText(String.format(getResources().getConfiguration().locale, "%dkm", progress));
 
                 Location location = mLocationService.getLastKnownLocation(getContext());
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -152,6 +121,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
+
+        return mBinding.getRoot();
     }
 
     @Override
