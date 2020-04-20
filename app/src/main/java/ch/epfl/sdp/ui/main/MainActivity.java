@@ -106,11 +106,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.title(null, "Event search");
 
                 View customView = mBinding.menuMainSearch.seekBar;
-                DialogCustomViewExtKt.customView(dialog, 0, customView, false, false, true, false);
+                DialogCustomViewExtKt.customView(dialog, 0, customView, true, false, true, false);
 
-                dialog.message(null, "Which categories  ? ", null);
-                int[] selected = new int[]{0};
-                DialogMultiChoiceExtKt.listItemsMultiChoice(dialog, null, list, null, selected, true, false, (materialDialog, ints, strings) -> null);
                 dialog.positiveButton(null, "Done", null);
                 dialog.show();
                 break;

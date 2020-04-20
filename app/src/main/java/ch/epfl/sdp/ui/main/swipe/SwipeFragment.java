@@ -109,18 +109,19 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Location location = mLocationService.getLastKnownLocation(getContext());
-                GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                geoPoint = new GeoPoint(46.519799, 6.569343);
                 TextView seekBarValue = ((MainActivity) getActivity()).getSeekBarValue();
                 seekBarValue.setText(progress + "km");
+
+                Location location = mLocationService.getLastKnownLocation(getContext());
+                GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                geoPoint = new GeoPoint(46.519799, 6.569343);       //just for test
+
                 mViewModel.getNewEvents(geoPoint, progress).observe(getViewLifecycleOwner(), events -> {
                     mArrayAdapter.clear();
                     mArrayAdapter.addAll(events);
                     mNumberSwipe = 0;
                 });
             }
-
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
