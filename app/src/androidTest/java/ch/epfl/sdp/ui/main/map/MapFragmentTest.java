@@ -20,6 +20,8 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.mocks.MockLocationService;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -59,7 +61,7 @@ public class MapFragmentTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mDatabaseMock, mMapManagerMock)
+                new MockFragmentFactory(MapFragment.class, mDatabaseMock, mMapManagerMock, new MockLocationService())
         );
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));

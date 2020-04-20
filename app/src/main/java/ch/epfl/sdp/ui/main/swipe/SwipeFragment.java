@@ -76,6 +76,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -89,6 +90,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         if(mViewModel.getSwipeLiveData() != null && mViewModel.getSwipeLiveData().hasObservers()) {
             mViewModel.getSwipeLiveData().removeObservers(getViewLifecycleOwner());
         }
+
+        mBinding.seekBarValue.getText();
 
         mBinding.seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

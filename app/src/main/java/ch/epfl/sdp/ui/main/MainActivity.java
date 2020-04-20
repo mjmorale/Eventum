@@ -1,6 +1,7 @@
 package ch.epfl.sdp.ui.main;
 
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import androidx.core.view.GravityCompat;
 import com.google.android.material.navigation.NavigationView;
 
 import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.R;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        GoogleLocationService.initService((LocationManager) getSystemService(getBaseContext().LOCATION_SERVICE));
 
      if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
