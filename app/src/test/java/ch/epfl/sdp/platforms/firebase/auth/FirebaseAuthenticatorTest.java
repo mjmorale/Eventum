@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.User;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 
 import static org.junit.Assert.*;
@@ -76,11 +77,11 @@ public class FirebaseAuthenticatorTest {
         when(mUser.getEmail()).thenReturn(DUMMY_EMAIL);
         when(mAuth.getCurrentUser()).thenReturn(mUser);
 
-        User expectedUser = new User(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
+        UserInfo expectedUserInfo = new UserInfo(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
 
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        assertEquals(expectedUser, authenticator.getCurrentUser());
+        assertEquals(expectedUserInfo, authenticator.getCurrentUser());
     }
 
     @Test
@@ -125,10 +126,10 @@ public class FirebaseAuthenticatorTest {
 
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        User expectedUser = new User(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
+        UserInfo expectedUserInfo = new UserInfo(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
         authenticator.login(DUMMY_EMAIL, DUMMY_PASSWORD, result -> {
             assertTrue(result.isSuccessful());
-            assertEquals(expectedUser, result.getUser());
+            assertEquals(expectedUserInfo, result.getUserInfo());
         });
 
         authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
@@ -152,11 +153,8 @@ public class FirebaseAuthenticatorTest {
         authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
     }
 
-    @Test
-    public void firebaseAuthenticator_Login_DoNothingWhenCallbackIsNull() {
-        when(mAuth.createUserWithEmailAndPassword(DUMMY_EMAIL, DUMMY_PASSWORD)).thenReturn(mAuthResultTask);
-        verify(mAuthResultTask, never()).addOnCompleteListener(any(OnCompleteListener.class));
-
+    @Test (expected = IllegalArgumentException.class)
+    public void firebaseAuthenticator_Login_FailsWhenCallbackIsNull() {
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
         authenticator.login(DUMMY_EMAIL, DUMMY_PASSWORD, null);
@@ -174,10 +172,10 @@ public class FirebaseAuthenticatorTest {
 
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        User expectedUser = new User(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
+        UserInfo expectedUserInfo = new UserInfo(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
         authenticator.login(mAuthCredential, result -> {
             assertTrue(result.isSuccessful());
-            assertEquals(expectedUser, result.getUser());
+            assertEquals(expectedUserInfo, result.getUserInfo());
         });
 
         authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
@@ -201,11 +199,8 @@ public class FirebaseAuthenticatorTest {
         authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
     }
 
-    @Test
-    public void firebaseAuthenticator_LoginWithCredential_DoNothingWhenCallbackIsNull() {
-        when(mAuth.signInWithCredential(any(AuthCredential.class))).thenReturn(mAuthResultTask);
-        verify(mAuthResultTask, never()).addOnCompleteListener(any(OnCompleteListener.class));
-
+    @Test (expected = IllegalArgumentException.class)
+    public void firebaseAuthenticator_LoginWithCredential_FailsWhenCallbackIsNull() {
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
         authenticator.login(mAuthCredential, null);

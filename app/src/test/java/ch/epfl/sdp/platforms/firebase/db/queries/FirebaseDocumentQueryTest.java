@@ -4,6 +4,8 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,6 +23,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseDocumentQuery;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
@@ -60,7 +64,13 @@ public class FirebaseDocumentQueryTest {
     private ArgumentCaptor<OnCompleteListener<DocumentSnapshot>> mDocumentSnapshotCompleteListenerCaptor;
 
     @Captor
-    private ArgumentCaptor<OnCompleteListener<Void>> mVoidCompleteListenerCaptor;
+    private ArgumentCaptor<OnSuccessListener<DocumentSnapshot>> mDocumentSnapshotSuccessListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnFailureListener> mOnFailureListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnSuccessListener<Void>> mVoidSuccessListenerCaptor;
 
     @Before
     public void setup() {
@@ -179,8 +189,8 @@ public class FirebaseDocumentQueryTest {
     @Test
     public void FirebaseDocumentQuery_Delete_CallsCallbackWithSuccessAndNullValue() {
         when(mDocumentReference.delete()).thenReturn(mVoidTask);
-        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mVoidTask.isSuccessful()).thenReturn(true);
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(any())).thenReturn(mVoidTask);
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.delete(result -> {
@@ -188,15 +198,14 @@ public class FirebaseDocumentQueryTest {
             assertNull(result.getData());
         });
 
-        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
+        mVoidSuccessListenerCaptor.getValue().onSuccess(null);
     }
 
     @Test
     public void FirebaseDocumentQuery_Delete_CallsCallbackWithExceptionIfAnErrorOccurred() {
         when(mDocumentReference.delete()).thenReturn(mVoidTask);
-        when(mVoidTask.addOnCompleteListener(mVoidCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mVoidTask.isSuccessful()).thenReturn(false);
-        when(mVoidTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mVoidTask.addOnSuccessListener(any())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.delete(result -> {
@@ -204,7 +213,101 @@ public class FirebaseDocumentQueryTest {
             assertEquals(DUMMY_EXCEPTION, result.getException());
         });
 
-        mVoidCompleteListenerCaptor.getValue().onComplete(mVoidTask);
+        mOnFailureListenerCaptor.getValue().onFailure(DUMMY_EXCEPTION);
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Exists_FailsWithNullArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.exists(null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Exists_ReturnsTrueIfDocumentExists() {
+        when(mDocumentSnapshotTask.addOnSuccessListener(mDocumentSnapshotSuccessListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentSnapshotTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.exists(result -> {
+            assertTrue(result.isSuccessful());
+            assertTrue(result.getData());
+        });
+
+        when(mDocumentSnapshot.exists()).thenReturn(true);
+        mDocumentSnapshotSuccessListenerCaptor.getValue().onSuccess(mDocumentSnapshot);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Exists_ReturnsFalseIfDocumentDoesNotExist() {
+        when(mDocumentSnapshotTask.addOnSuccessListener(mDocumentSnapshotSuccessListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentSnapshotTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.exists(result -> {
+            assertTrue(result.isSuccessful());
+            assertFalse(result.getData());
+        });
+
+        when(mDocumentSnapshot.exists()).thenReturn(false);
+        mDocumentSnapshotSuccessListenerCaptor.getValue().onSuccess(mDocumentSnapshot);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Exists_ReturnsAnExceptionIfFailure() {
+        when(mDocumentSnapshotTask.addOnSuccessListener(mDocumentSnapshotSuccessListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentSnapshotTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mDocumentSnapshotTask);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.exists(result -> {
+            assertFalse(result.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, result.getException());
+        });
+
+        mOnFailureListenerCaptor.getValue().onFailure(DUMMY_EXCEPTION);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Set_FailsWithNullFirstArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.set(null, result -> {});
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Set_FailsWithNullSecondArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.set(new Object(), null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Set_ReturnsNoExceptionIfSuccessful() {
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mDocumentReference.set(any())).thenReturn(mVoidTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.set(DUMMY_STRING, result -> {
+            assertTrue(result.isSuccessful());
+            assertNull(result.getData());
+        });
+
+        mVoidSuccessListenerCaptor.getValue().onSuccess(null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Set_ReturnsWithExceptionIfFailure() {
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mDocumentReference.set(any())).thenReturn(mVoidTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.set(DUMMY_STRING, result -> {
+            assertFalse(result.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, result.getException());
+        });
+
+        mOnFailureListenerCaptor.getValue().onFailure(DUMMY_EXCEPTION);
+    }
 }
