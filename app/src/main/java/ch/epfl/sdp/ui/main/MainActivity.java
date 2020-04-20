@@ -3,6 +3,7 @@ package ch.epfl.sdp.ui.main;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -66,6 +67,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int result: grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                finish();
+            }
+        }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_container, new SwipeFragment())
                 .commit();
