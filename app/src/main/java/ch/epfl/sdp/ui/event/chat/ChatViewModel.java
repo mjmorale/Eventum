@@ -48,7 +48,7 @@ public class ChatViewModel extends ViewModel {
     private final Database mDatabase;
     private final String mEventRef;
     private LiveData<List<ChatMessage>> mMessageLiveData;
-    private User mUser;
+    private UserInfo mUser;
 
     public ChatViewModel(@NonNull Database database, @NonNull String eventRef) {
         verifyNotNull(database, eventRef);
@@ -62,7 +62,7 @@ public class ChatViewModel extends ViewModel {
 
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
 
-        ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getName());
+        ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
         mMessageCollection.create(chatMessage, res -> {
             if(res.isSuccessful()) {
                 callback.onSuccess(res.getData());
