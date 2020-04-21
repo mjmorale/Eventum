@@ -102,7 +102,7 @@ public class CreateEventFragmentTest {
     private Activity mActivity;
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-//    @Rule // delete ? in manifest too !!!
+//    @Rule // need to add in manifest if used
 //    public GrantPermissionRule mPermissionWriteStorage =
 //            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -148,8 +148,6 @@ public class CreateEventFragmentTest {
         scenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();
         });
-
-        // addImageInStorage(); // keep here ???????????????????????
     }
 
     @After
@@ -192,49 +190,26 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
-//    @Test
-//    public void CreateEventFragment_CorrectIntentStoragePermissions() {
-//        clickAddImageButton();
-//
-//        intended(toPackage("com.google.android.permissioncontroller"));
-//
-//        mDevice.pressBack();
-//    }
-//
     @Test
     public void CreateEventFragment_CorrectIntentImageSelection() {
         clickAddImageButton();
 
         intended(hasAction("android.intent.action.PICK"));
-        //intended(toPackage("com.android.gallery"));
-        //intended(toPackage("com.google.android.apps.photos"));
 
         mDevice.pressBack();
     }
 
     @Test
     public void CreateEventFragment_CorrectImageSelection() throws IOException {
-        // addImageInStorage();
-//         clickAddImageButton();
 
         Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
-        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver() , Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image"));
 
         Intent intent = new Intent();
         intent.setData(uri);
         Instrumentation.ActivityResult result =
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
-        intending(toPackage("com.google.android.apps.photos")).respondWith(result);
+        intending(hasAction("android.intent.action.PICK")).respondWith(result);
         clickAddImageButton();
-
-        mDevice.pressBack(); // à enlever quand le package fonctionne !!!!!!!!!!!!!!!!!!!!
-
-
-
-//
-//        UiSelector selector = new UiSelector().text("Download");
-//        UiObject download = mDevice.findObject(selector);
-//        download.click();
 
 
     }
@@ -276,7 +251,7 @@ public class CreateEventFragmentTest {
                 click());
     }
 
-    private void addImageInStorage() {
+    private void addImageInStorage() { // delete if not used
         Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.add_image);
 //        File dir = mActivity.getExternalCacheDir();
 //        File file = new File(dir, "imageTest.jpeg");
@@ -290,7 +265,6 @@ public class CreateEventFragmentTest {
 //            e.printStackTrace();
 //        }
 
-
         MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), bitmap, "testImage" , "for testing");  // Saves the image.
 
 //        ContentValues values = new ContentValues();
@@ -298,7 +272,5 @@ public class CreateEventFragmentTest {
 //        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
 //        values.put(MediaStore.Images.Media.IS_PENDING, 1);
 //        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
-
-
     }
 }
