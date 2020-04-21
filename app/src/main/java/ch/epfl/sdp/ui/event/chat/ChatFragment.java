@@ -105,9 +105,6 @@ public class ChatFragment extends Fragment {
         }
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
-//            String toast = "no message";
-//            if (!messages.isEmpty()) toast = messages.get(messages.size() - 1).getText();
-//            Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
             mAdapter.setChatList(messages);
             mAdapter.notifyDataSetChanged();
         });
