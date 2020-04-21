@@ -130,7 +130,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         if (requestCode == CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
-                this.uploadImageInFirebase();
+                this.uploadImageInFirebaseAndDisplayIt();
 
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
@@ -138,7 +138,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void uploadImageInFirebase() {
+    private void uploadImageInFirebaseAndDisplayIt() {
         String imageUUID = UUID.randomUUID().toString();
         StorageReference reference = FirebaseStorage.getInstance().getReference(imageUUID);
         reference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

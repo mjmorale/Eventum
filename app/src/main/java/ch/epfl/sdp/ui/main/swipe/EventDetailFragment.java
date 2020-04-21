@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
 public class EventDetailFragment extends Fragment {
@@ -33,11 +34,9 @@ public class EventDetailFragment extends Fragment {
         mBinding.title.setText(mEvent.getTitle());
         mBinding.address.setText(mEvent.getAddress());
 
-        if (mEvent.getImageId() != null) {
-            Glide.with(getContext())
-                    .load(mEvent.getImageId())
-                    .into(mBinding.imageView);
-        }
+        String URL = mEvent.getImageId();
+        if (URL == null) URL = getResources().getString(R.string.defaultImageURL);
+        Glide.with(getContext()).load(URL).into(mBinding.imageView);
 
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
