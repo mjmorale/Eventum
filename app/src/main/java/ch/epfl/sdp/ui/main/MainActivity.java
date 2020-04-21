@@ -133,14 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding = null;
     }
 
-    public TextView getSeekBarValue() {
-        return mBinding.menuMainSearch.mSeekBarValue;
-    }
-
-    public SeekBar getSeekBarRange() {
-        return mBinding.menuMainSearch.mSeekBarRange;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
