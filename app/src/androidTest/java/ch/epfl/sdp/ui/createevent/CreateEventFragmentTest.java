@@ -216,8 +216,7 @@ public class CreateEventFragmentTest {
     public void CreateEventFragment_CorrectImageSelection() throws IOException {
         // addImageInStorage();
 //         clickAddImageButton();
-
-
+        
         Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
         //Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver() , Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image"));
 
