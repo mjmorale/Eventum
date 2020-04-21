@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,8 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import ch.epfl.sdp.R;
+import java.util.ArrayList;
+
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -31,6 +33,8 @@ public class ChatFragment extends Fragment {
     private final ChatViewModel.ChatViewModelFactory mFactory;
 
     private FragmentChatBinding mBinding;
+
+    private MessageListAdapter mAdapter;
 
     public static ChatFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
@@ -86,6 +90,26 @@ public class ChatFragment extends Fragment {
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(ChatViewModel.class);
+
+        mAdapter = new MessageListAdapter(new ArrayList<>(), "");
+        mBinding.reyclerviewMessageList.setAdapter(mAdapter);
+        mBinding.reyclerviewMessageList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter.setUid(mViewModel.getUserRef());
+
+
+        if(mViewModel.getMessages().hasObservers()) {
+            mViewModel.getMessages().removeObservers(getViewLifecycleOwner());
+        }
+
+        mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
+            String toast = "no message";
+            if (!messages.isEmpty()) toast = messages.get(messages.size() - 1).getText();
+            Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
+            mAdapter.setChatList(messages);
+            mAdapter.notifyDataSetChanged();
+        });
+
+
     }
 
     @Override
