@@ -19,6 +19,7 @@ public class EventTest {
     Date date = new Date(2020,11,10);
     LatLng location = new LatLng(100,100);
     String address = "Lausanne, Switzerland";
+    String imageId = "URL";
 
 
     @Test
@@ -30,11 +31,13 @@ public class EventTest {
                               .setDate(date)
                               .setAddress(address)
                               .setLocation(location)
+                              .setImageId(imageId)
                               .build();
 
         assertEquals(e.getTitle(), title);
         assertEquals(e.getDescription(), description);
         assertEquals(e.getDate(), date);
         assertEquals(e.getAddress(), address);
+        assertEquals(e.getImageId(), imageId);
     }
 }
