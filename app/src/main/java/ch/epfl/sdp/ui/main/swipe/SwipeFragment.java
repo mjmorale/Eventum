@@ -91,8 +91,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        SeekBar seekBarRange = ((MainActivity) getActivity()).getSeekBarRange();
-        seekBarRange.setOnSeekBarChangeListener(null);
         mBinding = null;
     }
 }
