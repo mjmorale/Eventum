@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui.main.map;
 
-import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,16 +15,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
-import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -43,15 +41,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
         mLocationService = GoogleLocationService.getInstance();
     }
 
     @VisibleForTesting
-    public MapFragment(@NonNull Database database, @NonNull MapManager mapManager, @NonNull LocationService locationService) {
-        verifyNotNull(database, mapManager);
+    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService) {
+        verifyNotNull(mapManager);
         mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setDatabase(database);
         mFactory.setMapManager(mapManager);
         mLocationService = locationService;
     }
@@ -78,7 +74,16 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             mFactory.setMapManager(new GoogleMapManager(googleMap));
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
-            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel); });
+            FilterSettingsViewModel filterSettingsViewModel =
+                    new ViewModelProvider(requireActivity()).get(FilterSettingsViewModel.class);
+
+            filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+                for(Event event: events)
+                    mViewModel.addEvent(event);
+            });
+
+            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+        });
 
         return mBinding.getRoot();
     }

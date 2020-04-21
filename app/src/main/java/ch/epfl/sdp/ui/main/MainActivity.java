@@ -4,12 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Filter;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,41 +20,45 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
-import com.afollestad.materialdialogs.list.DialogMultiChoiceExtKt;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
-import java.util.List;
-
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
-
-import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private ActivityMainBinding mBinding;
     private final static int PERMISSION_LOCATION = 0;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFilterSettingsFactory;
+
+    private ActivityMainBinding mBinding;
+    private FilterSettingsViewModel mFilterSettingsViewModel;
+    private LocationService mLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
+
         View view = mBinding.getRoot();
         setContentView(view);
-
         setSupportActionBar(mBinding.mainToolbar);
 
         mBinding.mainNavView.setNavigationItemSelectedListener(this);
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+        mLocationService = GoogleLocationService.getInstance();
 
         if (savedInstanceState == null) {
             ActivityCompat.requestPermissions(this, new String[] {
@@ -101,6 +106,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
                 break;
             case R.id.main_actionbar_search:
+                mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        mBinding.menuMainSearch.mSeekBarValue.setText(progress + "km");
+                        Location location = mLocationService.getLastKnownLocation(getApplicationContext());
+                        mFilterSettingsViewModel.setSettings(location, (double) progress);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
                 mBinding.menuMainSearch.show();
                 break;
         }

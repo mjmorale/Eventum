@@ -69,7 +69,7 @@ public class SwipeFragmentTest {
                 SwipeFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(SwipeFragment.class, mDatabase));
+                new MockFragmentFactory(SwipeFragment.class));
     }
 
     @Test
