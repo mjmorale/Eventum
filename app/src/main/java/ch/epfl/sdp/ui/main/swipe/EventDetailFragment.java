@@ -42,22 +42,6 @@ public class EventDetailFragment extends Fragment {
         Fragment thisFragment = this;
         mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mFragment).commit());
 
-        View rootView = mBinding.getRoot().getRootView();
-        SeekBar seekBarRange = rootView.findViewById(R.id.seekBar_range);
-
-        seekBarRange.setOnSeekBarChangeListener(null);
-        seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-            
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
         return mBinding.getRoot();
     }
 }

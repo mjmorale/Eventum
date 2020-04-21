@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Filter;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 
+import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
@@ -99,17 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
                 break;
             case R.id.main_actionbar_search:
-                String[] args = {"All","Party", "Sport", "AA", "Concert"};
-                List<String> list = Arrays.asList(args);
-
-                MaterialDialog dialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR());
-                dialog.title(null, "Event search");
-
-                View customView = mBinding.menuMainSearch.seekBar;
-                DialogCustomViewExtKt.customView(dialog, 0, customView, true, false, true, false);
-
-                dialog.positiveButton(null, "Done", null);
-                dialog.show();
+                mBinding.menuMainSearch.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -121,12 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding = null;
     }
 
-    public TextView getSeekBarValue(){
-        return mBinding.menuMainSearch.seekBarValue;
+    public TextView getSeekBarValue() {
+        return mBinding.menuMainSearch.mSeekBarValue;
     }
 
-    public SeekBar getSeekBarRange(){
-        return mBinding.menuMainSearch.seekBarRange;
+    public SeekBar getSeekBarRange() {
+        return mBinding.menuMainSearch.mSeekBarRange;
     }
 
     @Override

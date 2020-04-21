@@ -29,7 +29,7 @@
                 android:progress="5" />
         </TableRow>
 
-        <TextView
+<!--        <TextView
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="Which categories ? "
@@ -72,6 +72,6 @@
                 android:layout_height="wrap_content"
                 android:text="Concert" />
 
-        </RadioGroup>
+        </RadioGroup>-->
     </LinearLayout>
 </LinearLayout>

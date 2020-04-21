@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui.main.swipe;
 
-import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
-import ch.epfl.sdp.databinding.MenuMainSearchBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
@@ -90,7 +88,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         return mBinding.getRoot();
     }
 
-    @SuppressLint("CheckResult")
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -114,7 +111,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
                 Location location = mLocationService.getLastKnownLocation(getContext());
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                geoPoint = new GeoPoint(46.519799, 6.569343);       //just for test
 
                 mViewModel.getNewEvents(geoPoint, progress).observe(getViewLifecycleOwner(), events -> {
                     mArrayAdapter.clear();
