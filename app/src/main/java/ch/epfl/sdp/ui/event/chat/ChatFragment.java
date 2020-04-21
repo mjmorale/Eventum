@@ -18,7 +18,10 @@ import android.widget.Toast;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -102,9 +105,9 @@ public class ChatFragment extends Fragment {
         }
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
-            String toast = "no message";
-            if (!messages.isEmpty()) toast = messages.get(messages.size() - 1).getText();
-            Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
+//            String toast = "no message";
+//            if (!messages.isEmpty()) toast = messages.get(messages.size() - 1).getText();
+//            Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
             mAdapter.setChatList(messages);
             mAdapter.notifyDataSetChanged();
         });

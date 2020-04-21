@@ -24,8 +24,54 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private List<ChatMessage> mMessageList;
     private String mUid;
 
+    private  static class SentMessageHolder extends RecyclerView.ViewHolder {
+        TextView messageText, timeText;
+
+        SentMessageHolder(View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timeText = itemView.findViewById(R.id.text_message_time);
+        }
+
+        void bind(ChatMessage message) {
+            messageText.setText(message.getText());
+            timeText.setText(message.getDateStr());
+        }
+    }
+
+    private static class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+        TextView messageText, timeText, nameText;
+        //ImageView profileImage;
+
+        ReceivedMessageHolder(View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timeText = itemView.findViewById(R.id.text_message_time);
+            nameText = itemView.findViewById(R.id.text_message_name);
+            //profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
+        }
+
+        void bind(ChatMessage message) {
+            messageText.setText(message.getText());
+            timeText.setText(message.getDateStr());
+            nameText.setText(message.getName());
+
+            // Insert the profile image from the URL into the ImageView.
+            //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
+        }
+    }
+
+
     public MessageListAdapter(List<ChatMessage> messageList, String uid){
         mMessageList = messageList;
+        mUid = uid;
+    }
+
+    public void setChatList(List<ChatMessage> messages) {
+        mMessageList = messages;
+    }
+
+    public void setUid(String uid) {
         mUid = uid;
     }
 
@@ -58,13 +104,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview_message_sent, parent, false);
             return new SentMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+        } else  {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview_message_received, parent, false);
             return new ReceivedMessageHolder(view);
         }
-
-        return null;
     }
 
     // Passes the message object to a ViewHolder so that the contents can be bound to UI.
@@ -81,50 +125,4 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void setChatList(List<ChatMessage> messages) {
-        this.mMessageList = messages;
-    }
-
-    public void setUid(String uid) {
-        this.mUid = uid;
-    }
-
-    private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
-
-        SentMessageHolder(View itemView) {
-            super(itemView);
-
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-        }
-
-        void bind(ChatMessage message) {
-            messageText.setText(message.getText());
-            timeText.setText(message.getDateStr());
-        }
-    }
-
-    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
-        //ImageView profileImage;
-
-        ReceivedMessageHolder(View itemView) {
-            super(itemView);
-
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-            nameText = (TextView) itemView.findViewById(R.id.text_message_name);
-            //profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
-        }
-
-        void bind(ChatMessage message) {
-            messageText.setText(message.getText());
-            timeText.setText(message.getDateStr());
-            nameText.setText(message.getName());
-
-            // Insert the profile image from the URL into the ImageView.
-            //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
-        }
-    }
 }
