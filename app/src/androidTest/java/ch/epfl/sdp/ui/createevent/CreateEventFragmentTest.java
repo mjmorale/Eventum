@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -66,6 +68,7 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
@@ -74,6 +77,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
@@ -197,14 +201,16 @@ public class CreateEventFragmentTest {
 //        mDevice.pressBack();
 //    }
 //
-//    @Test
-//    public void CreateEventFragment_CorrectIntentImageSelection() {
-//        clickAddImageButton();
-//
-//        intended(toPackage("com.google.android.apps.photos"));
-//
-//        mDevice.pressBack();
-//    }
+    @Test
+    public void CreateEventFragment_CorrectIntentImageSelection() {
+        clickAddImageButton();
+
+        intended(hasAction("android.intent.action.PICK"));
+        //intended(toPackage("com.android.gallery"));
+        //intended(toPackage("com.google.android.apps.photos"));
+
+        mDevice.pressBack();
+    }
 
     @Test
     public void CreateEventFragment_CorrectImageSelection() throws IOException {
@@ -222,7 +228,7 @@ public class CreateEventFragmentTest {
         intending(toPackage("com.google.android.apps.photos")).respondWith(result);
         clickAddImageButton();
 
-        mDevice.pressBack();
+        mDevice.pressBack(); // à enlever quand le package fonctionne !!!!!!!!!!!!!!!!!!!!
 
 
 
