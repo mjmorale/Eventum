@@ -1,8 +1,5 @@
 package ch.epfl.sdp.ui.event;
 
-
-
-
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -16,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -28,7 +24,6 @@ import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-
 public class DefaultEventFragment extends Fragment{
 
     private DefaultEventViewModel mViewModel;
@@ -38,6 +33,7 @@ public class DefaultEventFragment extends Fragment{
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
+
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
 

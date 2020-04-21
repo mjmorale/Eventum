@@ -1,31 +1,17 @@
 package ch.epfl.sdp.ui.createevent;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventViewModel extends ViewModel {
 
-    static class CreateEventViewModelFactory extends ParameterizedViewModelFactory {
-
-        CreateEventViewModelFactory() {
-            super(Database.class);
-        }
-
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-    }
+    static class CreateEventViewModelFactory extends DatabaseViewModelFactory { }
 
     interface OnEventCreatedCallback {
         void onSuccess(String eventRef);
