@@ -147,10 +147,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                 while (!urlTask.isSuccessful());
                 mImageId = urlTask.getResult().toString();
-
-                Glide.with(getContext())
-                        .load(mImageId)
-                        .into(mBinding.imageView);
+                Glide.with(getContext()).load(mImageId).into(mBinding.imageView);
             }
         });
     }

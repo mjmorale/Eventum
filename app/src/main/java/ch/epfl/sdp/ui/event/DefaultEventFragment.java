@@ -84,11 +84,7 @@ public class DefaultEventFragment extends Fragment{
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            if (event.getImageId() != null) {
-                Glide.with(getContext())
-                        .load(event.getImageId())
-                        .into(mBinding.imageView);
-            }
+            if (event.getImageId() != null) Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
         });
     }
 

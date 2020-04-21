@@ -200,7 +200,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_CorrectImageSelection() throws IOException {
+    public void CreateEventFragment_CorrectImageSelection() {
 
         Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
 
