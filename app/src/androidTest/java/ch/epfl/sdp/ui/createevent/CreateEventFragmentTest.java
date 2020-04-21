@@ -201,9 +201,7 @@ public class CreateEventFragmentTest {
 
     @Test
     public void CreateEventFragment_CorrectImageSelection() {
-
         Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
-
         Intent intent = new Intent();
         intent.setData(uri);
         Instrumentation.ActivityResult result =
@@ -211,7 +209,7 @@ public class CreateEventFragmentTest {
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         clickAddImageButton();
 
-
+        // test something
     }
 
     private void doCorrectInput() {
