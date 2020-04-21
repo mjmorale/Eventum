@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:maxLines="6"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:importantForAutofill="no" />
 
         <Button
