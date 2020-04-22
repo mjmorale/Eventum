@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.map.MapManager;
@@ -44,6 +46,9 @@ public class MapViewModel extends ViewModel {
     }
 
     public void clearEvents() {
+        List<Marker> markers = Collections.list(mEventsMarkers.keys());
+        for (Marker marker : markers )
+            marker.remove();
         mEventsMarkers = new Hashtable<>();
     }
 
