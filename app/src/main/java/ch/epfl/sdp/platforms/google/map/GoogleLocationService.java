@@ -43,7 +43,10 @@ public final class GoogleLocationService implements LocationService {
         if ( fineLocation != PackageManager.PERMISSION_GRANTED || coarseLocation != PackageManager.PERMISSION_GRANTED) {
             throw new IllegalStateException("Insufficient permissions.");
         }
-        return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location == null)
+            return new Location("Default");
+        return location;
     }
 
     @Override
