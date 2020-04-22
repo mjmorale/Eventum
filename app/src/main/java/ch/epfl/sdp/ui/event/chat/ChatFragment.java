@@ -54,7 +54,6 @@ public class ChatFragment extends Fragment {
 
     @VisibleForTesting
     public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull  FirebaseAuthenticator firebaseAuthenticator) {
-        verifyNotNull(database, eventRef);
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);

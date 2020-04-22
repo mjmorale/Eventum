@@ -82,7 +82,7 @@ public class DefaultEventFragment extends Fragment{
             mBinding.address.setText(event.getAddress());
         });
         mBinding.chatButton.setOnClickListener(v->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).commitNow();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).commit();
         });
     }
 

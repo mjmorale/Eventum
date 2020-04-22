@@ -1,5 +1,7 @@
 package ch.epfl.sdp;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 
 
@@ -7,13 +9,16 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+/**
+ * Represents a message from the chat
+ */
 public class ChatMessage {
     private final String mText;
     private final Date mDate;
     private final String mUserId;
     private final String mName;
 
+    @SuppressLint("SimpleDateFormat")
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public ChatMessage(@NonNull String text,
@@ -29,26 +34,51 @@ public class ChatMessage {
         mName = name;
     }
 
+    /**
+     * Formats the date using the specified formatter
+     * @param date a Date object containing the date at which the message was sent
+     * @return a String representation of the date
+     */
     static public String formatDate(Date date) {
         return mFormatter.format(date);
     }
 
+    /**
+     * Gives the text content of the message
+     * @return the text content of the message
+     */
     public String getText() {
         return mText;
     }
 
+    /**
+     * Gives the date at which the message has been sent
+     * @return a Date object of the time at which the message was sent
+     */
     public Date getDate() {
         return mDate;
     }
 
+    /**
+     * Gives the date as a string
+     * @return string representation of the time at which the message was sent
+     */
     public String getDateStr() {
         return formatDate(mDate);
     }
 
+    /**
+     * Gives the user id of the message sender
+     * @return uid of the message sender
+     */
     public String getUid() {
         return mUserId;
     }
 
+    /**
+     * Gives the username of the message sender at the time the message was sent
+     * @return username of the message sender
+     */
     public String getName() {
         return mName;
     }
