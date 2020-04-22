@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    ext.kotlin_version = '1.3.30'
     defaultConfig {
         applicationId "ch.epfl.sdp"
         minSdkVersion 21
@@ -63,6 +66,7 @@ dependencies {
     implementation 'com.lorentzos.swipecards:library:1.0.9'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Unit test dependencies
     testImplementation 'junit:junit:4.12'
