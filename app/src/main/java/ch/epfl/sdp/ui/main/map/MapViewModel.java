@@ -14,6 +14,7 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.map.MapManager;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -33,7 +34,6 @@ public class MapViewModel extends ViewModel {
     private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();
 
     public MapViewModel(@NonNull MapManager<Marker> mapManager) {
-        verifyNotNull(mapManager);
         mMapManager = mapManager;
     }
 

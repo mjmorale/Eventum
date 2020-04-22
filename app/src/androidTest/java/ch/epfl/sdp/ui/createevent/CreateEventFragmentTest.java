@@ -31,6 +31,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -52,6 +53,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateEventFragmentTest {
+
     private static final Event mMockEvent = MockEvents.getNextEvent();
     private static final String DATE = mMockEvent.getDateStr();
     private static final String TITLE = mMockEvent.getTitle();
@@ -107,7 +109,7 @@ public class CreateEventFragmentTest {
     public void CreateEventFragment_IncorrectInput() {
         onView(withHint(is("Title"))).perform(
                 clearText(),
-                typeText(EMPTY),
+                replaceText(EMPTY),
                 closeSoftKeyboard());
 
         clickCreateButton();
@@ -120,11 +122,11 @@ public class CreateEventFragmentTest {
 
     private void doCorrectInput() {
         onView(withId(R.id.title)).perform(
-                typeText(TITLE),
+                replaceText(TITLE),
                 closeSoftKeyboard());
 
         onView(withId(R.id.description)).perform(
-                typeText(DESCRIPTION),
+                replaceText(DESCRIPTION),
                 closeSoftKeyboard());
 
         onView(withId(R.id.date)).perform(

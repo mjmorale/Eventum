@@ -3,13 +3,16 @@ package ch.epfl.sdp.ui.main;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,8 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.ui.event.EventActivity;
@@ -43,30 +48,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ActivityMainBinding mBinding;
     private FilterSettingsViewModel mFilterSettingsViewModel;
+    private MainViewModel mViewModel;
+    private final MainViewModel.MainViewModelFactory mFactory;
+
+    private View mMainNavHeaderView;
+
+    public MainActivity() {
+        mFactory = new MainViewModel.MainViewModelFactory();
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 
-        GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+        LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
         mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        mFilterSettingsFactory.setLocationService(GoogleLocationService.getInstance());
+        mFilterSettingsFactory.setLocationService(locationService);
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
 
         View view = mBinding.getRoot();
         setContentView(view);
         setSupportActionBar(mBinding.mainToolbar);
 
-        mBinding.mainNavView.setNavigationItemSelectedListener(this);
-        mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout).setOnClickListener(this);
+        setupToolbarNavigation();
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
-                R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
-        mBinding.mainDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        // Build the view model
+        mFactory.setUserRef(getUserRefFromIntent(getIntent()));
+        mViewModel = new ViewModelProvider(this, mFactory).get(MainViewModel.class);
+        mViewModel.getUser().observe(this, user -> {
+            if (user != null) {
+                TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
+                TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
+
+                username.setText(user.getName());
+                email.setText(user.getEmail());
+            }
+        });
 
         addFilterSettingsListener();
 
@@ -100,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.main_actionbar_add:
-                Intent intent = new Intent(this, CreateEventActivity.class);
+                Intent intent = getUserRefIntent(CreateEventActivity.class);
+
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
                 break;
             case R.id.main_actionbar_search:
@@ -123,9 +145,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(requestCode == UIConstants.RC_CREATE_EVENT) {
             if(resultCode == RESULT_OK) {
                 String eventRef = data.getStringExtra(UIConstants.BUNDLE_EVENT_REF);
-                Intent eventIntent = new Intent(this, EventActivity.class);
+                Intent eventIntent = getUserRefIntent(EventActivity.class);
                 eventIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER);
                 eventIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
+
                 startActivity(eventIntent);
             }
             else {
@@ -150,7 +173,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(mBinding.mainContainer.getId(), new AttendingListFragment()).commit();
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = getUserRefIntent(SettingsActivity.class);
+
                 startActivity(intent);
                 break;
         }
@@ -174,7 +198,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.main_nav_header_layout:
-                Intent intent = new Intent(this, UserActivity.class);
+                Intent intent = getUserRefIntent(UserActivity.class);
+
                 startActivity(intent);
                 break;
         }
@@ -189,10 +214,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
+    }
+
+    private void setupToolbarNavigation() {
+        setSupportActionBar(mBinding.mainToolbar);
+
+        mBinding.mainNavView.setNavigationItemSelectedListener(this);
+        mMainNavHeaderView = mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout);
+        mMainNavHeaderView.setOnClickListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
+                R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
+        mBinding.mainDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private String getUserRefFromIntent(Intent intent) {
+        // Preferences are used to store the user reference to persistent storage
+        // to handle the situation where the activity is destroyed and need to be
+        // rebuilt.
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+
+        String userRef;
+        if(intent.hasExtra(UIConstants.BUNDLE_USER_REF)) {
+            // Load the user reference from the intent if possible
+            userRef = intent.getStringExtra(UIConstants.BUNDLE_USER_REF);
+            // Update the content of the persistent storage
+            preferences.edit().putString(UIConstants.BUNDLE_USER_REF, userRef).apply();
+        }
+        else {
+            // If the intent is empty, then load from persistent storage
+            userRef = preferences.getString(UIConstants.BUNDLE_USER_REF, null);
+        }
+
+        return userRef;
+    }
+
+    private Intent getUserRefIntent(Class<?> activityClass) {
+        Intent intent = new Intent(this, activityClass);
+        intent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
+
+        return intent;
     }
 }

@@ -1,6 +1,7 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,6 @@ import com.google.android.gms.maps.model.Marker;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
-import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
@@ -43,17 +43,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
-        mLocationService = GoogleLocationService.getInstance();
     }
 
     @VisibleForTesting
-    public MapFragment(@NonNull Database database, @NonNull MapManager mapManager, @NonNull LocationService locationService) {
+    public MapFragment(@NonNull MapManager mapManager) {
         verifyNotNull(mapManager);
         mFactory = new MapViewModel.MapViewModelFactory();
         mFactory.setMapManager(mapManager);
         mFactorySettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFactorySettings.setDatabase(database);
-        mLocationService = locationService;
     }
 
     @Override
@@ -63,6 +60,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
+        mLocationService = new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
         mLastKnownLocation = mLocationService.getLastKnownLocation(getContext());
 
         mMapView.getMapAsync(googleMap -> {
