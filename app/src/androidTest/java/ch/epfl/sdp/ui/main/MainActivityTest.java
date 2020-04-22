@@ -272,6 +272,8 @@ public class MainActivityTest {
 
     @Test
     public void MainActivity_FilterSettingsShowCorrectValues() {
+        launchDefaultActivity(DUMMY_USERREF);
+
         onView(withId(R.id.main_actionbar_search))
                 .perform(click());
 
