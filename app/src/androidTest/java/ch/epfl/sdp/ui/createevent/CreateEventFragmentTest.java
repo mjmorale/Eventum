@@ -2,52 +2,27 @@ package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.lifecycle.MutableLiveData;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
@@ -56,28 +31,25 @@ import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.pressBack;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static com.facebook.FacebookSdk.getApplicationContext;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
@@ -102,15 +74,11 @@ public class CreateEventFragmentTest {
     private Activity mActivity;
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-//    @Rule // need to add in manifest if used
-//    public GrantPermissionRule mPermissionWriteStorage =
-//            GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
     @Rule
     public GrantPermissionRule mPermissionReadStorage =
             GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
-    @Rule // delete if intents tests deleted
+    @Rule
     public ActivityTestRule<CreateEventActivity> mIntentsTestRule =
             new ActivityTestRule<>(CreateEventActivity.class);
 
@@ -123,7 +91,7 @@ public class CreateEventFragmentTest {
     @Before
     public void setup() {
 
-        Intents.init(); // delete if intents tests deleted
+        Intents.init();
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
@@ -209,7 +177,7 @@ public class CreateEventFragmentTest {
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         clickAddImageButton();
 
-        // test something
+        onView(withId(R.id.imageView)).check(matches(withTagValue(is((Object) "new_image"))));
     }
 
     private void doCorrectInput() {
@@ -247,28 +215,5 @@ public class CreateEventFragmentTest {
         onView(withId(R.id.addImageButton)).perform(
                 scrollTo(),
                 click());
-    }
-
-    private void addImageInStorage() { // delete if not used
-        Bitmap bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.add_image);
-//        File dir = mActivity.getExternalCacheDir();
-//        File file = new File(dir, "imageTest.jpeg");
-//        try {
-//            FileOutputStream out = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-//            out.flush();
-//            out.close();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), bitmap, "testImage" , "for testing");  // Saves the image.
-
-//        ContentValues values = new ContentValues();
-//        values.put(MediaStore.Images.Media.DISPLAY_NAME, "testImage");
-//        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-//        values.put(MediaStore.Images.Media.IS_PENDING, 1);
-//        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
     }
 }

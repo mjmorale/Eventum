@@ -80,16 +80,18 @@ public class DefaultEventFragment extends Fragment{
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
+        String defaultURL = getResources().getString(R.string.defaultImageURL);
+
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            String defaultURL = getResources().getString(R.string.defaultImageURL);
             String URL = event.getImageId();
             if (URL == null) URL = defaultURL;
             Glide.with(getContext()).load(URL).into(mBinding.imageView);
         });
+
     }
 
     @Override

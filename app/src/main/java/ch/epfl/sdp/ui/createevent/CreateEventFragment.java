@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -130,15 +131,22 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         if (requestCode == CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
-                this.uploadImageInFirebaseAndDisplayIt();
-
+                displayImage();
+                uploadImageInFirebase();
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void uploadImageInFirebaseAndDisplayIt() {
+    private void displayImage() {
+        Glide.with(this)
+                .load(this.mImageUri)
+                .into(this.mBinding.imageView);
+        mBinding.imageView.setTag("new_image");
+    }
+
+    private void uploadImageInFirebase() {
         String imageUUID = UUID.randomUUID().toString();
         StorageReference reference = FirebaseStorage.getInstance().getReference(imageUUID);
         reference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -147,7 +155,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                 while (!urlTask.isSuccessful());
                 mImageId = urlTask.getResult().toString();
-                Glide.with(getContext()).load(mImageId).into(mBinding.imageView);
             }
         });
     }
