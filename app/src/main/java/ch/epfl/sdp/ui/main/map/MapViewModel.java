@@ -15,22 +15,19 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class MapViewModel extends ViewModel {
 
-    static class MapViewModelFactory extends ParameterizedViewModelFactory {
+    static class MapViewModelFactory extends DatabaseViewModelFactory {
         MapViewModelFactory() {
-            super(Database.class, MapManager.class);
+            super(MapManager.class);
         }
 
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
-
-        void setMapManager(@NonNull MapManager mapManager ){
-            setValue(1,verifyNotNull(mapManager));
+        void setMapManager(@NonNull MapManager mapManager) {
+            setValue(0, verifyNotNull(mapManager));
         }
     }
 
@@ -39,9 +36,7 @@ public class MapViewModel extends ViewModel {
     private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();;
     private final Observer<List<Event>> mEventObserver;
 
-    public MapViewModel(@NonNull Database database, @NonNull MapManager<Marker> mapManager) {
-        verifyNotNull(database);
-        verifyNotNull(mapManager);
+    public MapViewModel(MapManager mapManager, Database database) {
         mMapManager = mapManager;
 
         mEventsLive = database.query("events").liveData(Event.class);

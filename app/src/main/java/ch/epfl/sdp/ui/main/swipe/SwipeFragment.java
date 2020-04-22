@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.lorentzos.flingswipe.FlingCardListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;

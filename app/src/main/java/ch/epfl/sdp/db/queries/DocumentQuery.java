@@ -15,6 +15,8 @@ public interface DocumentQuery extends Query {
 
     <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback);
 
+    void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback);
+
     <T> LiveData<T> livedata(@NonNull Class<T> type);
 
     void delete(@NonNull OnQueryCompleteCallback<Void> callback);

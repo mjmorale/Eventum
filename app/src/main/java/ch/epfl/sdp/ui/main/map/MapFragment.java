@@ -24,6 +24,7 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -41,11 +42,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     public MapFragment() {
         mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @VisibleForTesting
-    public MapFragment(@NonNull Database database, @NonNull MapManager mapManager) {
+    public MapFragment(@NonNull MapManager mapManager, @NonNull Database database) {
         verifyNotNull(database);
         verifyNotNull(mapManager);
         mFactory = new MapViewModel.MapViewModelFactory();
