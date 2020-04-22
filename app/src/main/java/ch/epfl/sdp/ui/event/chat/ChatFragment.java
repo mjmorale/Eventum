@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,6 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import ch.epfl.sdp.ChatMessage;
-import ch.epfl.sdp.ObjectUtils;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
@@ -75,11 +67,17 @@ public class ChatFragment extends Fragment {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
 
         mBinding.buttonChatboxSend.setOnClickListener(v->{
-           Editable text = mBinding.edittextChatbox.getText();
-            if(text.toString().length()>0){
-                mViewModel.addMessage(text.toString());
-                text.clear();
-            }
+            trySendMessage(new ChatViewModel.OnMessageAddedCallback() {
+                @Override
+                public void onSuccess(String messageRef) {
+
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Toast.makeText(getContext(), "Couldn't send message", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         return mBinding.getRoot();
@@ -112,6 +110,18 @@ public class ChatFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
+    }
+
+    private void trySendMessage(@NonNull ChatViewModel.OnMessageAddedCallback callback) {
+
+        String message = mBinding.edittextChatbox.getText().toString();
+        if(!message.isEmpty()){
+            mBinding.edittextChatbox.getText().clear();
+
+            //to database
+            mViewModel.addMessage(message, callback);
+        }
+
     }
 
 }

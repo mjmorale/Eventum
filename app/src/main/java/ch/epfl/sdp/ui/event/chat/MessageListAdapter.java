@@ -8,9 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
@@ -23,17 +21,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private List<ChatMessage> mMessageList;
     private String mUid;
-
-
-    public MessageListAdapter(String uid){
-        mUid = uid;
-        mMessageList = new ArrayList<>();
-    }
-
-    public void setChatList(List<ChatMessage> messages) {
-        mMessageList = messages;
-    }
-
 
     private  static class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
@@ -73,6 +60,18 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
 
+    public MessageListAdapter(@NonNull String uid){
+        mMessageList = new ArrayList<>();
+        mUid = uid;
+    }
+
+    public void setChatList(@NonNull List<ChatMessage> messages) {
+        mMessageList = messages;
+    }
+
+    public void setUid(@NonNull String uid) {
+        mUid = uid;
+    }
 
     @Override
     public int getItemCount() {
@@ -96,8 +95,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     // Inflates the appropriate layout according to the ViewType.
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
 
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {

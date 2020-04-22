@@ -37,7 +37,14 @@ public class ChatViewModel extends ViewModel {
             setValue(1, verifyNotNull(eventRef));
         }
 
-        void setFirebaseAuthenticator(@NonNull FirebaseAuthenticator firebaseAuthenticator){setValue(2,verifyNotNull(firebaseAuthenticator));}
+        void setFirebaseAuthenticator(@NonNull FirebaseAuthenticator firebaseAuthenticator){
+            setValue(2, verifyNotNull(firebaseAuthenticator));
+        }
+    }
+
+    interface OnMessageAddedCallback {
+        void onSuccess(String messageRef);
+        void onFailure(Exception exception);
     }
 
     private final Database mDatabase;
@@ -57,9 +64,16 @@ public class ChatViewModel extends ViewModel {
 
     }
 
-    public void addMessage(@NonNull String message) {
-        ChatMessage chatMessage = new ChatMessage(message, new Date(), getUser().getUid(), getUser().getDisplayName());
-        getMessageCollection().create(chatMessage, res -> { });
+    public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
+
+        ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
+        getMessageCollection().create(chatMessage, res -> {
+            if(res.isSuccessful()) {
+                callback.onSuccess(res.getData());
+            } else {
+                callback.onFailure(res.getException());
+            }
+        });
     }
 
     public String getUserRef() {
