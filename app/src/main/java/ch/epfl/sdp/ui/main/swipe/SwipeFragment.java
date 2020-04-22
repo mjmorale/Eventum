@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +20,6 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
-import ch.epfl.sdp.ui.main.MainActivity;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
@@ -61,12 +59,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
-        return mBinding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
         mEventList = new ArrayList<>();
         mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
@@ -86,6 +78,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
+
+        return mBinding.getRoot();
     }
 
     @Override
