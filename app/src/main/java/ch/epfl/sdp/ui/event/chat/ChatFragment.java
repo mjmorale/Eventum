@@ -35,6 +35,7 @@ public class ChatFragment extends Fragment {
     private FragmentChatBinding mBinding;
     private MessageListAdapter mAdapter;
     private String  mEventRef;
+
     public static ChatFragment getInstance(@NonNull String eventRef) {
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF,  verifyNotNull(eventRef));
@@ -47,7 +48,7 @@ public class ChatFragment extends Fragment {
     public ChatFragment() {
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        mFactory.setFirebaseAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
+        mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
 
     }
 
@@ -57,7 +58,7 @@ public class ChatFragment extends Fragment {
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
-        mFactory.setFirebaseAuthenticator(firebaseAuthenticator);
+        mFactory.setAuthenticator(firebaseAuthenticator);
         mEventRef = eventRef;
     }
 

@@ -3,7 +3,7 @@ package ch.epfl.sdp;
 import androidx.annotation.NonNull;
 
 
-import java.text.ParseException;
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +11,7 @@ import java.util.Date;
 public class ChatMessage {
     private final String mText;
     private final Date mDate;
-    private final String mUid;
+    private final String mUserId;
     private final String mName;
 
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -20,9 +20,12 @@ public class ChatMessage {
                        @NonNull Date date,
                        @NonNull String uid,
                        @NonNull String name) {
+
+        verifyNotNull(text, date, uid, name);
+
         mText = text;
         mDate = date;
-        mUid = uid;
+        mUserId = uid;
         mName = name;
     }
 
@@ -43,7 +46,7 @@ public class ChatMessage {
     }
 
     public String getUid() {
-        return mUid;
+        return mUserId;
     }
 
     public String getName() {
