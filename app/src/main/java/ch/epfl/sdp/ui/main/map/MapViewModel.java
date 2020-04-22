@@ -36,7 +36,7 @@ public class MapViewModel extends ViewModel {
     private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();;
     private final Observer<List<Event>> mEventObserver;
 
-    public MapViewModel(Database database, MapManager<Marker> mapManager) {
+    public MapViewModel(MapManager mapManager, Database database) {
         mMapManager = mapManager;
 
         mEventsLive = database.query("events").liveData(Event.class);

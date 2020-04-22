@@ -1,29 +1,64 @@
 package ch.epfl.sdp.ui.settings;
 
+import android.content.Intent;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-import ch.epfl.sdp.utils.TestUtils;
+import ch.epfl.sdp.User;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.ui.ServiceProvider;
+import ch.epfl.sdp.ui.UIConstants;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SettingsActivityTest {
 
+    private final static String DUMMY_USERREF = "dsflkgjhq3p4o5iuh";
+
+    @Mock
+    private Database mDatabase;
+
+    @Mock
+    private CollectionQuery mCollectionQuery;
+
+    @Mock
+    private DocumentQuery mDocumentQuery;
+
+    private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
+
     @Rule
-    public ActivityTestRule<SettingsActivity> mActivity = new ActivityTestRule<>(SettingsActivity.class);
+    public ActivityTestRule<SettingsActivity> mActivity = new ActivityTestRule<>(SettingsActivity.class, false, false);
 
     @Before
     public void setup() {
-        TestUtils.dismissSystemPopups(mActivity.getActivity());
+        MockitoAnnotations.initMocks(this);
+
+        Intent intent = new Intent();
+        intent.putExtra(UIConstants.BUNDLE_USER_REF, DUMMY_USERREF);
+
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
+        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        ServiceProvider.getInstance().setDatabase(mDatabase);
+
+        mActivity.launchActivity(intent);
     }
 
     @Test
