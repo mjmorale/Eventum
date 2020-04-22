@@ -26,7 +26,7 @@ public class ChatViewModel extends ViewModel {
     static class ChatViewModelFactory extends ParameterizedViewModelFactory {
 
         ChatViewModelFactory() {
-            super(Database.class, String.class);
+            super(Database.class, String.class, FirebaseAuthenticator.class);
         }
 
         void setDatabase(@NonNull Database database) {
@@ -36,56 +36,58 @@ public class ChatViewModel extends ViewModel {
         void setEventRef(@NonNull String eventRef) {
             setValue(1, verifyNotNull(eventRef));
         }
+
+        void setFirebaseAuthenticator(@NonNull FirebaseAuthenticator firebaseAuthenticator){setValue(2,verifyNotNull(firebaseAuthenticator));}
     }
 
-    interface OnMessageAddedCallback {
-        void onSuccess(String messageRef);
-        void onFailure(Exception exception);
-    }
-
-    private final CollectionQuery mMessageCollection;
-    private final FilterQuery mOrderedMessagesQuery;
     private final Database mDatabase;
     private final String mEventRef;
+
+    private  CollectionQuery mMessageCollection;
+    private  FilterQuery mOrderedMessagesQuery;
     private LiveData<List<ChatMessage>> mMessageLiveData;
     private UserInfo mUser;
+    private FirebaseAuthenticator mFirebaseAuthenticator;
 
-    public ChatViewModel(@NonNull Database database, @NonNull String eventRef) {
-        verifyNotNull(database, eventRef);
+    public ChatViewModel(@NonNull Database database, @NonNull String eventRef, FirebaseAuthenticator firebaseAuthenticator) {
+        verifyNotNull(database, eventRef, firebaseAuthenticator);
         mDatabase = database;
         mEventRef = eventRef;
-        mMessageCollection = mDatabase.query("events").document(mEventRef).collection("messages");
-        mOrderedMessagesQuery = mMessageCollection.orderBy("date");
+        mFirebaseAuthenticator = firebaseAuthenticator;
 
-        mUser = new FirebaseAuthenticator(FirebaseAuth.getInstance()).getCurrentUser();
     }
 
-    public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
-
-        ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
-        mMessageCollection.create(chatMessage, res -> {
-            if(res.isSuccessful()) {
-                callback.onSuccess(res.getData());
-            } else {
-                callback.onFailure(res.getException());
-            }
-        });
-    }
-
-    public String getEventRef(){
-        return mEventRef;
+    public void addMessage(@NonNull String message) {
+        ChatMessage chatMessage = new ChatMessage(message, new Date(), getUser().getUid(), getUser().getDisplayName());
+        getMessageCollection().create(chatMessage, res -> { });
     }
 
     public String getUserRef() {
-        return mUser.getUid();
+        return getUser().getUid();
     }
 
     public LiveData<List<ChatMessage>> getMessages() {
-        if (mMessageLiveData == null) {
-           mMessageLiveData = mOrderedMessagesQuery.livedata(ChatMessage.class);
-        }
-        return mMessageLiveData;
+        if (mMessageLiveData == null)
+           mMessageLiveData = getOrderedMessagesQuery().livedata(ChatMessage.class);
 
+        return mMessageLiveData;
     }
 
+    private CollectionQuery getMessageCollection(){
+        if(mMessageCollection==null)
+            mMessageCollection = mDatabase.query("events").document(mEventRef).collection("messages");
+        return  mMessageCollection;
+    }
+
+    private FilterQuery getOrderedMessagesQuery() {
+        if(mOrderedMessagesQuery==null)
+            mOrderedMessagesQuery = getMessageCollection().orderBy("date");
+        return mOrderedMessagesQuery;
+    }
+
+    private UserInfo getUser(){
+        if(mUser ==null)
+            mUser = mFirebaseAuthenticator.getCurrentUser();
+        return  mUser;
+    }
 }
