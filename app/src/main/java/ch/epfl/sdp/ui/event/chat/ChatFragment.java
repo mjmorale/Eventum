@@ -44,9 +44,8 @@ public class ChatFragment extends Fragment {
     private MessageListAdapter mAdapter;
     private String  mEventRef;
     public static ChatFragment getInstance(@NonNull String eventRef) {
-        verifyNotNull(eventRef);
         Bundle bundle = new Bundle();
-        bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF,  verifyNotNull(eventRef));
 
         ChatFragment fragment = new ChatFragment();
         fragment.setArguments(bundle);
