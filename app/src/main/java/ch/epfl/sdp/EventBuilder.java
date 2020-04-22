@@ -11,7 +11,8 @@ public class EventBuilder {
     private Date mDate;
     private String mAddress = "Lausanne, Switzerland";
     private LatLng mLocation = new LatLng(10, 10);
-    private String mImageId;
+    private String mImageId = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
+            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
 
     public Event build() {
         ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId);

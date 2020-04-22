@@ -61,7 +61,7 @@ public class DefaultEventFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
 
-        mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), new SwipeFragment()).commit());
+//        mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), new SwipeFragment()).commit());
 
         return mBinding.getRoot();
    }

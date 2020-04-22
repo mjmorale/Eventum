@@ -10,4 +10,5 @@ public class UIConstants {
     // Return codes for activity results
     public static final int RC_CREATE_EVENT = 8001;
     public static final int RC_GOOGLE_SIGNIN = 9001;
+    public static final int RC_CHOOSE_PHOTO = 200;
 }

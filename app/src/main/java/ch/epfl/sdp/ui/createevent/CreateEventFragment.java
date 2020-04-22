@@ -39,6 +39,7 @@ import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private FragmentCreateEventBinding mBinding;
@@ -49,7 +50,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private LatLng mSelectedLocation;
 
     private static final int PERMISSION_STORAGE = 100;
-    private static final int CHOOSE_PHOTO = 200;
     private Uri mImageUri;
     private String mImageId = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
             "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
@@ -121,7 +121,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
         if (hasPermission) {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, CHOOSE_PHOTO);
+            startActivityForResult(intent, RC_CHOOSE_PHOTO);
 
         } else {
             Toast.makeText(getContext(), R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
@@ -129,7 +129,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == CHOOSE_PHOTO) {
+        if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
                 displayImage();

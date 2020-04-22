@@ -124,6 +124,7 @@ public class FirebaseGeoQuery {
                     this.put("date", new Timestamp(20, 20));
                     this.put("address", "Chemin");
                     this.put("location", new GeoPoint(64, 65));
+                    this.put("imageId", "URL");
                 }}
         );
         ArrayList mDocuments = new ArrayList(){{this.add(mDocumentSnapshot); }};

@@ -20,6 +20,7 @@ public class EventDatabaseObjectBuilderTest {
         Event event = eventBuilder.setTitle("Real Fake Party")
                 .setDescription("This is really happening")
                 .setDate(new Date(2020, 11, 10))
+                .setImageId("URL")
                 .build();
 
         Map<String, Object> data =
