@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.sharing;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +10,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import ch.epfl.sdp.auth.Authenticator;
 import java.util.Arrays;
-import ch.epfl.sdp.R;
-import ch.epfl.sdp.auth.UserInfo;
-import ch.epfl.sdp.mocks.MockFragmentFactory;
-import ch.epfl.sdp.ui.auth.AuthFragment;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SharingTest {
@@ -30,9 +26,7 @@ public class SharingTest {
 
     @SuppressWarnings("unchecked")
     @Test
-
-    public void SharingFragment_Test() {
-
+    public void Sharing_Test() {
 
     }
 
