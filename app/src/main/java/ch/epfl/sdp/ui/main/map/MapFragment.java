@@ -78,6 +78,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     new ViewModelProvider(requireActivity()).get(FilterSettingsViewModel.class);
 
             filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+                mViewModel.clearEvents();
                 for(Event event: events)
                     mViewModel.addEvent(event);
             });

@@ -35,6 +35,7 @@ public class FilterSettingsViewModel extends ViewModel {
 
     public FilterSettingsViewModel(@NonNull Database database) {
         mEventQuery = database.query("events");
+        mResultsLiveData.addSource(mEventQuery.liveData(Event.class), mResultsLiveData::postValue);
     }
 
     public LiveData<Collection<Event>> getFilteredEvents() {

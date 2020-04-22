@@ -43,6 +43,10 @@ public class MapViewModel extends ViewModel {
         mEventsMarkers.put(mMapManager.addMarker(event.getTitle(), event.getLocation()), event);
     }
 
+    public void clearEvents() {
+        mEventsMarkers = new Hashtable<>();
+    }
+
     public Event getEventFromMarker(Marker marker) {
         return mEventsMarkers.get(marker);
     }
