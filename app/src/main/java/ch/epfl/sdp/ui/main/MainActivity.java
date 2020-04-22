@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
-import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.UIConstants;
@@ -45,15 +43,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ActivityMainBinding mBinding;
     private FilterSettingsViewModel mFilterSettingsViewModel;
-    private LocationService mLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 
+        GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+
         mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsFactory.setLocationService(GoogleLocationService.getInstance());
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
 
         View view = mBinding.getRoot();
@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-        GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
-        mLocationService = GoogleLocationService.getInstance();
 
         addFilterSettingsListener();
 
@@ -188,8 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mBinding.menuMainSearch.mSeekBarValue.setText(progress + "km");
-                Location location = mLocationService.getLastKnownLocation(getApplicationContext());
-                mFilterSettingsViewModel.setSettings(location, (double) progress);
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress);
             }
 
             @Override

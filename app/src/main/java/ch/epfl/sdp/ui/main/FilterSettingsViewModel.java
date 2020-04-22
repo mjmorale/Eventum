@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.main;
 
+import android.content.Context;
 import android.location.Location;
 
 import androidx.annotation.NonNull;
@@ -14,37 +15,41 @@ import java.util.Collection;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class FilterSettingsViewModel extends ViewModel {
-    public static class FilterSettingsViewModelFactory extends ParameterizedViewModelFactory {
+    public static class FilterSettingsViewModelFactory extends DatabaseViewModelFactory {
         public FilterSettingsViewModelFactory() {
-            super(Database.class);
+            super(LocationService.class);
         }
 
-        public void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
+        public void setLocationService(@NonNull LocationService locationService) {
+            setValue(0, verifyNotNull(locationService));
         }
     }
 
     private final CollectionQuery mEventQuery;
-
     private final MediatorLiveData<Collection<Event>> mResultsLiveData = new MediatorLiveData<>();
+    private final LocationService mLocationService;
 
-    public FilterSettingsViewModel(@NonNull Database database) {
+    public FilterSettingsViewModel(@NonNull LocationService locationService, @NonNull Database database) {
         mEventQuery = database.query("events");
         mResultsLiveData.addSource(mEventQuery.liveData(Event.class), mResultsLiveData::postValue);
+        mLocationService = locationService;
     }
 
     public LiveData<Collection<Event>> getFilteredEvents() {
         return mResultsLiveData;
     }
 
-    public void setSettings(Location locationSetting, Double radiusSetting) {
-        GeoPoint location = new GeoPoint(locationSetting.getLatitude(), locationSetting.getLongitude());
-        LiveData<Collection<Event>> results =  mEventQuery.atLocation(location, radiusSetting).liveData(Event.class);
+    public void setSettings(Context context, Double radiusSetting) {
+        Location location = mLocationService.getLastKnownLocation(context);
+        GeoPoint locationGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+        LiveData<Collection<Event>> results =
+                mEventQuery.atLocation(locationGeoPoint, radiusSetting).liveData(Event.class);
         mResultsLiveData.addSource(results, mResultsLiveData::postValue);
     }
 }

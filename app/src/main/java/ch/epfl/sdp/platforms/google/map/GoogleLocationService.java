@@ -16,7 +16,7 @@ public final class GoogleLocationService implements LocationService {
 
     private LocationManager mLocationManager;
 
-    private static GoogleLocationService INSTANCE;
+    private static GoogleLocationService mInstance;
 
     private GoogleLocationService(LocationManager locationManager) {
         verifyNotNull(locationManager);
@@ -24,14 +24,14 @@ public final class GoogleLocationService implements LocationService {
     }
 
     public static void initService(LocationManager locationManager) {
-        INSTANCE = new GoogleLocationService(locationManager);
+        mInstance = new GoogleLocationService(locationManager);
     }
 
     public static GoogleLocationService getInstance() {
-        if (INSTANCE == null) {
+        if (mInstance == null) {
             throw new IllegalStateException("You must call initService first.");
         }
-        return INSTANCE;
+        return mInstance;
     }
 
     @Override
