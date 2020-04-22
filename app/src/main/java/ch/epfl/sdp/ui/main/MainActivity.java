@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainViewModel mViewModel;
     private final MainViewModel.MainViewModelFactory mFactory;
 
+    private View mMainNavHeaderView;
+
     public MainActivity() {
         mFactory = new MainViewModel.MainViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
@@ -52,42 +54,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View view = mBinding.getRoot();
         setContentView(view);
 
-        // Preferences are used to store the user reference to persistent storage
-        // to handle the situation where the activity is destroyed and need to be
-        // rebuilt.
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-
-        setSupportActionBar(mBinding.mainToolbar);
-
-        mBinding.mainNavView.setNavigationItemSelectedListener(this);
-        View mainHeaderView = mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout);
-        mainHeaderView.setOnClickListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
-                R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
-        mBinding.mainDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        Intent intent = getIntent();
-        String userRef;
-        if(intent.hasExtra(UIConstants.BUNDLE_USER_REF)) {
-            // Load the user reference from the intent if possible
-            userRef = intent.getStringExtra(UIConstants.BUNDLE_USER_REF);
-            // Update the content of the persistent storage
-            preferences.edit().putString(UIConstants.BUNDLE_USER_REF, userRef).apply();
-        }
-        else {
-            // If the intent is empty, then load from persistent storage
-            userRef = preferences.getString(UIConstants.BUNDLE_USER_REF, null);
-        }
+        setupToolbarNavigation();
 
         // Build the view model
-        mFactory.setUserRef(userRef);
+        mFactory.setUserRef(getUserRefFromIntent(getIntent()));
         mViewModel = new ViewModelProvider(this, mFactory).get(MainViewModel.class);
         mViewModel.getUser().observe(this, user -> {
             if(user != null) {
-                TextView username = mainHeaderView.findViewById(R.id.main_nav_header_username);
-                TextView email = mainHeaderView.findViewById(R.id.main_nav_header_email);
+                TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
+                TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
 
                 username.setText(user.getName());
                 email.setText(user.getEmail());
@@ -194,5 +169,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 break;
         }
+    }
+
+    private void setupToolbarNavigation() {
+        setSupportActionBar(mBinding.mainToolbar);
+
+        mBinding.mainNavView.setNavigationItemSelectedListener(this);
+        mMainNavHeaderView = mBinding.mainNavView.getHeaderView(0).findViewById(R.id.main_nav_header_layout);
+        mMainNavHeaderView.setOnClickListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mBinding.mainDrawerLayout, mBinding.mainToolbar,
+                R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
+        mBinding.mainDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private String getUserRefFromIntent(Intent intent) {
+        // Preferences are used to store the user reference to persistent storage
+        // to handle the situation where the activity is destroyed and need to be
+        // rebuilt.
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+
+        String userRef;
+        if(intent.hasExtra(UIConstants.BUNDLE_USER_REF)) {
+            // Load the user reference from the intent if possible
+            userRef = intent.getStringExtra(UIConstants.BUNDLE_USER_REF);
+            // Update the content of the persistent storage
+            preferences.edit().putString(UIConstants.BUNDLE_USER_REF, userRef).apply();
+        }
+        else {
+            // If the intent is empty, then load from persistent storage
+            userRef = preferences.getString(UIConstants.BUNDLE_USER_REF, null);
+        }
+
+        return userRef;
     }
 }

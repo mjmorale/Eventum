@@ -39,14 +39,7 @@ public class HeaderFragment extends PreferenceFragmentCompat {
             }
         });
 
-        mLogoutPreference.setOnPreferenceClickListener(preference -> {
-            mViewModel.logout();
-
-            if(mLogoutListener != null) {
-                mLogoutListener.onLogout();
-            }
-            return true;
-        });
+        setupLogoutPref(mLogoutPreference);
     }
 
     @Override
@@ -63,5 +56,18 @@ public class HeaderFragment extends PreferenceFragmentCompat {
         super.onDetach();
 
         mLogoutListener = null;
+    }
+
+    private void setupLogoutPref(@NonNull Preference logoutPref) {
+        verifyNotNull(logoutPref);
+
+        logoutPref.setOnPreferenceClickListener(preference -> {
+            mViewModel.logout();
+
+            if(mLogoutListener != null) {
+                mLogoutListener.onLogout();
+            }
+            return true;
+        });
     }
 }

@@ -15,8 +15,6 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -58,8 +56,31 @@ public class AccountFragment extends PreferenceFragmentCompat {
             }
         });
 
-        mAccountNamePreference.setOnBindEditTextListener(TextView::setSingleLine);
-        mAccountNamePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+        setupAccountNamePref(mAccountNamePreference);
+        setupAccountDeletePref(mAccountDeletePreference);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof OnLogoutListener) {
+            mLogoutListener = (OnLogoutListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        mLogoutListener = null;
+    }
+
+    private void setupAccountNamePref(@NonNull EditTextPreference accountNamePreference) {
+        verifyNotNull(accountNamePreference);
+
+        accountNamePreference.setOnBindEditTextListener(TextView::setSingleLine);
+        accountNamePreference.setOnPreferenceChangeListener((preference, newValue) -> {
             mViewModel.setUserName((String)newValue, result -> {
                 if(!result.isSuccessful()) {
                     Log.e(TAG, "Failed to set new username", result.getException());
@@ -68,8 +89,12 @@ public class AccountFragment extends PreferenceFragmentCompat {
             });
             return false;
         });
+    }
 
-        mAccountDeletePreference.setOnPreferenceClickListener(preference -> {
+    private void setupAccountDeletePref(@NonNull Preference accountDeletePreference) {
+        verifyNotNull(accountDeletePreference);
+
+        accountDeletePreference.setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(getContext())
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Delete Account")
@@ -93,21 +118,5 @@ public class AccountFragment extends PreferenceFragmentCompat {
                     .show();
             return true;
         });
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        if(context instanceof OnLogoutListener) {
-            mLogoutListener = (OnLogoutListener) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mLogoutListener = null;
     }
 }

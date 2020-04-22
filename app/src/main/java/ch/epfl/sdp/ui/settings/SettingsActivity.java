@@ -53,8 +53,7 @@ public class SettingsActivity extends AppCompatActivity implements
             setTitle(savedInstanceState.getCharSequence(TITLE_TAG));
         }
 
-        Intent intent = getIntent();
-        mFactory.setUserRef(intent.getStringExtra(UIConstants.BUNDLE_USER_REF));
+        mFactory.setUserRef(getIntent().getStringExtra(UIConstants.BUNDLE_USER_REF));
         mViewModel = new ViewModelProvider(this, mFactory).get(SettingsViewModel.class);
 
         getSupportFragmentManager().addOnBackStackChangedListener(
