@@ -32,9 +32,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MapFragmentTest {
 
-    @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-
     @Mock
     private Database mDatabaseMock;
 
@@ -42,6 +39,8 @@ public class MapFragmentTest {
     private CollectionQuery mCollectionQuery;
 
     private MutableLiveData<List<Event>> mEventsLive = new MutableLiveData<>();
+
+    private MockLocationService mMockLocationService = new MockLocationService();
 
     @Mock
     private MapManager mMapManagerMock;
@@ -61,7 +60,7 @@ public class MapFragmentTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mMapManagerMock)
+                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
         );
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));

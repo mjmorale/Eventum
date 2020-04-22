@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Marker;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
@@ -41,16 +42,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private Location mLastKnownLocation;
     private float mZoomLevel = 12;
 
-    public MapFragment() {
-        mFactory = new MapViewModel.MapViewModelFactory();
-    }
-
     @VisibleForTesting
-    public MapFragment(@NonNull MapManager mapManager) {
-        verifyNotNull(mapManager);
+    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database) {
+        verifyNotNull(mapManager, database, locationService);
         mFactory = new MapViewModel.MapViewModelFactory();
         mFactory.setMapManager(mapManager);
         mFactorySettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFactorySettings.setDatabase(database);
+        mFactorySettings.setLocationService(locationService);
+    }
+
+    public MapFragment() {
+        mFactory = new MapViewModel.MapViewModelFactory();
     }
 
     @Override
