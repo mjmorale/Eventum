@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.view.Gravity;
+import android.view.View;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,11 +15,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.UiDevice;
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.db.Database;
@@ -27,6 +36,7 @@ import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -63,9 +73,15 @@ public class MainActivityTest {
     private DocumentQuery mDocumentQuery;
 
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Event>> mEventsLiveData = new MutableLiveData<>();
+
+    private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
     @Rule
     public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class, false, false);
+
+    @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Before
     public void setup() {
@@ -158,8 +174,70 @@ public class MainActivityTest {
         Intents.release();
     }
 
+    @Test
+    public void MainActivity_Navigation_CanOpenFromNavigation() {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+
+        onView(withId(R.id.main_nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.nav_map));
+
+        onView(withId(R.id.mapView))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void MainActivity_Navigation_CanOpenAttendingFromNavigation() {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+
+        onView(withId(R.id.main_nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.nav_attending));
+
+        onView(withId(R.id.attending_list_view))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void MainActivity_Navigation_CanOpenSwipeFromNavigation() {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+
+        onView(withId(R.id.main_nav_view))
+                .perform(NavigationViewActions.navigateTo(R.id.nav_home));
+
+        onView(withId(R.id.cards_list_view))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void MainActivity_Navigation_ClosesDrawerWhenPressingBackButton() throws InterruptedException {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+
+        mDevice.pressBack();
+
+        Thread.sleep(1000);
+
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)));
+    }
+
     private void launchDefaultActivity(String userRef) {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(userRef)).thenReturn(mDocumentQuery);
         when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
         ServiceProvider.getInstance().setDatabase(mDatabase);

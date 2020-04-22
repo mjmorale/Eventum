@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.db.Database;
@@ -22,8 +23,11 @@ import ch.epfl.sdp.ui.UIConstants;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -93,5 +97,16 @@ public class SettingsActivityTest {
     public void SettingsActivity_AccountMenuHasDelete() {
         onView(withText("Account")).perform(click());
         onView(withText("Delete account")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void SettingsActivity_OnLogoutLaunchesAuthActivity() {
+        Intents.init();
+
+        mActivity.getActivity().onLogout();
+
+        intended(hasComponent("ch.epfl.sdp.ui.auth.AuthActivity"));
+
+        Intents.release();
     }
 }

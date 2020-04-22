@@ -26,7 +26,7 @@ public class MapViewModel extends ViewModel {
             super(MapManager.class);
         }
 
-        void setMapManager(@NonNull MapManager mapManager ){
+        void setMapManager(@NonNull MapManager mapManager) {
             setValue(0, verifyNotNull(mapManager));
         }
     }
