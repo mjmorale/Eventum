@@ -19,12 +19,12 @@ import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class FilterSettingsViewModel extends ViewModel {
-    static class FilterSettingsViewModelFactory extends ParameterizedViewModelFactory {
-        FilterSettingsViewModelFactory() {
+    public static class FilterSettingsViewModelFactory extends ParameterizedViewModelFactory {
+        public FilterSettingsViewModelFactory() {
             super(Database.class);
         }
 
-        void setDatabase(@NonNull Database database) {
+        public void setDatabase(@NonNull Database database) {
             setValue(0, verifyNotNull(database));
         }
     }

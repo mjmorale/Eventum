@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
@@ -29,6 +31,15 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private int mNumberSwipe = 0;
 
     private EventDetailFragment mInfoFragment;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
+
+    @VisibleForTesting
+    public SwipeFragment(Database database) {
+        mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFactory.setDatabase(database);
+    }
+
+    public SwipeFragment() {}
 
     @Override
     public void removeFirstObjectInAdapter() {
@@ -66,7 +77,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mBinding.cardsListView.setFlingListener(this);
 
         FilterSettingsViewModel filterSettingsViewModel =
-                new ViewModelProvider(requireActivity()).get(FilterSettingsViewModel.class);
+                new ViewModelProvider(requireActivity(), mFactory).get(FilterSettingsViewModel.class);
 
         filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
             mArrayAdapter.clear();

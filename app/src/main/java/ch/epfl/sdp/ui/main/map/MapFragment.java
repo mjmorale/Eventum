@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.Marker;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
@@ -32,6 +33,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactory;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactorySettings;
     private FragmentMapBinding mBinding;
 
     private MapView mMapView;
@@ -45,10 +47,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     }
 
     @VisibleForTesting
-    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService) {
+    public MapFragment(@NonNull Database database, @NonNull MapManager mapManager, @NonNull LocationService locationService) {
         verifyNotNull(mapManager);
         mFactory = new MapViewModel.MapViewModelFactory();
         mFactory.setMapManager(mapManager);
+        mFactorySettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFactorySettings.setDatabase(database);
         mLocationService = locationService;
     }
 
@@ -75,7 +79,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
 
             FilterSettingsViewModel filterSettingsViewModel =
-                    new ViewModelProvider(requireActivity()).get(FilterSettingsViewModel.class);
+                    new ViewModelProvider(requireActivity(), mFactorySettings).get(FilterSettingsViewModel.class);
 
             filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
                 mViewModel.clearEvents();
