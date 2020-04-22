@@ -63,11 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 
-        LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
-
-        mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        mFilterSettingsFactory.setLocationService(locationService);
+        setupFilterSettingsFactory();
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
 
         View view = mBinding.getRoot();
@@ -234,6 +230,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void setupFilterSettingsFactory() {
+        LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+
+        mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsFactory.setLocationService(locationService);
     }
 
     private String getUserRefFromIntent(Intent intent) {
