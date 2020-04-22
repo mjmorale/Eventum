@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.main_actionbar_add:
-                Intent intent = new Intent(this, CreateEventActivity.class);
-                intent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
+                Intent intent = getUserRefIntent(CreateEventActivity.class);
 
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
                 break;
@@ -108,10 +107,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(requestCode == UIConstants.RC_CREATE_EVENT) {
             if(resultCode == RESULT_OK) {
                 String eventRef = data.getStringExtra(UIConstants.BUNDLE_EVENT_REF);
-                Intent eventIntent = new Intent(this, EventActivity.class);
+                Intent eventIntent = getUserRefIntent(EventActivity.class);
                 eventIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER);
                 eventIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
-                eventIntent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
 
                 startActivity(eventIntent);
             }
@@ -137,8 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(mBinding.mainContainer.getId(), new AttendingListFragment()).commit();
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                intent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
+                Intent intent = getUserRefIntent(SettingsActivity.class);
 
                 startActivity(intent);
                 break;
@@ -163,8 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.main_nav_header_layout:
-                Intent intent = new Intent(this, UserActivity.class);
-                intent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
+                Intent intent = getUserRefIntent(UserActivity.class);
 
                 startActivity(intent);
                 break;
@@ -203,5 +199,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return userRef;
+    }
+
+    private Intent getUserRefIntent(Class<?> activityClass) {
+        Intent intent = new Intent(this, activityClass);
+        intent.putExtra(UIConstants.BUNDLE_USER_REF, mViewModel.getUserRef());
+
+        return intent;
     }
 }
