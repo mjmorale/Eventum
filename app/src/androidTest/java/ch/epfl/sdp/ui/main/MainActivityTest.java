@@ -1,21 +1,35 @@
 package ch.epfl.sdp.ui.main;
 
+import android.Manifest;
+import android.view.View;
+import android.widget.SeekBar;
+
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
+
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.utils.TestUtils;
 
+import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -23,8 +37,34 @@ public class MainActivityTest {
 
     private static final String DUMMY_STRING = "test";
 
+    public static ViewAction setProgress(final int progress) {
+        return new ViewAction() {
+            @Override
+            public void perform(UiController uiController, View view) {
+                SeekBar seekBar = (SeekBar) view;
+                seekBar.setProgress(progress);
+            }
+            @Override
+            public String getDescription() {
+                return "Set a progress on a SeekBar";
+            }
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isAssignableFrom(SeekBar.class);
+            }
+        };
+    }
+
     @Rule
     public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule permissionFineRule =
+            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule permissionCoarseRule =
+            GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Before
     public void setup() {
@@ -96,5 +136,21 @@ public class MainActivityTest {
         intended(hasComponent("ch.epfl.sdp.ui.user.UserActivity"));
 
         Intents.release();*/
+    }
+
+    @Test
+    public void MainActivity_FilterSettingsShowCorrectValues() {
+        onView(withId(R.id.main_actionbar_search))
+                .perform(click());
+
+        // Check default progress is 5km
+        onView(withId(R.id.seekBar_value))
+                .check(matches(withText("5km")));
+
+        onView(withId(R.id.seekBar_range))
+                .perform(setProgress(10));
+
+        onView(withId(R.id.seekBar_value))
+                .check(matches(withText("10km")));
     }
 }
