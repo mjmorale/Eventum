@@ -178,12 +178,7 @@ public class MainActivityTest {
     public void MainActivity_Navigation_CanOpenFromNavigation() {
         launchDefaultActivity(DUMMY_USERREF);
 
-        onView(withId(R.id.main_drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.main_nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_map));
+        goToNavMenu(R.id.nav_map);
 
         onView(withId(R.id.mapView))
                 .check(matches(isDisplayed()));
@@ -193,12 +188,7 @@ public class MainActivityTest {
     public void MainActivity_Navigation_CanOpenAttendingFromNavigation() {
         launchDefaultActivity(DUMMY_USERREF);
 
-        onView(withId(R.id.main_drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.main_nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_attending));
+        goToNavMenu(R.id.nav_attending);
 
         onView(withId(R.id.attending_list_view))
                 .check(matches(isDisplayed()));
@@ -208,12 +198,7 @@ public class MainActivityTest {
     public void MainActivity_Navigation_CanOpenSwipeFromNavigation() {
         launchDefaultActivity(DUMMY_USERREF);
 
-        onView(withId(R.id.main_drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT)))
-                .perform(DrawerActions.open());
-
-        onView(withId(R.id.main_nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_home));
+        goToNavMenu(R.id.nav_home);
 
         onView(withId(R.id.cards_list_view))
                 .check(matches(isDisplayed()));
@@ -245,5 +230,14 @@ public class MainActivityTest {
         Intent intent = new Intent();
         intent.putExtra(UIConstants.BUNDLE_USER_REF, userRef);
         mActivity.launchActivity(intent);
+    }
+
+    private void goToNavMenu(int navId) {
+        onView(withId(R.id.main_drawer_layout))
+                .check(matches(isClosed(Gravity.LEFT)))
+                .perform(DrawerActions.open());
+
+        onView(withId(R.id.main_nav_view))
+                .perform(NavigationViewActions.navigateTo(navId));
     }
 }
