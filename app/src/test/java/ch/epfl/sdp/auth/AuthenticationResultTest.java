@@ -10,7 +10,7 @@ public class AuthenticationResultTest {
 
     private static class AuthenticationTestException extends Exception { }
 
-    private static final User DUMMY_USER = new User("123456789abcdef", "name surname", "name.surname@mail.com");
+    private static final UserInfo DUMMY_USERINFO = new UserInfo("fakeuid123456", "name surname", "name.surname@mail.com");
     private static final AuthenticationTestException DUMMY_EXCEPTION = new AuthenticationTestException();
 
     @Test(expected = IllegalArgumentException.class)
@@ -25,7 +25,7 @@ public class AuthenticationResultTest {
 
     @Test
     public void authenticationResult_successReturnsTrueOnIsSuccessful() {
-        AuthenticationResult authenticationResult = AuthenticationResult.success(DUMMY_USER);
+        AuthenticationResult authenticationResult = AuthenticationResult.success(DUMMY_USERINFO);
 
         assertTrue(authenticationResult.isSuccessful());
     }
@@ -39,9 +39,9 @@ public class AuthenticationResultTest {
 
     @Test
     public void authenticationResult_successReturnsTheCorrectUser() {
-        AuthenticationResult authenticationResult = AuthenticationResult.success(DUMMY_USER);
+        AuthenticationResult authenticationResult = AuthenticationResult.success(DUMMY_USERINFO);
 
-        assertEquals(DUMMY_USER, authenticationResult.getUser());
+        assertEquals(DUMMY_USERINFO, authenticationResult.getUserInfo());
     }
 
     @Test

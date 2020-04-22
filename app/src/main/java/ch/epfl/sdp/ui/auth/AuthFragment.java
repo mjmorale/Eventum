@@ -1,7 +1,7 @@
 package ch.epfl.sdp.ui.auth;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,52 +23,50 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import ch.epfl.sdp.Event;
-import ch.epfl.sdp.EventBuilder;
-import ch.epfl.sdp.ObjectUtils;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
+import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.event.EventActivity;
-import ch.epfl.sdp.ui.main.MainActivity;
-import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
-import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
 
+    public interface OnAuthFragmentResultListener {
+        void onLoggedIn(String userRef);
+    }
+
     private final static String TAG = "AuthFragment";
+
+    private OnAuthFragmentResultListener mAuthListener;
 
     private final AuthViewModel.AuthViewModelFactory mFactory;
     private FragmentAuthBinding mBinding;
     private AuthViewModel<AuthCredential> mViewModel;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private Uri mUri;
 
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
+        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
     @VisibleForTesting
-    public AuthFragment(@NonNull Authenticator authenticator, Uri uri) {
+    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(authenticator);
-        mUri = uri;
+        mFactory.setDatabase(database);
     }
+
     @VisibleForTesting
-    public AuthFragment(@NonNull Authenticator authenticator) {
-        mFactory = new AuthViewModel.AuthViewModelFactory();
-        mFactory.setAuthenticator(authenticator);
+    protected void setAuthListener(OnAuthFragmentResultListener listener) {
+        mAuthListener = listener;
     }
 
     @Override
@@ -93,35 +91,37 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         mBinding.btnGoogleSignIn.setOnClickListener(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(AuthViewModel.class);
-        mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-
-            if(user == null) {
+        mViewModel.getUserRef().observe(getViewLifecycleOwner(), userRef -> {
+            if(userRef == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
 
-                Intent activityIntent;
-                activityIntent= new Intent(getActivity(), MainActivity.class);
-                activityIntent.putExtra(UIConstants.BUNDLE_USER_REF, user.getUid());
-
-                Uri uri = (mUri!=null)? mUri :getActivity().getIntent().getData();
-                if(uri!=null) activityIntent=getEventIntent(uri);
-
-                startActivity(activityIntent);
-                getActivity().finish();
+                if(mAuthListener != null) {
+                    mAuthListener.onLoggedIn(userRef);
+                }
+                else {
+                    Log.d(TAG, "Logged in successful but no AuthListener");
+                }
             }
         });
     }
 
-    private Intent getEventIntent(Uri uri){
-        ObjectUtils.verifyNotNull(uri);
-        List<String> params= uri.getPathSegments();
-        String eventRef = params.get(params.size()-1);
-        Intent eventIntent = new Intent(getActivity(), EventActivity.class);
-        eventIntent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
-        eventIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
-        return eventIntent;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof OnAuthFragmentResultListener) {
+            mAuthListener = (OnAuthFragmentResultListener) context;
+        }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mAuthListener = null;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
