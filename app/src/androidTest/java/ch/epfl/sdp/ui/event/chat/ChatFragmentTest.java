@@ -7,6 +7,7 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.test.espresso.ViewAction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Filter;
 
@@ -33,6 +36,8 @@ import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -49,7 +54,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ChatFragmentTest {
 
-    // Annotate your mock with @Mock
+    private  ChatFragment chatFragment = ChatFragment.getInstance("anyRef");
     @Mock
     private Database mDatabaseMock;
     @Mock
@@ -61,6 +66,15 @@ public class ChatFragmentTest {
     @Mock
     private FirebaseAuthenticator mFirebaseAuthenticatorMock;
 
+    private ChatMessage mChatMessage = new ChatMessage("Hello", new Date(), "anyRef", " ");
+
+    LiveData<List<ChatMessage>> mLiveData = new LiveData<List<ChatMessage>>() {
+        @Override
+        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super List<ChatMessage>> observer) {
+            observer.onChanged(Arrays.asList(mChatMessage));
+        }
+    };
+
     @Before
     public void setup() {
         // This function initializes the mocks before each test.
@@ -70,7 +84,8 @@ public class ChatFragmentTest {
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
-        when(mFilterQueryMock.livedata(ChatMessage.class)).thenReturn(new LiveData<List<ChatMessage>>() {});
+        when(mFilterQueryMock.livedata(ChatMessage.class)).thenReturn(mLiveData);
+
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -78,24 +93,65 @@ public class ChatFragmentTest {
             return null;
         }).when(mCollectionQueryMock).create(any(), any());
 
-        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(" ", " ", " "));
+        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(mChatMessage.getUid(), " ", " "));
 
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ChatFragment_Test() {
+    public void ChatFragment_Test_Sender() {
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
-        FragmentScenario<ChatFragment> scenario = FragmentScenario.launchInContainer(
+        FragmentScenario<ChatFragment> scenarioSender = FragmentScenario.launchInContainer(
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, "anyRef", mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
         );
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.button_chatbox_send)).perform(click());
+
+        FragmentScenario<ChatFragment> scenarioReceinver = FragmentScenario.launchInContainer(
+                ChatFragment.class,
+                bundle,
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
+        );
+        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
+
+        onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.button_chatbox_send)).perform(click());
+
+        onView(withText(mChatMessage.getText())).check(matches(isDisplayed()));
     }
+
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void ChatFragment_Test_receiver() {
+        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+
+        FragmentScenario<ChatFragment> scenarioReceinver = FragmentScenario.launchInContainer(
+                ChatFragment.class,
+                bundle,
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
+        );
+
+        onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.button_chatbox_send)).perform(click());
+
+        onView(withText(mChatMessage.getText())).check(matches(isDisplayed()));
+    }
+
+
 
     //TODO: implement other tests.
 }

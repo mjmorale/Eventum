@@ -30,10 +30,6 @@ public class ChatMessage {
         return mFormatter.format(date);
     }
 
-    static public Date parseDate(String date) throws ParseException {
-        return mFormatter.parse(date);
-    }
-
     public String getText() {
         return mText;
     }
