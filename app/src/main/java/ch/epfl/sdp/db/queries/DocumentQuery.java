@@ -9,7 +9,11 @@ public interface DocumentQuery extends Query {
 
     CollectionQuery collection(String collection);
 
+    void exists(@NonNull OnQueryCompleteCallback<Boolean> callback);
+
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback);
+
+    <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback);
 
     <T> LiveData<T> livedata(@NonNull Class<T> type);
 
