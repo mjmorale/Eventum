@@ -44,8 +44,12 @@ public final class GoogleLocationService implements LocationService {
             throw new IllegalStateException("Insufficient permissions.");
         }
         Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location == null)
-            return new Location("Default");
+        if (location == null) {
+            Location defaultLocation = new Location("Default");
+            defaultLocation.setLatitude(46.520564);
+            defaultLocation.setLongitude(6.567827);
+            return defaultLocation;
+        }
         return location;
     }
 

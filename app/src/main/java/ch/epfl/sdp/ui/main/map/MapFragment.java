@@ -64,12 +64,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mMapView.onCreate(savedInstanceState);
 
         mLastKnownLocation = mLocationService.getLastKnownLocation(getContext());
-        if (mLastKnownLocation == null) {
-            mLastKnownLocation = new Location("Europe");
-            mLastKnownLocation.setLatitude(46.520564);
-            mLastKnownLocation.setLongitude(6.567827);
-            mZoomLevel = 4;
-        }
 
         mMapView.getMapAsync(googleMap -> {
             googleMap.setOnMarkerClickListener(this);
