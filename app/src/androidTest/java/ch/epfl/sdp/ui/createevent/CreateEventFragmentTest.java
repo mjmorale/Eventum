@@ -119,7 +119,7 @@ public class CreateEventFragmentTest {
     }
 
     @After
-    public void after() { // delete if intents tests deleted
+    public void after() {
         Intents.release();
     }
 

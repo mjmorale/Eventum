@@ -36,7 +36,9 @@ public class EventDetailFragment extends Fragment {
 
         String URL = mEvent.getImageId();
         if (URL == null) URL = getResources().getString(R.string.defaultImageURL);
-        Glide.with(getContext()).load(URL).into(mBinding.imageView);
+        Glide.with(getContext())
+                .load(URL)
+                .into(mBinding.imageView);
 
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
