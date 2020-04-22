@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -72,20 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         GoogleLocationService.initService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
         mLocationService = GoogleLocationService.getInstance();
 
-        mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBinding.menuMainSearch.mSeekBarValue.setText(progress + "km");
-                Location location = mLocationService.getLastKnownLocation(getApplicationContext());
-                mFilterSettingsViewModel.setSettings(location, (double) progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+        addFilterSettingsListener();
 
         if (savedInstanceState == null) {
             ActivityCompat.requestPermissions(this, new String[] {
@@ -195,5 +181,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 break;
         }
+    }
+
+    public void addFilterSettingsListener() {
+        mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mBinding.menuMainSearch.mSeekBarValue.setText(progress + "km");
+                Location location = mLocationService.getLastKnownLocation(getApplicationContext());
+                mFilterSettingsViewModel.setSettings(location, (double) progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
     }
 }
