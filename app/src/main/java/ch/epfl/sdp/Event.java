@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,13 +12,14 @@ import java.util.Random;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-public class Event {
+public class Event implements Serializable {
     private String mDescription;
     private Date mDate;
     private String mTitle;
     private int mImageID;
     private String mAddress;
-    private LatLng mLocation;
+    private double mLatitude;
+    private double mLongitude;
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public Event(@NonNull String title,
@@ -30,9 +32,28 @@ public class Event {
         mDescription = description;
         mDate = date;
         mAddress = address;
-        mLocation = location;
+        mLatitude = location.latitude;
+        mLongitude = location.longitude;
         mImageID = imageID;
     }
+
+    public Event(@NonNull String title,
+                 @NonNull String description,
+                 @NonNull Date date,
+                 @NonNull String address,
+                 double latitude,
+                 double longitude,
+                 @NonNull int imageID) {
+        mTitle = title;
+        mDescription = description;
+        mDate = date;
+        mAddress = address;
+        mLatitude = latitude;
+        mLatitude = longitude;
+        mImageID = imageID;
+    }
+
+
 
     static public String formatDate(Date date) {
         return mFormatter.format(date);
@@ -59,7 +80,7 @@ public class Event {
     }
 
     public LatLng getLocation() {
-        return mLocation;
+        return new LatLng(mLatitude, mLongitude);
     }
 
     public int getImageID() {
@@ -68,5 +89,12 @@ public class Event {
 
     public String getAddress() {
         return mAddress;
+    }
+
+    @Override
+    public String toString(){
+        return "Title:" + mTitle + "\nDescription:" + mDescription + "\nDate:" + mDate + "\nAddress:"
+                + mAddress + "\nLatitude:" + mLatitude + "\nLongitude:" + mLongitude
+                + "imageID" + mImageID;
     }
 }
