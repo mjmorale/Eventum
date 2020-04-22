@@ -75,7 +75,6 @@ public class CreateEventFragmentTest {
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
-
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             Event event = (Event) args[0];
