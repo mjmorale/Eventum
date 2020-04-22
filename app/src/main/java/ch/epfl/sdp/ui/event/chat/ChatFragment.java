@@ -68,17 +68,7 @@ public class ChatFragment extends Fragment {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
 
         mBinding.buttonChatboxSend.setOnClickListener(v->{
-            trySendMessage(new ChatViewModel.OnMessageAddedCallback() {
-                @Override
-                public void onSuccess(String messageRef) {
-
-                }
-
-                @Override
-                public void onFailure(Exception exception) {
-                    Toast.makeText(getContext(), "Couldn't send message", Toast.LENGTH_SHORT).show();
-                }
-            });
+            trySendMessage(exception -> Toast.makeText(getContext(), "Couldn't send message", Toast.LENGTH_SHORT).show());
         });
 
         return mBinding.getRoot();

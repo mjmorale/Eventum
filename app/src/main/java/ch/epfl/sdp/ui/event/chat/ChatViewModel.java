@@ -45,7 +45,6 @@ public class ChatViewModel extends ViewModel {
     }
 
     interface OnMessageAddedCallback {
-        void onSuccess(String messageRef);
         void onFailure(Exception exception);
     }
 
@@ -67,13 +66,12 @@ public class ChatViewModel extends ViewModel {
 
         ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
         mMessageCollection.create(chatMessage, res -> {
-            if(res.isSuccessful()) {
-                callback.onSuccess(res.getData());
-            } else {
+            if (!res.isSuccessful()) {
                 callback.onFailure(res.getException());
             }
         });
     }
+
 
     public String getUserRef() {
         return mUser.getUid();
