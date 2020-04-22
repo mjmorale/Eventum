@@ -51,7 +51,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int PERMISSION_STORAGE = 100;
     private static final int CHOOSE_PHOTO = 200;
     private Uri mImageUri;
-    private String mImageId;
+    private String mImageId = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
+            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();

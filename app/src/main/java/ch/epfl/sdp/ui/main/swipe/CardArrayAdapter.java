@@ -34,11 +34,8 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
 
         name.setText(event.getTitle());
 
-        String defaultURL = getContext().getResources().getString(R.string.defaultImageURL);
-        String URL = event.getImageId();
-        if (URL == null) URL = defaultURL;
         Glide.with(getContext())
-                .load(URL)
+                .load(event.getImageId())
                 .into(imageView);
 
         description.setText(event.getDescription());

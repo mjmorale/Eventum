@@ -3,7 +3,6 @@ package ch.epfl.sdp;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EventBuilder {
@@ -15,7 +14,7 @@ public class EventBuilder {
     private String mImageId;
 
     public Event build() {
-        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation);
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
         return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
