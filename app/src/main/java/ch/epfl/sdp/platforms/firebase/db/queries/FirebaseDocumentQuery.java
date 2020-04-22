@@ -60,6 +60,15 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         });
     }
 
+    @Override
+    public void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback) {
+        verifyNotNull(field, value, callback);
+        documentPerformAction(mDocument.update(field, value), callback,
+        success -> {
+            callback.onQueryComplete(QueryResult.success(null));
+        });
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> LiveData<T> livedata(@NonNull Class<T> type) {

@@ -24,12 +24,17 @@ public class MockDocumentQuery implements DocumentQuery {
     public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {}
 
     @Override
+    public void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback) { }
+
+    @Override
     public <T> LiveData<T> livedata(@NonNull Class<T> type) {
         if (type == Event.class) {
             return (LiveData<T>)new MockEventLiveData();
         }
         return null;
     }
+
+
 
     @Override
     public void delete(@NonNull OnQueryCompleteCallback<Void> callback) {}
