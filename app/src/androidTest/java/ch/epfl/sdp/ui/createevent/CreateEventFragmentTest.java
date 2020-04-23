@@ -117,7 +117,7 @@ public class CreateEventFragmentTest {
                 CreateEventFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(CreateEventFragment.class, mDatabase, mStorage));
+                new MockFragmentFactory<>(CreateEventFragment.class, mStorage, mDatabase));
 
         scenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();

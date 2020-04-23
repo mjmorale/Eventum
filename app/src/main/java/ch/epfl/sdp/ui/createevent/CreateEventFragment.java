@@ -63,7 +63,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     @VisibleForTesting
-    public CreateEventFragment(@NonNull Database database, @NonNull Storage storage) {
+    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setStorage(storage);

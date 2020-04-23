@@ -21,15 +21,13 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class CreateEventViewModel extends ViewModel {
 
-    static class CreateEventViewModelFactory extends ParameterizedViewModelFactory {
+    static class CreateEventViewModelFactory extends DatabaseViewModelFactory {
         CreateEventViewModelFactory() {
-            super(Database.class, Storage.class);
+            super(Storage.class);
         }
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
-        }
+
         void setStorage(@NonNull Storage storage) {
-            setValue(1, verifyNotNull(storage));
+            setValue(0, verifyNotNull(storage));
         }
     }
 
@@ -43,7 +41,7 @@ public class CreateEventViewModel extends ViewModel {
     private final Storage mStorage;
     private String mImageId;
 
-    public CreateEventViewModel(@NonNull Database database, @NonNull Storage storage) {
+    public CreateEventViewModel(@NonNull Storage storage, @NonNull Database database) {
         mDatabase = verifyNotNull(database);
         mStorage = verifyNotNull(storage);
         mEventCollection = mDatabase.query("events");
