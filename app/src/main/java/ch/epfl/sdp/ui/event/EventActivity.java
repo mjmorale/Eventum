@@ -55,4 +55,12 @@ public class EventActivity extends AppCompatActivity {
         mBinding = null;
         super.onDestroy();
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (getSupportFragmentManager().popBackStackImmediate()) {
+            return true;
+        }
+        return super.onSupportNavigateUp();
+    }
 }
