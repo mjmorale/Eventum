@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -24,7 +23,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -36,7 +34,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 

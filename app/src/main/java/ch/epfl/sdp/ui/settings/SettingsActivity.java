@@ -1,24 +1,37 @@
 package ch.epfl.sdp.ui.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.preference.EditTextPreference;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivitySettingsBinding;
+import ch.epfl.sdp.ui.ServiceProvider;
+import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.auth.AuthActivity;
 
 public class SettingsActivity extends AppCompatActivity implements
-        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AccountFragment.OnLogoutListener {
 
     private static final String TITLE_TAG = "settingsActivityTitle";
 
     private ActivitySettingsBinding mBinding;
+
+    private SettingsViewModel mViewModel;
+    private final SettingsViewModel.SettingsViewModelFactory mFactory;
+
+    public SettingsActivity() {
+        mFactory = new SettingsViewModel.SettingsViewModelFactory();
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +54,9 @@ public class SettingsActivity extends AppCompatActivity implements
         } else {
             setTitle(savedInstanceState.getCharSequence(TITLE_TAG));
         }
+
+        mFactory.setUserRef(getIntent().getStringExtra(UIConstants.BUNDLE_USER_REF));
+        mViewModel = new ViewModelProvider(this, mFactory).get(SettingsViewModel.class);
 
         getSupportFragmentManager().addOnBackStackChangedListener(
             () -> {
@@ -89,24 +105,11 @@ public class SettingsActivity extends AppCompatActivity implements
         return true;
     }
 
-    public static class HeaderFragment extends PreferenceFragmentCompat {
+    @Override
+    public void onLogout() {
+        Intent authIntent = new Intent(this, AuthActivity.class);
+        startActivity(authIntent);
 
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.header_preferences, rootKey);
-        }
-    }
-
-    public static class AccountFragment extends PreferenceFragmentCompat {
-
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.account_preferences, rootKey);
-
-            EditTextPreference accountNamePreference = findPreference("account_name");
-            if (accountNamePreference != null) {
-                accountNamePreference.setOnBindEditTextListener(TextView::setSingleLine);
-            }
-        }
+        finish();
     }
 }
