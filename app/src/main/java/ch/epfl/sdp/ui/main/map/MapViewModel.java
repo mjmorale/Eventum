@@ -1,61 +1,67 @@
 package ch.epfl.sdp.ui.main.map;
 
+import android.content.Context;
 import android.location.Location;
+
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
+
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
-import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
-import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
-import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class MapViewModel extends ViewModel {
 
-    static class MapViewModelFactory extends DatabaseViewModelFactory {
+    static class MapViewModelFactory extends ParameterizedViewModelFactory {
         MapViewModelFactory() {
-            super(MapManager.class);
+            super(MapManager.class, LocationService.class);
         }
 
-        void setMapManager(@NonNull MapManager mapManager) {
-            setValue(0, verifyNotNull(mapManager));
+        void setMapManager(@NonNull MapManager mapManager ){
+            setValue(0,verifyNotNull(mapManager));
+        }
+
+        void setLocationService(@NonNull LocationService locationService ){
+            setValue(1,verifyNotNull(locationService));
         }
     }
-
-    private LiveData<List<Event>> mEventsLive;
     private MapManager<Marker> mMapManager;
-    private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();;
-    private final Observer<List<Event>> mEventObserver;
+    private LocationService mLocationService;
+    private Dictionary<Marker, Event> mEventsMarkers = new Hashtable<>();
 
-    public MapViewModel(MapManager mapManager, Database database) {
+    public MapViewModel(@NonNull MapManager<Marker> mapManager,  @NonNull LocationService locationService) {
         mMapManager = mapManager;
-
-        mEventsLive = database.query("events").liveData(Event.class);
-        mEventObserver = events -> { for(Event e: events) { addEvent(mMapManager.addMarker(e.getTitle(), e.getLocation()), e);}};
-        mEventsLive.observeForever(mEventObserver);
+        mLocationService = locationService;
     }
 
-    public void moveCamera(Location location, float zoomLevel) {
+    public void centerCamera(Context context, float zoomLevel) {
+        Location location = mLocationService.getLastKnownLocation(context);
         mMapManager.moveCamera(location, zoomLevel);
     }
 
-    public void addEvent(Marker marker, Event event) {
-        mEventsMarkers.put(marker, event);
+    public void addEvent(Event event) {
+        mEventsMarkers.put(mMapManager.addMarker(event.getTitle(), event.getLocation()), event);
+    }
+
+    public void clearEvents() {
+        List<Marker> markers = Collections.list(mEventsMarkers.keys());
+        for (Marker marker : markers )
+            marker.remove();
+        mEventsMarkers = new Hashtable<>();
     }
 
     public Event getEventFromMarker(Marker marker) {
         return mEventsMarkers.get(marker);
     }
 
-    @Override
-    protected void onCleared() { mEventsLive.removeObserver(mEventObserver);}
 }
