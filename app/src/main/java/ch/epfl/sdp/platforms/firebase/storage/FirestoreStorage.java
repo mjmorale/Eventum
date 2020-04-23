@@ -35,7 +35,7 @@ public class FirestoreStorage implements Storage {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!urlTask.isSuccessful());
+//                while (!urlTask.isSuccessful());
                 mUrl = urlTask.getResult().toString();
                 callback.onSuccess(mUrl);
             }
