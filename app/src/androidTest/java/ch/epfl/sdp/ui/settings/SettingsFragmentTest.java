@@ -2,6 +2,9 @@ package ch.epfl.sdp.ui.settings;
 
 import android.content.Intent;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.test.rule.ActivityTestRule;
+
 import com.google.firebase.auth.AuthCredential;
 
 import org.junit.Rule;
@@ -10,8 +13,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.test.rule.ActivityTestRule;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
