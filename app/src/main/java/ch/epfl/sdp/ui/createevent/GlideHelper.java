@@ -16,7 +16,7 @@ import java.io.InputStream;
  * See: http://bumptech.github.io/glide/doc/generatedapi.html
  */
 @GlideModule
-public class MyAppGlideModule extends AppGlideModule {
+public class GlideHelper extends AppGlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {

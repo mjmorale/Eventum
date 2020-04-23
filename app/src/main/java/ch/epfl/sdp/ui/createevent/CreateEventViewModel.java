@@ -63,6 +63,11 @@ public class CreateEventViewModel extends ViewModel {
             public void onSuccess(String url) {
                 mImageId = url;
             }
+
+            @Override
+            public void onFailure() {
+                mImageId = null;
+            }
         });
     }
 

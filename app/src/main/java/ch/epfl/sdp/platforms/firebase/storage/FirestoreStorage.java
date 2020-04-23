@@ -3,6 +3,7 @@ package ch.epfl.sdp.platforms.firebase.storage;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -24,6 +25,7 @@ public class FirestoreStorage implements Storage {
 
     public interface UrlReadyCallback {
         void onSuccess(String url);
+        void onFailure();
     }
 
     @Override
@@ -36,6 +38,11 @@ public class FirestoreStorage implements Storage {
                 while (!urlTask.isSuccessful());
                 mUrl = urlTask.getResult().toString();
                 callback.onSuccess(mUrl);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                callback.onFailure();
             }
         });
     }
