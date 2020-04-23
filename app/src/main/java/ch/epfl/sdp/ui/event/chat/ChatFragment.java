@@ -34,7 +34,6 @@ public class ChatFragment extends Fragment {
     private final ChatViewModel.ChatViewModelFactory mFactory;
     private FragmentChatBinding mBinding;
     private MessageListAdapter mAdapter;
-    private String  mEventRef;
 
     public static ChatFragment getInstance(@NonNull String eventRef) {
         Bundle bundle = new Bundle();
@@ -58,7 +57,6 @@ public class ChatFragment extends Fragment {
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
         mFactory.setAuthenticator(firebaseAuthenticator);
-        mEventRef = eventRef;
     }
 
     @Override
