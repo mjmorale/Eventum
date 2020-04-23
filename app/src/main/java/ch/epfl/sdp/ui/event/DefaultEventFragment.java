@@ -21,6 +21,7 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
+import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
@@ -84,6 +85,10 @@ public class DefaultEventFragment extends Fragment{
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
             Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
+        });
+
+        mBinding.chatButton.setOnClickListener(v->{
+            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
         });
 
     }
