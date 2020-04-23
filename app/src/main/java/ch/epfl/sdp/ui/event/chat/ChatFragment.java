@@ -26,7 +26,6 @@ import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-import static java.util.Objects.requireNonNull;
 
 public class ChatFragment extends Fragment {
 
@@ -78,7 +77,7 @@ public class ChatFragment extends Fragment {
 
         Bundle args = getArguments();
         if(args != null) {
-            mFactory.setEventRef(requireNonNull(args.getString(UIConstants.BUNDLE_EVENT_REF)));
+            mFactory.setEventRef(verifyNotNull(args.getString(UIConstants.BUNDLE_EVENT_REF)));
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(ChatViewModel.class);
