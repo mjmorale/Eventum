@@ -32,7 +32,7 @@
                 <EditText
                     android:id="@+id/title"
                     android:layout_height="wrap_content"
-                    android:hint="Title"
+                    android:hint="title"
                     android:inputType="text"
                     android:layout_weight="0.4"
                     android:textSize="20sp"
@@ -116,7 +116,7 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="414dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/add_image"
                 android:layout_marginTop="20dp"
                 android:background="@color/grey"

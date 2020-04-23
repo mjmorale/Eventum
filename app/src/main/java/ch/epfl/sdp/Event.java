@@ -1,21 +1,16 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.maps.model.LatLng;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class Event {
     private String mDescription;
     private Date mDate;
     private String mTitle;
-    private int mImageID;
+    private String mImageId;
     private String mAddress;
     private LatLng mLocation;
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -25,13 +20,13 @@ public class Event {
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
-                 @NonNull int imageID) {
+                 @NonNull String imageId) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
         mLocation = location;
-        mImageID = imageID;
+        mImageId = imageId;
     }
 
     static public String formatDate(Date date) {
@@ -62,8 +57,8 @@ public class Event {
         return mLocation;
     }
 
-    public int getImageID() {
-        return mImageID;
+    public String getImageId() {
+        return mImageId;
     }
 
     public String getAddress() {

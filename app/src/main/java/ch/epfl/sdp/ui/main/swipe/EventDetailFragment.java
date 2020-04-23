@@ -10,8 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.GeoPoint;
+
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -37,7 +38,11 @@ public class EventDetailFragment extends Fragment {
         mBinding.description.setText(mEvent.getDescription());
         mBinding.title.setText(mEvent.getTitle());
         mBinding.address.setText(mEvent.getAddress());
-        mBinding.imageView.setImageResource(mEvent.getImageID());
+
+        Glide.with(getContext())
+                .load(mEvent.getImageId())
+                .into(mBinding.imageView);
+
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
         mBinding.backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(thisFragment.getId(), mFragment).commit());

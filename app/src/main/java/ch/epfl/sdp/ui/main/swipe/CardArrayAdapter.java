@@ -7,19 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.bumptech.glide.Glide;
 import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.ui.main.attending.AttendingEventAdapter;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-
 
 public class CardArrayAdapter extends ArrayAdapter<Event> {
 
@@ -40,7 +33,11 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
         TextView description = convertView.findViewById(R.id.eventDescription);
 
         name.setText(event.getTitle());
-        imageView.setImageResource(event.getImageID());
+
+            Glide.with(getContext())
+                    .load(event.getImageId())
+                    .into(imageView);
+
         description.setText(event.getDescription());
         return convertView;
     }

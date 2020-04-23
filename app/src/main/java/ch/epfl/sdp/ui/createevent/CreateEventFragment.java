@@ -1,37 +1,48 @@
 package ch.epfl.sdp.ui.createevent;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import java.text.ParseException;
-
+import java.util.UUID;
 import androidx.lifecycle.ViewModelProvider;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
+import ch.epfl.sdp.storage.Storage;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
-
+import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private FragmentCreateEventBinding mBinding;
@@ -41,15 +52,22 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int THRESHOLD = 2;
     private LatLng mSelectedLocation;
 
+    private static final int PERMISSION_STORAGE = 100;
+    private Uri mImageUri;
+    private String mImageId;
+
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setStorage(ServiceProvider.getInstance().getStorage());
+
     }
 
     @VisibleForTesting
-    public CreateEventFragment(@NonNull Database database) {
+    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
+        mFactory.setStorage(storage);
     }
 
     @Override
@@ -67,6 +85,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mViewModel = new ViewModelProvider(this, mFactory).get(CreateEventViewModel.class);
 
         mBinding.createButton.setOnClickListener(this);
+        mBinding.addImageButton.setOnClickListener(this);
     }
 
     @Override
@@ -79,7 +98,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                         public void onSuccess(String eventRef) {
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
-                            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                            getActivity().setResult(RESULT_OK, resultIntent);
                             getActivity().finish();
                         }
 
@@ -93,7 +112,44 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.addImageButton:
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_STORAGE);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean hasPermission = ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED;
+
+        if (hasPermission) {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, RC_CHOOSE_PHOTO);
+
+        } else {
+            Toast.makeText(getContext(), R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == RC_CHOOSE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                mImageUri = data.getData();
+                displayImage();
+                mViewModel.uploadImage(mImageUri);
+            } else {
+                Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void displayImage() {
+        Glide.with(this)
+                .load(this.mImageUri)
+                .into(this.mBinding.imageView);
+        mBinding.imageView.setTag("new_image");
     }
 
     @Override
@@ -122,6 +178,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setDate(date)
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
+                .setImageId(mViewModel.getImageId())
                 .build();
 
         mViewModel.insertEvent(event, callback);
@@ -159,4 +216,5 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
         mBinding.geoAutocompleteClear.setOnClickListener(v -> mBinding.geoAutocomplete.setText(""));
     }
+
 }
