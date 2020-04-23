@@ -53,7 +53,15 @@ public class FirestoreStorageTest {
     @Test
     public void FirestoreStorage_ListenersAddedOnUploadImage() {
         FirestoreStorage storage = new FirestoreStorage(mStorage);
-        
+
+        FirestoreStorage.UrlReadyCallback callback = new FirestoreStorage.UrlReadyCallback() {
+            @Override
+            public void onSuccess(String url) { }
+
+            @Override
+            public void onFailure() { }
+        };
+
         when(mStorage.getReference(anyString())).thenReturn(mRef);
         when(mRef.putFile(mUri)).thenReturn(mTask);
         when(mTask.addOnSuccessListener(any())).thenReturn(mStTask);

@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int progressChanged = FilterView.MIN_VALUE + progress;
                 mBinding.menuMainSearch.mSeekBarValue.setText(progressChanged + "km");
-                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress);
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress + FilterView.MIN_VALUE);
             }
 
             @Override
