@@ -15,10 +15,6 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
-
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,7 +32,6 @@ import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.storage.Storage;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
@@ -64,8 +59,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -160,8 +153,10 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_ImageNotSelected() {
+    public void CreateEventFragment_CorrectIntentImageSelection() {
         clickAddImageButton();
+
+        intended(hasAction("android.intent.action.PICK"));
 
         mDevice.pressBack();
 
@@ -169,15 +164,6 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.no_image_chosen))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void CreateEventFragment_CorrectIntentImageSelection() {
-        clickAddImageButton();
-
-        intended(hasAction("android.intent.action.PICK"));
-
-        mDevice.pressBack();
     }
 
     @Test
