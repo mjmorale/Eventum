@@ -41,8 +41,7 @@ public class CreateEventViewModel extends ViewModel {
     private final CollectionQuery mEventCollection;
     private final Database mDatabase;
     private final Storage mStorage;
-    private String mImageId = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
-            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
+    private String mImageId;
 
     public CreateEventViewModel(@NonNull Database database, @NonNull Storage storage) {
         mDatabase = verifyNotNull(database);

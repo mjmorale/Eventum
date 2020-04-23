@@ -34,9 +34,9 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
 
         name.setText(event.getTitle());
 
-        Glide.with(getContext())
-                .load(event.getImageId())
-                .into(imageView);
+            Glide.with(getContext())
+                    .load(event.getImageId())
+                    .into(imageView);
 
         description.setText(event.getDescription());
         return convertView;
