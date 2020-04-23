@@ -36,6 +36,8 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
+import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.UIConstants;
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -51,18 +53,20 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private static final int PERMISSION_STORAGE = 100;
     private Uri mImageUri;
-    private String mImageId = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
-            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
+    private String mImageId;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setStorage(new FirestoreStorage(FirebaseStorage.getInstance()));
+
     }
 
     @VisibleForTesting
-    public CreateEventFragment(@NonNull Database database) {
+    public CreateEventFragment(@NonNull Database database, @NonNull Storage storage) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
+        mFactory.setStorage(storage);
     }
 
     @Override
@@ -133,7 +137,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
                 displayImage();
-                uploadImageInFirebase();
+                mViewModel.uploadImage(mImageUri);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
@@ -145,19 +149,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .load(this.mImageUri)
                 .into(this.mBinding.imageView);
         mBinding.imageView.setTag("new_image");
-    }
-
-    private void uploadImageInFirebase() {
-        String imageUUID = UUID.randomUUID().toString();
-        StorageReference reference = FirebaseStorage.getInstance().getReference(imageUUID);
-        reference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!urlTask.isSuccessful());
-                mImageId = urlTask.getResult().toString();
-            }
-        });
     }
 
     @Override
@@ -186,7 +177,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setDate(date)
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
-                .setImageId(mImageId)
+                .setImageId(mViewModel.getImageId())
                 .build();
 
         mViewModel.insertEvent(event, callback);

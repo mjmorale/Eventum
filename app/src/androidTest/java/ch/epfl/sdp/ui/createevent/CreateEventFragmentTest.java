@@ -15,6 +15,10 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
+
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,6 +35,8 @@ import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.storage.Storage;
+
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
@@ -57,6 +63,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -86,6 +94,9 @@ public class CreateEventFragmentTest {
     private Database mDatabase;
 
     @Mock
+    private Storage mStorage;
+
+    @Mock
     private CollectionQuery mCollectionQuery;
 
     @Before
@@ -111,7 +122,7 @@ public class CreateEventFragmentTest {
                 CreateEventFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(CreateEventFragment.class, mDatabase));
+                new MockFragmentFactory<>(CreateEventFragment.class, mDatabase, mStorage));
 
         scenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();
@@ -177,7 +188,7 @@ public class CreateEventFragmentTest {
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         clickAddImageButton();
 
-        onView(withId(R.id.imageView)).check(matches(withTagValue(is((Object) "new_image"))));
+       onView(withId(R.id.imageView)).check(matches(withTagValue(is((Object) "new_image"))));
     }
 
     private void doCorrectInput() {
