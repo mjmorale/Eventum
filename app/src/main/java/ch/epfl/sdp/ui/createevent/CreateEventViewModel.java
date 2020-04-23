@@ -60,14 +60,10 @@ public class CreateEventViewModel extends ViewModel {
     public void uploadImage(@NonNull Uri imageUri) {
         mStorage.uploadImage(imageUri, new FirestoreStorage.UrlReadyCallback() {
             @Override
-            public void onSuccess(String url) {
-                mImageId = url;
-            }
+            public void onSuccess(String url) { mImageId = url; }
 
             @Override
-            public void onFailure() {
-                mImageId = null;
-            }
+            public void onFailure() { mImageId = null; }
         });
     }
 
