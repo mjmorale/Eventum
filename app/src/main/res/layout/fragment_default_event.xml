@@ -91,28 +91,38 @@
         android:gravity="center"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="1dp">
+        android:layout_margin="1dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="bottom|left"
             android:layout_margin="16dp"
             android:src="@drawable/check"
-            android:id="@+id/back_button"
             app:layout_anchorGravity="bottom|center" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sharingButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|center"
             android:layout_margin="16dp"
             android:backgroundTint="#47ECAA"
             android:clickable="true"
             android:src="@android:drawable/ic_menu_share"
             app:backgroundTint="@color/white"
             app:layout_anchorGravity="bottom|right" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chat_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|right"
+            android:clickable="true"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/sym_action_chat" />
     </LinearLayout>
 
 </RelativeLayout>

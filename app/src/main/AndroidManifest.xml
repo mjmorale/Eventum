@@ -17,6 +17,7 @@
 
         <activity android:name=".ui.event.EventActivity"
             android:label="Event"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".ui.main.MainActivity"/>
         <activity
             android:name=".ui.user.UserActivity"
