@@ -1,3 +1,4 @@
+
 package ch.epfl.sdp.ui.main.attending;
 
 import androidx.annotation.VisibleForTesting;

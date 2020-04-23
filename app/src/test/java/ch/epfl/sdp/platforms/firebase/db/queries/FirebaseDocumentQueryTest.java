@@ -32,6 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -304,6 +305,54 @@ public class FirebaseDocumentQueryTest {
 
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
         firebaseDocumentQuery.set(DUMMY_STRING, result -> {
+            assertFalse(result.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, result.getException());
+        });
+
+        mOnFailureListenerCaptor.getValue().onFailure(DUMMY_EXCEPTION);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Update_FailsWithNullFirstArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.update(null, new Object(), result -> {});
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Update_FailsWithNullSecondArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.update("field", null, result -> {});
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_Update_FailsWithNullThirdArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.update("field", new Object(), null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Update_ReturnsSuccessfullyIfSuccess() {
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mDocumentReference.update(anyString(), any())).thenReturn(mVoidTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.update("field", new Object(), result -> {
+            assertTrue(result.isSuccessful());
+            assertNull(result.getData());
+        });
+
+        mVoidSuccessListenerCaptor.getValue().onSuccess(null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_Update_ReturnsAnExceptionIfFailure() {
+        when(mVoidTask.addOnSuccessListener(mVoidSuccessListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mVoidTask.addOnFailureListener(mOnFailureListenerCaptor.capture())).thenReturn(mVoidTask);
+        when(mDocumentReference.update(anyString(), any())).thenReturn(mVoidTask);
+
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.update("field", new Object(), result -> {
             assertFalse(result.isSuccessful());
             assertEquals(DUMMY_EXCEPTION, result.getException());
         });
