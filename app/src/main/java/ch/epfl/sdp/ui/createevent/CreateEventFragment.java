@@ -38,6 +38,7 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.storage.Storage;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -57,8 +58,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        mFactory.setStorage(new FirestoreStorage(FirebaseStorage.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setStorage(ServiceProvider.getInstance().getStorage());
 
     }
 
