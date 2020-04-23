@@ -33,7 +33,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
 
     @VisibleForTesting
-    public SwipeFragment(Database database) {
+    public SwipeFragment(@NonNull Database database) {
         mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactory.setDatabase(database);
     }

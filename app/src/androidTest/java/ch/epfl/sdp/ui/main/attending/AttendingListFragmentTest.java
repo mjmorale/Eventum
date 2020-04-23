@@ -46,7 +46,7 @@ public class AttendingListFragmentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void AttendingListFragment() {
+    public void AttendingListFragment() throws ParseException {
         MutableLiveData<List<Event>> eventLiveData = new MutableLiveData<>();
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);

@@ -18,6 +18,8 @@ import ch.epfl.sdp.R;
 
 
 public class FilterView extends FrameLayout {
+    public static final int MIN_VALUE = 1;
+
     public SeekBar mSeekBarRange;
     public TextView mSeekBarValue;
     public MaterialDialog mDialog;

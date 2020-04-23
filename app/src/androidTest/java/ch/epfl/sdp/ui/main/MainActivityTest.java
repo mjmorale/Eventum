@@ -40,6 +40,7 @@ import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
+import ch.epfl.sdp.ui.settings.FilterView;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -87,15 +88,8 @@ public class MainActivityTest {
     public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Rule
-    public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-
-    @Rule
     public GrantPermissionRule permissionFineRule =
             GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
-
-    @Rule
-    public GrantPermissionRule permissionCoarseRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
     private static ViewAction setProgress(final int progress) {
         return new ViewAction() {
@@ -285,7 +279,7 @@ public class MainActivityTest {
                 .check(matches(withText("5km")));
 
         onView(withId(R.id.seekBar_range))
-                .perform(setProgress(10));
+                .perform(setProgress(10 + FilterView.MIN_VALUE));
 
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("10km")));

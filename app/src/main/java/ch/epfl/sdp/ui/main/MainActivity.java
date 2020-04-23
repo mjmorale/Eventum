@@ -38,6 +38,7 @@ import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
+import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
@@ -205,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBinding.menuMainSearch.mSeekBarValue.setText(progress + "km");
+                int progressChanged = FilterView.MIN_VALUE + progress;
+                mBinding.menuMainSearch.mSeekBarValue.setText(progressChanged + "km");
                 mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress);
             }
 

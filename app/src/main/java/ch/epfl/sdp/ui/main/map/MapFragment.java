@@ -1,6 +1,5 @@
 package ch.epfl.sdp.ui.main.map;
 
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,27 +32,26 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     private MapViewModel mViewModel;
-    private final MapViewModel.MapViewModelFactory mFactory;
-    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactorySettings;
+    private final MapViewModel.MapViewModelFactory mFactoryMap;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
     private FragmentMapBinding mBinding;
 
     private MapView mMapView;
-    private LocationService mLocationService;
-    private Location mLastKnownLocation;
     private float mZoomLevel = 12;
 
     @VisibleForTesting
     public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database) {
         verifyNotNull(mapManager, database, locationService);
-        mFactory = new MapViewModel.MapViewModelFactory();
-        mFactory.setMapManager(mapManager);
-        mFactorySettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFactorySettings.setDatabase(database);
-        mFactorySettings.setLocationService(locationService);
+        mFactoryMap = new MapViewModel.MapViewModelFactory();
+        mFactoryMap.setMapManager(mapManager);
+        mFactoryMap.setLocationService(locationService);
+        mFactoryFilterSettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFactoryFilterSettings.setDatabase(database);
+        mFactoryFilterSettings.setLocationService(locationService);
     }
 
     public MapFragment() {
-        mFactory = new MapViewModel.MapViewModelFactory();
+        mFactoryMap = new MapViewModel.MapViewModelFactory();
     }
 
     @Override
@@ -63,18 +61,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mLocationService = new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
-        mLastKnownLocation = mLocationService.getLastKnownLocation(getContext());
+        LocationService locationService =
+                new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
+        mFactoryMap.setLocationService(locationService);
 
         mMapView.getMapAsync(googleMap -> {
             googleMap.setOnMarkerClickListener(this);
             googleMap.setMyLocationEnabled(true);
 
-            mFactory.setMapManager(new GoogleMapManager(googleMap));
-            mViewModel = new ViewModelProvider(this, mFactory).get(MapViewModel.class);
+            mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
+            mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
 
             FilterSettingsViewModel filterSettingsViewModel =
-                    new ViewModelProvider(requireActivity(), mFactorySettings).get(FilterSettingsViewModel.class);
+                    new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
 
             filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
                 mViewModel.clearEvents();
@@ -82,7 +81,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     mViewModel.addEvent(event);
             });
 
-            mViewModel.moveCamera(mLastKnownLocation, mZoomLevel);
+            mViewModel.centerCamera(getContext(), mZoomLevel);
         });
 
         return mBinding.getRoot();
