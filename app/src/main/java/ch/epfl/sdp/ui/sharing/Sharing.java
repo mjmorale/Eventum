@@ -2,11 +2,12 @@ package ch.epfl.sdp.ui.sharing;
 
 import android.content.Intent;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 
+import java.util.List;
+
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 
 public class Sharing {
 

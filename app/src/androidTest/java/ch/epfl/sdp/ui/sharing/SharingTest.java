@@ -1,9 +1,5 @@
 package ch.epfl.sdp.ui.sharing;
 
-import android.net.Uri;
-import android.os.Bundle;
-
-import androidx.fragment.app.testing.FragmentScenario;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,16 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ch.epfl.sdp.auth.Authenticator;
 import java.util.Arrays;
 
-import ch.epfl.sdp.R;
-import ch.epfl.sdp.auth.UserInfo;
-import ch.epfl.sdp.mocks.MockFragmentFactory;
-import ch.epfl.sdp.ui.auth.AuthFragment;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SharingTest {
@@ -39,13 +26,19 @@ public class SharingTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void MyFragment_Test_CanDisplayAMessage() {
+    public void Sharing_Test() {
 
     }
 
     @Test
     public void sharing(){
         Sharing sharing = new Sharing(Arrays.asList("anyRef"));
+        assertTrue(sharing.getShareIntent()!=null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void sharing_null_argument(){
+        Sharing sharing = new Sharing(null);
         sharing.getShareIntent();
     }
 
@@ -53,6 +46,12 @@ public class SharingTest {
     public void sharingBuilder(){
         SharingBuilder sharingBuilder = new SharingBuilder();
         sharingBuilder.setRef("anyRef");
+        assertTrue(sharingBuilder.build()!=null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void sharingBuilder_null_argument(){
+        SharingBuilder sharingBuilder = new SharingBuilder();
         sharingBuilder.build();
     }
 }
