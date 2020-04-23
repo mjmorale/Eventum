@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -61,6 +62,7 @@ public class FilterSettingsViewModel extends ViewModel {
         }
         mCurrentLivedataSource =
                 mEventQuery.atLocation(locationGeoPoint, radiusSetting).liveData(Event.class);
+        mResultsLiveData.postValue(new ArrayList<>());
         mResultsLiveData.addSource(mCurrentLivedataSource, mResultsLiveData::postValue);
     }
 }
