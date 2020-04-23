@@ -45,7 +45,7 @@ public class AuthActivityTest {
     @Test
     public void AuthActivity_OnLoggedIn_LaunchesEventActivityWithSendActionIntent() {
         Intent sendAction = new Intent();
-        sendAction.setAction(Intent.ACTION_SEND);
+        sendAction.setAction(Intent.ACTION_VIEW);
         sendAction.setDataAndTypeAndNormalize(Uri.parse(Sharing.DOMAIN_URL + "/" + DUMMY_EVENT_REF), "text/plain");
 
         mActivity.launchActivity(sendAction);
