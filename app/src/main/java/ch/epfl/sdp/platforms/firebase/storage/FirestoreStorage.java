@@ -28,9 +28,11 @@ public class FirestoreStorage implements Storage {
         String imageUUID = UUID.randomUUID().toString();
         mStorage.getReference(imageUUID).putFile(imageUri).addOnSuccessListener( (UploadTask.TaskSnapshot t) -> {
                 Task<Uri> urlTask = t.getStorage().getDownloadUrl();
-                while (!urlTask.isSuccessful());
-                mUrl = urlTask.getResult().toString();
-                callback.onSuccess(mUrl);
+                urlTask.addOnCompleteListener(task -> {
+                    mUrl = urlTask.getResult().toString();
+                    callback.onSuccess(mUrl);
+                }
+            );
         }).addOnFailureListener( (Exception e) -> {
                 callback.onFailure();
         });
