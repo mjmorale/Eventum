@@ -38,6 +38,5 @@ public class FirestoreStorage implements Storage {
                 callback.onSuccess(mUrl);
             }
         });
-
     }
 }
