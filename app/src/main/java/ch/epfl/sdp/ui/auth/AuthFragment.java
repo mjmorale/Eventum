@@ -96,7 +96,6 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
             else {
-
                 if(mAuthListener != null) {
                     mAuthListener.onLoggedIn(userRef);
                 }
