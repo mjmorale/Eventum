@@ -276,7 +276,7 @@ public class MainActivityTest {
                 .check(matches(withText("5km")));
 
         onView(withId(R.id.seekBar_range))
-                .perform(setProgress(10 + FilterView.MIN_VALUE));
+                .perform(setProgress(9));
 
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("10km")));
