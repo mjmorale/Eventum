@@ -80,7 +80,24 @@ public class MainActivityTest {
 
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-    public static ViewAction setProgress(final int progress) {
+    @Rule
+    public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class, false, false);
+
+    @Rule
+    public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule permissionFineRule =
+            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule permissionCoarseRule =
+            GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+    private static ViewAction setProgress(final int progress) {
         return new ViewAction() {
             @Override
             public void perform(UiController uiController, View view) {
@@ -97,20 +114,6 @@ public class MainActivityTest {
             }
         };
     }
-
-    @Rule
-    public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class, false, false);
-
-    @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-
-    @Rule
-    public GrantPermissionRule permissionFineRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
-
-    @Rule
-    public GrantPermissionRule permissionCoarseRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
     @Before
     public void setup() {
