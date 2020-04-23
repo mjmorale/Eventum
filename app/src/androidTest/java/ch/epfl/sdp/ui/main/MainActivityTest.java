@@ -85,9 +85,6 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivity = new ActivityTestRule<>(MainActivity.class, false, false);
 
     @Rule
-    public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-
-    @Rule
     public GrantPermissionRule permissionFineRule =
             GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
