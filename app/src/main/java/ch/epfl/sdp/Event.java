@@ -80,6 +80,7 @@ public class Event implements Serializable {
     }
 
     public LatLng getLocation() {
+        // Necessary so that Event is Serializable
         return new LatLng(mLatitude, mLongitude);
     }
 
@@ -96,5 +97,22 @@ public class Event implements Serializable {
         return "Title:" + mTitle + "\nDescription:" + mDescription + "\nDate:" + mDate + "\nAddress:"
                 + mAddress + "\nLatitude:" + mLatitude + "\nLongitude:" + mLongitude
                 + "imageID" + mImageID;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o)
+            return true;
+        if(o == null)
+            return false;
+
+        if(getClass() != o.getClass())
+            return false;
+        Event obj = (Event) o;
+
+        return mTitle.equals(obj.mTitle) && mDescription.equals(obj.mDescription)
+                && mDate.equals(obj.mDate) && mAddress.equals(obj.mAddress)
+                && mLatitude == obj.mLatitude && mLongitude == obj.mLongitude
+                && mImageID == obj.mImageID;
     }
 }

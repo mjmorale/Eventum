@@ -5,6 +5,12 @@ import com.google.android.gms.maps.model.LatLng;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.security.spec.ECField;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -20,6 +26,7 @@ public class EventTest {
     LatLng location = new LatLng(100,100);
     String address = "Lausanne, Switzerland";
 
+    String TEST_FILE = "EventTest.txt";
 
     @Test
     public void EventBuilder_CheckCorrectData()
@@ -36,5 +43,32 @@ public class EventTest {
         assertEquals(e.getDescription(), description);
         assertEquals(e.getDate(), date);
         assertEquals(e.getAddress(), address);
+    }
+
+    @Test
+    public void Event_WrittenAndReadCorrectlyFromFile(){
+        Event e = new Event(title, description, date, address, location, 0);
+        try{
+            FileOutputStream f = new FileOutputStream(new File(TEST_FILE));
+            ObjectOutputStream o = new ObjectOutputStream((f));
+
+            o.writeObject(e);
+
+            o.close();
+            f.close();
+
+            FileInputStream fi = new FileInputStream(new File(TEST_FILE));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            Event eventRead = (Event) oi.readObject();
+
+            oi.close();
+            fi.close();
+
+            assertEquals(e, eventRead);
+
+        } catch (Exception exc){
+            exc.printStackTrace();
+        }
     }
 }
