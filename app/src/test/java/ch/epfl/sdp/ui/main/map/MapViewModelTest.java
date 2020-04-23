@@ -55,7 +55,7 @@ public class MapViewModelTest {
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         doNothing().when(mEventsLiveData).observeForever(any());
 
-        MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
+        MapViewModel viewModel = new MapViewModel(mMapManager, mDatabase);
         verify(mDatabase).query("events");
     }
 
@@ -66,7 +66,7 @@ public class MapViewModelTest {
         doNothing().when(mEventsLiveData).observeForever(any());
 
         float zoomLevel = 4;
-        MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
+        MapViewModel viewModel = new MapViewModel(mMapManager, mDatabase);
         viewModel.moveCamera(mLocation, zoomLevel);
         verify(mMapManager).moveCamera(mLocation, zoomLevel);
     }
@@ -77,7 +77,7 @@ public class MapViewModelTest {
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         doNothing().when(mEventsLiveData).observeForever(any());
 
-        MapViewModel viewModel = new MapViewModel(mDatabase, mMapManager);
+        MapViewModel viewModel = new MapViewModel(mMapManager, mDatabase);
         viewModel.addEvent(mMarker, mEvent);
         Event event = viewModel.getEventFromMarker(mMarker);
         assertEquals(event, mEvent);

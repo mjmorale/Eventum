@@ -59,7 +59,7 @@ public class MapFragmentTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mDatabaseMock, mMapManagerMock)
+                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mDatabaseMock)
         );
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
