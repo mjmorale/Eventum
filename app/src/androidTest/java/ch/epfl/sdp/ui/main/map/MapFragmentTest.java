@@ -20,6 +20,8 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.mocks.MockLocationService;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -30,9 +32,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MapFragmentTest {
 
-    @Rule public GrantPermissionRule mPermissionFine = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
-    @Rule public GrantPermissionRule mPermissionCoarse = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-
     @Mock
     private Database mDatabaseMock;
 
@@ -40,6 +39,8 @@ public class MapFragmentTest {
     private CollectionQuery mCollectionQuery;
 
     private MutableLiveData<List<Event>> mEventsLive = new MutableLiveData<>();
+
+    private MockLocationService mMockLocationService = new MockLocationService();
 
     @Mock
     private MapManager mMapManagerMock;
@@ -59,7 +60,7 @@ public class MapFragmentTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mDatabaseMock)
+                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
         );
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
