@@ -1,12 +1,17 @@
 package ch.epfl.sdp.ui.main;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,29 +19,36 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import androidx.lifecycle.ViewModelProvider;
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
-
+import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private final static int PERMISSION_LOCATION = 0;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFilterSettingsFactory;
 
     private ActivityMainBinding mBinding;
+    private FilterSettingsViewModel mFilterSettingsViewModel;
     private MainViewModel mViewModel;
     private final MainViewModel.MainViewModelFactory mFactory;
 
@@ -51,8 +63,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        setupFilterSettingsFactory();
+        mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
+
         View view = mBinding.getRoot();
         setContentView(view);
+        setSupportActionBar(mBinding.mainToolbar);
 
         setupToolbarNavigation();
 
@@ -60,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFactory.setUserRef(getUserRefFromIntent(getIntent()));
         mViewModel = new ViewModelProvider(this, mFactory).get(MainViewModel.class);
         mViewModel.getUser().observe(this, user -> {
-            if(user != null) {
+            if (user != null) {
                 TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
                 TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
 
@@ -69,11 +86,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        addFilterSettingsListener();
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new SwipeFragment())
-                    .commit();
+            ActivityCompat.requestPermissions(this, new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    PERMISSION_LOCATION);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int result: grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                finish();
+            }
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new SwipeFragment())
+                .commit();
     }
 
     @Override
@@ -89,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = getUserRefIntent(CreateEventActivity.class);
 
                 startActivityForResult(intent, UIConstants.RC_CREATE_EVENT);
+                break;
+            case R.id.main_actionbar_search:
+                mBinding.menuMainSearch.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -167,6 +202,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void addFilterSettingsListener() {
+        mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int progressChanged = FilterView.MIN_VALUE + progress;
+                mBinding.menuMainSearch.mSeekBarValue.setText(progressChanged + "km");
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
     private void setupToolbarNavigation() {
         setSupportActionBar(mBinding.mainToolbar);
 
@@ -178,6 +232,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_main_drawer_open, R.string.navigation_main_drawer_close);
         mBinding.mainDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void setupFilterSettingsFactory() {
+        LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+
+        mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsFactory.setLocationService(locationService);
     }
 
     private String getUserRefFromIntent(Intent intent) {
