@@ -16,18 +16,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseFilterQuery;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FirebaseFilterQueryTest {
@@ -77,70 +72,9 @@ public class FirebaseFilterQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseFilterQuery_Get_FailsWithNullFirstArgument() {
+    public void FirebaseFilterQuery_Get_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.get(null, result -> {});
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void FirebaseFilterQuery_Get_FailsWithNullSecondArgument() {
-        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.get(String.class, null);
-    }
-
-    @Test
-    public void FirebaseFilterQuery_Get_CallsCallbackWithDeserializedListOfObjects() {
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mDocumentSnapshot1.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[0]));
-        when(mDocumentSnapshot2.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[1]));
-        when(mDocumentSnapshot3.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[2]));
-        when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
-        when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>(Arrays.asList(mDocumentSnapshot1, mDocumentSnapshot2, mDocumentSnapshot3)));
-        when(mQuery.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.get(String.class, s -> {
-            assertTrue(s.isSuccessful());
-            for(int i = 0; i < s.getData().size(); i++) {
-                assertEquals(DUMMY_STRINGS[i], s.getData().get(i));
-            }
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
-    }
-
-    @Test
-    public void FirebaseFilterQuery_Get_CallsCallbackWithEmptyListIfNoResults() {
-        when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>());
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mQuery.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.get(String.class, result -> {
-            assertTrue(result.isSuccessful());
-            assertTrue(result.getData().isEmpty());
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
-    }
-
-    @Test
-    public void FirebaseFilterQuery_Get_CallsCallbackWithExceptionIfAnErrorOccurs() {
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(false);
-        when(mQuerySnapshotTask.getException()).thenReturn(DUMMY_EXCEPTION);
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mQuery.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.get(String.class, result -> {
-            assertFalse(result.isSuccessful());
-            assertEquals(DUMMY_EXCEPTION, result.getException());
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+        firebaseFilterQuery.get(null);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -194,17 +128,13 @@ public class FirebaseFilterQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseFilterQuery_Livedata_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(null);
+        firebaseFilterQuery.liveData(null);
     }
 
     @Test
-    public void FirebaseFilterQuery_Livedata_CreationOfLivedataDoesNotFail() {
+    public void FirebaseFilterQuery_Livedata_CreationDoesNotFail() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(String.class);
+        firebaseFilterQuery.liveData(String.class);
     }
-
-
-
-
 
 }

@@ -3,21 +3,21 @@ package ch.epfl.sdp.db.queries;
 import androidx.annotation.NonNull;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.future.Future;
 
-public interface DocumentQuery extends Query {
+public interface DocumentQuery {
 
-    CollectionQuery collection(String collection);
+    CollectionQuery collection(@NonNull String collection);
 
-    void exists(@NonNull OnQueryCompleteCallback<Boolean> callback);
+    Future<Boolean> exists();
 
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback);
+    <T> Future<T> get(@NonNull Class<T> type);
 
-    <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback);
+    <T> Future<Void> set(@NonNull T object);
 
-    void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback);
+    Future<Void> update(@NonNull String field, @NonNull Object value);
 
     <T> LiveData<T> livedata(@NonNull Class<T> type);
 
-    void delete(@NonNull OnQueryCompleteCallback<Void> callback);
+    Future<Void> delete();
 }

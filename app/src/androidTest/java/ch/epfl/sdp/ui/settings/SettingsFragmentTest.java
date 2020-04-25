@@ -5,11 +5,10 @@ import android.content.Intent;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.rule.ActivityTestRule;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 
 import org.junit.Rule;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -18,10 +17,11 @@ import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.future.Future;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -42,8 +42,8 @@ public class SettingsFragmentTest {
     @Mock
     protected Authenticator<AuthCredential> mAuthenticator;
 
-    @Captor
-    protected ArgumentCaptor<Query.OnQueryCompleteCallback<Void>> mOnQueryCompleteCallbackArgumentCaptor;
+    @Mock
+    protected Task<Void> mVoidTask;
 
     protected MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
 
@@ -55,6 +55,8 @@ public class SettingsFragmentTest {
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
+        when(mDocumentQuery.update(any(), any())).thenReturn(new Future<>(mVoidTask));
+        when(mDocumentQuery.delete()).thenReturn(new Future<>(mVoidTask));
         when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticator);
         ServiceProvider.getInstance().setDatabase(mDatabase);

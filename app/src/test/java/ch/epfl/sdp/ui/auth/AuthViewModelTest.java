@@ -1,12 +1,7 @@
 package ch.epfl.sdp.ui.auth;
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -14,13 +9,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.db.queries.Query;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -48,9 +41,6 @@ public class AuthViewModelTest {
     @Mock
     private DocumentQuery mDocumentQuery;
 
-    @Captor
-    private ArgumentCaptor<Query.OnQueryCompleteCallback<Boolean>> mBooleanQueryCompleteCallbackArgumentCaptor;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -64,16 +54,5 @@ public class AuthViewModelTest {
     @Test(expected = IllegalArgumentException.class)
     public void LoginAuthViewModel_Constructor_FailsIfSecondParameterIsNull() {
         AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, null);
-    }
-
-    @Test
-    public void LoginAuthViewModel_Constructor_CreateUserIfActive() {
-        when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
-        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
-        doNothing().when(mDocumentQuery).exists(mBooleanQueryCompleteCallbackArgumentCaptor.capture());
-        when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-
-        AuthViewModel<String> mLoginAuthViewModel = new AuthViewModel<>(mAuthenticator, mDatabase);
-        verify(mCollectionQuery).document(DUMMY_UID);
     }
 }

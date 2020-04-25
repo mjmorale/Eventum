@@ -48,13 +48,9 @@ public class CreateEventViewModel extends ViewModel {
     }
 
     public void insertEvent(@NonNull Event event, @NonNull OnEventCreatedCallback callback) {
-        mEventCollection.create(event, res -> {
-            if(res.isSuccessful()) {
-                callback.onSuccess(res.getData());
-            } else {
-                callback.onFailure(res.getException());
-            }
-        });
+        mEventCollection.create(event)
+                .then(callback::onSuccess)
+                .except(callback::onFailure);
     }
 
     public void uploadImage(@NonNull Uri imageUri) {

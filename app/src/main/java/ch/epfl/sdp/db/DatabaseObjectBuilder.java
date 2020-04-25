@@ -60,24 +60,37 @@ public abstract class DatabaseObjectBuilder<T> {
      *
      * @return The database compatible structure.
      */
-    @Nullable
     public abstract Map<String, Object> serializeToMap(@NonNull T object);
 
     /**
-     * Extracts the location parameter of an instance of T.
+     * Extracts the latitude parameter of an instance of T.
      * 
      * This method needs to be implemented if the object contains a location, i.e. the
      * <code>hasLocation</code> function returns <code>true</code>.
-     * Otherwise, this function can safely return <code>null</code>.
+     * Otherwise, this function can safely return anything.
      *
      * @param object An instance of T to extract the location from.
      * @throws IllegalArgumentException The object is null.
      *
-     * @return The location object or null if T does not have a location.
+     * @return The latitude of the instance of T.
      * @see #hasLocation()
      */
-    @Nullable
-    public abstract LatLng getLocation(@NonNull T object);
+    public abstract double getLatitude(@NonNull T object);
+
+    /**
+     * Extracts the longitude parameter of an instance of T.
+     *
+     * This method needs to be implemented if the object contains a location, i.e. the
+     * <code>hasLocation</code> function returns <code>true</code>.
+     * Otherwise, this function can safely return anything.
+     *
+     * @param object An instance of T to extract the location from.
+     * @throws IllegalArgumentException The object is null.
+     *
+     * @return The longitude of the instance of T.
+     * @see #hasLocation()
+     */
+    public abstract double getLongitude(@NonNull T object);
 
     /**
      * Checks that the provided data contains a specific set of arguments.

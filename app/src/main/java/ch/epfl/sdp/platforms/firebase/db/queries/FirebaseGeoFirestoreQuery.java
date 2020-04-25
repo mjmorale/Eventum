@@ -2,6 +2,7 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -18,8 +19,7 @@ import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.LocationQuery;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.future.Future;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -38,46 +38,29 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
     }
 
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
-        verifyNotNull(type, callback);
+    public <T> Future<List<T>> get(@NonNull Class<T> type) {
+        verifyNotNull(type);
 
-        mGeoFirestore.getAtLocation(mLocation, mRadius, (list, e) -> {
-            handleLocationQuerySnapshot(list, e, type, callback); }
-            );
+        final TaskCompletionSource<List<T>> geoTask = new TaskCompletionSource<>();
+        mGeoFirestore.getAtLocation(mLocation, mRadius, (documents, e) -> {
+            if(e == null) {
+                DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
+                List<T> data = new ArrayList<>();
+                for(DocumentSnapshot doc: documents) {
+                    data.add(builder.buildFromMap(doc.getData()));
+                }
+                geoTask.setResult(data);
+            }
+            else {
+                geoTask.setException(e);
+            }
+        });
+        return new Future<>(geoTask.getTask());
     }
 
     @Override
-    public <T> LiveData<Collection<T>> liveData(@NonNull Class<T> type) {
-        return new GeoFirestoreLiveData<T>(mGeoFirestore.queryAtLocation(mLocation, mRadius), verifyNotNull(type));
+    public <T> LiveData<List<T>> liveData(@NonNull Class<T> type) {
+        return new GeoFirestoreLiveData<>(mGeoFirestore.queryAtLocation(mLocation, mRadius), verifyNotNull(type));
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> void handleLocationQuerySnapshot(@Nullable List<? extends DocumentSnapshot> documents,
-                                                 @Nullable Exception e,
-                                                 @NonNull Class<T> type,
-                                                 @NonNull Query.OnQueryCompleteCallback callback) {
-        verifyNotNull(type, callback);
-
-        if(documents == null) {
-            callback.onQueryComplete(QueryResult.failure(e));
-        }
-        else {
-            DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
-            List<T> data = new ArrayList<>();
-            for(DocumentSnapshot doc: documents) {
-                data.add(builder.buildFromMap(doc.getData()));
-            }
-            callback.onQueryComplete(QueryResult.success(data));
-        }
-    }
-
-    @VisibleForTesting
-    public GeoPoint getmLocation(){
-        return mLocation;
-    }
-
-    @VisibleForTesting
-    public double getmRadius(){
-        return mRadius;
-    }
 }

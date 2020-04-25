@@ -5,12 +5,9 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.future.Future;
 
-import com.google.firebase.firestore.GeoPoint;
-
-import org.imperiumlabs.geofirestore.GeoFirestore.CompletionCallback;
-
-public interface CollectionQuery extends Query {
+public interface CollectionQuery {
 
     DocumentQuery document(@NonNull String document);
 
@@ -20,12 +17,12 @@ public interface CollectionQuery extends Query {
 
     FilterQuery limitCount(int count);
 
-    LocationQuery atLocation(GeoPoint location, double radius);
+    LocationQuery atLocation(double latitude, double longitude, double radius);
 
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> Future<List<T>> get(@NonNull Class<T> type);
 
     <T> LiveData<List<T>> liveData(@NonNull Class<T> type);
 
-    <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback);
+    <T> Future<String> create(@NonNull T object);
 
 }

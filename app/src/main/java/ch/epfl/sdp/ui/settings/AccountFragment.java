@@ -82,12 +82,11 @@ public class AccountFragment extends PreferenceFragmentCompat {
 
         accountNamePreference.setOnBindEditTextListener(TextView::setSingleLine);
         accountNamePreference.setOnPreferenceChangeListener((preference, newValue) -> {
-            mViewModel.setUserName((String)newValue, result -> {
-                if(!result.isSuccessful()) {
-                    Log.e(TAG, "Failed to set new username", result.getException());
-                    Toast.makeText(getContext(), "Cannot set username", Toast.LENGTH_LONG).show();
-                }
-            });
+            mViewModel.setUserName((String)newValue)
+                    .except(e -> {
+                        Log.e(TAG, "Failed to set new username", e);
+                        Toast.makeText(getContext(), "Cannot set username", Toast.LENGTH_LONG).show();
+                    });
             return false;
         });
     }
@@ -101,19 +100,18 @@ public class AccountFragment extends PreferenceFragmentCompat {
                     .setTitle("Delete Account")
                     .setMessage("You are about to delete your user account. Are you sure ?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        mViewModel.deleteAccount(result -> {
-                            if(result.isSuccessful()) {
-                                mViewModel.logout();
+                        mViewModel.deleteAccount()
+                                .then(data -> {
+                                    mViewModel.logout();
 
-                                if(mLogoutListener != null) {
-                                    mLogoutListener.onLogout();
-                                }
-                            }
-                            else {
-                                Log.e(TAG, "Failed to delete account", result.getException());
-                                Toast.makeText(getContext(), "Cannot delete account", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                                    if(mLogoutListener != null) {
+                                        mLogoutListener.onLogout();
+                                    }
+                                })
+                                .except(e -> {
+                                    Log.e(TAG, "Failed to delete account", e);
+                                    Toast.makeText(getContext(), "Cannot delete account", Toast.LENGTH_LONG).show();
+                                });
                     })
                     .setNegativeButton("No", null)
                     .show();

@@ -23,9 +23,9 @@ public class UserInfo {
      * @param email The user's email address
      * @throws IllegalArgumentException One or more argument is null.
      */
-    public UserInfo(@NonNull String uid, @NonNull String displayName, @NonNull String email) {
+    public UserInfo(@NonNull String uid, String displayName, @NonNull String email) {
         mUid = verifyNotNull(uid);
-        mDisplayName = verifyNotNull(displayName);
+        mDisplayName = displayName;
         mEmail = verifyNotNull(email);
     }
 
@@ -39,6 +39,7 @@ public class UserInfo {
     /**
      * @return The user's name.
      */
+    @Nullable
     public String getDisplayName() {
         return mDisplayName;
     }

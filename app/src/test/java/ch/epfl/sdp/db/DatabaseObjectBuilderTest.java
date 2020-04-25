@@ -1,9 +1,6 @@
 package ch.epfl.sdp.db;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.junit.Test;
 
@@ -45,10 +42,14 @@ public class DatabaseObjectBuilderTest {
             }};
         }
 
-        @Nullable
         @Override
-        public LatLng getLocation(@NonNull String object) {
-            return null;
+        public double getLatitude(@NonNull String object) {
+            return 0;
+        }
+
+        @Override
+        public double getLongitude(@NonNull String object) {
+            return 0;
         }
     }
 

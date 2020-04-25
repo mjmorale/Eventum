@@ -8,9 +8,9 @@ import java.util.Map;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class ChatMessageDatabaseBuilderTest {
-
 
     String text = "text";
     Date date = new Date();
@@ -20,7 +20,6 @@ public class ChatMessageDatabaseBuilderTest {
 
     @Test
     public void EventDatabaseObjectBuilder_CheckSymmetry() {
-
         Map<String, Object> data =
                 DatabaseObjectBuilderRegistry.getBuilder(ChatMessage.class).serializeToMap(chatMessage);
         ChatMessage resultChatMessage = DatabaseObjectBuilderRegistry.getBuilder(ChatMessage.class).buildFromMap(data);
@@ -29,8 +28,7 @@ public class ChatMessageDatabaseBuilderTest {
         assertEquals(chatMessage.getDate(), resultChatMessage.getDate());
         assertEquals(chatMessage.getUid(), resultChatMessage.getUid());
         assertEquals(chatMessage.getName(), resultChatMessage.getName());
-        assertEquals(new ChatMessageDatabaseBuilder().getLocation(null), null);
-        assertEquals(new ChatMessageDatabaseBuilder().hasLocation(), false);
+        assertFalse(new ChatMessageDatabaseBuilder().hasLocation());
     }
 
 }

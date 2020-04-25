@@ -16,16 +16,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.UserInfo;
-import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,16 +59,16 @@ public class FirebaseAuthenticatorTest {
     }
 
     @Test
-    public void firebaseAuthenticator_GetCurrentUser_ReturnsNullIfNoUserConnected() {
+    public void firebaseAuthenticator_GetCurrentUserInfo_ReturnsNullIfNoUserConnected() {
         when(mAuth.getCurrentUser()).thenReturn(null);
 
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        assertNull(authenticator.getCurrentUser());
+        assertNull(authenticator.getCurrentUserInfo());
     }
 
     @Test
-    public void firebaseAuthenticator_GetCurrentUser_ReturnsCorrectUserIfConnected() {
+    public void firebaseAuthenticator_GetCurrentUserInfo_ReturnsCorrectUserIfConnected() {
         when(mUser.getUid()).thenReturn(DUMMY_UID);
         when(mUser.getDisplayName()).thenReturn(DUMMY_NAME);
         when(mUser.getEmail()).thenReturn(DUMMY_EMAIL);
@@ -81,7 +78,7 @@ public class FirebaseAuthenticatorTest {
 
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        assertEquals(expectedUserInfo, authenticator.getCurrentUser());
+        assertEquals(expectedUserInfo, authenticator.getCurrentUserInfo());
     }
 
     @Test
@@ -97,112 +94,13 @@ public class FirebaseAuthenticatorTest {
     public void firebaseAuthenticator_Login_FailsWithNullEmail() {
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        authenticator.login(null, DUMMY_PASSWORD, null);
+        authenticator.login(null, DUMMY_PASSWORD);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void firebaseAuthenticator_Login_FailsWithNullPassword() {
         FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
 
-        authenticator.login(DUMMY_EMAIL, null, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void firebaseAuthenticator_Login_FailsWithNullCredentials() {
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        authenticator.login(null, null);
-    }
-
-    @Test
-    public void firebaseAuthenticator_Login_SuccessfullyLogInUserWithCorrectMail() {
-        when(mAuth.createUserWithEmailAndPassword(DUMMY_EMAIL, DUMMY_PASSWORD)).thenReturn(mAuthResultTask);
-        when(mAuth.getCurrentUser()).thenReturn(mUser);
-        when(mUser.getUid()).thenReturn(DUMMY_UID);
-        when(mUser.getDisplayName()).thenReturn(DUMMY_NAME);
-        when(mUser.getEmail()).thenReturn(DUMMY_EMAIL);
-        when(mAuthResultTask.isSuccessful()).thenReturn(true);
-        when(mAuthResultTask.addOnCompleteListener(authResultCompleteListenerCaptor.capture())).thenReturn(null);
-
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        UserInfo expectedUserInfo = new UserInfo(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
-        authenticator.login(DUMMY_EMAIL, DUMMY_PASSWORD, result -> {
-            assertTrue(result.isSuccessful());
-            assertEquals(expectedUserInfo, result.getUserInfo());
-        });
-
-        authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
-    }
-
-    @Test
-    public void firebaseAuthenticator_Login_FailureReturnNullUserAndCorrectException() {
-        Exception exception = new Exception("dummy exception");
-        when(mAuth.createUserWithEmailAndPassword(DUMMY_EMAIL, DUMMY_PASSWORD)).thenReturn(mAuthResultTask);
-        when(mAuthResultTask.isSuccessful()).thenReturn(false);
-        when(mAuthResultTask.getException()).thenReturn(exception);
-        when(mAuthResultTask.addOnCompleteListener(authResultCompleteListenerCaptor.capture())).thenReturn(null);
-
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        authenticator.login(DUMMY_EMAIL, DUMMY_PASSWORD, result -> {
-            assertFalse(result.isSuccessful());
-            assertEquals(exception, result.getException());
-        });
-
-        authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void firebaseAuthenticator_Login_FailsWhenCallbackIsNull() {
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        authenticator.login(DUMMY_EMAIL, DUMMY_PASSWORD, null);
-    }
-
-    @Test
-    public void firebaseAuthenticator_LoginWithCredential_SuccessfullyLogInUserWithCorrectCredential() {
-        when(mAuth.signInWithCredential(any(AuthCredential.class))).thenReturn(mAuthResultTask);
-        when(mAuth.getCurrentUser()).thenReturn(mUser);
-        when(mUser.getUid()).thenReturn(DUMMY_UID);
-        when(mUser.getDisplayName()).thenReturn(DUMMY_NAME);
-        when(mUser.getEmail()).thenReturn(DUMMY_EMAIL);
-        when(mAuthResultTask.isSuccessful()).thenReturn(true);
-        when(mAuthResultTask.addOnCompleteListener(authResultCompleteListenerCaptor.capture())).thenReturn(null);
-
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        UserInfo expectedUserInfo = new UserInfo(DUMMY_UID, DUMMY_NAME, DUMMY_EMAIL);
-        authenticator.login(mAuthCredential, result -> {
-            assertTrue(result.isSuccessful());
-            assertEquals(expectedUserInfo, result.getUserInfo());
-        });
-
-        authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
-    }
-
-    @Test
-    public void firebaseAuthenticator_LoginWithCredential_FailureReturnNullUserAndCorrectException() {
-        Exception exception = new Exception("dummy exception");
-        when(mAuth.signInWithCredential(any(AuthCredential.class))).thenReturn(mAuthResultTask);
-        when(mAuthResultTask.isSuccessful()).thenReturn(false);
-        when(mAuthResultTask.getException()).thenReturn(exception);
-        when(mAuthResultTask.addOnCompleteListener(authResultCompleteListenerCaptor.capture())).thenReturn(null);
-
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        authenticator.login(mAuthCredential, result -> {
-            assertFalse(result.isSuccessful());
-            assertEquals(exception, result.getException());
-        });
-
-        authResultCompleteListenerCaptor.getValue().onComplete(mAuthResultTask);
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void firebaseAuthenticator_LoginWithCredential_FailsWhenCallbackIsNull() {
-        FirebaseAuthenticator authenticator = new FirebaseAuthenticator(mAuth);
-
-        authenticator.login(mAuthCredential, null);
+        authenticator.login(DUMMY_EMAIL, null);
     }
 }
