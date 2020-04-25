@@ -18,7 +18,6 @@ public class FirebaseQueryLiveData<TType> extends FirebaseLiveData<TType, List<T
 
     FirebaseQueryLiveData(@NonNull Query query, @NonNull Class<TType> type) {
         super(type);
-
         mQuery = verifyNotNull(query);
     }
 

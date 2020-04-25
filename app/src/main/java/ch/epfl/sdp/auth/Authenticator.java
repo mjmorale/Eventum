@@ -2,6 +2,7 @@ package ch.epfl.sdp.auth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import ch.epfl.sdp.future.Future;
 
 /**
  * Interface that represents an authentication service for users in the application.
@@ -11,37 +12,25 @@ import androidx.annotation.Nullable;
 public interface Authenticator<T> {
 
     /**
-     * Callback interface for authentication operations.
-     */
-    interface OnLoginCallback {
-
-        /**
-         * Called after a login operation is complete.
-         *
-         * @param result The login operation result.
-         * @see AuthenticationResult
-         */
-        void onLoginComplete(@NonNull AuthenticationResult result);
-    }
-
-    /**
      * Try to login using an email address and a password.
      *
      * @param email The user's email address.
      * @param password The user's password.
-     * @param callback The authentication operation callback.
      * @throws IllegalArgumentException One or more argument is null.
+     *
+     * @return The future result of the authentication request.
      */
-    void login(@NonNull String email, @NonNull String password, @NonNull final OnLoginCallback callback);
+    Future<UserInfo> login(@NonNull String email, @NonNull String password);
 
     /**
      * Try to login using a credential object.
      *
      * @param credential The credential object.
-     * @param callback The authentication operation callback.
      * @throws IllegalArgumentException One or more argument is null.
+     *
+     * @return The future result of the authentication request.
      */
-    void login(@NonNull T credential, @NonNull final OnLoginCallback callback);
+    Future<UserInfo> login(@NonNull T credential);
 
     /**
      * Logout the current user. If no user is logged in then this is a harmless no-op.
@@ -50,8 +39,7 @@ public interface Authenticator<T> {
 
     /**
      * @return The current logged in user information or null if no user is logged in.
-     * @see UserInfo
      */
     @Nullable
-    UserInfo getCurrentUser();
+    UserInfo getCurrentUserInfo();
 }

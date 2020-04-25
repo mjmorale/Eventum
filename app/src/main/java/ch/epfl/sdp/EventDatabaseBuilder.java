@@ -13,6 +13,7 @@ import java.util.Map;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
+
     @Override
     public Event buildFromMap(@NonNull Map data) {
         String title = (String) data.get("title");
@@ -48,9 +49,13 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         }};
     }
 
-    @Nullable
     @Override
-    public LatLng getLocation(@NonNull Event object) {
-        return object.getLocation();
+    public double getLatitude(@NonNull Event object) {
+        return object.getLocation().latitude;
+    }
+
+    @Override
+    public double getLongitude(@NonNull Event object) {
+        return object.getLocation().longitude;
     }
 }

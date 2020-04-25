@@ -7,7 +7,7 @@ import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.future.Future;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -44,14 +44,13 @@ public class SettingsViewModel extends ViewModel {
         return mUserLiveData;
     }
 
-    public void setUserName(@NonNull String username, @NonNull Query.OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(username, callback);
-        mUserDocument.update("username", username, callback);
+    public Future<Void> setUserName(@NonNull String username) {
+        verifyNotNull(username);
+        return mUserDocument.update("username", username);
     }
 
-    public void deleteAccount(@NonNull Query.OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(callback);
-        mUserDocument.delete(callback);
+    public Future<Void> deleteAccount() {
+        return mUserDocument.delete();
     }
 
     public void logout() {

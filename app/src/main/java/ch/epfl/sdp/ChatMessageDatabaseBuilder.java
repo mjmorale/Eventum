@@ -21,7 +21,6 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
         String uid = (String) data.get("uid");
         String name = (String) data.get("name");
 
-
         ChatMessage message = new ChatMessage(text, timestamp.toDate(), uid, name);
         return message;
     }
@@ -41,9 +40,13 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
         }};
     }
 
-    @Nullable
     @Override
-    public LatLng getLocation(@NonNull ChatMessage message) {
-        return null;
+    public double getLatitude(@NonNull ChatMessage object) {
+        return 0;
+    }
+
+    @Override
+    public double getLongitude(@NonNull ChatMessage object) {
+        return 0;
     }
 }

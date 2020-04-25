@@ -8,9 +8,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import ch.epfl.sdp.auth.AuthenticationResult;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
+import ch.epfl.sdp.future.Future;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -32,19 +32,19 @@ public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
     }
 
     @Override
-    public void login(@NonNull String email, @NonNull String password, @NonNull final OnLoginCallback callback) {
-        verifyNotNull(email, password, callback);
+    public Future<UserInfo> login(@NonNull String email, @NonNull String password) {
+        verifyNotNull(email, password);
 
         Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(email, password);
-        handleAuthResultTask(authResultTask, callback);
+        return handleAuthResultTask(authResultTask);
     }
 
     @Override
-    public void login(@NonNull AuthCredential credential, @NonNull final OnLoginCallback callback) {
-        verifyNotNull(credential, callback);
+    public Future<UserInfo> login(@NonNull AuthCredential credential) {
+        verifyNotNull(credential);
 
         Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
-        handleAuthResultTask(authResultTask, callback);
+        return handleAuthResultTask(authResultTask);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
         mAuth.signOut();
     }
 
-    @Override
     @Nullable
-    public UserInfo getCurrentUser() {
+    @Override
+    public UserInfo getCurrentUserInfo() {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if(firebaseUser == null) {
             return null;
@@ -62,16 +62,15 @@ public class FirebaseAuthenticator implements Authenticator<AuthCredential> {
         return new UserInfo(firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getEmail());
     }
 
-    private void handleAuthResultTask(@NonNull Task<AuthResult> authResultTask, @NonNull OnLoginCallback callback) {
-        verifyNotNull(authResultTask, callback);
-
-        authResultTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                UserInfo userInfo = getCurrentUser();
-                callback.onLoginComplete(AuthenticationResult.success(userInfo));
-            } else {
-                callback.onLoginComplete(AuthenticationResult.failure(task.getException()));
+    private Future<UserInfo> handleAuthResultTask(Task<AuthResult> authResultTask) {
+        return new Future<>(authResultTask.continueWith(task -> {
+            FirebaseUser user = task.getResult().getUser();
+            if(user != null) {
+                return new UserInfo(user.getUid(), user.getDisplayName(), user.getEmail());
             }
-        });
+            else {
+                throw new NullPointerException("No user connected");
+            }
+        }));
     }
 }

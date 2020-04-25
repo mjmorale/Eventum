@@ -34,9 +34,13 @@ public class MockStringBuilder extends DatabaseObjectBuilder<String> {
         return result;
     }
 
-    @Nullable
     @Override
-    public LatLng getLocation(@NonNull String object) {
-        return null;
+    public double getLatitude(@NonNull String object) {
+        return 0;
+    }
+
+    @Override
+    public double getLongitude(@NonNull String object) {
+        return 0;
     }
 }

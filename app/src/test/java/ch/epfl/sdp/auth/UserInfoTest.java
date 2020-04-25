@@ -16,11 +16,6 @@ public class UserInfoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void UserInfo_Constructor_FailsIfNameIsNull() {
-        UserInfo info = new UserInfo(DUMMY_UID, null, DUMMY_EMAIL);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void UserInfo_Constructor_FailsIfEmailIsNull() {
         UserInfo user = new UserInfo(DUMMY_UID, DUMMY_NAME, null);
     }

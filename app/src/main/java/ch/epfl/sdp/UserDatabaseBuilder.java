@@ -1,12 +1,9 @@
 package ch.epfl.sdp;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 /**
@@ -38,13 +35,17 @@ public class UserDatabaseBuilder extends DatabaseObjectBuilder<User> {
     }
 
     @Override
-    public boolean hasLocation() {
-        return false;
+    public double getLatitude(@NonNull User object) {
+        return 0;
     }
 
-    @Nullable
     @Override
-    public LatLng getLocation(@NonNull User object) {
-        return null;
+    public double getLongitude(@NonNull User object) {
+        return 0;
+    }
+
+    @Override
+    public boolean hasLocation() {
+        return false;
     }
 }

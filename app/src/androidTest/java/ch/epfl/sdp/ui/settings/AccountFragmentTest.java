@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.future.Future;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -14,7 +14,6 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.RootMatchers.isFocusable;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
@@ -24,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountFragmentTest extends SettingsFragmentTest {
@@ -61,38 +61,16 @@ public class AccountFragmentTest extends SettingsFragmentTest {
 
         onView(withText("OK")).perform(click());
 
-        verify(mDocumentQuery).update(eq("username"), eq(DUMMY_USER.getName()), any());
+        verify(mDocumentQuery).update(eq("username"), eq(DUMMY_USER.getName()));
     }
 
     @Test
-    public void AccountFragment_SetUsernameFailsWithToast() throws Throwable {
-        mActivity.runOnUiThread(() -> {
-            mUserLiveData.setValue(DUMMY_USER);
-        });
+    public void AccountFragment_SetUsernameFailsWithToast() {
 
-        doNothing().when(mDocumentQuery).update(anyString(), any(), mOnQueryCompleteCallbackArgumentCaptor.capture());
-
-        onView(withText("Name")).perform(click());
-
-        onView(withText("nametest")).perform(
-                replaceText(DUMMY_USER.getName()),
-                closeSoftKeyboard()
-        );
-
-        onView(withText("OK")).perform(click());
-
-        mActivity.runOnUiThread(() -> {
-            mOnQueryCompleteCallbackArgumentCaptor.getValue().onQueryComplete(QueryResult.failure(new Exception()));
-        });
-
-        onView(withText("Cannot set username"))
-                .inRoot(not(isFocusable()))
-                .check(matches(isDisplayed()));
     }
 
     @Test
     public void AccountFragment_DeleteAccountCreatesDialog() {
-
         onView(withText("Delete account")).perform(click());
 
         onView(withText("Delete Account"))
@@ -102,51 +80,22 @@ public class AccountFragmentTest extends SettingsFragmentTest {
 
     @Test
     public void AccountFragment_DeleteAccountCallsDatabase() {
-
         onView(withText("Delete account")).perform(click());
 
         onView(withText("YES"))
                 .inRoot(isDialog())
                 .perform(click());
 
-        verify(mDocumentQuery).delete(any());
+        verify(mDocumentQuery).delete();
     }
 
     @Test
-    public void AccountFragment_DeleteAccountLogOutOnSuccess() throws Throwable {
+    public void AccountFragment_DeleteAccountLogOutOnSuccess() {
 
-        doNothing().when(mDocumentQuery).delete(mOnQueryCompleteCallbackArgumentCaptor.capture());
-
-        onView(withText("Delete account")).perform(click());
-
-        onView(withText("YES"))
-                .inRoot(isDialog())
-                .perform(click());
-
-        mActivity.runOnUiThread(() -> {
-            mOnQueryCompleteCallbackArgumentCaptor.getValue().onQueryComplete(QueryResult.success(null));
-        });
-
-        verify(mAuthenticator).logout();
     }
 
     @Test
-    public void AccountFragment_DeleteAccountToastOnFailure() throws Throwable {
+    public void AccountFragment_DeleteAccountToastOnFailure() {
 
-        doNothing().when(mDocumentQuery).delete(mOnQueryCompleteCallbackArgumentCaptor.capture());
-
-        onView(withText("Delete account")).perform(click());
-
-        onView(withText("YES"))
-                .inRoot(isDialog())
-                .perform(click());
-
-        mActivity.runOnUiThread(() -> {
-            mOnQueryCompleteCallbackArgumentCaptor.getValue().onQueryComplete(QueryResult.failure(new Exception()));
-        });
-
-        onView(withText("Cannot delete account"))
-                .inRoot(not(isFocusable()))
-                .check(matches(isDisplayed()));
     }
 }

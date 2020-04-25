@@ -2,14 +2,22 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
-import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
@@ -20,17 +28,13 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
-import ch.epfl.sdp.db.queries.QueryResult;
-import ch.epfl.sdp.platforms.firebase.db.GeoFirestoreFactory;
+import ch.epfl.sdp.future.Future;
 
-import static ch.epfl.sdp.ObjectUtils.toGeoPoint;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class FirebaseCollectionQuery extends FirebaseQuery implements CollectionQuery {
 
     private final CollectionReference mCollection;
-
-    private GeoFirestoreFactory mGeoFirestoreFactory = GeoFirestoreFactory.getInstance();
 
     public FirebaseCollectionQuery(@NonNull FirebaseFirestore database, @NonNull CollectionReference collection) {
         super(database);
@@ -62,15 +66,14 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
-    public LocationQuery atLocation(@NonNull GeoPoint geoPoint, double radius) {
-        return new FirebaseGeoFirestoreQuery(mDb, mGeoFirestoreFactory.createGeoFirestore(mCollection), geoPoint, radius);
+    public LocationQuery atLocation(double latitude, double longitude, double radius) {
+        return new FirebaseGeoFirestoreQuery(mDb, new GeoFirestore(mCollection), new GeoPoint(latitude, longitude), radius);
     }
 
-
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
-        verifyNotNull(type, callback);
-        handleQuerySnapshot(mCollection.get(), type, callback);
+    public <T> Future<List<T>> get(@NonNull Class<T> type) {
+        verifyNotNull(type);
+        return handleQuerySnapshot(mCollection.get(), type);
     }
 
     @Override
@@ -80,35 +83,27 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback) {
-        verifyNotNull(object, callback);
+    public <T> Future<String> create(@NonNull T object) {
+        verifyNotNull(object);
         DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder((Class<T>) object.getClass());
-        Map<String, Object> data = verifyNotNull(builder.serializeToMap(object));
-        mCollection.add(data).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                String ref = task.getResult().getId();
-                if(builder.hasLocation()) {
-                    GeoFirestore geoFirestore = mGeoFirestoreFactory.createGeoFirestore(mCollection);
-                    geoFirestore.setLocation(ref, toGeoPoint(builder.getLocation(object)), e -> {
-                        if(e == null) {
-                            callback.onQueryComplete(QueryResult.success(ref));
-                        }
-                        else {
-                            callback.onQueryComplete(QueryResult.failure(e));
-                        }
-                    });
-                }
-                else {
-                    callback.onQueryComplete(QueryResult.success(ref));
-                }
-            } else {
-                callback.onQueryComplete(QueryResult.failure(task.getException()));
+        Map<String, Object> data = builder.serializeToMap(object);
+        Task<DocumentReference> addTask = mCollection.add(data);
+        return new Future<>(addTask.continueWithTask(task -> {
+            String ref = task.getResult().getId();
+            if(builder.hasLocation()) {
+                GeoFirestore geoFirestore = new GeoFirestore(mCollection);
+                final TaskCompletionSource<String> geoTask = new TaskCompletionSource<>();
+                geoFirestore.setLocation(ref, new GeoPoint(builder.getLatitude(object), builder.getLongitude(object)), e -> {
+                    if(e == null) {
+                        geoTask.setResult(ref);
+                    }
+                    else {
+                        geoTask.setException(e);
+                    }
+                });
+                return geoTask.getTask();
             }
-        });
-    }
-
-    @VisibleForTesting
-    public void setmGeoFirestoreFactory(GeoFirestoreFactory mGeoFirestoreFactory){
-        this.mGeoFirestoreFactory = mGeoFirestoreFactory;
+            return Tasks.forResult(ref);
+        }));
     }
 }

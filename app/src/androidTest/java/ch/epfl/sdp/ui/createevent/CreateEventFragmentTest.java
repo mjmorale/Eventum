@@ -3,9 +3,9 @@ package ch.epfl.sdp.ui.createevent;
 import android.app.Activity;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import com.google.android.gms.tasks.Task;
+
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.contrib.PickerActions;
 
 import org.junit.Before;
@@ -13,16 +13,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
+import org.mockito.stubbing.Answer;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.future.Future;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 
@@ -72,12 +71,15 @@ public class CreateEventFragmentTest {
     @Mock
     private CollectionQuery mCollectionQuery;
 
+    @Mock
+    private Task<String> mStringTask;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
-        doAnswer(invocation -> {
+        when(mCollectionQuery.create(any())).then((Answer<Future<String>>) invocation -> {
             Object[] args = invocation.getArguments();
             Event event = (Event) args[0];
 
@@ -85,9 +87,8 @@ public class CreateEventFragmentTest {
             assertThat(event.getDescription(), is(DESCRIPTION));
             assertThat(event.getAddress(), containsString(ADDRESS));
 
-            ((Query.OnQueryCompleteCallback) args[1]).onQueryComplete(QueryResult.success("fake"));
-            return null;
-        }).when(mCollectionQuery).create(any(), any());
+            return new Future<>(mStringTask);
+        });
 
         FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
                 CreateEventFragment.class,
@@ -101,12 +102,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_CorrectInput() {
-        doCorrectInput();
-    }
-
-    @Test
-    public void CreateEventFragment_IncorrectInput() {
+    public void CreateEventFragment_IncorrectInputDisplayErrorToast() {
         onView(withHint(is("Title"))).perform(
                 clearText(),
                 replaceText(EMPTY),
@@ -120,7 +116,8 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
-    private void doCorrectInput() {
+    @Test
+    public void CreateEventFragment_CorrectInputSendsCorrectData() {
         onView(withId(R.id.title)).perform(
                 replaceText(TITLE),
                 closeSoftKeyboard());

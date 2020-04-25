@@ -1,8 +1,10 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,19 +30,22 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.platforms.firebase.db.GeoFirestoreFactory;
+import ch.epfl.sdp.db.queries.LocationQuery;
+import ch.epfl.sdp.future.Future;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,6 +59,8 @@ public class FirebaseCollectionQueryTest {
     private final static Exception DUMMY_EXCEPTION = new Exception();
     private final static String DUMMY_ID = "slkdfjghsdflkjg354sadf45";
     private final static double DUMMY_DOUBLE = 42;
+    private final static double DUMMY_LATITUDE = 3.234234;
+    private final static double DUMMY_LONGITUDE = 12.534556345;
 
     @Mock
     private FirebaseFirestore mDb;
@@ -71,6 +78,9 @@ public class FirebaseCollectionQueryTest {
     private Task<DocumentReference> mDocumentReferenceTask;
 
     @Mock
+    private Task<String> mStringTask;
+
+    @Mock
     private QuerySnapshot mQuerySnapshot;
 
     @Mock
@@ -83,14 +93,8 @@ public class FirebaseCollectionQueryTest {
     @Mock
     private Query mQuery;
 
-    @Mock
-    private GeoPoint mGeoPoint;
-
-    @Mock
-    private GeoFirestoreFactory mGeoFirestoreFactory;
-
-    @Mock
-    private Event mEvent;
+    @Captor
+    private ArgumentCaptor<Continuation<DocumentReference, Task<String>>> mDocToStringContinuationArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<OnCompleteListener<QuerySnapshot>> mQuerySnapshotCompleteListenerCaptor;
@@ -185,72 +189,9 @@ public class FirebaseCollectionQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void FirebaseCollectionQuery_Get_FailsWithNullFirstArgument() {
+    public void FirebaseCollectionQuery_Get_FailsWithNullArgument() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.get(null, result -> {
-
-        });
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void FirebaseCollectionQuery_Get_FailsWithNullSecondArgument() {
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.get(String.class, null);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_Get_CallsCallbackWithDeserializedListOfObjects() {
-        when(mDocumentSnapshot1.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[0]));
-        when(mDocumentSnapshot2.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[1]));
-        when(mDocumentSnapshot3.getData()).thenReturn(DatabaseObjectBuilderRegistry.getBuilder(String.class).serializeToMap(DUMMY_STRINGS[2]));
-        when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>(Arrays.asList(mDocumentSnapshot1, mDocumentSnapshot2, mDocumentSnapshot3)));
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.get(String.class, result -> {
-            assertTrue(result.isSuccessful());
-            for(int i = 0; i < result.getData().size(); i++) {
-                assertEquals(DUMMY_STRINGS[i], result.getData().get(i));
-            }
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_Get_CallsCallbackWithEmptyListIfNoResults() {
-        when(mQuerySnapshot.getDocuments()).thenReturn(new ArrayList<>());
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(true);
-        when(mQuerySnapshotTask.getResult()).thenReturn(mQuerySnapshot);
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.get(String.class, result -> {
-            assertTrue(result.isSuccessful());
-            assertTrue(result.getData().isEmpty());
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_Get_CallsCallbackWithExceptionIfAnErrorOccurs() {
-        when(mQuerySnapshotTask.isSuccessful()).thenReturn(false);
-        when(mQuerySnapshotTask.getException()).thenReturn(DUMMY_EXCEPTION);
-        when(mQuerySnapshotTask.addOnCompleteListener(mQuerySnapshotCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.get()).thenReturn(mQuerySnapshotTask);
-
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.get(String.class, result -> {
-            assertFalse(result.isSuccessful());
-            assertEquals(DUMMY_EXCEPTION, result.getException());
-        });
-
-        mQuerySnapshotCompleteListenerCaptor.getValue().onComplete(mQuerySnapshotTask);
+        firebaseCollectionQuery.get(null);
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -268,78 +209,19 @@ public class FirebaseCollectionQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseCollectionQuery_Create_FailsWithNullFirstArgument() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.create(null, result -> {});
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void FirebaseCollectionQuery_Create_FailsWithNullSecondArgument() {
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.create(DUMMY_OBJECT, null);
+        firebaseCollectionQuery.create(null);
     }
 
     @Test
-    public void FirebaseCollectionQuery_Create_CallsCallbackWithNewDocumentId() {
-        when(mDocumentReference.getId()).thenReturn(DUMMY_ID);
-        when(mDocumentReferenceTask.isSuccessful()).thenReturn(true);
+    public void FirebaseCollectionQuery_Create_ReturnsRefIsSuccessful() throws Exception {
+        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
+        when(mDocumentReferenceTask.continueWithTask(mDocToStringContinuationArgumentCaptor.capture())).thenReturn(mStringTask);
         when(mDocumentReferenceTask.getResult()).thenReturn(mDocumentReference);
-        when(mDocumentReferenceTask.addOnCompleteListener(mDocumentReferenceCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.create(DUMMY_STRING, result -> {
-            assertTrue(result.isSuccessful());
-            assertEquals(DUMMY_ID, result.getData());
-        });
-
-        mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_Create_CallsCallbackWithExceptionIfAnErrorOccurred() {
-        when(mDocumentReferenceTask.isSuccessful()).thenReturn(false);
-        when(mDocumentReferenceTask.getException()).thenReturn(DUMMY_EXCEPTION);
-        when(mDocumentReferenceTask.addOnCompleteListener(mDocumentReferenceCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.create(DUMMY_STRING, result -> {
-            assertFalse(result.isSuccessful());
-            assertEquals(DUMMY_EXCEPTION, result.getException());
-        });
-
-        mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void FirebaseCollectionQuery_AtLocation_failsWhenNullArgument(){
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.atLocation(null, DUMMY_DOUBLE);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_AtLocation_ReturnsFirebaseGeoFirestoreQuery(){
-        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = (FirebaseGeoFirestoreQuery) firebaseCollectionQuery.atLocation(mGeoPoint, DUMMY_DOUBLE);
-        assertNotEquals(firebaseGeoFirestoreQuery, null);
-        assertEquals(firebaseGeoFirestoreQuery.getmLocation(), mGeoPoint);
-        assertTrue(firebaseGeoFirestoreQuery.getmRadius() ==  DUMMY_DOUBLE);
-    }
-
-    @Test
-    public void FirebaseCollectionQuery_Create_CreatesWithLocation(){
-        when(mDocumentReferenceTask.isSuccessful()).thenReturn(false);
-        when(mDocumentReferenceTask.getException()).thenReturn(DUMMY_EXCEPTION);
-        when(mDocumentReferenceTask.addOnCompleteListener(mDocumentReferenceCompleteListenerCaptor.capture())).thenReturn(null);
-        when(mCollectionReference.add(any())).thenReturn(mDocumentReferenceTask);
+        when(mDocumentReference.getId()).thenReturn(DUMMY_ID);
 
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        firebaseCollectionQuery.setmGeoFirestoreFactory(mGeoFirestoreFactory);
-        when(mEvent.getLocation()).thenReturn(new LatLng(80, 80));
-        when(mEvent.getDate()).thenReturn(new Date(2020, 10, 10));
-        when(mEvent.getAddress()).thenReturn("Chemin");
-        when(mEvent.getDescription()).thenReturn("Desc");
-        when(mEvent.getTitle()).thenReturn("Title");
-        firebaseCollectionQuery.create(mEvent,  result -> {
+        firebaseCollectionQuery.create(DUMMY_STRING);
 
-        });
-        mDocumentReferenceCompleteListenerCaptor.getValue().onComplete(mDocumentReferenceTask);
+        assertEquals(DUMMY_ID, mDocToStringContinuationArgumentCaptor.getValue().then(mDocumentReferenceTask).getResult());
     }
 }

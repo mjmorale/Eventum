@@ -5,20 +5,21 @@ import com.google.firebase.firestore.GeoPoint;
 
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.imperiumlabs.geofirestore.listeners.GeoQueryDataEventListener;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
+public class GeoFirestoreLiveData<TType> extends LiveData<List<TType>> {
 
     private final DatabaseObjectBuilder<TType> mBuilder;
     private final GeoQuery mGeoQuery;
@@ -37,21 +38,22 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
         mGeoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
             @Override
-            public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+            public void onDocumentEntered(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) {
                 addDocument(documentSnapshot);
             }
 
             @Override
-            public void onDocumentExited(DocumentSnapshot documentSnapshot) {
+            public void onDocumentExited(@NotNull DocumentSnapshot documentSnapshot) {
                 removeDocument(documentSnapshot);
             }
 
             @Override
-            public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) { }
+            public void onDocumentMoved(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) {
+                addDocument(documentSnapshot);
+            }
 
             @Override
-            public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
-                removeDocument(documentSnapshot);
+            public void onDocumentChanged(@NotNull DocumentSnapshot documentSnapshot, @NotNull GeoPoint geoPoint) {
                 addDocument(documentSnapshot);
             }
 
@@ -59,7 +61,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
             public void onGeoQueryReady() { }
 
             @Override
-            public void onGeoQueryError(Exception e) { }
+            public void onGeoQueryError(@NotNull Exception e) { }
 
         });
     }
@@ -71,24 +73,17 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
         mGeoQuery.removeAllListeners();
     }
 
-    private void addDocument(@NonNull DocumentSnapshot document) {
-        verifyNotNull(document);
+    private void addDocument(DocumentSnapshot document) {
         mData.put(document.getId(), mBuilder.buildFromMap(document.getData()));
         postCurrentValue();
     }
 
-    private void removeDocument(@NonNull DocumentSnapshot document) {
-        verifyNotNull(document);
+    private void removeDocument(DocumentSnapshot document) {
         mData.remove(document.getId());
         postCurrentValue();
     }
 
     private void postCurrentValue() {
-        postValue(mData.values());
-    }
-
-    @VisibleForTesting
-    public void setmData(Map<String, TType> mData){
-        this.mData = mData;
+        postValue(new ArrayList<>(mData.values()));
     }
 }

@@ -2,12 +2,9 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.lifecycle.LiveData;
@@ -15,7 +12,7 @@ import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.future.Future;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -35,38 +32,28 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     }
 
     @Override
-    public void exists(@NonNull OnQueryCompleteCallback<Boolean> callback) {
-        verifyNotNull(callback);
-        documentPerformAction(mDocument.get(), callback,
-        success -> {
-            callback.onQueryComplete(QueryResult.success(success.exists()));
-        });
+    public Future<Boolean> exists() {
+        return new Future<>(mDocument.get().continueWith(task -> task.getResult().exists()));
     }
 
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback) {
-        verifyNotNull(type, callback);
-        handleDocumentSnapshot(mDocument.get(), type, callback);
+    public <T> Future<T> get(@NonNull Class<T> type) {
+        verifyNotNull(type);
+        return handleDocumentSnapshot(mDocument.get(), type);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(object, callback);
+    public <T> Future<Void> set(@NonNull T object) {
+        verifyNotNull(object);
         DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder((Class<T>)object.getClass());
-        documentPerformAction(mDocument.set(builder.serializeToMap(object)), callback,
-        success -> {
-            callback.onQueryComplete(QueryResult.success(null));
-        });
+        return new Future<>(mDocument.set(builder.serializeToMap(object)));
     }
 
     @Override
-    public void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(field, value, callback);
-        documentPerformAction(mDocument.update(field, value), callback,
-        success -> {
-            callback.onQueryComplete(QueryResult.success(null));
-        });
+    public Future<Void> update(@NonNull String field, @NonNull Object value) {
+        verifyNotNull(field, value);
+        return new Future<>(mDocument.update(field, value));
     }
 
     @SuppressWarnings("unchecked")
@@ -76,17 +63,8 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
     }
 
     @Override
-    public void delete(@NonNull OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(callback);
-        documentPerformAction(mDocument.delete(), callback,
-        success -> {
-            callback.onQueryComplete(QueryResult.success(null));
-        });
+    public Future<Void> delete() {
+        return new Future<>(mDocument.delete());
     }
 
-    private <T, U> void documentPerformAction(@NonNull Task<T> queryTask, @NonNull OnQueryCompleteCallback<U> callback, @NonNull OnSuccessListener<T> onSuccess) {
-        queryTask.addOnSuccessListener(onSuccess).addOnFailureListener(exception -> {
-            callback.onQueryComplete(QueryResult.failure(exception));
-        });
-    }
 }

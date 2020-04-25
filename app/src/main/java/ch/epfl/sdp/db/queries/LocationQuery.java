@@ -2,13 +2,13 @@ package ch.epfl.sdp.db.queries;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.future.Future;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface LocationQuery extends Query {
+public interface LocationQuery {
 
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> Future<List<T>> get(@NonNull Class<T> type);
 
-    <T> LiveData<Collection<T>> liveData(@NonNull Class<T> type);
+    <T> LiveData<List<T>> liveData(@NonNull Class<T> type);
 }
