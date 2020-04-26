@@ -10,4 +10,6 @@ public interface MapManager<TMarker> {
     TMarker addMarker(@NonNull String title, @NonNull LatLng location);
 
     void moveCamera(@NonNull Location location, float zoomLevel);
+
+    void moveCamera(@NonNull LatLng location, float zoomLevel);
 }
