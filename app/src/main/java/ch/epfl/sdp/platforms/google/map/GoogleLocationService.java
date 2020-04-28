@@ -39,9 +39,4 @@ public final class GoogleLocationService implements LocationService {
         }
         return location;
     }
-
-    @Override
-    public boolean isLocationEnabled() {
-        return isLocationEnabled();
-    }
 }

@@ -14,11 +14,4 @@ public interface LocationService {
      * @return the last know location of the android device
      */
     Location getLastKnownLocation(Context context);
-
-    /**
-     * Method to get the current state of location
-     *
-     * @return the current enabled/disabled state of location
-     */
-    boolean isLocationEnabled();
 }

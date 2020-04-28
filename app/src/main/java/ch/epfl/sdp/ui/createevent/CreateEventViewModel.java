@@ -12,7 +12,7 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
- * View model used for the creation of a new event
+ * View model for the creation of a new event
  */
 public class CreateEventViewModel extends ViewModel {
 
