@@ -238,8 +238,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
         mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFilterSettingsFactory.setLocationService(locationService);
+        mFilterSettingsFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
     private String getUserRefFromIntent(Intent intent) {

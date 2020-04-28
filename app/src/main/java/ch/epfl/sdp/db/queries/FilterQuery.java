@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import ch.epfl.sdp.db.DatabaseObjectBuilder;
+import ch.epfl.sdp.db.DatabaseObject;
 
 public interface FilterQuery extends Query {
 
@@ -15,7 +15,7 @@ public interface FilterQuery extends Query {
 
     FilterQuery limitCount(int count);
 
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<DatabaseObject<T>>> callback);
 
-    <T> LiveData<List<T>> livedata(@NonNull Class<T> type);
+    <T> LiveData<List<DatabaseObject<T>>> livedata(@NonNull Class<T> type);
 }

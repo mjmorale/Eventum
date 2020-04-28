@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,17 +21,21 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
+import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
     private FragmentSwipeBinding mBinding;
-    private ArrayAdapter<Event> mArrayAdapter;
-    private List<Event> mEventList;
+    private ArrayAdapter<DatabaseObject<Event>> mArrayAdapter;
+    private List<DatabaseObject<Event>> mEventList;
     private int mNumberSwipe = 0;
 
     private EventDetailFragment mInfoFragment;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
+    private FilterSettingsViewModel mViewModel;
 
     @VisibleForTesting
     public SwipeFragment(@NonNull Database database) {
@@ -53,6 +58,11 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     @Override
     public void onRightCardExit(Object o) {
+        mViewModel.joinEvent(((DatabaseObject<Event>) o).getId(), result -> {
+            if(result.isSuccessful()) {
+                Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
+            }
+        });
         mNumberSwipe += 1;
     }
 
@@ -75,17 +85,16 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mBinding.cardsListView.setAdapter(mArrayAdapter);
         mBinding.cardsListView.setFlingListener(this);
 
-        FilterSettingsViewModel filterSettingsViewModel =
-                new ViewModelProvider(requireActivity(), mFactory).get(FilterSettingsViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), mFactory).get(FilterSettingsViewModel.class);
 
-        filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+        mViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
             mArrayAdapter.clear();
             mArrayAdapter.addAll(events);
             mNumberSwipe = 0;
         });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
-            mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
+            mInfoFragment = new EventDetailFragment(mEventList.get(0).getObject(),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
 

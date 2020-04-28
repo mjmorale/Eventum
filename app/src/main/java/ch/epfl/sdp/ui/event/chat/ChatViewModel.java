@@ -10,6 +10,7 @@ import java.util.List;
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
@@ -44,7 +45,7 @@ public class ChatViewModel extends ViewModel {
 
     private CollectionQuery mMessageCollection;
     private FilterQuery mOrderedMessagesQuery;
-    private LiveData<List<ChatMessage>> mMessageLiveData;
+    private LiveData<List<DatabaseObject<ChatMessage>>> mMessageLiveData;
     private UserInfo mUser;
 
     public ChatViewModel(@NonNull Database database, @NonNull String eventRef, Authenticator authenticator) {
@@ -71,7 +72,7 @@ public class ChatViewModel extends ViewModel {
         return mUser.getUid();
     }
 
-    public LiveData<List<ChatMessage>> getMessages() {
+    public LiveData<List<DatabaseObject<ChatMessage>>> getMessages() {
         if (mMessageLiveData == null) {
             mMessageLiveData = mOrderedMessagesQuery.livedata(ChatMessage.class);
         }

@@ -17,10 +17,13 @@ import android.view.ViewGroup;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
 public class AttendingListFragment extends Fragment {
@@ -63,7 +66,11 @@ public class AttendingListFragment extends Fragment {
             mViewModel.getAttendingEvents().removeObservers(getViewLifecycleOwner());
         }
         mViewModel.getAttendingEvents().observe(getViewLifecycleOwner(), events -> {
-            mAdapter.setAttendingEvents(events);
+            List<Event> evs = new ArrayList<>();
+            for(DatabaseObject<Event> obj : events) {
+                evs.add(obj.getObject());
+            }
+            mAdapter.setAttendingEvents(evs);
         });
     }
 

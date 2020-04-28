@@ -20,6 +20,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
@@ -77,8 +78,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
             filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
                 mViewModel.clearEvents();
-                for(Event event: events)
-                    mViewModel.addEvent(event);
+                for(DatabaseObject<Event> event: events)
+                    mViewModel.addEvent(event.getObject());
             });
 
             mViewModel.centerCamera(getContext(), mZoomLevel);

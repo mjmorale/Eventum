@@ -8,6 +8,7 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
@@ -20,14 +21,14 @@ public class AttendingListViewModel extends ViewModel {
     private final CollectionQuery mAttendingQuery;
     private final Database mDatabase;
 
-    private LiveData<List<Event>> mAttendingLiveData;
+    private LiveData<List<DatabaseObject<Event>>> mAttendingLiveData;
 
     public AttendingListViewModel(@NonNull Database database) {
         mDatabase = verifyNotNull(database);
         mAttendingQuery = database.query("events");
     }
 
-    public LiveData<List<Event>> getAttendingEvents() {
+    public LiveData<List<DatabaseObject<Event>>> getAttendingEvents() {
         if(mAttendingLiveData == null) {
             mAttendingLiveData = mAttendingQuery.liveData(Event.class);
         }

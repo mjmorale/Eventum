@@ -9,6 +9,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.FilterQuery;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -24,7 +25,7 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
     }
 
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<DatabaseObject<T>>> callback) {
         verifyNotNull(type, callback);
         handleQuerySnapshot(mQuery.get(), type, callback);
     }
@@ -52,7 +53,7 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> LiveData<List<T>> livedata(@NonNull Class<T> type) {
+    public <T> LiveData<List<DatabaseObject<T>>> livedata(@NonNull Class<T> type) {
         return new FirebaseQueryLiveData(mQuery, verifyNotNull(type));
     }
 }

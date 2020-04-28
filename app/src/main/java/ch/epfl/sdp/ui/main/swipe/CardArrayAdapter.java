@@ -13,17 +13,18 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.db.DatabaseObject;
 
-public class CardArrayAdapter extends ArrayAdapter<Event> {
+public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
-    public CardArrayAdapter(Context context, List<Event> items){
+    public CardArrayAdapter(Context context, List<DatabaseObject<Event>> items){
         super(context, R.layout.cardview_swipe_item, items);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Event event = getItem(position);
+        Event event = getItem(position).getObject();
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.cardview_swipe_item, parent, false);
         }

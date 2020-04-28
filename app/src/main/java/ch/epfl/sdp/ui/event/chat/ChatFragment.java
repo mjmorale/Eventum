@@ -18,9 +18,14 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
@@ -87,7 +92,11 @@ public class ChatFragment extends Fragment {
         mBinding.reyclerviewMessageList.setAdapter(mAdapter);
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
-            mAdapter.setChatList(messages);
+            List<ChatMessage> chat = new ArrayList<>();
+            for(DatabaseObject<ChatMessage> object : messages) {
+                chat.add(object.getObject());
+            }
+            mAdapter.setChatList(chat);
             mAdapter.notifyDataSetChanged();
         });
 
