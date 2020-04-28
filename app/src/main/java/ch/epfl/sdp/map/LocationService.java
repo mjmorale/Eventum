@@ -4,7 +4,7 @@ import android.content.Context;
 import android.location.Location;
 
 /**
- * Location service for giving the last known location of the android device
+ * Location service to get the last known location of the android device
  */
 public interface LocationService {
     /**
