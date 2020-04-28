@@ -19,24 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import java.text.ParseException;
-import java.util.UUID;
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -44,6 +34,9 @@ import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
+/**
+ * Fragment for the creation of a new event
+ */
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private FragmentCreateEventBinding mBinding;
     private CreateEventViewModel mViewModel;
@@ -54,7 +47,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private static final int PERMISSION_STORAGE = 100;
     private Uri mImageUri;
-    private String mImageId;
 
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();

@@ -17,6 +17,9 @@ import java.util.List;
 
 import ch.epfl.sdp.R;
 
+/**
+ * Adapter to handle autocomplete requests from geo search
+ */
 public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     private static final int MAX_RESULTS = 10;
