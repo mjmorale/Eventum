@@ -14,6 +14,9 @@ import ch.epfl.sdp.R;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Adapter for the list of attending events
+ */
 public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAdapter.AttendingEventViewHolder> {
 
     private List<Event> mAttendingEvents;
@@ -28,10 +31,20 @@ public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAd
         }
     }
 
+    /**
+     * Constructor of the AttendingEventAdapter
+     *
+     * @param attendingEvents a list of events someone attend to
+     */
     public AttendingEventAdapter(@NonNull List<Event> attendingEvents) {
         mAttendingEvents = verifyNotNull(attendingEvents);
     }
 
+    /**
+     * Method to set a list of events
+     *
+     * @param attendingEvents a list of events someone attend to
+     */
     public void setAttendingEvents(@NonNull List<Event> attendingEvents) {
         mAttendingEvents = verifyNotNull(attendingEvents);
         notifyDataSetChanged();

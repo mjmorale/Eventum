@@ -23,6 +23,9 @@ import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
+/**
+ * Fragment for the list of events a user attends to
+ */
 public class AttendingListFragment extends Fragment {
 
     private final AttendingListViewModel.AttendingListViewModelFactory mFactory;
@@ -31,11 +34,19 @@ public class AttendingListFragment extends Fragment {
 
     private AttendingEventAdapter mAdapter;
 
+    /**
+     * Constructor for the AttendingListFragment
+     */
     public AttendingListFragment() {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
+    /**
+     * Constructor for the AttendingListFragment, only for testing purposes!
+     *
+     * @param database where the events are stored
+     */
     @VisibleForTesting
     public AttendingListFragment(@NonNull Database database) {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
