@@ -14,6 +14,9 @@ import java.util.List;
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.R;
 
+/**
+ * Adapter for the chat message list
+ */
 public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final int VIEW_TYPE_MESSAGE_SENT = 0;
@@ -60,15 +63,30 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
 
+    /**
+     * Constructor of the message list adapter
+     *
+     * @param uid the id of the user
+     */
     public MessageListAdapter(@NonNull String uid){
         mMessageList = new ArrayList<>();
         mUid = uid;
     }
 
+    /**
+     * Method to set a list of chat messages
+     *
+     * @param messages the list of messages
+     */
     public void setChatList(@NonNull List<ChatMessage> messages) {
         mMessageList = messages;
     }
 
+    /**
+     * Method to set the id of a user
+     *
+     * @param uid the id of the user
+     */
     public void setUid(@NonNull String uid) {
         mUid = uid;
     }

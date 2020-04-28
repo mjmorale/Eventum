@@ -17,6 +17,9 @@ import ch.epfl.sdp.auth.UserInfo;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model for the chat
+ */
 public class ChatViewModel extends ViewModel {
 
     static class ChatViewModelFactory extends ParameterizedViewModelFactory {
@@ -47,6 +50,13 @@ public class ChatViewModel extends ViewModel {
     private LiveData<List<ChatMessage>> mMessageLiveData;
     private UserInfo mUser;
 
+    /**
+     * Constructor of the chat view model
+     *
+     * @param database where the chat messages will be uploaded
+     * @param eventRef the reference of an event
+     * @param authenticator of the user
+     */
     public ChatViewModel(@NonNull Database database, @NonNull String eventRef, Authenticator authenticator) {
         verifyNotNull(database, eventRef, authenticator);
 
@@ -56,6 +66,12 @@ public class ChatViewModel extends ViewModel {
 
     }
 
+    /**
+     * Method to add a new chat message for an event in the database
+     *
+     * @param message to be uploaded in the database
+     * @param callback called when the upload is done
+     */
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
 
         ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
@@ -66,11 +82,20 @@ public class ChatViewModel extends ViewModel {
         });
     }
 
-
+    /**
+     * Method to get the reference of the user
+     *
+     * @return the reference of the user
+     */
     public String getUserRef() {
         return mUser.getUid();
     }
 
+    /**
+     * Method to get the chat messages
+     *
+     * @return the messages
+     */
     public LiveData<List<ChatMessage>> getMessages() {
         if (mMessageLiveData == null) {
             mMessageLiveData = mOrderedMessagesQuery.livedata(ChatMessage.class);
