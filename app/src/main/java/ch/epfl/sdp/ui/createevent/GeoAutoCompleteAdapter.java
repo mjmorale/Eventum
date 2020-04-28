@@ -26,6 +26,11 @@ public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
     private Context mContext;
     private List<GeoSearchResult> mResultList = new ArrayList();
 
+    /**
+     * Constructor of the GeoAutoCompleteAdapter
+     *
+     * @param context
+     */
     public GeoAutoCompleteAdapter(Context context) { mContext = context; }
 
     @Override

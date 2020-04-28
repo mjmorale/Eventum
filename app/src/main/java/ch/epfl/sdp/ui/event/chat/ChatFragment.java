@@ -57,7 +57,7 @@ public class ChatFragment extends Fragment {
     }
 
     /**
-     * Constructor of the chat fragment, only used for testing purpose!
+     * Constructor of the chat fragment, only for testing purposes!
      *
      * @param database
      * @param eventRef the reference of an event

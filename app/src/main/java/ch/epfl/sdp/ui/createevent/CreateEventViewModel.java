@@ -36,6 +36,12 @@ public class CreateEventViewModel extends ViewModel {
     private final Storage mStorage;
     private String mImageId;
 
+    /**
+     * Constructor of the create event view model
+     *
+     * @param storage where the images are uploaded
+     * @param database where the events are uploaded
+     */
     public CreateEventViewModel(@NonNull Storage storage, @NonNull Database database) {
         mDatabase = verifyNotNull(database);
         mStorage = verifyNotNull(storage);

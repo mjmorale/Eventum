@@ -24,6 +24,12 @@ public class DelayAutoCompleteTextView extends androidx.appcompat.widget.AppComp
         }
     };
 
+    /**
+     * The constructor of the DelayAutoCompleteTextView
+     *
+     * @param context
+     * @param attrs
+     */
     public DelayAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

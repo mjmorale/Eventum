@@ -10,6 +10,11 @@ import com.google.android.gms.maps.model.LatLng;
 public class GeoSearchResult {
     private Address mAddress;
 
+    /**
+     * Constructor of the geo search result
+     *
+     * @param address
+     */
     public GeoSearchResult(Address address) { this.mAddress = address; }
 
     /**

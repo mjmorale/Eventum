@@ -48,6 +48,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private static final int PERMISSION_STORAGE = 100;
     private Uri mImageUri;
 
+    /**
+     * Constructor of the create event fragment
+     */
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
@@ -55,6 +58,12 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     }
 
+    /**
+     * Constructor of the create event fragment, only for testing purpose!
+     *
+     * @param storage
+     * @param database
+     */
     @VisibleForTesting
     public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
