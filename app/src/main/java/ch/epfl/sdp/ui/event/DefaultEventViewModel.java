@@ -10,14 +10,28 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model to display some detail information of an event
+ */
 public class DefaultEventViewModel extends ViewModel {
 
+    /**
+     * Factory of the DefaultEventViewModel
+     */
     static class DefaultEventViewModelFactory extends DatabaseViewModelFactory {
 
+        /**
+         * Constructor of the DefaultEventViewModel factory
+         */
         DefaultEventViewModelFactory() {
             super(String.class);
         }
 
+        /**
+         * Method to set the reference of an event to the factory
+         *
+         * @param eventRef the reference of the event to display
+         */
         void setEventRef(@NonNull String eventRef) {
             setValue(0, verifyNotNull(eventRef));
         }
@@ -29,6 +43,12 @@ public class DefaultEventViewModel extends ViewModel {
     private final Database mDatabase;
     private final String mEventRef;
 
+    /**
+     * Constructor of the DefaultEventViewModel, the factory should be used instead of this
+     *
+     * @param eventRef the reference of the event to display
+     * @param database where the events are located
+     */
     public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
         verifyNotNull(eventRef, database);
         mDatabase = database;
@@ -36,6 +56,11 @@ public class DefaultEventViewModel extends ViewModel {
         mEventDocumentQuery = database.query("events").document(eventRef);
     }
 
+    /**
+     * Method to get the specific event in the database
+     *
+     * @return a live data of this event
+     */
     public LiveData<Event> getEvent() {
         if(mEvent == null) {
             mEvent = mEventDocumentQuery.livedata(Event.class);
@@ -43,6 +68,11 @@ public class DefaultEventViewModel extends ViewModel {
         return mEvent;
     }
 
+    /**
+     * Method to get the reference of the specific event
+     *
+     * @return the reference of the event
+     */
     public String getEventRef(){
         return mEventRef;
     }

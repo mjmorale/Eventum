@@ -16,11 +16,22 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class CreateEventViewModel extends ViewModel {
 
+    /**
+     * Factory for the CreateEventViewModel
+     */
     static class CreateEventViewModelFactory extends DatabaseViewModelFactory {
+        /**
+         * Constructor of the CreateEventViewModel factory
+         */
         CreateEventViewModelFactory() {
             super(Storage.class);
         }
 
+        /**
+         * Method to set the storage to the CreateEventViewModel factory
+         *
+         * @param storage where the images are uploaded
+         */
         void setStorage(@NonNull Storage storage) {
             setValue(0, verifyNotNull(storage));
         }
@@ -37,7 +48,7 @@ public class CreateEventViewModel extends ViewModel {
     private String mImageId;
 
     /**
-     * Constructor of the create event view model
+     * Constructor of the CreateEventViewModel, the factory should be used instead of this
      *
      * @param storage where the images are uploaded
      * @param database where the events are uploaded
@@ -79,6 +90,11 @@ public class CreateEventViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Method to get the image id of the event
+     *
+     * @return the image id of the event (URL)
+     */
     public String getImageId() {
         return mImageId;
     }
