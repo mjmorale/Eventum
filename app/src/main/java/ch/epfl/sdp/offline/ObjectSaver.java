@@ -6,7 +6,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -15,40 +21,52 @@ import java.util.List;
  */
 public abstract class ObjectSaver <T extends Serializable> implements OfflineDatabaseSaver {
 
+    private Dictionary<String, Date> statusFiles = new Hashtable<String, Date>();
+
     /**
      * Saves an object in a file
-     * @param context The context
+     * @param deleteDate When we can delete the temp file
      * @param toSave The object to save in the collection
      * @param docReference
      */
-    public void saveFile(Context context, T toSave, String docReference){
-        File root = context.getFilesDir();
-        File collection = new File(root, getCollectionString());
-        if(collection.exists() && collection.isDirectory()){
+    public void saveFile(T toSave, String docReference, Date deleteDate) throws IOException {
+        File newFile = File.createTempFile(docReference, null);
 
-        } else {
-            Log.d("Collection missing", "Could not find " + getCollectionString());
+        //delete old version if exist
+        if (newFile.exists()) {
+            if(newFile.delete()) Log.d("Info Temp File", "Tempory file"+docReference+"deleted");
         }
+
+        //save file
+        FileOutputStream f = new FileOutputStream(newFile);
+        ObjectOutputStream o = new ObjectOutputStream((f));
+        o.writeObject(toSave);
+        o.close();
+        f.close();
+
+        //update status  of the cache
+        statusFiles.put(docReference, deleteDate);
+
+        //check all status of the cache
+
     }
 
     /**
      *
-     * @param context
      * @param docReference
      * @return
      */
-    public List<T> getMultipleFile(Context context, List<String> docReference){
+    public List<T> getMultipleFile(List<String> docReference){
 
         return null;
     }
 
     /**
      *
-     * @param context
      * @param docReference
      * @return
      */
-    public T getSingleFile(Context context, String docReference){
+    public T getSingleFile(String docReference){
         return null;
     }
 
