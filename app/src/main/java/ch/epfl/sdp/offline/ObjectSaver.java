@@ -1,4 +1,4 @@
-package ch.epfl.sdp.Offline;
+package ch.epfl.sdp.offline;
 
 import android.content.Context;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.Offline;
+package ch.epfl.sdp.offline;
 
 public class EventSaver <Event> extends ObjectSaver {
 
