@@ -33,8 +33,6 @@ public class EventTest  {
 
     String imageId = "URL";
 
-    String TEST_FILE = "EventTest.txt";
-
     @Test
     public void EventBuilder_CheckCorrectData()
     {

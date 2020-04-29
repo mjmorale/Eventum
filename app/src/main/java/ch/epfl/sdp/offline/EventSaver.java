@@ -26,28 +26,20 @@ public class EventSaver <Event> extends ObjectSaver {
      * @param docReference Id of the document (Event)
      * @param deleteDate When we can delete the temp file
      */
-    public void saveEvent(Event toSave, String docReference, Date deleteDate,Context context) throws IOException {
-        if (deleteDate.after(new Date())){
-            saveFile((Serializable) toSave,docReference,deleteDate, context);
+    public void saveEvent(Event toSave, String docReference, Date deleteDate,Context context) throws IOException, ClassNotFoundException {
 
-            //update status
-            statusFiles.put(docReference, deleteDate);
+        saveFile((Serializable) toSave,docReference,deleteDate, context);
 
-            //remove old files
-            for (String key: statusFiles.keySet()) {
-                if (Objects.requireNonNull(statusFiles.get(key)).before(new Date())){
-                    //delete the file and remove from status
-                    try {
-                        removeSingleFile(key, context);
-                    } catch (Exception exc){
-                        exc.printStackTrace();
-                    }
-                }
+        //update status
+        statusFiles.put(docReference, deleteDate);
+
+        //remove old files
+        for (String key: statusFiles.keySet()) {
+            if (Objects.requireNonNull(statusFiles.get(key)).before(new Date())){
+                removeSingleFile(key, context);
             }
         }
-        else{
-            Log.e("EventSaver", "Date of the event is in the past");
-        }
+
     }
 
     public List<Event> getAllEvents(Context context) throws IOException, ClassNotFoundException {
