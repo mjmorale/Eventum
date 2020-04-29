@@ -102,7 +102,7 @@ public class FirebaseFilterQueryTest {
         firebaseFilterQuery.get(String.class, s -> {
             assertTrue(s.isSuccessful());
             for(int i = 0; i < s.getData().size(); i++) {
-                assertEquals(DUMMY_STRINGS[i], s.getData().get(i));
+                assertEquals(DUMMY_STRINGS[i], s.getData().get(i).getObject());
             }
         });
 

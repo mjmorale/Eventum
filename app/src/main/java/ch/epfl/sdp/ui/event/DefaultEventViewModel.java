@@ -26,12 +26,10 @@ public class DefaultEventViewModel extends ViewModel {
     private LiveData<Event> mEvent;
 
     private final DocumentQuery mEventDocumentQuery;
-    private final Database mDatabase;
     private final String mEventRef;
 
     public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
         verifyNotNull(eventRef, database);
-        mDatabase = database;
         mEventRef = eventRef;
         mEventDocumentQuery = database.query("events").document(eventRef);
     }

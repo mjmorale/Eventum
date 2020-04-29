@@ -19,11 +19,13 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
@@ -36,13 +38,15 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
     private FilterSettingsViewModel mViewModel;
 
+    public SwipeFragment() {}
+
     @VisibleForTesting
-    public SwipeFragment(@NonNull Database database) {
+    public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, LocationService locationService) {
         mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactory.setDatabase(database);
+        mFactory.setAuthenticator(authenticator);
+        mFactory.setLocationService(locationService);
     }
-
-    public SwipeFragment() {}
 
     @Override
     public void removeFirstObjectInAdapter() {

@@ -23,6 +23,7 @@ import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
@@ -62,11 +63,11 @@ public class ChatFragmentTest {
     @Mock
     private FirebaseAuthenticator mFirebaseAuthenticatorMock;
 
-    private ChatMessage mChatMessage = new ChatMessage("Hello", new Date(), "anyRef", " ");
+    private DatabaseObject<ChatMessage> mChatMessage = new DatabaseObject<>("fdgsetgserg", new ChatMessage("Hello", new Date(), "anyRef", " "));
 
-    LiveData<List<ChatMessage>> mLiveData = new LiveData<List<ChatMessage>>() {
+    LiveData<List<DatabaseObject<ChatMessage>>> mLiveData = new LiveData<List<DatabaseObject<ChatMessage>>>() {
         @Override
-        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super List<ChatMessage>> observer) {
+        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super List<DatabaseObject<ChatMessage>>> observer) {
             observer.onChanged(Arrays.asList(mChatMessage));
         }
     };
@@ -89,7 +90,7 @@ public class ChatFragmentTest {
             return null;
         }).when(mCollectionQueryMock).create(any(), any());
 
-        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(mChatMessage.getUid(), " ", " "));
+        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(mChatMessage.getObject().getUid(), " ", " "));
 
     }
 
@@ -102,26 +103,26 @@ public class ChatFragmentTest {
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
         );
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
-        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
 
         FragmentScenario<ChatFragment> scenarioReceinver = FragmentScenario.launchInContainer(
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
         );
         when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
-        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
 
-        onView(withText(mChatMessage.getText())).check(matches(isDisplayed()));
+        onView(withText(mChatMessage.getObject().getText())).check(matches(isDisplayed()));
     }
 
 
@@ -137,14 +138,14 @@ public class ChatFragmentTest {
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
         );
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
-        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getText()));
+        onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
 
-        onView(withText(mChatMessage.getText())).check(matches(isDisplayed()));
+        onView(withText(mChatMessage.getObject().getText())).check(matches(isDisplayed()));
     }
 
 

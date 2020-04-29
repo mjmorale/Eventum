@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentMapBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
@@ -41,7 +42,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private float mZoomLevel = 12;
 
     @VisibleForTesting
-    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database) {
+    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database, @NonNull Authenticator authenticator) {
         verifyNotNull(mapManager, database, locationService);
         mFactoryMap = new MapViewModel.MapViewModelFactory();
         mFactoryMap.setMapManager(mapManager);
@@ -49,6 +50,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mFactoryFilterSettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactoryFilterSettings.setDatabase(database);
         mFactoryFilterSettings.setLocationService(locationService);
+        mFactoryFilterSettings.setAuthenticator(authenticator);
     }
 
     public MapFragment() {

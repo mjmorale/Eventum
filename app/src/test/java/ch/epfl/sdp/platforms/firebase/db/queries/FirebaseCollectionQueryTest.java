@@ -28,6 +28,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
@@ -213,7 +214,7 @@ public class FirebaseCollectionQueryTest {
         firebaseCollectionQuery.get(String.class, result -> {
             assertTrue(result.isSuccessful());
             for(int i = 0; i < result.getData().size(); i++) {
-                assertEquals(DUMMY_STRINGS[i], result.getData().get(i));
+                assertEquals(DUMMY_STRINGS[i], result.getData().get(i).getObject());
             }
         });
 
@@ -262,7 +263,7 @@ public class FirebaseCollectionQueryTest {
     @Test
     public void FirebaseCollectionQuery_Livedata_CreationDoesNotFail() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
-        LiveData<List<String>> stringsLiveData = firebaseCollectionQuery.liveData(String.class);
+        LiveData<List<DatabaseObject<String>>> stringsLiveData = firebaseCollectionQuery.liveData(String.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
