@@ -16,6 +16,7 @@ public class FirestoreDatabase implements Database {
 
     public FirestoreDatabase(@NonNull FirebaseFirestore firestore) {
         mDb = verifyNotNull(firestore);
+
     }
 
     @Override
