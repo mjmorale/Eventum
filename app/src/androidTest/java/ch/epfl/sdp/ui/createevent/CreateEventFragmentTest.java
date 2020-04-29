@@ -155,7 +155,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_CorrectIntentImageSelection(){
+    public void CreateEventFragment_CorrectIntentImageSelection() {
         clickAddImageButton();
 
         intended(hasAction("android.intent.action.PICK"));
