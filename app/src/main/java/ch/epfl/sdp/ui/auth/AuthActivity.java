@@ -50,6 +50,12 @@ public class AuthActivity extends AppCompatActivity implements AuthFragment.OnAu
     }
 
 
+    /**
+     * Utility method that creates an Intent given a URI created by the share button
+     *
+     * @param data URI to transform
+     * @return Intent containing the event reference used afterwards to query the event
+     */
     private Intent getEventIntentFromUri(@NonNull Uri data) {
         verifyNotNull(data);
 
