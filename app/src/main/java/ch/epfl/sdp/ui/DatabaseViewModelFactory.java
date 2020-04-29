@@ -13,7 +13,7 @@ public class DatabaseViewModelFactory extends ParameterizedViewModelFactory {
     /**
      * Constructor of the DatabaseViewModelFactory
      *
-     * @param types of attributes added to the view model
+     * @param types of the parameters added to the view model
      */
     public DatabaseViewModelFactory(Class<?>... types) {
         super(types);
@@ -22,6 +22,11 @@ public class DatabaseViewModelFactory extends ParameterizedViewModelFactory {
         addType(Database.class);
     }
 
+    /**
+     * Method to set the database to the DatabaseViewModel factory
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     public void setDatabase(@NonNull Database database) {
         setValue(mDatabaseIndex, database);
     }
