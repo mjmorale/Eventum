@@ -11,7 +11,16 @@ public interface MapManager<TMarker> {
 
     void moveCamera(@NonNull Location location, float zoomLevel);
 
+    /**
+     * Method to move the camera (the focus) on the map
+     *
+     * @param location LatLng position on where to focus
+     * @param zoomLevel the zoom on that location
+     */
     void moveCamera(@NonNull LatLng location, float zoomLevel);
 
+    /**
+     * Clears all markers, shapes and polylines from the map
+     */
     void clear();
 }
