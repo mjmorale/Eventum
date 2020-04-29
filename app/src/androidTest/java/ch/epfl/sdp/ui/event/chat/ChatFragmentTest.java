@@ -7,7 +7,6 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.test.espresso.ViewAction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +18,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Filter;
 
 import ch.epfl.sdp.ChatMessage;
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
@@ -43,7 +40,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -84,7 +80,7 @@ public class ChatFragmentTest {
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
-        when(mFilterQueryMock.livedata(ChatMessage.class)).thenReturn(mLiveData);
+        when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mLiveData);
 
 
         doAnswer(invocation -> {

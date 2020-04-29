@@ -10,15 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
-import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.DatabaseObject;
 
 public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
-    public CardArrayAdapter(Context context, List<DatabaseObject<Event>> items){
-        super(context, R.layout.cardview_swipe_item, items);
+    public CardArrayAdapter(Context context){
+        super(context, R.layout.cardview_swipe_item);
     }
 
     @NonNull

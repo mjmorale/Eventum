@@ -30,7 +30,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     private FragmentSwipeBinding mBinding;
     private ArrayAdapter<DatabaseObject<Event>> mArrayAdapter;
-    private List<DatabaseObject<Event>> mEventList;
     private int mNumberSwipe = 0;
 
     private EventDetailFragment mInfoFragment;
@@ -47,8 +46,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     @Override
     public void removeFirstObjectInAdapter() {
-        mEventList.remove(0);
-        mArrayAdapter.notifyDataSetChanged();
+        mArrayAdapter.remove(mArrayAdapter.getItem(0));
     }
 
     @Override
@@ -61,6 +59,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mViewModel.joinEvent(((DatabaseObject<Event>) o).getId(), result -> {
             if(result.isSuccessful()) {
                 Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
             }
         });
         mNumberSwipe += 1;
@@ -80,8 +81,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
 
-        mEventList = new ArrayList<>();
-        mArrayAdapter = new CardArrayAdapter(getContext(), mEventList);
+        mArrayAdapter = new CardArrayAdapter(getContext());
+        mArrayAdapter.setNotifyOnChange(true);
         mBinding.cardsListView.setAdapter(mArrayAdapter);
         mBinding.cardsListView.setFlingListener(this);
 
@@ -90,11 +91,12 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
             mArrayAdapter.clear();
             mArrayAdapter.addAll(events);
+            mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
             mNumberSwipe = 0;
         });
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
-            mInfoFragment = new EventDetailFragment(mEventList.get(0).getObject(),this);
+            mInfoFragment = new EventDetailFragment(((DatabaseObject<Event>)dataObject).getObject(),this);
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
         });
 

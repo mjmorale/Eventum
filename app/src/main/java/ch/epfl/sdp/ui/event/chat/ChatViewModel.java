@@ -74,7 +74,7 @@ public class ChatViewModel extends ViewModel {
 
     public LiveData<List<DatabaseObject<ChatMessage>>> getMessages() {
         if (mMessageLiveData == null) {
-            mMessageLiveData = mOrderedMessagesQuery.livedata(ChatMessage.class);
+            mMessageLiveData = mOrderedMessagesQuery.liveData(ChatMessage.class);
         }
         return mMessageLiveData;
     }

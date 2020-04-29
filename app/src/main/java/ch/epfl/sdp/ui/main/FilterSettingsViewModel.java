@@ -6,7 +6,6 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.FieldValue;
@@ -14,9 +13,10 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.auth.Authenticator;
@@ -58,22 +58,22 @@ public class FilterSettingsViewModel extends ViewModel {
     private Collection<DatabaseObject<Event>> mToAdd = new ArrayList<>();
     private Collection<DatabaseObject<Event>> mToRemove = new ArrayList<>();
 
-    private Map<String, DatabaseObject<Event>> mEvents = new HashMap<>();
+    private Map<String, DatabaseObject<Event>> mEvents = new ConcurrentHashMap<>();
 
     public FilterSettingsViewModel(@NonNull LocationService locationService, @NonNull Authenticator authenticator, @NonNull Database database) {
         mUserInfo = authenticator.getCurrentUser();
         mEventQuery = database.query("events");
         mRootLiveDataSource = mEventQuery.liveData(Event.class);
-        mAttendedEvents = mEventQuery.whereArrayContains("attendees", mUserInfo.getUid()).livedata(Event.class);
+        mAttendedEvents = mEventQuery.whereArrayContains("attendees", mUserInfo.getUid()).liveData(Event.class);
         mResultsLiveData.addSource(mAttendedEvents, databaseObjects -> {
             mToRemove = databaseObjects;
             combineEvents();
-            mResultsLiveData.postValue(mEvents.values());
+            postCurrentEvents();
         });
         mResultsLiveData.addSource(mRootLiveDataSource, databaseObjects -> {
             mToAdd = databaseObjects;
             combineEvents();
-            mResultsLiveData.postValue(mEvents.values());
+            postCurrentEvents();
         });
         mLocationService = locationService;
     }
@@ -96,7 +96,7 @@ public class FilterSettingsViewModel extends ViewModel {
         mResultsLiveData.addSource(mCurrentLivedataSource, databaseObjects -> {
             mToAdd = databaseObjects;
             combineEvents();
-            mResultsLiveData.postValue(mEvents.values());
+            postCurrentEvents();
         });
     }
 
@@ -113,5 +113,9 @@ public class FilterSettingsViewModel extends ViewModel {
         for(DatabaseObject<Event> event: mToRemove) {
             mEvents.remove(event.getId());
         }
+    }
+
+    private void postCurrentEvents() {
+        mResultsLiveData.postValue(mEvents.values());
     }
 }

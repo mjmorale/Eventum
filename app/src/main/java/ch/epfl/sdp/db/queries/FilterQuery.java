@@ -17,5 +17,5 @@ public interface FilterQuery extends Query {
 
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<DatabaseObject<T>>> callback);
 
-    <T> LiveData<List<DatabaseObject<T>>> livedata(@NonNull Class<T> type);
+    <T> LiveData<List<DatabaseObject<T>>> liveData(@NonNull Class<T> type);
 }

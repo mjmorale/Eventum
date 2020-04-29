@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseFilterQuery;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
@@ -194,13 +193,13 @@ public class FirebaseFilterQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseFilterQuery_Livedata_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(null);
+        firebaseFilterQuery.liveData(null);
     }
 
     @Test
     public void FirebaseFilterQuery_Livedata_CreationOfLivedataDoesNotFail() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(String.class);
+        firebaseFilterQuery.liveData(String.class);
     }
 
 

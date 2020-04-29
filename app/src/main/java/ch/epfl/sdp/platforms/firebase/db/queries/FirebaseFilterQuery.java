@@ -53,7 +53,7 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> LiveData<List<DatabaseObject<T>>> livedata(@NonNull Class<T> type) {
+    public <T> LiveData<List<DatabaseObject<T>>> liveData(@NonNull Class<T> type) {
         return new FirebaseQueryLiveData(mQuery, verifyNotNull(type));
     }
 }
