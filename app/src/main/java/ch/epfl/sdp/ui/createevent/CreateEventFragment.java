@@ -61,8 +61,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     /**
      * Constructor of the create event fragment, only for testing purpose!
      *
-     * @param storage
-     * @param database
+     * @param storage {@link ch.epfl.sdp.storage.Storage}
+     * @param database {@link ch.epfl.sdp.db.Database}
      */
     @VisibleForTesting
     public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
