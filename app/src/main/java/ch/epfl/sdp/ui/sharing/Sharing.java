@@ -9,6 +9,9 @@ import java.util.List;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 
+/**
+ *
+ */
 public class Sharing {
 
     public static final String DOMAIN_URL = "https://eventum.com/";
