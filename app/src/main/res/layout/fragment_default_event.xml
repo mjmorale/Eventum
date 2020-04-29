@@ -80,7 +80,6 @@
                     android:textColor="@color/black"
                     android:background="@color/white">
                 </TextView>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.core.widget.NestedScrollView>
@@ -123,6 +122,15 @@
             android:clickable="true"
             android:layout_margin="16dp"
             android:src="@android:drawable/sym_action_chat" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/calendarButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|right"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@android:drawable/ic_menu_my_calendar" />
     </LinearLayout>
 
 </RelativeLayout>

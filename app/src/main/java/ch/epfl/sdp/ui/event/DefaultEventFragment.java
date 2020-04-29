@@ -3,16 +3,22 @@ package ch.epfl.sdp.ui.event;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
@@ -90,7 +96,9 @@ public class DefaultEventFragment extends Fragment{
         mBinding.chatButton.setOnClickListener(v->{
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
         });
-
+        mBinding.calendarButton.setOnClickListener(v->{
+            startActivity(addToCalendarIntent());
+                });
     }
 
     @Override
@@ -99,4 +107,18 @@ public class DefaultEventFragment extends Fragment{
         mBinding = null;
     }
 
+    private Intent addToCalendarIntent(){
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.Events.TITLE, mBinding.title.getText().toString());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mBinding.address.getText().toString());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, mBinding.description.getText().toString());
+        String[] date = mBinding.date.getText().toString().split("/");
+        GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(date[2]),
+                                                            Integer.parseInt(date[1]),
+                                                                Integer.parseInt(date[0]));
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis());
+
+        return  intent;
+    }
 }

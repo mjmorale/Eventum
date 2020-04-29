@@ -52,6 +52,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
@@ -135,7 +136,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException {
+    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException, InterruptedException {
         UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
         appViews.scrollIntoView(new UiSelector().text("title"));
 
@@ -150,10 +151,11 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.toast_incorrect_input))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+        sleep(1000);
     }
 
     @Test
-    public void CreateEventFragment_CorrectIntentImageSelection() {
+    public void CreateEventFragment_CorrectIntentImageSelection() throws InterruptedException {
         clickAddImageButton();
 
         intended(hasAction("android.intent.action.PICK"));
@@ -164,6 +166,7 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.no_image_chosen))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+        sleep(1000);
     }
 
     @Test
