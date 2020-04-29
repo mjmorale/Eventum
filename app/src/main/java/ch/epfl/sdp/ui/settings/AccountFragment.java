@@ -18,7 +18,7 @@ import ch.epfl.sdp.R;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
- * Fragment for the account informations of the user
+ * Fragment for the account information of the user
  */
 public class AccountFragment extends PreferenceFragmentCompat {
 
