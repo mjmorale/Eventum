@@ -29,9 +29,23 @@ public class GoogleMapManager implements MapManager<Marker> {
         return mGoogleMap.addMarker(markerOptions);
     }
 
+
+
     @Override
     public void moveCamera(@NonNull Location location, float zoomLevel) {
         verifyNotNull(location);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel));
+    }
+
+    @Override
+    public void moveCamera(@NonNull LatLng location, float zoomLevel) {
+        verifyNotNull(location);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
+    }
+
+    @Override
+    public void clear() {
+        mGoogleMap.clear();
+
     }
 }
