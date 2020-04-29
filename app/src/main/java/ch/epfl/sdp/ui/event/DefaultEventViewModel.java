@@ -61,10 +61,16 @@ public class DefaultEventViewModel extends ViewModel {
         }
     }
 
-    public void setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
-        verifyNotNull(mMapManager);
-        mMapManager.clear();
-        mMapManager.addMarker(eventName, latLng);
-        mMapManager.moveCamera(latLng, zoomLevel);
+    public boolean setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
+
+        if (mMapManager == null) {
+            return false;
+        }
+        else {
+            mMapManager.clear();
+            mMapManager.addMarker(eventName, latLng);
+            mMapManager.moveCamera(latLng, zoomLevel);
+            return true;
+        }
     }
 }
