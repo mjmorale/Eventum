@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
@@ -29,9 +30,11 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class DefaultEventFragment extends Fragment implements OnMapReadyCallback {
 
-    private DefaultEventViewModel mViewModel;
-    private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
+    private DefaultEventViewModel mViewModel;
+
+    private FragmentDefaultEventBinding mBinding;
+
     private Sharing mEventSharing;
     private float mZoomLevel = 15;
 
@@ -49,7 +52,6 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
-
     }
 
     @VisibleForTesting
@@ -143,6 +145,5 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mBinding = null;
     }
 }
