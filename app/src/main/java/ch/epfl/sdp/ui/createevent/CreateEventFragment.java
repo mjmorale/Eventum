@@ -168,7 +168,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) throws ParseException {
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
-        String date = mBinding.date.getDayOfMonth() + "/" + mBinding.date.getMonth() + "/" + mBinding.date.getYear();
+        String date = mBinding.date.getDayOfMonth() + "/" + (mBinding.date.getMonth() + 1) + "/" + mBinding.date.getYear();
         String address = mBinding.geoAutocomplete.getText().toString();
         checkInput(title, description, date, address);
 

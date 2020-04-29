@@ -148,7 +148,4 @@ public class ChatFragmentTest {
         onView(withText(mChatMessage.getObject().getText())).check(matches(isDisplayed()));
     }
 
-
-
-    //TODO: implement other tests.
 }

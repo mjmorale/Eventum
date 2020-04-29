@@ -88,7 +88,11 @@ public class ChatFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, mFactory).get(ChatViewModel.class);
 
         mAdapter = new MessageListAdapter(mViewModel.getUserRef());
-        mBinding.reyclerviewMessageList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setSmoothScrollbarEnabled(true);
+
+        mBinding.reyclerviewMessageList.setLayoutManager(layoutManager);
         mBinding.reyclerviewMessageList.setAdapter(mAdapter);
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
@@ -98,6 +102,7 @@ public class ChatFragment extends Fragment {
             }
             mAdapter.setChatList(chat);
             mAdapter.notifyDataSetChanged();
+            mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
         });
 
     }
