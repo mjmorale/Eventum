@@ -10,6 +10,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.map.MapManager;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -31,6 +32,9 @@ public class DefaultEventViewModelTest {
 
     @Mock
     private LiveData<Event> mEventLiveData;
+
+    @Mock
+    private MapManager mMapManagerMock;
 
     @Before
     public void setup() {

@@ -12,4 +12,6 @@ public interface MapManager<TMarker> {
     void moveCamera(@NonNull Location location, float zoomLevel);
 
     void moveCamera(@NonNull LatLng location, float zoomLevel);
+
+    void clear();
 }

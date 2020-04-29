@@ -28,7 +28,7 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
-                    android:layout_height="414dp"
+                    android:layout_height="300dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/oss117" />
 
@@ -80,6 +80,16 @@
                     android:textColor="@color/black"
                     android:background="@color/white">
                 </TextView>
+
+                <com.google.android.gms.maps.MapView
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/minimap"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:paddingBottom="50dp"
+                    map:cameraZoom="14"
+                    map:mapType="normal"
+                    map:liteMode="true" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

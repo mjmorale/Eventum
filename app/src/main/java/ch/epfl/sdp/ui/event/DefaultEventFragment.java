@@ -10,18 +10,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
+import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
@@ -33,6 +37,8 @@ public class DefaultEventFragment extends Fragment{
     private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
     private Sharing mEventSharing;
+    private MapView mMapView;
+    private float mZoomLevel = 14;
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
@@ -48,6 +54,7 @@ public class DefaultEventFragment extends Fragment{
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+
     }
 
     @VisibleForTesting
@@ -75,7 +82,6 @@ public class DefaultEventFragment extends Fragment{
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
@@ -91,6 +97,22 @@ public class DefaultEventFragment extends Fragment{
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
         });
 
+        initMinimap(savedInstanceState);
+
+    }
+
+    private void initMinimap(@Nullable Bundle savedInstanceState) {
+        mMapView = mBinding.getRoot().findViewById(R.id.minimap);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(googleMap -> {
+
+            //TODO: launch MapFragment on click
+            mViewModel.addMapManager(new GoogleMapManager(googleMap));
+            mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+                mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
+           });
+
+        });
     }
 
     @Override
