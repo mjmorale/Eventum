@@ -71,4 +71,37 @@ public class GeoFirestoreLiveDataTest {
         verifyNoMoreInteractions(mGeoQuery);
     }
 
+    @Test
+    public void GeoFirestoreLiveData_OnActive_MethodsWork(){
+        doAnswer(invocation -> {
+            GeoQueryDataEventListener obj = invocation.getArgument(0);
+            obj.onDocumentChanged(mDocumentSnapshot, mGeoPoint);
+            obj.onDocumentEntered(mDocumentSnapshot, mGeoPoint);
+            obj.onDocumentExited(mDocumentSnapshot);
+            obj.onDocumentMoved(mDocumentSnapshot, mGeoPoint);
+            obj.onGeoQueryError(mException);
+            obj.onGeoQueryReady();
+            return null;
+        }).when(mGeoQuery).addGeoQueryDataEventListener(any());
+
+        when(mDocumentSnapshot.getData()).thenReturn(
+                new HashMap<String, Object>(){{
+                    this.put("title", "title");
+                    this.put("description", "description");
+                    this.put("date", new Timestamp(20, 20));
+                    this.put("address", "Chemin");
+                    this.put("location", new GeoPoint(64, 65));
+                    this.put("imageId", "URL");
+                }}
+        );
+
+        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(mGeoQuery, mClass);
+        geoFirestoreLiveData.setmData(mData);
+        geoFirestoreLiveData.onActive();
+
+        verify(mData, times(2)).put(any(),any());
+        verify(mData, times(2)).remove(any());
+
+    }
+
 }
