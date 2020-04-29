@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
+
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.ui.UIConstants;
@@ -55,6 +57,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -62,12 +65,6 @@ import static org.mockito.Mockito.when;
 
 public class DefaultEventFragmentTest {
 
-    private String mTitle= "EventTitle";
-    private String mDescription ="EventDesc";
-    private Date mDate = new Date();
-    private Event mEvent= new EventBuilder().setTitle(mTitle).setDescription(mDescription).setDate(mDate).build();
-
-    private MutableLiveData<Event> mEventLiveData = new MutableLiveData<>();
 
     @Mock
     private Database mDatabaseMock;
@@ -76,46 +73,70 @@ public class DefaultEventFragmentTest {
     @Mock
     private DocumentQuery mDocumentQueryMock;
 
+    private MutableLiveData<Event> mEventsLive=new MutableLiveData<>();
+
+    private String title = "title";
+    private String description = "description";
+    private EventBuilder eventBuilder = new EventBuilder();
+    private Event eventTest = eventBuilder.setTitle(title).setDescription(description).setDate("01/01/2021").build();
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
-        when(mDocumentQueryMock.livedata(Event.class)).thenReturn(mEventLiveData);
-        mEventLiveData.postValue(mEvent);
+        when(mDocumentQueryMock.livedata(Event.class)).thenReturn(mEventsLive);
+        mEventsLive.postValue(eventTest);
     }
 
     @SuppressWarnings("unchecked")
-    @Test
-    public void calendar_test() {
-        Bundle bundle = new Bundle();
-        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
-        FragmentScenario<DefaultEventFragment> scenarioCalendar = FragmentScenario.launchInContainer(
+    private void scenario(Bundle bundle) {
+        FragmentScenario<DefaultEventFragment> scenario = FragmentScenario.launchInContainer(
                 DefaultEventFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(DefaultEventFragment.class, mDatabaseMock, "anyRef")
         );
+    }
+    @SuppressWarnings("unchecked")
+    @Test
+    public void DefaultEventFragment_CalendarIntent() {
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
 
+        scenario(bundle);
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
-
 
         Intents.init();
         Intent resultIntent = new Intent();
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultIntent);
         intending(allOf(
                 hasType("vnd.android.cursor.item/event"),
-                hasExtra(CalendarContract.Events.TITLE, mTitle),
-                hasExtra(CalendarContract.Events.EVENT_LOCATION,mEvent.getAddress()),
-                hasExtra(CalendarContract.Events.DESCRIPTION, mEvent.getDescription())
-        )
-    ).respondWith(result);
+                hasExtra(CalendarContract.Events.TITLE, title),
+                hasExtra(CalendarContract.Events.EVENT_LOCATION,eventTest.getAddress()),
+                hasExtra(CalendarContract.Events.DESCRIPTION,eventTest.getDescription())
+        )).respondWith(result);
         onView(withId(R.id.calendarButton)).perform(click());
 
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
 
         Intents.release();
 
+    }
+
+    @Test
+    public void DefaultEventFragment_EventIsLoaded() {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+        scenario(bundle);
+
+        onView(withId(R.id.title)).check(matches(withText(containsString(title))));
+        onView(withId(R.id.description)).check(matches(withText(containsString(description))));
+
+        onView(withId(R.id.date)).check(matches(isDisplayed()));
+        onView(withId(R.id.address)).check(matches(isDisplayed()));
+        onView(withId(R.id.minimap)).check(matches(isDisplayed()));
     }
 
 }

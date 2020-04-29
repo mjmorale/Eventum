@@ -135,7 +135,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException {
+    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException, InterruptedException {
         UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
         appViews.scrollIntoView(new UiSelector().text("title"));
 
@@ -150,10 +150,12 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.toast_incorrect_input))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+
+        Thread.sleep(1000);
     }
 
     @Test
-    public void CreateEventFragment_CorrectIntentImageSelection() {
+    public void CreateEventFragment_CorrectIntentImageSelection() throws InterruptedException {
         clickAddImageButton();
 
         intended(hasAction("android.intent.action.PICK"));
@@ -164,6 +166,8 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.no_image_chosen))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
     }
 
     @Test
