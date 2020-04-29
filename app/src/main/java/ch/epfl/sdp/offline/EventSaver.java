@@ -3,12 +3,7 @@ package ch.epfl.sdp.offline;
 import android.content.Context;
 import android.util.Log;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +15,6 @@ public class EventSaver <Event> extends ObjectSaver {
 
     static private HashMap<String, Date> statusFiles = new HashMap<String, Date>();
 
-    @NotNull
     @Override
     protected String getCollectionString() {
         return "Events";
