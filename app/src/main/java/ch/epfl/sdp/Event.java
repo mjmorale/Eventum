@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Event {
 
@@ -15,7 +16,7 @@ public class Event {
     private final String mAddress;
     private final LatLng mLocation;
     private final String mOrganizerRef;
-    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
+    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public Event(@NonNull String title,
                  @NonNull String description,
