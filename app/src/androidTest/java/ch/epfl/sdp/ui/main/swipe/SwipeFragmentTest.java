@@ -58,6 +58,7 @@ public class SwipeFragmentTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @SuppressWarnings("unchecked")
     private void scenario(MutableLiveData<List<Event>> eventLiveData){
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(eventLiveData);
