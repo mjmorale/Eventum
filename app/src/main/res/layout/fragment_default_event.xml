@@ -28,7 +28,7 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="250dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/oss117" />
 
@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/black"
-                    android:text="Prévention des épidémies avec l'unité 731"
+                    android:text="Title"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
                     android:textSize="30sp"
@@ -49,8 +49,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:paddingHorizontal="15dp"
-                    android:paddingVertical="30dp"
-                    android:text="Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !"
+                    android:paddingVertical="20dp"
+                    android:text="Description"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -63,7 +63,7 @@
                     android:background="@color/black"
                     android:paddingRight="40dp"
                     android:paddingBottom="5dp"
-                    android:text="11 Septembre 2001"
+                    android:text="01/01/2020"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -76,7 +76,7 @@
                     android:textSize="20sp"
                     android:textAlignment="textStart"
                     android:paddingHorizontal="15dp"
-                    android:paddingVertical="30dp"
+                    android:paddingTop="5dp"
                     android:textColor="@color/black"
                     android:background="@color/white">
                 </TextView>
@@ -85,9 +85,9 @@
                     xmlns:map="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/minimap"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:paddingBottom="50dp"
-                    map:cameraZoom="14"
+                    android:layout_height="330dp"
+                    android:paddingBottom="80dp"
+                    map:cameraZoom="15"
                     map:mapType="normal"
                     map:liteMode="true" />
 

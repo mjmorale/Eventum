@@ -44,12 +44,6 @@ public class DefaultEventViewModel extends ViewModel {
         mEventDocumentQuery = database.query("events").document(eventRef);
     }
 
-    public void addMapManager(MapManager mapManager) {
-        if (mMapManager == null) {
-            mMapManager =  mapManager;
-        }
-    }
-
     public LiveData<Event> getEvent() {
         if(mEvent == null) {
             mEvent = mEventDocumentQuery.livedata(Event.class);
@@ -57,14 +51,20 @@ public class DefaultEventViewModel extends ViewModel {
         return mEvent;
     }
 
+    public String getEventRef(){
+        return mEventRef;
+    }
+
+    public void addMapManager(MapManager mapManager) {
+        if (mMapManager == null) {
+            mMapManager =  mapManager;
+        }
+    }
+
     public void setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
         verifyNotNull(mMapManager);
         mMapManager.clear();
         mMapManager.addMarker(eventName, latLng);
         mMapManager.moveCamera(latLng, zoomLevel);
-    }
-
-    public String getEventRef(){
-        return mEventRef;
     }
 }

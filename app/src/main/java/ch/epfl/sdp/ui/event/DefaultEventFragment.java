@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.MapView;
@@ -20,12 +19,10 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
-import ch.epfl.sdp.ui.main.map.MapFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
@@ -38,7 +35,7 @@ public class DefaultEventFragment extends Fragment{
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
     private Sharing mEventSharing;
     private MapView mMapView;
-    private float mZoomLevel = 14;
+    private float mZoomLevel = 15;
 
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
