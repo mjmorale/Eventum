@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
@@ -30,6 +32,8 @@ public class DefaultEventFragment extends Fragment{
     private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
     private Sharing mEventSharing;
+    private MapView mMapView;
+    private float mZoomLevel = 15;
 
     /**
      * Method to create an instance of the fragment for a specific event
@@ -54,6 +58,7 @@ public class DefaultEventFragment extends Fragment{
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+
     }
 
     /**
@@ -87,7 +92,6 @@ public class DefaultEventFragment extends Fragment{
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
@@ -103,6 +107,21 @@ public class DefaultEventFragment extends Fragment{
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
         });
 
+        initMinimap(savedInstanceState);
+
+    }
+
+    private void initMinimap(@Nullable Bundle savedInstanceState) {
+        mMapView = mBinding.getRoot().findViewById(R.id.minimap);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(googleMap -> {
+
+            mViewModel.addMapManager(new GoogleMapManager(googleMap));
+            mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+                mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
+           });
+
+        });
     }
 
     @Override
