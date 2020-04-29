@@ -2,31 +2,22 @@ package ch.epfl.sdp.ui.event;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
-
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
