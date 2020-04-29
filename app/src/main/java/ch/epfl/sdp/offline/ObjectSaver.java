@@ -1,9 +1,11 @@
 package ch.epfl.sdp.offline;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +14,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,10 +38,9 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @param toSave The object to save in the collection
      * @param docReference Id of the document
      */
-    public void saveFile(T toSave, String docReference, Date deleteDate) throws IOException {
-        File newFile = File.createTempFile(docReference, null);
+    public void saveFile(T toSave, String docReference, Date deleteDate,Context context) throws IOException {
+        File newFile = new File(context.getFilesDir(), docReference);
 
-        //delete old version if exist
         if (newFile.exists()) {
             if(newFile.delete()) Log.d("Info Temp File", "Tempory file"+docReference+"deleted");
         }
@@ -52,11 +57,11 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @param listReference list of id from files you want to get
      * @return
      */
-    public List<T> getMultipleFile(List<String> listReference) throws IOException, ClassNotFoundException {
+    public List<T> getMultipleFile(List<String> listReference, Context context) throws IOException, ClassNotFoundException {
         List<T> result = new ArrayList<T>();
 
         for (String docReference : listReference) {
-            File fileDescriptor = File.createTempFile(docReference, null);
+            File fileDescriptor = new File(context.getFilesDir(),docReference);
             FileInputStream fi = new FileInputStream(fileDescriptor);
             ObjectInputStream oi = new ObjectInputStream(fi);
 
@@ -73,8 +78,8 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @param docReference Id of the document
      * @return
      */
-    public T getSingleFile(String docReference) throws IOException, ClassNotFoundException {
-        File fileDescriptor = File.createTempFile(docReference, null);
+    public T getSingleFile(String docReference, Context context) throws IOException, ClassNotFoundException {
+        File fileDescriptor = new File(context.getFilesDir(),docReference);
         FileInputStream fi = new FileInputStream(fileDescriptor);
         ObjectInputStream oi = new ObjectInputStream(fi);
 
@@ -83,6 +88,11 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
         fi.close();
 
         return tempRead;
+    }
+
+    public void removeSingleFile(String docReference, Context context) throws IOException, ClassNotFoundException {
+        File fileDescriptor = new File(context.getFilesDir(),docReference);
+        fileDescriptor.delete();
     }
 
     @NonNull
