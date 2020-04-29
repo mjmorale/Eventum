@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
