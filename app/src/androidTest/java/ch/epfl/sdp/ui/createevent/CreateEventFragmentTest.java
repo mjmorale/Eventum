@@ -153,7 +153,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_CorrectIntentImageSelection() {
+    public void CreateEventFragment_CorrectIntentImageSelection() throws InterruptedException {
         clickAddImageButton();
 
         intended(hasAction("android.intent.action.PICK"));
@@ -164,6 +164,8 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.no_image_chosen))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+        // Fix to make Toast disappear for following tests
+        Thread.sleep(1000);
     }
 
     @Test
