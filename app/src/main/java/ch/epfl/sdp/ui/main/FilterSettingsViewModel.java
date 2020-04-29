@@ -22,12 +22,26 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model for the filtering of events
+ */
 public class FilterSettingsViewModel extends ViewModel {
+    /**
+     * Factory for the FilterSettingsViewModel
+     */
     public static class FilterSettingsViewModelFactory extends DatabaseViewModelFactory {
+        /**
+         * Constructor of the FilterSettingsViewModel factory
+         */
         public FilterSettingsViewModelFactory() {
             super(LocationService.class);
         }
 
+        /**
+         * Method to set the locationService to the FilterSettingsViewModel factory
+         *
+         * @param locationService {@link ch.epfl.sdp.map.LocationService}
+         */
         public void setLocationService(@NonNull LocationService locationService) {
             setValue(0, verifyNotNull(locationService));
         }
@@ -40,6 +54,12 @@ public class FilterSettingsViewModel extends ViewModel {
     private LiveData<Collection<Event>> mCurrentLivedataSource;
     private LiveData<List<Event>> mRootLiveDataSource;
 
+    /**
+     * Constructor of the FilterSettingsViewModel, the factory should be used instead of this
+     *
+     * @param locationService {@link ch.epfl.sdp.map.LocationService}
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     public FilterSettingsViewModel(@NonNull LocationService locationService, @NonNull Database database) {
         mEventQuery = database.query("events");
         mRootLiveDataSource = mEventQuery.liveData(Event.class);
@@ -47,10 +67,21 @@ public class FilterSettingsViewModel extends ViewModel {
         mLocationService = locationService;
     }
 
+    /**
+     * Method to get the events after the filtering
+     *
+     * @return the filtered events
+     */
     public LiveData<Collection<Event>> getFilteredEvents() {
         return mResultsLiveData;
     }
 
+    /**
+     * Method to set the filtering settings for events
+     *
+     * @param context the environment the application is currently running in
+     * @param radiusSetting the radius (km) used for filtering the events
+     */
     public void setSettings(Context context, Double radiusSetting) {
         Location location = mLocationService.getLastKnownLocation(context);
         GeoPoint locationGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
