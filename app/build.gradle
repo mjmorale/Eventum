@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    ext.kotlin_version = '1.3.30'
     defaultConfig {
         applicationId "ch.epfl.sdp"
         minSdkVersion 21
@@ -51,6 +54,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.1'
+    implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
     // Firebase Geostore dependencies
     implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
     // Google Material
@@ -58,10 +62,15 @@ dependencies {
     // Maps dependency
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // Other dependencies
     implementation 'com.lorentzos.swipecards:library:1.0.9'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Unit test dependencies
     testImplementation 'junit:junit:4.12'
@@ -121,13 +130,13 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
         html.enabled = true
     }
 
-    def fileFilter = ['**/databinding/*Binding.class', '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def fileFilter = ['**/Glide*.class', '**/databinding/*Binding.class', '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
     def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([debugTree])
+    executionData.from = fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/*coverage.ec'
     ])
 }

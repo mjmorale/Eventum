@@ -1,22 +1,19 @@
 package ch.epfl.sdp;
 
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class Event implements Serializable {
     private String mDescription;
     private Date mDate;
     private String mTitle;
-    private int mImageID;
+    private String mImageId;
     private String mAddress;
     private double mLatitude;
     private double mLongitude;
@@ -27,30 +24,43 @@ public class Event implements Serializable {
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
-                 @NonNull int imageID) {
+                 @NonNull String imageId) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
+
         mLatitude = location.latitude;
         mLongitude = location.longitude;
-        mImageID = imageID;
+
+        mImageId = imageId;
+
     }
 
+    /**
+     * This constructor is here for the
+     * @param title Event title
+     * @param description Description for the event
+     * @param date The date where the event is happening
+     * @param address The address of where the event is happening
+     * @param latitude The latitude of where the event is happening
+     * @param longitude The longitude of where the event is happening
+     * @param imageId An URL to an image for the Event
+     */
     public Event(@NonNull String title,
                  @NonNull String description,
                  @NonNull Date date,
                  @NonNull String address,
                  double latitude,
                  double longitude,
-                 @NonNull int imageID) {
+                 @NonNull String  imageId) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
         mLatitude = latitude;
         mLatitude = longitude;
-        mImageID = imageID;
+        mImageId = imageId;
     }
 
 
@@ -84,8 +94,8 @@ public class Event implements Serializable {
         return new LatLng(mLatitude, mLongitude);
     }
 
-    public int getImageID() {
-        return mImageID;
+    public String getImageId() {
+        return mImageId;
     }
 
     public String getAddress() {
@@ -96,7 +106,7 @@ public class Event implements Serializable {
     public String toString(){
         return "Title:" + mTitle + "\nDescription:" + mDescription + "\nDate:" + mDate + "\nAddress:"
                 + mAddress + "\nLatitude:" + mLatitude + "\nLongitude:" + mLongitude
-                + "imageID" + mImageID;
+                + "\nimageID:" + mImageId;
     }
 
     @Override
@@ -113,6 +123,6 @@ public class Event implements Serializable {
         return mTitle.equals(obj.mTitle) && mDescription.equals(obj.mDescription)
                 && mDate.equals(obj.mDate) && mAddress.equals(obj.mAddress)
                 && mLatitude == obj.mLatitude && mLongitude == obj.mLongitude
-                && mImageID == obj.mImageID;
+                && mImageId.equals(obj.mImageId);
     }
 }

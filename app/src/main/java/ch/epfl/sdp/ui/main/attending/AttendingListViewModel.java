@@ -1,15 +1,15 @@
 package ch.epfl.sdp.ui.main.attending;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.util.List;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 

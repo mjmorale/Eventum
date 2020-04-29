@@ -36,7 +36,7 @@ public class AuthActivity extends AppCompatActivity implements AuthFragment.OnAu
         Intent inputIntent = getIntent();
         String action = inputIntent.getAction();
         Uri data = inputIntent.getData();
-        if(Intent.ACTION_SEND.equals(action) && data != null) {
+        if(Intent.ACTION_VIEW.equals(action) && data != null) {
             // The activity was started by clicking on a shared link
             outputIntent = getEventIntentFromUri(data);
         }

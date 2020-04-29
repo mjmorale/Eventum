@@ -91,6 +91,7 @@ public class GeoFirestoreLiveDataTest {
                     this.put("date", new Timestamp(20, 20));
                     this.put("address", "Chemin");
                     this.put("location", new GeoPoint(64, 65));
+                    this.put("imageId", "URL");
                 }}
         );
 

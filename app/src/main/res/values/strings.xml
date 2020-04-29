@@ -5,5 +5,13 @@
     <string name="navigation_main_drawer_close">Close navigation drawer</string>
 
     <string name="toast_incorrect_input">Invalid input</string>
+    <string name="enter_message">Enter message</string>
+    <string name="send">SEND</string>
 
+    <string name="permission_not_granted">Permission not granted !</string>
+    <string name="no_image_chosen">No image chosen !</string>
+
+    <string
+        name="defaultImageURL"
+        >https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com/o/eventDefault.jpg?alt=media&amp;token=a6d345fa-a513-478d-a019-2307ee50022b</string>
 </resources>

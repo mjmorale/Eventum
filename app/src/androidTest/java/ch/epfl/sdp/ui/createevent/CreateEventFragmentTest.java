@@ -1,22 +1,28 @@
 package ch.epfl.sdp.ui.createevent;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.contrib.PickerActions;
-
+import androidx.test.espresso.intent.Intents;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
+import androidx.test.uiautomator.UiSelector;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.Database;
@@ -25,7 +31,7 @@ import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockEvents;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
-
+import ch.epfl.sdp.storage.Storage;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
@@ -35,12 +41,16 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -53,6 +63,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateEventFragmentTest {
+
     private static final Event mMockEvent = MockEvents.getNextEvent();
     private static final String DATE = mMockEvent.getDateStr();
     private static final String TITLE = mMockEvent.getTitle();
@@ -64,15 +75,29 @@ public class CreateEventFragmentTest {
     private static final int YEAR = mMockEvent.getDate().getYear();
 
     private Activity mActivity;
+    private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
+    @Rule
+    public GrantPermissionRule mPermissionReadStorage =
+            GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    @Rule
+    public ActivityTestRule<CreateEventActivity> mIntentsTestRule =
+            new ActivityTestRule<>(CreateEventActivity.class);
 
     @Mock
     private Database mDatabase;
+
+    @Mock
+    private Storage mStorage;
 
     @Mock
     private CollectionQuery mCollectionQuery;
 
     @Before
     public void setup() {
+
+        Intents.init();
         MockitoAnnotations.initMocks(this);
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
@@ -92,11 +117,16 @@ public class CreateEventFragmentTest {
                 CreateEventFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(CreateEventFragment.class, mDatabase));
+                new MockFragmentFactory<>(CreateEventFragment.class, mStorage, mDatabase));
 
         scenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();
         });
+    }
+
+    @After
+    public void after() {
+        Intents.release();
     }
 
     @Test
@@ -105,10 +135,13 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_IncorrectInput() {
-        onView(withHint(is("Title"))).perform(
+    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException {
+        UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
+        appViews.scrollIntoView(new UiSelector().text("title"));
+
+        onView(withHint(is("title"))).perform(
                 clearText(),
-                typeText(EMPTY),
+                replaceText(EMPTY),
                 closeSoftKeyboard());
 
         clickCreateButton();
@@ -119,9 +152,36 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
+    @Test
+    public void CreateEventFragment_CorrectIntentImageSelection() {
+        clickAddImageButton();
+
+        intended(hasAction("android.intent.action.PICK"));
+
+        mDevice.pressBack();
+
+        // Check Toast message is displayed
+        onView(withText(R.string.no_image_chosen))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void CreateEventFragment_CorrectImageSelection() {
+        Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
+        Intent intent = new Intent();
+        intent.setData(uri);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
+        intending(hasAction("android.intent.action.PICK")).respondWith(result);
+        clickAddImageButton();
+
+       onView(withId(R.id.imageView)).check(matches(withTagValue(is((Object) "new_image"))));
+    }
+
     private void doCorrectInput() {
         onView(withId(R.id.title)).perform(
-                typeText(TITLE),
+                replaceText(TITLE),
                 closeSoftKeyboard());
 
         onView(withId(R.id.description)).perform(
@@ -146,6 +206,12 @@ public class CreateEventFragmentTest {
 
     private void clickCreateButton() {
         onView(withId(R.id.createButton)).perform(
+                scrollTo(),
+                click());
+    }
+
+    private void clickAddImageButton() {
+        onView(withId(R.id.addImageButton)).perform(
                 scrollTo(),
                 click());
     }

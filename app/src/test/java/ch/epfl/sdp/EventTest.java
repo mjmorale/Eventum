@@ -31,6 +31,8 @@ public class EventTest  {
     private Date dateEvent = new Date();
 
 
+    String imageId = "URL";
+
     String TEST_FILE = "EventTest.txt";
 
     @Test
@@ -42,17 +44,19 @@ public class EventTest  {
                               .setDate(date)
                               .setAddress(address)
                               .setLocation(location)
+                              .setImageId(imageId)
                               .build();
 
         assertEquals(e.getTitle(), title);
         assertEquals(e.getDescription(), description);
         assertEquals(e.getDate(), date);
         assertEquals(e.getAddress(), address);
+        assertEquals(e.getImageId(), imageId);
     }
 
     @Test
     public void Event_AddingEvent() {
-        Event event = new Event(title+"testAddEvent", description, date, address, location, 0);
+        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId);
         try{
             EventSaver eventSaver = new EventSaver();
             dateEvent.setYear(dateEvent.getYear()+1);
@@ -80,8 +84,8 @@ public class EventTest  {
 
     @Test
     public void Event_getAllEvents() {
-        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, 0);
-        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, 0);
+        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId);
+        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId);
         try{
             EventSaver eventSaver = new EventSaver();
             dateEvent.setYear(dateEvent.getYear()+1);
@@ -103,7 +107,7 @@ public class EventTest  {
 
     @Test
     public void Event_AddingEventAndRemovedBecauseOutdated() {
-        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, 0);
+        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId);
         try{
             EventSaver eventSaver = new EventSaver();
             dateEvent.setYear(dateEvent.getYear()-1);
@@ -118,7 +122,7 @@ public class EventTest  {
 
     @Test
     public void Event_getSingleFile() {
-        Event event = new Event(title+"testGetSingleFile", description, date, address, location, 0);
+        Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId);
         try{
             EventSaver eventSaver = new EventSaver();
             dateEvent.setYear(dateEvent.getYear()+1);
@@ -143,7 +147,7 @@ public class EventTest  {
 
     @Test
     public void Event_removeFileExist() throws IOException, ClassNotFoundException {
-        Event event = new Event(title, description, date, address, location, 0);
+        Event event = new Event(title, description, date, address, location, imageId);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
 

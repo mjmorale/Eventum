@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="ch.epfl.sdp.ui.settings.SettingsActivity$AccountFragment"
+        app:fragment="ch.epfl.sdp.ui.settings.AccountFragment"
         app:icon="@drawable/ic_person_black_24dp"
         app:key="account_header"
         app:title="Account" />

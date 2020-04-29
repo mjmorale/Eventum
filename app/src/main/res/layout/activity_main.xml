@@ -9,6 +9,9 @@
     android:layout_height="match_parent"
     android:id="@+id/main_drawer_layout">
 
+    <!--<include layout="@layout/menu_main_search"
+        android:id="@+id/menu_main_search"/>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,5 +42,12 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/navigation_main_header"
         app:menu="@menu/menu_main_drawer" />
+
+    <ch.epfl.sdp.ui.settings.FilterView
+        android:id="@+id/menuMainSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

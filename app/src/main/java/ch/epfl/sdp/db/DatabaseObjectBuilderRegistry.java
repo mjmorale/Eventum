@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+
+import ch.epfl.sdp.ChatMessage;
+import ch.epfl.sdp.ChatMessageDatabaseBuilder;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.User;
@@ -17,7 +20,11 @@ public class DatabaseObjectBuilderRegistry {
 
     static {
         mBuilders.put(Event.class, new EventDatabaseBuilder());
+
+        mBuilders.put(ChatMessage.class, new ChatMessageDatabaseBuilder());
+
         mBuilders.put(User.class, new UserDatabaseBuilder());
+
     }
 
     public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<? extends DatabaseObjectBuilder<T>> builder) {
