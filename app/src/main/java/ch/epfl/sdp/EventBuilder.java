@@ -30,9 +30,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the title attribute for the Event to be created
+     * Set the title attribute for the Event to be created.
      *
-     * @param title to assigned
+     * @param title to assign
      * @return caller class with the title attribute assigned
      */
     public EventBuilder setTitle(String title) {
@@ -41,9 +41,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the description attribute for the Event to be created
+     * Set the description attribute for the Event to be created.
      *
-     * @param description to assigned
+     * @param description to assign
      * @return caller class with the description attribute assigned
      */
     public EventBuilder setDescription(String description) {
@@ -52,9 +52,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the date attribute for the Event to be created using the Date class
+     * Set the date attribute for the Event to be created using the Date class.
      *
-     * @param date to assigned
+     * @param date to assign
      * @return caller class with the date attribute assigned
      */
     public EventBuilder setDate(Date date) {
@@ -63,9 +63,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the date attribute for the Event to be created using human readable date
+     * Set the date attribute for the Event to be created using human readable date.
      *
-     * @param date to assigned
+     * @param date to assign
      * @return caller class with the date attribute assigned
      */
     public EventBuilder setDate(String date) {
@@ -78,9 +78,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the address attribute for the Event to be created
+     * Set the address attribute for the Event to be created.
      *
-     * @param address to assigned
+     * @param address to assign
      * @return caller class with the address attribute assigned
      */
     public EventBuilder setAddress(String address) {
@@ -89,9 +89,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the location attribute for the Event to be created
+     * Set the location attribute for the Event to be created.
      *
-     * @param location to assigned
+     * @param location to assign
      * @return caller class with the location attribute assigned
      */
     public EventBuilder setLocation(LatLng location) {
@@ -100,9 +100,9 @@ public class EventBuilder {
     }
 
     /**
-     * Set the image identifier attribute for the Event to be created
+     * Set the image identifier attribute for the Event to be created.
      *
-     * @param imageId to assigned
+     * @param imageId to assign
      * @return caller class with the image identifier attribute assigned
      */
     public EventBuilder setImageId(String imageId) {

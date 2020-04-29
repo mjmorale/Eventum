@@ -34,7 +34,7 @@ public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAd
     /**
      * Constructor of the AttendingEventAdapter
      *
-     * @param attendingEvents a list of events someone attend to
+     * @param attendingEvents a list of events the user is attending
      */
     public AttendingEventAdapter(@NonNull List<Event> attendingEvents) {
         mAttendingEvents = verifyNotNull(attendingEvents);
@@ -43,7 +43,7 @@ public class AttendingEventAdapter extends RecyclerView.Adapter<AttendingEventAd
     /**
      * Method to set a list of events
      *
-     * @param attendingEvents a list of events someone attend to
+     * @param attendingEvents a list of events the user is attending
      */
     public void setAttendingEvents(@NonNull List<Event> attendingEvents) {
         mAttendingEvents = verifyNotNull(attendingEvents);

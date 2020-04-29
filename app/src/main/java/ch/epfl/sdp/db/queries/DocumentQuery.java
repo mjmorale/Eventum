@@ -7,7 +7,7 @@ import ch.epfl.sdp.db.DatabaseObjectBuilder;
 
 /**
  * A document is contained inside a collection {@link ch.epfl.sdp.db.queries.CollectionQuery} this is
- * the interface that each Document should implement
+ * the interface that each Document should implement.
  */
 public interface DocumentQuery extends Query {
 
@@ -55,7 +55,7 @@ public interface DocumentQuery extends Query {
     void update(@NonNull String field, @NonNull Object value, @NonNull OnQueryCompleteCallback<Void> callback);
 
     /**
-     * Get the livedata the object associated to this query.
+     * Get the livedata of the object associated to this query.
      *
      * @param type class type that should be returned
      * @param <T> type that should be returned
