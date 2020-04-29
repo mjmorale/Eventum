@@ -18,7 +18,7 @@ import ch.epfl.sdp.auth.UserInfo;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
- * View model for the chat
+ * View model for the chat (to chat between users about an event)
  */
 public class ChatViewModel extends ViewModel {
 

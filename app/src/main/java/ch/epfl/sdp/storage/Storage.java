@@ -11,7 +11,7 @@ import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
  */
 public interface Storage {
     /**
-     * Method to upload an image on the storage
+     * Method to upload an image to the storage
      *
      * @param imageUri of the image to be uploaded
      * @param callback called when the upload is finished
