@@ -103,7 +103,6 @@ public class DefaultEventFragment extends Fragment{
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(googleMap -> {
 
-            //TODO: launch MapFragment on click
             mViewModel.addMapManager(new GoogleMapManager(googleMap));
             mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
                 mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);

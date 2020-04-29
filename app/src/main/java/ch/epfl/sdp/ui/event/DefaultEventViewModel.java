@@ -55,12 +55,24 @@ public class DefaultEventViewModel extends ViewModel {
         return mEventRef;
     }
 
+
+    /**
+     * Adds a mapManager to the view model, which can then be used to control the minimap
+     * @param mapManager the mapManager we want to assign to the view model
+     */
     public void addMapManager(MapManager mapManager) {
         if (mMapManager == null) {
             mMapManager =  mapManager;
         }
     }
 
+    /**
+     * Adds an event at the given location and centers the map on that location
+     * @param latLng the coordinates of the event
+     * @param eventName the name of the event
+     * @param zoomLevel the zoom level of the map
+     * @return boolean indicating whether the event was successfully set on the map or not
+     */
     public boolean setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
 
         if (mMapManager == null) {
