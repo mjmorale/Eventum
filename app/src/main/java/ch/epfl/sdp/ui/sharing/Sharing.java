@@ -10,7 +10,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 
 /**
- *
+ * Sharing functionality to be able to share an event on all the social platforms
  */
 public class Sharing {
 
@@ -18,6 +18,11 @@ public class Sharing {
 
     private Intent mSendIntent;
 
+    /**
+     * Constructor
+     *
+     * @param arguments list of strings
+     */
     Sharing(@NonNull List<String> arguments) {
         verifyNotNull(arguments);
 
@@ -32,6 +37,11 @@ public class Sharing {
         mSendIntent.setType("text/plain");
     }
 
+    /**
+     * Method to get the sharing intent
+     *
+     * @return the sharing intent
+     */
     public Intent getShareIntent() {
         return Intent.createChooser(mSendIntent, "Share via");
     }
