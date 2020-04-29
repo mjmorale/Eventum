@@ -47,8 +47,8 @@ public class SwipeFragmentTest {
     private CollectionQuery mCollectionQuery;
 
     private EventBuilder eventBuilder = new EventBuilder();
-    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").build();
-    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("01/01/2020").build();
+    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").setOrganizerRef("organizer1").build();
+    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("01/01/2020").setOrganizerRef("organizer2").build();
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);

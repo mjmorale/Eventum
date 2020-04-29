@@ -20,7 +20,7 @@ public class EventTest {
     LatLng location = new LatLng(100,100);
     String address = "Lausanne, Switzerland";
     String imageId = "URL";
-
+    String organizerRef = "organizerref";
 
     @Test
     public void EventBuilder_CheckCorrectData()
@@ -32,6 +32,7 @@ public class EventTest {
                               .setAddress(address)
                               .setLocation(location)
                               .setImageId(imageId)
+                              .setOrganizerRef(organizerRef)
                               .build();
 
         assertEquals(e.getTitle(), title);
@@ -39,5 +40,6 @@ public class EventTest {
         assertEquals(e.getDate(), date);
         assertEquals(e.getAddress(), address);
         assertEquals(e.getImageId(), imageId);
+        assertEquals(e.getOrganizer(), organizerRef);
     }
 }

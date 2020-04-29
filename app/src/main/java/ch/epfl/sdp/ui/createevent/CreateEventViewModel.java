@@ -10,6 +10,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
@@ -23,11 +25,15 @@ public class CreateEventViewModel extends ViewModel {
 
     static class CreateEventViewModelFactory extends DatabaseViewModelFactory {
         CreateEventViewModelFactory() {
-            super(Storage.class);
+            super(Storage.class, Authenticator.class);
         }
 
         void setStorage(@NonNull Storage storage) {
             setValue(0, verifyNotNull(storage));
+        }
+
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
         }
     }
 
@@ -37,14 +43,19 @@ public class CreateEventViewModel extends ViewModel {
     }
 
     private final CollectionQuery mEventCollection;
-    private final Database mDatabase;
     private final Storage mStorage;
+    private final UserInfo mUserInfo;
     private String mImageId;
 
-    public CreateEventViewModel(@NonNull Storage storage, @NonNull Database database) {
-        mDatabase = verifyNotNull(database);
+    public CreateEventViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
+        verifyNotNull(database);
         mStorage = verifyNotNull(storage);
-        mEventCollection = mDatabase.query("events");
+        mUserInfo = authenticator.getCurrentUser();
+        mEventCollection = database.query("events");
+    }
+
+    public String getUserRef() {
+        return mUserInfo.getUid();
     }
 
     public void insertEvent(@NonNull Event event, @NonNull OnEventCreatedCallback callback) {

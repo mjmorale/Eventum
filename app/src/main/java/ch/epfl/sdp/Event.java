@@ -7,12 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Event {
-    private String mDescription;
-    private Date mDate;
-    private String mTitle;
-    private String mImageId;
-    private String mAddress;
-    private LatLng mLocation;
+
+    private final String mDescription;
+    private final Date mDate;
+    private final String mTitle;
+    private final String mImageId;
+    private final String mAddress;
+    private final LatLng mLocation;
+    private final String mOrganizerRef;
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public Event(@NonNull String title,
@@ -20,13 +22,15 @@ public class Event {
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
-                 @NonNull String imageId) {
+                 @NonNull String imageId,
+                 @NonNull String organizerRef) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
         mLocation = location;
         mImageId = imageId;
+        mOrganizerRef = organizerRef;
     }
 
     static public String formatDate(Date date) {
@@ -64,4 +68,6 @@ public class Event {
     public String getAddress() {
         return mAddress;
     }
+
+    public String getOrganizer() { return mOrganizerRef; }
 }

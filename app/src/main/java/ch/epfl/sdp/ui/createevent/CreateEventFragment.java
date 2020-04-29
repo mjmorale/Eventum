@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
@@ -60,14 +61,15 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
-
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
     @VisibleForTesting
-    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
+    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database, @NonNull Authenticator authenticator) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setStorage(storage);
+        mFactory.setAuthenticator(authenticator);
     }
 
     @Override
@@ -108,7 +110,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                             getActivity().finish();
                         }
                     });
-                } catch (ParseException | IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -165,7 +167,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) throws ParseException {
+    private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) {
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
         String date = mBinding.date.getDayOfMonth() + "/" + mBinding.date.getMonth() + "/" + mBinding.date.getYear();
@@ -179,6 +181,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
                 .setImageId(mViewModel.getImageId())
+                .setOrganizerRef(mViewModel.getUserRef())
                 .build();
 
         mViewModel.insertEvent(event, callback);

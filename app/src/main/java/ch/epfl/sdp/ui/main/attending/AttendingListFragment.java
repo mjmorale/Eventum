@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.ServiceProvider;
 
 public class AttendingListFragment extends Fragment {
 
@@ -33,7 +34,7 @@ public class AttendingListFragment extends Fragment {
 
     public AttendingListFragment() {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @VisibleForTesting
