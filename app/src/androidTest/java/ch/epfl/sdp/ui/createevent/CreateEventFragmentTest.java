@@ -136,7 +136,7 @@ public class CreateEventFragmentTest {
     }
 
     @Test
-    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException{
+    public void CreateEventFragment_IncorrectInput() throws UiObjectNotFoundException {
         UiScrollable appViews = new UiScrollable(new UiSelector().scrollable(true));
         appViews.scrollIntoView(new UiSelector().text("title"));
 
@@ -151,7 +151,6 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.toast_incorrect_input))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-
     }
 
     @Test
