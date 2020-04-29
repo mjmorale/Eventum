@@ -23,7 +23,7 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:text="Name: "
+                    android:text="@string/name_create"
                     android:layout_weight="0.6"
                     android:textColor="@color/grey"
                     android:textSize="25sp">
@@ -32,7 +32,7 @@
                 <EditText
                     android:id="@+id/title"
                     android:layout_height="wrap_content"
-                    android:hint="title"
+                    android:hint="@string/title_maj"
                     android:inputType="text"
                     android:layout_weight="0.4"
                     android:textSize="20sp"
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="Description: "
+                android:text="@string/description_create"
                 android:textColor="@color/grey"
                 android:layout_marginTop="20dp"
                 android:textSize="25sp"
@@ -54,7 +54,7 @@
             <EditText
                 android:id="@+id/description"
                 android:layout_height="wrap_content"
-                android:hint="description"
+                android:hint="@string/description"
                 android:layout_width="match_parent"
                 android:textSize="20sp"
                 android:inputType="textMultiLine"
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="Address: "
+                android:text="@string/address_create"
                 android:textColor="@color/grey"
                 android:layout_marginTop="20dp"
                 android:textSize="25sp"
@@ -94,7 +94,7 @@
                     android:imeOptions="actionSearch"
                     android:inputType="textCapSentences"
                     android:background="@color/white"
-                    android:hint="address"
+                    android:hint="@string/address"
                     android:padding="10dp"
                     android:dropDownWidth="fill_parent"
                     android:textAlignment="center"
@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_action_remove"
-                    android:contentDescription="delete button"
+                    android:contentDescription="@string/delete_button"
                     android:layout_gravity="center_vertical|end"
                     android:visibility="gone"
                     android:layout_marginEnd="12dp"/>
@@ -130,7 +130,7 @@
                 android:textSize="50sp"
                 android:background="@color/colorPrimary"
                 android:layout_marginBottom="80dp"
-                android:text="+"/>
+                android:text="@string/plus"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/createButton"
