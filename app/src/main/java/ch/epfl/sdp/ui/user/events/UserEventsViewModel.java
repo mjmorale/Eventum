@@ -14,6 +14,10 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model for the UserEventsFragment.
+ * This view model provides the fragment with a list of events organized by the current user.
+ */
 public class UserEventsViewModel extends ViewModel {
 
     static class UserEventsViewModelFactory extends DatabaseViewModelFactory {
@@ -31,11 +35,21 @@ public class UserEventsViewModel extends ViewModel {
 
     private FilterQuery mOrganizedEventsQuery;
 
+    /**
+     * Construct a new UserEventsViewModel. Use the factory method instead of this constructor
+     *
+     * @param authenticator The authentication service to use
+     * @param database The database service to use
+     */
     public UserEventsViewModel(@NonNull Authenticator authenticator, @NonNull Database database) {
         UserInfo user = authenticator.getCurrentUser();
         mOrganizedEventsQuery = database.query("events").whereFieldEqualTo("organizer", user.getUid());
     }
 
+    /**
+     * @return A livedata containing the list of events organized by the current user.
+     * @see LiveData
+     */
     public LiveData<List<Event>> getOrganizedEvents() {
         if(mOrganizedEvents == null) {
             mOrganizedEvents = mOrganizedEventsQuery.livedata(Event.class);

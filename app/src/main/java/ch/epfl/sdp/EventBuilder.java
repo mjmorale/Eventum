@@ -113,6 +113,12 @@ public class EventBuilder {
         return this;
     }
 
+    /**
+     * Set the event's organizer database reference.
+     *
+     * @param organizerRef The organizer's database reference.
+     * @return caller class with the image identifier attribute assigned
+     */
     public EventBuilder setOrganizerRef(String organizerRef) {
         this.mOrganizerRef = organizerRef;
         return this;

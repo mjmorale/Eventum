@@ -22,7 +22,7 @@ public class CreateEventViewModel extends ViewModel {
      * Factory for the CreateEventViewModel
      */
     static class CreateEventViewModelFactory extends DatabaseViewModelFactory {
-        
+
         /**
          * Constructor of the CreateEventViewModel factory
          */

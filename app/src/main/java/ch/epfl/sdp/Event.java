@@ -108,5 +108,8 @@ public class Event {
         return mAddress;
     }
 
+    /**
+     * @return The event's organizer database reference
+     */
     public String getOrganizer() { return mOrganizerRef; }
 }
