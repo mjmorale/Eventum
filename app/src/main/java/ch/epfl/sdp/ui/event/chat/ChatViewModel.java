@@ -12,29 +12,24 @@ import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.auth.UserInfo;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class ChatViewModel extends ViewModel {
 
-    static class ChatViewModelFactory extends ParameterizedViewModelFactory {
-
+    static class ChatViewModelFactory extends DatabaseViewModelFactory {
         ChatViewModelFactory() {
-            super(Database.class, String.class, Authenticator.class);
-        }
-
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
+            super(String.class, Authenticator.class);
         }
 
         void setEventRef(@NonNull String eventRef) {
-            setValue(1, verifyNotNull(eventRef));
+            setValue(0, verifyNotNull(eventRef));
         }
 
-        void setAuthenticator(@NonNull Authenticator authenticator){
-            setValue(2, verifyNotNull(authenticator));
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
         }
     }
 
@@ -47,13 +42,12 @@ public class ChatViewModel extends ViewModel {
     private LiveData<List<ChatMessage>> mMessageLiveData;
     private UserInfo mUser;
 
-    public ChatViewModel(@NonNull Database database, @NonNull String eventRef, Authenticator authenticator) {
+    public ChatViewModel(@NonNull String eventRef, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database, eventRef, authenticator);
 
         mMessageCollection = database.query("events").document(eventRef).collection("messages");
         mOrderedMessagesQuery = mMessageCollection.orderBy("date");
         mUser = authenticator.getCurrentUser();
-
     }
 
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
@@ -65,7 +59,6 @@ public class ChatViewModel extends ViewModel {
             }
         });
     }
-
 
     public String getUserRef() {
         return mUser.getUid();

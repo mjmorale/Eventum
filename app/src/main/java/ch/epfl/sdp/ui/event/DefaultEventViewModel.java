@@ -26,7 +26,6 @@ public class DefaultEventViewModel extends ViewModel {
         }
 
         void setEventRef(@NonNull String eventRef) {
-
             setValue(0, verifyNotNull(eventRef));
         }
     }
