@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.user;
+package ch.epfl.sdp.ui.user.events;
 
 import android.os.Bundle;
 
@@ -11,12 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentUserEventsBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.EventListAdapter;
+import ch.epfl.sdp.ui.ServiceProvider;
 
 /**
  * Fragment to display the user's events
@@ -27,12 +28,15 @@ public class UserEventsFragment extends Fragment {
     private UserEventsViewModel mViewModel;
     private final UserEventsViewModel.UserEventsViewModelFactory mFactory;
 
+    private EventListAdapter mAdapter;
+
     /**
      * Constructor of the UserEventsFragment
      */
     public UserEventsFragment() {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
     /**
@@ -41,9 +45,10 @@ public class UserEventsFragment extends Fragment {
      * @param database {@link ch.epfl.sdp.db.Database}
      */
     @VisibleForTesting
-    public UserEventsFragment(@NonNull Database database) {
+    public UserEventsFragment(@NonNull Database database, @NonNull Authenticator authenticator) {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
         mFactory.setDatabase(database);
+        mFactory.setAuthenticator(authenticator);
     }
 
     @Override
@@ -57,6 +62,16 @@ public class UserEventsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mAdapter = new EventListAdapter();
+        mBinding.userEventsListview.setAdapter(mAdapter);
+        mBinding.userEventsListview.setLayoutManager(new LinearLayoutManager(getContext()));
+
         mViewModel = new ViewModelProvider(this, mFactory).get(UserEventsViewModel.class);
+
+        mViewModel.getOrganizedEvents().observe(getViewLifecycleOwner(), events -> {
+            mBinding.userEventsEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
+            mAdapter.clear();
+            mAdapter.addAll(events);
+        });
     }
 }

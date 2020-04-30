@@ -4,6 +4,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
@@ -20,11 +22,12 @@ public class CreateEventViewModel extends ViewModel {
      * Factory for the CreateEventViewModel
      */
     static class CreateEventViewModelFactory extends DatabaseViewModelFactory {
+
         /**
          * Constructor of the CreateEventViewModel factory
          */
         CreateEventViewModelFactory() {
-            super(Storage.class);
+            super(Storage.class, Authenticator.class);
         }
 
         /**
@@ -35,6 +38,10 @@ public class CreateEventViewModel extends ViewModel {
         void setStorage(@NonNull Storage storage) {
             setValue(0, verifyNotNull(storage));
         }
+
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
+        }
     }
 
     interface OnEventCreatedCallback {
@@ -43,8 +50,8 @@ public class CreateEventViewModel extends ViewModel {
     }
 
     private final CollectionQuery mEventCollection;
-    private final Database mDatabase;
     private final Storage mStorage;
+    private final UserInfo mUserInfo;
     private String mImageId;
 
     /**
@@ -52,11 +59,18 @@ public class CreateEventViewModel extends ViewModel {
      *
      * @param storage where the images are uploaded
      * @param database where the events are uploaded
+     * @param authenticator where the user is authenticated
      */
-    public CreateEventViewModel(@NonNull Storage storage, @NonNull Database database) {
-        mDatabase = verifyNotNull(database);
+    public CreateEventViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
+        verifyNotNull(database);
+
         mStorage = verifyNotNull(storage);
-        mEventCollection = mDatabase.query("events");
+        mUserInfo = authenticator.getCurrentUser();
+        mEventCollection = database.query("events");
+    }
+
+    public String getUserRef() {
+        return mUserInfo.getUid();
     }
 
     /**

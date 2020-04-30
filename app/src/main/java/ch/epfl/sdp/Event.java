@@ -5,31 +5,36 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Data structure that holds all information about an event
  */
 public class Event {
-    private String mDescription;
-    private Date mDate;
-    private String mTitle;
-    private String mImageId;
-    private String mAddress;
-    private LatLng mLocation;
-    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+    private final String mDescription;
+    private final Date mDate;
+    private final String mTitle;
+    private final String mImageId;
+    private final String mAddress;
+    private final LatLng mLocation;
+    private final String mOrganizerRef;
+    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public Event(@NonNull String title,
                  @NonNull String description,
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
-                 @NonNull String imageId) {
+                 @NonNull String imageId,
+                 @NonNull String organizerRef) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
         mLocation = location;
         mImageId = imageId;
+        mOrganizerRef = organizerRef;
     }
 
     /**
@@ -102,4 +107,9 @@ public class Event {
     public String getAddress() {
         return mAddress;
     }
+
+    /**
+     * @return The event's organizer database reference
+     */
+    public String getOrganizer() { return mOrganizerRef; }
 }

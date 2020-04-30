@@ -9,12 +9,14 @@ import java.util.Date;
  * Builder to create an Event instance, it handles default values and input checking.
  */
 public class EventBuilder {
+
     private String mTitle;
     private String mDescription;
     private Date mDate;
     private String mAddress = "Lausanne, Switzerland";
     private LatLng mLocation = new LatLng(10, 10);
     private String mImageId;
+    private String mOrganizerRef;
     private final String DEFAULT_URL = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
             "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
 
@@ -23,10 +25,11 @@ public class EventBuilder {
      */
     public Event build() {
         if (mImageId == null) mImageId = DEFAULT_URL;
-        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId);
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId, mOrganizerRef);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
-        return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId);
+        if (mOrganizerRef.isEmpty()) throw new IllegalArgumentException("Organizer reference cannot be empty");
+        return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId, mOrganizerRef);
     }
 
     /**
@@ -107,6 +110,17 @@ public class EventBuilder {
      */
     public EventBuilder setImageId(String imageId) {
         this.mImageId = imageId;
+        return this;
+    }
+
+    /**
+     * Set the event's organizer database reference.
+     *
+     * @param organizerRef The organizer's database reference.
+     * @return caller class with the image identifier attribute assigned
+     */
+    public EventBuilder setOrganizerRef(String organizerRef) {
+        this.mOrganizerRef = organizerRef;
         return this;
     }
 }

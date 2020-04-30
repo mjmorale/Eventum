@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.user;
+package ch.epfl.sdp.ui.user.stats;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

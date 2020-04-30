@@ -88,7 +88,7 @@ public class DefaultEventFragment extends Fragment{
         mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
 
         return mBinding.getRoot();
-   }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -124,7 +124,6 @@ public class DefaultEventFragment extends Fragment{
 
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -146,7 +145,6 @@ public class DefaultEventFragment extends Fragment{
            });
 
         });
-
     }
 
     @Override
@@ -155,7 +153,7 @@ public class DefaultEventFragment extends Fragment{
         mBinding = null;
     }
 
-    private Intent getCalendarIntent(){
+    private Intent getCalendarIntent() {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra(CalendarContract.Events.TITLE, mBinding.title.getText().toString());

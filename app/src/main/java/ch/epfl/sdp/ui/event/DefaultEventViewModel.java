@@ -40,7 +40,6 @@ public class DefaultEventViewModel extends ViewModel {
          * @param eventRef the reference of the event to display
          */
         void setEventRef(@NonNull String eventRef) {
-
             setValue(0, verifyNotNull(eventRef));
         }
     }

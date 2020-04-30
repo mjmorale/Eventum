@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.user;
+package ch.epfl.sdp.ui.user.stats;
 
 import android.os.Bundle;
 
