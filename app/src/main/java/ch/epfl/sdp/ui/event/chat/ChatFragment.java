@@ -55,8 +55,8 @@ public class ChatFragment extends Fragment {
     public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull Authenticator authenticator) {
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(database);
-        mFactory.setEventRef(eventRef);
         mFactory.setAuthenticator(authenticator);
+        mFactory.setEventRef(eventRef);
     }
 
     @Override

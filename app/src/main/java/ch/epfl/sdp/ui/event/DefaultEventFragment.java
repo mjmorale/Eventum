@@ -129,7 +129,6 @@ public class DefaultEventFragment extends Fragment{
            });
 
         });
-
     }
 
     @Override

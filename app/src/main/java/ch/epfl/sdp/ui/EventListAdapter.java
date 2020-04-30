@@ -15,12 +15,28 @@ import ch.epfl.sdp.R;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Custom RecyclerView adapter to display lists of events
+ * @see RecyclerView.Adapter
+ */
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
+    /**
+     * Interface defining a listener for the adapter's item
+     * on click events.
+     */
     public interface OnItemClickListener {
-        void OnItemClicked(Event event);
+
+        /**
+         * Called when the user clicks on an event of the adapter.
+         * @param event The event that was clicked on.
+         */
+        void OnItemClicked(@NonNull Event event);
     }
 
+    /**
+     * ViewHolder that can display an event in an {@link EventListAdapter}
+     */
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle;
@@ -30,6 +46,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             mTitle = itemView.findViewById(R.id.eventlist_item_title);
         }
 
+        /**
+         * Set the click listener for this view holder.
+         * @param event The event associated with this view holder.
+         * @param listener The listener function.
+         * @throws IllegalArgumentException One or more argument is null.
+         */
         public void setClickListener(@NonNull Event event, @NonNull OnItemClickListener listener) {
             verifyNotNull(event, listener);
             itemView.setOnClickListener(v -> listener.OnItemClicked(event));
@@ -39,24 +61,47 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     private List<Event> mEventList;
     private OnItemClickListener mItemClickListener = null;
 
+    /**
+     * Create a new empty EventListAdapter
+     */
     public EventListAdapter() {
         mEventList = new ArrayList<>();
     }
 
+    /**
+     * Create a new EventListAdapter containing the given list of events.
+     * @param events The list of initial events.
+     * @throws IllegalArgumentException The list of event is null.
+     */
     public EventListAdapter(@NonNull List<Event> events) {
         mEventList = verifyNotNull(events);
     }
 
+    /**
+     * Clear the adapter.
+     * Automatically calls {@link RecyclerView.Adapter#notifyDataSetChanged()}
+     */
     public void clear() {
         mEventList.clear();
         notifyDataSetChanged();
     }
 
+    /**
+     * Add a list of events to the adapter.
+     * Automatically calls {@link RecyclerView.Adapter#notifyDataSetChanged()}
+     * @param events The list of events to add to the adapter
+     * @throws IllegalArgumentException The list of event is null.
+     */
     public void addAll(@NonNull List<Event> events) {
-        mEventList.addAll(events);
+        mEventList.addAll(verifyNotNull(events));
         notifyDataSetChanged();
     }
 
+    /**
+     * Set the click listener for the items of the adapter.
+     * @param listener The on click listener for the adapter.
+     * @throws IllegalArgumentException The listener is null.
+     */
     public void setOnItemClickListener(@NonNull OnItemClickListener listener) {
         mItemClickListener = verifyNotNull(listener);
     }
