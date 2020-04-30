@@ -2,16 +2,21 @@ package ch.epfl.sdp.ui.event;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.GregorianCalendar;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
@@ -36,6 +41,7 @@ public class DefaultEventFragment extends Fragment{
     private Sharing mEventSharing;
     private MapView mMapView;
     private float mZoomLevel = 15;
+    private int LAUNCH_CALENDAR = 3;
 
     /**
      * Method to create an instance of the fragment for a specific event
@@ -109,8 +115,24 @@ public class DefaultEventFragment extends Fragment{
             getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
         });
 
+        mBinding.calendarButton.setOnClickListener(v->{
+            startActivityForResult(getCalendarIntent(),LAUNCH_CALENDAR);
+                });
+
+
         initMinimap(savedInstanceState);
 
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LAUNCH_CALENDAR) {
+            if(resultCode != Activity.RESULT_OK){
+                Toast.makeText(getContext(), "No Calendar app found", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void initMinimap(@Nullable Bundle savedInstanceState) {
@@ -124,6 +146,7 @@ public class DefaultEventFragment extends Fragment{
            });
 
         });
+
     }
 
     @Override
@@ -132,4 +155,19 @@ public class DefaultEventFragment extends Fragment{
         mBinding = null;
     }
 
+    private Intent getCalendarIntent(){
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.Events.TITLE, mBinding.title.getText().toString());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mBinding.address.getText().toString());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, mBinding.description.getText().toString());
+        String[] date = mBinding.date.getText().toString().split("/");
+        GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(date[2]),
+                                                            Integer.parseInt(date[1]),
+                                                                Integer.parseInt(date[0]));
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis()+1);
+
+        return  intent;
+    }
 }
