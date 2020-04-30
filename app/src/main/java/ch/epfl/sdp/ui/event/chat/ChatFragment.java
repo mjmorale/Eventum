@@ -29,6 +29,9 @@ import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Fragment for the chat
+ */
 public class ChatFragment extends Fragment {
 
     private ChatViewModel mViewModel;
@@ -45,12 +48,22 @@ public class ChatFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Constructor of the chat fragment
+     */
     public ChatFragment() {
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
+    /**
+     * Constructor of the chat fragment, only for testing purposes!
+     *
+     * @param database
+     * @param eventRef the reference of an event
+     * @param firebaseAuthenticator
+     */
     @VisibleForTesting
     public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull Authenticator authenticator) {
         mFactory = new ChatViewModel.ChatViewModelFactory();

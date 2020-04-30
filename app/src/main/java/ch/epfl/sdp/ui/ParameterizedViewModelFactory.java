@@ -11,17 +11,31 @@ import androidx.lifecycle.ViewModelProvider;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Factory to create a view model with custom parameters
+ */
 public class ParameterizedViewModelFactory implements ViewModelProvider.Factory {
 
     private List<Object> mParameters = new ArrayList<>();
     private List<Class<?>> mTypes = new ArrayList<>();
 
+    /**
+     * Constructor of the ParameterizedViewModel factory
+     *
+     * @param types of the parameters added to the view model
+     */
     public ParameterizedViewModelFactory(Class<?>... types) {
         for(Class<?> type: types) {
             addType(type);
         }
     }
 
+    /**
+     * Method to set the custom parameters to the view model
+     *
+     * @param id of the parameter (from 0 to the number of parameter - 1)
+     * @param object the parameter to be added to the view model
+     */
     public void setValue(int id, Object object) {
         if(id < 0 || id >= mParameters.size()) {
             throw new IllegalArgumentException("Value index out of range");

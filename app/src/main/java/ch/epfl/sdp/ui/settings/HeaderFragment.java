@@ -12,6 +12,9 @@ import ch.epfl.sdp.R;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Fragment for the header of the application
+ */
 public class HeaderFragment extends PreferenceFragmentCompat {
 
     private AccountFragment.OnLogoutListener mLogoutListener = null;

@@ -2,7 +2,6 @@ package ch.epfl.sdp.ui.event;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +30,9 @@ import ch.epfl.sdp.ui.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Fragment to display some detail information of an event
+ */
 public class DefaultEventFragment extends Fragment{
 
     private DefaultEventViewModel mViewModel;
@@ -42,6 +43,12 @@ public class DefaultEventFragment extends Fragment{
     private float mZoomLevel = 15;
     private int LAUNCH_CALENDAR = 3;
 
+    /**
+     * Method to create an instance of the fragment for a specific event
+     *
+     * @param eventRef the event reference
+     * @return the fragment
+     */
     public static DefaultEventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
 
@@ -53,12 +60,21 @@ public class DefaultEventFragment extends Fragment{
         return fragment;
     }
 
+    /**
+     * Constructor of the DefaultEventFragment
+     */
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
 
     }
 
+    /**
+     * Constructor of the DefaultEventFragment, only for testing purposes!
+     *
+     * @param database
+     * @param eventRef the reference of an event
+     */
     @VisibleForTesting
     public DefaultEventFragment(@NonNull Database database, @NonNull String eventRef) {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();

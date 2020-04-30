@@ -17,6 +17,9 @@ import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.auth.AuthActivity;
 
+/**
+ * Activity for the user settings
+ */
 public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, AccountFragment.OnLogoutListener {
 
@@ -27,6 +30,9 @@ public class SettingsActivity extends AppCompatActivity implements
     private SettingsViewModel mViewModel;
     private final SettingsViewModel.SettingsViewModelFactory mFactory;
 
+    /**
+     * Constructor of the SettingsActivity
+     */
     public SettingsActivity() {
         mFactory = new SettingsViewModel.SettingsViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());

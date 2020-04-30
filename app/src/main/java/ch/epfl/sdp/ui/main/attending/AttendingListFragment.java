@@ -19,6 +19,9 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
 
+/**
+ * Fragment for the list of events a user attends to
+ */
 public class AttendingListFragment extends Fragment {
 
     private final AttendingListViewModel.AttendingListViewModelFactory mFactory;
@@ -27,11 +30,19 @@ public class AttendingListFragment extends Fragment {
 
     private EventListAdapter mAdapter;
 
+    /**
+     * Constructor for the AttendingListFragment
+     */
     public AttendingListFragment() {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
+    /**
+     * Constructor for the AttendingListFragment, only for testing purposes!
+     *
+     * @param database where the events are stored
+     */
     @VisibleForTesting
     public AttendingListFragment(@NonNull Database database) {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();

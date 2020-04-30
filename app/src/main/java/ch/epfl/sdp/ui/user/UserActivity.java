@@ -11,6 +11,9 @@ import ch.epfl.sdp.ui.user.stats.UserStatisticsFragment;
 
 import com.google.android.material.tabs.TabLayout;
 
+/**
+ * Activity for informations about a user (statistics and user's events)
+ */
 public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private ActivityUserBinding mBinding;

@@ -19,6 +19,9 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
 
+/**
+ * Fragment to display the user's events
+ */
 public class UserEventsFragment extends Fragment {
 
     private FragmentUserEventsBinding mBinding;
@@ -27,12 +30,20 @@ public class UserEventsFragment extends Fragment {
 
     private EventListAdapter mAdapter;
 
+    /**
+     * Constructor of the UserEventsFragment
+     */
     public UserEventsFragment() {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
+    /**
+     * Constructor of the UserEventsFragment, only for testing purpose!
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public UserEventsFragment(@NonNull Database database, @NonNull Authenticator authenticator) {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();

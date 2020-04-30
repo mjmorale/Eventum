@@ -2,6 +2,12 @@ package ch.epfl.sdp.db.queries;
 
 import androidx.annotation.Nullable;
 
+
+/**
+ * Result object associated to a query.
+ *
+ * @param <T> type of the result object
+ */
 public class QueryResult<T> {
 
     private final boolean mSuccess;
@@ -14,10 +20,24 @@ public class QueryResult<T> {
         mData = data;
     }
 
+    /**
+     * Called when the query succeeded
+     *
+     * @param data returned object by the query
+     * @param <T> type of the returned object
+     * @return the associated QueryResult to this object
+     */
     public static <T> QueryResult<T> success(@Nullable T data) {
         return new QueryResult<>(data, true, null);
     }
 
+    /**
+     * Called when the query failed
+     *
+     * @param exception returned in case of failure
+     * @param <T> unused
+     * @return the associated QueryResult to this object
+     */
     public static <T> QueryResult<T> failure(@Nullable Exception exception) {
         return new QueryResult<>(null, false, exception);
     }
