@@ -22,16 +22,16 @@ public class MockEvents {
 
         eventList.add(new Event("OSS-117 Movie watching",
                 "We will watch OSS-117.",
-                new Date(2020, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL"));
+                new Date(2020, 1, 16), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL", "user1"));
         eventList.add(new Event("Duck themed party",
                 "Bring out your best duck disguises and join us for our amazing party on the lakeside. Swans disguises not allowed",
-                new Date(2020, 3, 7), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL"));
+                new Date(2020, 3, 7), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL", "user2"));
         eventList.add(new Event("Make Internet great again",
                 "At this meeting we will debate on how to make pepe the frog memes great again",
-                new Date(2020, 4, 20), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL"));
+                new Date(2020, 4, 20), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL", "user3"));
         eventList.add(new Event("Real Fake Party",
                 "This is really happening",
-                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL"));
+                new Date(2020, 11, 10), "Lausanne, Switzerland", new LatLng(46.520553, 6.567821), "URL", "user4"));
 
         return eventList;
     }

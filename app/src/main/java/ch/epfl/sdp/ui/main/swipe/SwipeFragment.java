@@ -28,6 +28,9 @@ import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
+/**
+ * Fragment for the swiping cards
+ */
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
     private FragmentSwipeBinding mBinding;
@@ -40,6 +43,11 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     public SwipeFragment() {}
 
+    /**
+     * Constructor of the swipe fragment, only for testing purpose!
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, LocationService locationService) {
         mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();

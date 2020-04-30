@@ -19,24 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import java.text.ParseException;
-import java.util.UUID;
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
-import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -44,6 +35,9 @@ import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
+/**
+ * Fragment for the creation of a new event
+ */
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
     private FragmentCreateEventBinding mBinding;
     private CreateEventViewModel mViewModel;
@@ -54,20 +48,29 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private static final int PERMISSION_STORAGE = 100;
     private Uri mImageUri;
-    private String mImageId;
 
+    /**
+     * Constructor of the create event fragment
+     */
     public CreateEventFragment() {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
-
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
+    /**
+     * Constructor of the create event fragment, only for testing purpose!
+     *
+     * @param storage {@link ch.epfl.sdp.storage.Storage}
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
-    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database) {
+    public CreateEventFragment(@NonNull Storage storage, @NonNull Database database, @NonNull Authenticator authenticator) {
         mFactory = new CreateEventViewModel.CreateEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setStorage(storage);
+        mFactory.setAuthenticator(authenticator);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                             getActivity().finish();
                         }
                     });
-                } catch (ParseException | IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), R.string.toast_incorrect_input, Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -165,7 +168,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) throws ParseException {
+    private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) {
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
         String date = mBinding.date.getDayOfMonth() + "/" + (mBinding.date.getMonth() + 1) + "/" + mBinding.date.getYear();
@@ -179,6 +182,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setLocation(mSelectedLocation)
                 .setAddress(address)
                 .setImageId(mViewModel.getImageId())
+                .setOrganizerRef(mViewModel.getUserRef())
                 .build();
 
         mViewModel.insertEvent(event, callback);

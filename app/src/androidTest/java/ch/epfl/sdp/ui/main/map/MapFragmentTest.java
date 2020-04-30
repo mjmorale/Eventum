@@ -59,7 +59,10 @@ public class MapFragmentTest {
     private DocumentQuery mDocumentQuery;
 
     @Mock
-    private FilterQuery mFilterQuery;
+    private FilterQuery mArrayFilterQuery;
+
+    @Mock
+    private FilterQuery mFieldFilterQuery;
 
     @Mock
     private LocationQuery mLocationQuery;
@@ -74,6 +77,7 @@ public class MapFragmentTest {
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
 
     @Rule
@@ -90,15 +94,17 @@ public class MapFragmentTest {
     public void MapFragment_CheckThatMapIsDisplayedWithMockDatabase() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
-        when(mCollectionQuery.document(any())).thenReturn(mDocumentQuery);
-        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mFilterQuery);
+        when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mArrayFilterQuery);
+        when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFieldFilterQuery);
         when(mCollectionQuery.atLocation(any(), anyDouble())).thenReturn(mLocationQuery);
         when(mLocationQuery.liveData(Event.class)).thenReturn(mLocationEventsLiveData);
-        when(mFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
-        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        when(mArrayFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
+        when(mFieldFilterQuery.liveData(Event.class)).thenReturn(mOwnedEventsLiveData);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
 
-        FragmentScenario<MapFragment> scenario = FragmentScenario.launchInContainer(
+        FragmentScenario.launchInContainer(
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,

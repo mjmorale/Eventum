@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * Activity used for a single event
+ */
 public class EventActivity extends AppCompatActivity {
 
     public enum EventActivityMode {
@@ -61,6 +64,7 @@ public class EventActivity extends AppCompatActivity {
         if (getSupportFragmentManager().popBackStackImmediate()) {
             return true;
         }
-        return super.onSupportNavigateUp();
+        finish();
+        return true;
     }
 }

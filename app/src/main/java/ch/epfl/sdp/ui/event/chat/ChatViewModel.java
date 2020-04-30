@@ -13,29 +13,27 @@ import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
+import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import ch.epfl.sdp.auth.UserInfo;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model for the chat (to chat between users about an event)
+ */
 public class ChatViewModel extends ViewModel {
 
-    static class ChatViewModelFactory extends ParameterizedViewModelFactory {
-
+    static class ChatViewModelFactory extends DatabaseViewModelFactory {
         ChatViewModelFactory() {
-            super(Database.class, String.class, Authenticator.class);
-        }
-
-        void setDatabase(@NonNull Database database) {
-            setValue(0, verifyNotNull(database));
+            super(String.class, Authenticator.class);
         }
 
         void setEventRef(@NonNull String eventRef) {
-            setValue(1, verifyNotNull(eventRef));
+            setValue(0, verifyNotNull(eventRef));
         }
 
-        void setAuthenticator(@NonNull Authenticator authenticator){
-            setValue(2, verifyNotNull(authenticator));
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
         }
     }
 
@@ -48,17 +46,28 @@ public class ChatViewModel extends ViewModel {
     private LiveData<List<DatabaseObject<ChatMessage>>> mMessageLiveData;
     private UserInfo mUser;
 
-    public ChatViewModel(@NonNull Database database, @NonNull String eventRef, Authenticator authenticator) {
+    /**
+     * Constructor of the chat view model
+     *
+     * @param database where the chat messages will be uploaded
+     * @param eventRef the reference of an event
+     * @param authenticator of the user
+     */
+    public ChatViewModel(@NonNull String eventRef, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database, eventRef, authenticator);
 
         mMessageCollection = database.query("events").document(eventRef).collection("messages");
         mOrderedMessagesQuery = mMessageCollection.orderBy("date");
         mUser = authenticator.getCurrentUser();
-
     }
 
+    /**
+     * Method to add a new chat message for an event in the database
+     *
+     * @param message to be uploaded in the database
+     * @param callback called when the upload is done
+     */
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
-
         ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
         mMessageCollection.create(chatMessage, res -> {
             if (!res.isSuccessful()) {
@@ -67,11 +76,20 @@ public class ChatViewModel extends ViewModel {
         });
     }
 
-
+    /**
+     * Method to get the reference of the user
+     *
+     * @return the reference of the user
+     */
     public String getUserRef() {
         return mUser.getUid();
     }
 
+    /**
+     * Method to get the chat messages
+     *
+     * @return the messages
+     */
     public LiveData<List<DatabaseObject<ChatMessage>>> getMessages() {
         if (mMessageLiveData == null) {
             mMessageLiveData = mOrderedMessagesQuery.liveData(ChatMessage.class);

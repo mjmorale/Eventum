@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/black"
-                    android:paddingRight="40dp"
+                    android:paddingEnd="40dp"
                     android:paddingBottom="5dp"
                     android:text="01/01/2020"
                     android:textAlignment="textEnd"
@@ -99,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="1dp"
         android:orientation="horizontal">
@@ -114,16 +114,15 @@
             app:layout_anchorGravity="bottom|center" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/sharingButton"
+            android:id="@+id/sharing_Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center"
             android:layout_margin="16dp"
-            android:backgroundTint="#47ECAA"
             android:clickable="true"
-            android:src="@android:drawable/ic_menu_share"
-            app:backgroundTint="@color/white"
-            app:layout_anchorGravity="bottom|right" />
+            android:src="@drawable/share"
+            app:layout_anchorGravity="bottom|right"
+            android:focusable="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/chat_button"
@@ -132,7 +131,17 @@
             android:layout_gravity="bottom|right"
             android:clickable="true"
             android:layout_margin="16dp"
-            android:src="@android:drawable/sym_action_chat" />
+            android:src="@drawable/chat"
+            android:focusable="true" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/calendar_Button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top|right"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/calendar" />
     </LinearLayout>
 
 </RelativeLayout>

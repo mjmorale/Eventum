@@ -6,9 +6,14 @@ import android.view.View;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.ActivityUserBinding;
+import ch.epfl.sdp.ui.user.events.UserEventsFragment;
+import ch.epfl.sdp.ui.user.stats.UserStatisticsFragment;
 
 import com.google.android.material.tabs.TabLayout;
 
+/**
+ * Activity for informations about a user (statistics and user's events)
+ */
 public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private ActivityUserBinding mBinding;

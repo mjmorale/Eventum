@@ -7,6 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
+/**
+ * Text view that shows completion suggestions
+ */
 public class DelayAutoCompleteTextView extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final int DEFAULT_AUTOCOMPLETE_DELAY = 750;
@@ -21,14 +24,30 @@ public class DelayAutoCompleteTextView extends androidx.appcompat.widget.AppComp
         }
     };
 
+    /**
+     * The constructor of the DelayAutoCompleteTextView
+     *
+     * @param context
+     * @param attrs
+     */
     public DelayAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    /**
+     * Method to set a loading indicator
+     *
+     * @param progressBar to be used as a loading indicator
+     */
     public void setLoadingIndicator(ProgressBar progressBar) {
         mLoadingIndicator = progressBar;
     }
 
+    /**
+     * Method to set a delay to the auto completion
+     *
+     * @param autoCompleteDelay the delay
+     */
     public void setAutoCompleteDelay(int autoCompleteDelay) { mAutoCompleteDelay = autoCompleteDelay; }
 
     @Override

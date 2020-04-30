@@ -14,8 +14,16 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.db.DatabaseObject;
 
+/**
+ * Adapter to fill the swipe cards with events
+ */
 public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
+    /**
+     * Constructor of the CardArrayAdapter
+     *
+     * @param context the environment the application is currently running in
+     */
     public CardArrayAdapter(Context context){
         super(context, R.layout.cardview_swipe_item);
     }

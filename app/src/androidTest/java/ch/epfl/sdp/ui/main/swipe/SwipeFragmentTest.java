@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
-import androidx.test.rule.ActivityTestRule;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -20,10 +19,8 @@ import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockLocationService;
-import ch.epfl.sdp.ui.main.MainActivity;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -46,6 +43,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,6 +51,8 @@ public class SwipeFragmentTest {
 
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
+    private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
+    private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
 
     @Mock
     private Database mDatabase;
@@ -67,18 +67,22 @@ public class SwipeFragmentTest {
     private DocumentQuery mDocumentQuery;
 
     @Mock
-    private FilterQuery mFilterQuery;
+    private FilterQuery mArrayFilterQuery;
+
+    @Mock
+    private FilterQuery mFieldFilterQuery;
 
     @Mock
     private LocationQuery mLocationQuery;
 
     private EventBuilder eventBuilder = new EventBuilder();
-    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").build();
-    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("02/01/2020").build();
+    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").setOrganizerRef("organizer1").build();
+    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("02/01/2020").setOrganizerRef("organizer2").build();
 
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
 
     @Before
@@ -89,15 +93,20 @@ public class SwipeFragmentTest {
     private void scenario() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
-        when(mCollectionQuery.document(any())).thenReturn(mDocumentQuery);
-        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mFilterQuery);
+        when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.document(DUMMY_EVENTREF1)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.document(DUMMY_EVENTREF2)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mArrayFilterQuery);
+        when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFieldFilterQuery);
         when(mCollectionQuery.atLocation(any(), anyDouble())).thenReturn(mLocationQuery);
         when(mLocationQuery.liveData(Event.class)).thenReturn(mLocationEventsLiveData);
-        when(mFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
-        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        when(mArrayFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
+        when(mFieldFilterQuery.liveData(Event.class)).thenReturn(mOwnedEventsLiveData);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
+        doNothing().when(mDocumentQuery).update(anyString(), any(), any());
 
-        FragmentScenario<SwipeFragment> scenario = FragmentScenario.launchInContainer(
+        FragmentScenario.launchInContainer(
                 SwipeFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
@@ -109,7 +118,7 @@ public class SwipeFragmentTest {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
-        events.add(new DatabaseObject<>("sdfsdfsdfsdf", eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         mEventsLiveData.postValue(events);
 
         Thread.sleep(1500);
@@ -121,7 +130,7 @@ public class SwipeFragmentTest {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
-        events.add(new DatabaseObject<>("3456734562436", eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         mEventsLiveData.postValue(events);
 
         Thread.sleep(1500);
@@ -136,8 +145,8 @@ public class SwipeFragmentTest {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
-        events.add(new DatabaseObject<>("test1", eventTest1));
-        events.add(new DatabaseObject<>("test2", eventTest2));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
         mEventsLiveData.postValue(events);
 
         Thread.sleep(1500);
@@ -154,7 +163,7 @@ public class SwipeFragmentTest {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
-        events.add(new DatabaseObject<>("3456734562436", eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         mEventsLiveData.postValue(events);
 
         onView(withId(R.id.cards_list_view)).perform(click());

@@ -30,8 +30,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GeoFirestoreLiveDataTest {
 
-    private static final Class mClass = Event.class;
-
     @Mock
     private GeoQuery mGeoQuery;
 
@@ -54,7 +52,7 @@ public class GeoFirestoreLiveDataTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void GeoFirestoreLiveData_Constructor_failsOnNullGeoQueryArgument(){
-        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(null, mClass);
+        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(null, Event.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,7 +62,7 @@ public class GeoFirestoreLiveDataTest {
 
     @Test
     public void GeoFirestoreLiveData_OnInactive_CallsRemoveAllListeners(){
-        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(mGeoQuery, mClass);
+        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(mGeoQuery, Event.class);
         geoFirestoreLiveData.onInactive();
 
         verify(mGeoQuery).removeAllListeners();
@@ -92,16 +90,16 @@ public class GeoFirestoreLiveDataTest {
                     this.put("address", "Chemin");
                     this.put("location", new GeoPoint(64, 65));
                     this.put("imageId", "URL");
+                    this.put("organizer", "organizerRef");
                 }}
         );
 
-        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(mGeoQuery, mClass);
+        GeoFirestoreLiveData geoFirestoreLiveData = new GeoFirestoreLiveData(mGeoQuery, Event.class);
         geoFirestoreLiveData.setmData(mData);
         geoFirestoreLiveData.onActive();
 
         verify(mData, times(2)).put(any(),any());
         verify(mData, times(2)).remove(any());
-
     }
 
 }

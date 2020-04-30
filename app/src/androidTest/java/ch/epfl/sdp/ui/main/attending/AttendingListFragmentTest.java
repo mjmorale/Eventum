@@ -2,6 +2,8 @@ package ch.epfl.sdp.ui.main.attending;
 
 import android.os.Bundle;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,16 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AttendingListFragmentTest {
 
+    private static final EventBuilder sEventBuilder = new EventBuilder();
+    private static final Event DUMMY_EVENT = sEventBuilder
+            .setTitle("testtitle")
+            .setDescription("description")
+            .setDate("01/01/2020")
+            .setOrganizerRef("testref")
+            .setAddress("testaddress")
+            .setImageId("testid")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
 
@@ -60,7 +72,7 @@ public class AttendingListFragmentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void AttendingListFragment() {
+    public void AttendingListFragment_DisplayGivenListOfEvents() {
         MutableLiveData<List<DatabaseObject<Event>>> eventLiveData = new MutableLiveData<>();
 
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
@@ -75,9 +87,7 @@ public class AttendingListFragmentTest {
                 new MockFragmentFactory(AttendingListFragment.class, mAuthenticator, mDatabase));
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
-        EventBuilder eventBuilder = new EventBuilder();
-        Event event = eventBuilder.setTitle("testtitle").setDescription("description").setDate("01/01/2020").build();
-        events.add(new DatabaseObject<>("asdfasdfasdf", event));
+        events.add(new DatabaseObject<>("asdfasdfasdf", DUMMY_EVENT));
         eventLiveData.postValue(events);
 
         onView(withText("testtitle")).check(matches(isDisplayed()));

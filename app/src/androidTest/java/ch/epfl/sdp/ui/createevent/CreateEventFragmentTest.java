@@ -25,6 +25,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.Query;
@@ -66,6 +68,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CreateEventFragmentTest {
 
+    private static final UserInfo DUMMY_USERINFO = new UserInfo("dummyuid", "dummyname", "dummyemail");
     private static final Event mMockEvent = MockEvents.getNextEvent();
     private static final String DATE = mMockEvent.getDateStr();
     private static final String TITLE = mMockEvent.getTitle();
@@ -92,6 +95,9 @@ public class CreateEventFragmentTest {
     private Storage mStorage;
 
     @Mock
+    private Authenticator mAuthenticator;
+
+    @Mock
     private CollectionQuery mCollectionQuery;
 
     @Before
@@ -100,6 +106,7 @@ public class CreateEventFragmentTest {
         Intents.init();
         MockitoAnnotations.initMocks(this);
 
+        when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
 
         doAnswer(invocation -> {
@@ -109,6 +116,7 @@ public class CreateEventFragmentTest {
             assertThat(event.getTitle(), is(TITLE));
             assertThat(event.getDescription(), is(DESCRIPTION));
             assertThat(event.getAddress(), containsString(ADDRESS));
+            assertThat(event.getOrganizer(), is(DUMMY_USERINFO.getUid()));
 
             ((Query.OnQueryCompleteCallback) args[1]).onQueryComplete(QueryResult.success("fake"));
             return null;
@@ -118,7 +126,7 @@ public class CreateEventFragmentTest {
                 CreateEventFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(CreateEventFragment.class, mStorage, mDatabase));
+                new MockFragmentFactory<>(CreateEventFragment.class, mStorage, mDatabase, mAuthenticator));
 
         mScenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();

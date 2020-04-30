@@ -1,4 +1,3 @@
-
 package ch.epfl.sdp.ui.main.attending;
 
 import androidx.annotation.VisibleForTesting;
@@ -15,38 +14,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.db.DatabaseObject;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
 
-import static android.app.Activity.RESULT_OK;
-
+/**
+ * Fragment for the list of events a user attends to
+ */
 public class AttendingListFragment extends Fragment {
 
     private final AttendingListViewModel.AttendingListViewModelFactory mFactory;
     private AttendingListViewModel mViewModel;
     private FragmentAttendingListBinding mBinding;
 
-    private AttendingEventAdapter mAdapter;
+    private EventListAdapter mAdapter;
 
+    /**
+     * Constructor for the AttendingListFragment
+     */
     public AttendingListFragment() {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
+    /**
+     * Constructor for the AttendingListFragment, only for testing purposes!
+     *
+     * @param database The database service to use
+     * @param authenticator The authentication service to use
+     */
     @VisibleForTesting
     public AttendingListFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
@@ -65,7 +67,7 @@ public class AttendingListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new AttendingEventAdapter();
+        mAdapter = new EventListAdapter();
         mAdapter.setOnItemClickListener(event -> {
             Intent intent = new Intent(getContext(), EventActivity.class);
             intent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
@@ -79,7 +81,8 @@ public class AttendingListFragment extends Fragment {
 
         mViewModel.getAttendingEvents().observe(getViewLifecycleOwner(), events -> {
             mBinding.attendingEmptyListMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
-            mAdapter.setAttendingEvents(events);
+            mAdapter.clear();
+            mAdapter.addAll(events);
         });
     }
 

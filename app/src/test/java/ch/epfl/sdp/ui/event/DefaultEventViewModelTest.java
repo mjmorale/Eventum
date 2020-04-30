@@ -7,8 +7,6 @@ import org.mockito.MockitoAnnotations;
 
 import androidx.lifecycle.LiveData;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
@@ -49,7 +47,7 @@ public class DefaultEventViewModelTest {
     public void DefaultEventViewModel_Constructor_ReferencesTheEventCollection() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mMapManagerMock, mDatabase);
 
         verify(mDatabase).query("events");
         verify(mCollectionQuery).document(DUMMY_STRING);
@@ -59,20 +57,9 @@ public class DefaultEventViewModelTest {
     public void DefaultEventViewModel_GetEvent_ReturnsANonNullValue() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        when(mDocumentQuery.livedata(Event.class)).thenReturn(mEventLiveData);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        when(mDocumentQuery.liveData(Event.class)).thenReturn(mEventLiveData);
+        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mMapManagerMock, mDatabase);
 
         assertNotNull(vm.getEvent());
-    }
-
-    @Test
-    public void DefaultEventViewModel_InitializesMap() {
-        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
-        when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        when(mDocumentQuery.livedata(Event.class)).thenReturn(mEventLiveData);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
-
-        vm.addMapManager(mMapManagerMock);
-        assertTrue(vm.setEventOnMap(new LatLng(10, 10), "event_name", 15f));
     }
 }

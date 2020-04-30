@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/imageCard"
                 android:scaleType="centerCrop"
-                android:contentDescription="Profile image of the event">
+                android:contentDescription="@string/content_description_image">
             </ImageView>
 
             <LinearLayout
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="ACCEPT"
+                android:text="@string/accept"
                 android:textSize="50sp"
                 android:alpha="0"
                 android:textColor="@color/grey"
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="DENY"
+                android:text="@string/deny"
                 android:textSize="50sp"
                 android:alpha="0"
                 android:textColor="@color/grey"

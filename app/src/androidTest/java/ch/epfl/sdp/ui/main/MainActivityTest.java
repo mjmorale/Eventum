@@ -46,7 +46,6 @@ import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
-import ch.epfl.sdp.ui.settings.FilterView;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -92,11 +91,15 @@ public class MainActivityTest {
     private LocationQuery mLocationQuery;
 
     @Mock
-    private FilterQuery mFilterQuery;
+    private FilterQuery mArrayFilterQuery;
+
+    @Mock
+    private FilterQuery mFieldFilterQuery;
 
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
     private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
 
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -156,9 +159,18 @@ public class MainActivityTest {
 
         intending(hasComponent("ch.epfl.sdp.ui.createevent.CreateEventActivity")).respondWith(result);
 
+        intending(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENTREF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER)))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
+
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
-        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+        intended(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENTREF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER)));
 
         Intents.release();
     }
@@ -267,11 +279,13 @@ public class MainActivityTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(userRef)).thenReturn(mDocumentQuery);
-        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mFilterQuery);
+        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mArrayFilterQuery);
+        when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFieldFilterQuery);
         when(mCollectionQuery.atLocation(any(), anyDouble())).thenReturn(mLocationQuery);
         when(mLocationQuery.liveData(Event.class)).thenReturn(mLocationEventsLiveData);
-        when(mFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
-        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        when(mArrayFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
+        when(mFieldFilterQuery.liveData(Event.class)).thenReturn(mOwnedEventsLiveData);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         ServiceProvider.getInstance().setDatabase(mDatabase);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticator);

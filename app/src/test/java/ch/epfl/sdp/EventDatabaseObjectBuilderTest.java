@@ -21,6 +21,7 @@ public class EventDatabaseObjectBuilderTest {
                 .setDescription("This is really happening")
                 .setDate(new Date(2020, 11, 10))
                 .setImageId("URL")
+                .setOrganizerRef("organizer")
                 .build();
 
         Map<String, Object> data =
@@ -30,6 +31,8 @@ public class EventDatabaseObjectBuilderTest {
         assertEquals(event.getDate().toString(), resultEvent.getDate().toString());
         assertEquals(event.getDescription(), resultEvent.getDescription());
         assertEquals(event.getTitle(), resultEvent.getTitle());
+        assertEquals(event.getImageId(), resultEvent.getImageId());
+        assertEquals(event.getOrganizer(), resultEvent.getOrganizer());
     }
 
 }

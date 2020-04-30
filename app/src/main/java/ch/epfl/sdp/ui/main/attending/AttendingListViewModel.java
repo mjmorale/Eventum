@@ -17,8 +17,14 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * View model used for the list of events a user attends to
+ */
 public class AttendingListViewModel extends ViewModel {
 
+    /**
+     * Factory for the AttendingListViewModel
+     */
     static class AttendingListViewModelFactory extends DatabaseViewModelFactory {
 
         public AttendingListViewModelFactory() {
@@ -31,16 +37,25 @@ public class AttendingListViewModel extends ViewModel {
     }
 
     private final FilterQuery mAttendingQuery;
-    private final String mUserRef;
 
     private LiveData<List<DatabaseObject<Event>>> mAttendingLiveData;
 
+    /**
+     * Constructor of the AttendingListViewModel, the factory should be used instead of this
+     *
+     * @param authenticator The authentication service to use
+     * @param database The database service to use
+     */
     public AttendingListViewModel(@NonNull Authenticator authenticator, @NonNull Database database) {
         UserInfo user = authenticator.getCurrentUser();
-        mUserRef = user.getUid();
         mAttendingQuery = database.query("events").whereArrayContains("attendees", user.getUid());
     }
 
+    /**
+     * Method to get the list of events a user attends to
+     *
+     * @return a live list of events
+     */
     public LiveData<List<DatabaseObject<Event>>> getAttendingEvents() {
         if(mAttendingLiveData == null) {
             mAttendingLiveData = mAttendingQuery.liveData(Event.class);

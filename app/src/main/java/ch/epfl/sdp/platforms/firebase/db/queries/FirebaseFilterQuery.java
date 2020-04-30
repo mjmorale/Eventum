@@ -37,6 +37,12 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
     }
 
     @Override
+    public FilterQuery whereArrayContains(@NonNull String field, Object value) {
+        mQuery = mQuery.whereArrayContains(verifyNotNull(field), value);
+        return this;
+    }
+
+    @Override
     public FilterQuery orderBy(@NonNull String field) {
         mQuery = mQuery.orderBy(verifyNotNull(field));
         return this;
