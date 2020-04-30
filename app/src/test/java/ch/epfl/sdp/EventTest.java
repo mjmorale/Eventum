@@ -53,87 +53,94 @@ public class EventTest  {
     }
 
     @Test
-    public void Event_AddingEvent() {
+    public void Event_AddingEvent() throws IOException, ClassNotFoundException {
         Event event = new Event(title+"testAddEvent", description, date, address, location, imageId);
-        try{
-            EventSaver eventSaver = new EventSaver();
-            dateEvent.setYear(dateEvent.getYear()+1);
-            eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()+1);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
 
-            File newFile = new File(context.getFilesDir(),"testAddEvent");
+        File newFile = new File(context.getFilesDir(),"testAddEvent");
 
-            FileInputStream fi = new FileInputStream(newFile);
-            ObjectInputStream oi = new ObjectInputStream(fi);
+        FileInputStream fi = new FileInputStream(newFile);
+        ObjectInputStream oi = new ObjectInputStream(fi);
 
-            Event eventRead = (Event) oi.readObject();
+        Event eventRead = (Event) oi.readObject();
 
-            oi.close();
-            fi.close();
+        oi.close();
+        fi.close();
 
-            assertEquals(event, eventRead);
+        assertEquals(event, eventRead);
 
-            //clean files
-            eventSaver.removeSingleEvent("testAddEvent",context);
-        } catch (Exception exc){
-            exc.printStackTrace();
-        }
-
+        //clean files
+        eventSaver.removeSingleEvent("testAddEvent",context);
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 
     @Test
-    public void Event_getAllEvents() {
+    public void Event_AddingSameEvent() throws IOException, ClassNotFoundException {
+        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId);
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()+1);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
+
+        List listEvent = eventSaver.getAllEvents(context);
+        assertEquals(listEvent.size(),1);
+
+        //clean files
+        eventSaver.removeSingleEvent("testAddEvent",context);
+        eventSaver.removeSingleFile("eventStatusFiles",context);
+    }
+
+    @Test
+    public void Event_getAllEvents() throws IOException, ClassNotFoundException {
         Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId);
         Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId);
-        try{
-            EventSaver eventSaver = new EventSaver();
-            dateEvent.setYear(dateEvent.getYear()+1);
-            eventSaver.saveEvent(event,"testGetAllEvent1",dateEvent,context);
-            eventSaver.saveEvent(event2,"testGetAllEvent2",dateEvent,context);
 
-            List listEvent = eventSaver.getAllEvents(context);
-            assertTrue(listEvent.contains(event));
-            assertTrue(listEvent.contains(event2));
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()+1);
+        eventSaver.saveEvent(event,"testGetAllEvent1",dateEvent,context);
+        eventSaver.saveEvent(event2,"testGetAllEvent2",dateEvent,context);
 
-            //clean files
-            eventSaver.removeSingleEvent("testGetAllEvent1",context);
-            eventSaver.removeSingleEvent("testGetAllEvent2",context);
+        List listEvent = eventSaver.getAllEvents(context);
+        assertTrue(listEvent.contains(event));
+        assertTrue(listEvent.contains(event2));
 
-        } catch (Exception exc){
-            exc.printStackTrace();
-        }
+        //clean files
+        eventSaver.removeSingleEvent("testGetAllEvent1",context);
+        eventSaver.removeSingleEvent("testGetAllEvent2",context);
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 
     @Test
-    public void Event_AddingEventAndRemovedBecauseOutdated() {
+    public void Event_AddingEventAndRemovedBecauseOutdated() throws IOException, ClassNotFoundException {
         Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId);
-        try{
-            EventSaver eventSaver = new EventSaver();
-            dateEvent.setYear(dateEvent.getYear()-1);
-            eventSaver.saveEvent(event,"testOutdatedEvent",dateEvent,context);
 
-            List listEvent = eventSaver.getAllEvents(context);
-            assertFalse(listEvent.contains(event));
-        } catch (Exception exc){
-            exc.printStackTrace();
-        }
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()-1);
+        eventSaver.saveEvent(event,"testOutdatedEvent",dateEvent,context);
+
+        List listEvent = eventSaver.getAllEvents(context);
+        assertFalse(listEvent.contains(event));
+
+        //clean files
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 
     @Test
-    public void Event_getSingleFile() {
+    public void Event_getSingleFile() throws IOException, ClassNotFoundException {
         Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId);
-        try{
-            EventSaver eventSaver = new EventSaver();
-            dateEvent.setYear(dateEvent.getYear()+1);
-            eventSaver.saveEvent(event,"testGetSingleFile",dateEvent,context);
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()+1);
+        eventSaver.saveEvent(event,"testGetSingleFile",dateEvent,context);
 
-            Event eventResult = (Event)eventSaver.getSingleFile("testGetSingleFile", context);
-            assertNotNull(eventResult);
-            assertEquals(eventResult,event);
-            //clean files
-            eventSaver.removeSingleEvent("testGetSingleFile",context);
-        } catch (Exception exc){
-            exc.printStackTrace();
-        }
+        Event eventResult = (Event)eventSaver.getSingleFile("testGetSingleFile", context);
+        assertNotNull(eventResult);
+        assertEquals(eventResult,event);
+
+        //clean files
+        eventSaver.removeSingleEvent("testGetSingleFile",context);
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 
     @Test
@@ -141,6 +148,8 @@ public class EventTest  {
         EventSaver eventSaver = new EventSaver();
         boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveWrong",context);
         assertFalse(beenRemoved);
+        //clean files
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 
     @Test
@@ -153,5 +162,7 @@ public class EventTest  {
 
         boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveOK",context);
         assertTrue(beenRemoved);
+        //clean files
+        eventSaver.removeSingleFile("eventStatusFiles",context);
     }
 }
