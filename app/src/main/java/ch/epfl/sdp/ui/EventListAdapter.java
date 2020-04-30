@@ -52,11 +52,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         notifyDataSetChanged();
     }
 
-    public void add(@NonNull Event event) {
-        mEventList.add(verifyNotNull(event));
-        notifyDataSetChanged();
-    }
-
     public void addAll(@NonNull List<Event> events) {
         mEventList.addAll(events);
         notifyDataSetChanged();
