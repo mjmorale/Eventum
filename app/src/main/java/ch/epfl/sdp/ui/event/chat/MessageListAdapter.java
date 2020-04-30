@@ -67,6 +67,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     public void setChatList(@NonNull List<ChatMessage> messages) {
         mMessageList = messages;
+        notifyDataSetChanged();
     }
 
     public void setUid(@NonNull String uid) {

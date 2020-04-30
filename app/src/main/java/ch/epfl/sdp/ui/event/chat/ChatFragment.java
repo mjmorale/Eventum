@@ -18,11 +18,13 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -45,17 +47,16 @@ public class ChatFragment extends Fragment {
 
     public ChatFragment() {
         mFactory = new ChatViewModel.ChatViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
-        mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
-
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
     @VisibleForTesting
-    public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull  FirebaseAuthenticator firebaseAuthenticator) {
+    public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull Authenticator authenticator) {
         mFactory = new ChatViewModel.ChatViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
-        mFactory.setAuthenticator(firebaseAuthenticator);
+        mFactory.setAuthenticator(authenticator);
     }
 
     @Override
@@ -74,7 +75,6 @@ public class ChatFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
         Bundle args = getArguments();
         if(args != null) {
             mFactory.setEventRef(verifyNotNull(args.getString(UIConstants.BUNDLE_EVENT_REF)));
@@ -92,7 +92,6 @@ public class ChatFragment extends Fragment {
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
             mAdapter.setChatList(messages);
-            mAdapter.notifyDataSetChanged();
             mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
         });
 
@@ -105,7 +104,6 @@ public class ChatFragment extends Fragment {
     }
 
     private void trySendMessage(@NonNull ChatViewModel.OnMessageAddedCallback callback) {
-
         String message = mBinding.edittextChatbox.getText().toString();
         if(!message.isEmpty()){
             mBinding.edittextChatbox.getText().clear();
@@ -113,7 +111,6 @@ public class ChatFragment extends Fragment {
             //to database
             mViewModel.addMessage(message, callback);
         }
-
     }
 
 }
