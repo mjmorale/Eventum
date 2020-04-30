@@ -119,10 +119,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center"
             android:layout_margin="16dp"
-            android:backgroundTint="#47ECAA"
             android:clickable="true"
-            android:src="@android:drawable/ic_menu_share"
-            app:backgroundTint="@color/white"
+            android:src="@drawable/share"
             app:layout_anchorGravity="bottom|right"
             android:focusable="true" />
 
@@ -133,7 +131,7 @@
             android:layout_gravity="bottom|right"
             android:clickable="true"
             android:layout_margin="16dp"
-            android:src="@android:drawable/sym_action_chat"
+            android:src="@drawable/chat"
             android:focusable="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -143,7 +141,7 @@
             android:layout_gravity="top|right"
             android:layout_margin="16dp"
             android:clickable="true"
-            android:src="@android:drawable/ic_menu_my_calendar" />
+            android:src="@drawable/calendar" />
     </LinearLayout>
 
 </RelativeLayout>
