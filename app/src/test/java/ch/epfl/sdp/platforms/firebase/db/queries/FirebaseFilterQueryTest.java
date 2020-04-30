@@ -157,6 +157,20 @@ public class FirebaseFilterQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    public void FirebaseFilterQuery_WhereArrayContains_FailsWithNullFirstArgument() {
+        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
+        firebaseFilterQuery.whereArrayContains(null, DUMMY_OBJECT);
+    }
+
+    @Test
+    public void FirebaseFilterQuery_WhereArrayContains_FiltersQueryWithCorrectParameters() {
+        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
+        firebaseFilterQuery.whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+
+        verify(mQuery).whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
     public void FirebaseFilterQuery_OrderBy_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
         firebaseFilterQuery.orderBy(null);

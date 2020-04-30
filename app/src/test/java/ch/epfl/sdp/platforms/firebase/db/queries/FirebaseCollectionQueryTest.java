@@ -148,6 +148,22 @@ public class FirebaseCollectionQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    public void FirebaseCollectionQuery_WhereArrayContains_FailsWithNullFirstArgument() {
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        firebaseCollectionQuery.whereArrayContains(null, DUMMY_OBJECT);
+    }
+
+    @Test
+    public void FirebaseCollectionQuery_WhereArrayContains_ReturnsNewFilterQueryWithCorrectParameters() {
+        when(mCollectionReference.whereArrayContains(any(String.class), any(Object.class))).thenReturn(mQuery);
+        FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
+        FilterQuery filterQuery = firebaseCollectionQuery.whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+        verify(mCollectionReference).whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+        filterQuery.limitCount(1);
+        verify(mQuery).limit(1);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
     public void FirebaseCollectionQuery_OrderBy_FailsWithNullFirstArgument() {
         FirebaseCollectionQuery firebaseCollectionQuery = new FirebaseCollectionQuery(mDb, mCollectionReference);
         firebaseCollectionQuery.orderBy(null);
