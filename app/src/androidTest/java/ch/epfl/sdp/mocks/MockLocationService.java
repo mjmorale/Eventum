@@ -13,9 +13,4 @@ public class MockLocationService implements LocationService {
         location.setLongitude(6.567827);
         return location;
     }
-
-    @Override
-    public boolean isLocationEnabled() {
-        return true;
-    }
 }

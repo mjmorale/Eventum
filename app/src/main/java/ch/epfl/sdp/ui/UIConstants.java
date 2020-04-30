@@ -1,5 +1,8 @@
 package ch.epfl.sdp.ui;
 
+/**
+ * Constants
+ */
 public class UIConstants {
 
     // String keys to object references in intent bundles

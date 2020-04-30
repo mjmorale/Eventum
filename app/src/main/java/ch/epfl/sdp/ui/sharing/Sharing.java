@@ -9,12 +9,20 @@ import java.util.List;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 
+/**
+ * Sharing functionality to be able to share an event on all the social platforms
+ */
 public class Sharing {
 
     public static final String DOMAIN_URL = "https://eventum.com/";
 
     private Intent mSendIntent;
 
+    /**
+     * Constructor
+     *
+     * @param arguments list of strings
+     */
     Sharing(@NonNull List<String> arguments) {
         verifyNotNull(arguments);
 
@@ -29,6 +37,11 @@ public class Sharing {
         mSendIntent.setType("text/plain");
     }
 
+    /**
+     * Method to get the sharing intent
+     *
+     * @return the sharing intent
+     */
     public Intent getShareIntent() {
         return Intent.createChooser(mSendIntent, "Share via");
     }

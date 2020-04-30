@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.settings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -9,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
@@ -19,6 +17,9 @@ import ch.epfl.sdp.R;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Fragment for the account information of the user
+ */
 public class AccountFragment extends PreferenceFragmentCompat {
 
     public interface OnLogoutListener {

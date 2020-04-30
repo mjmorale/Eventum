@@ -18,17 +18,28 @@ import ch.epfl.sdp.databinding.FragmentUserEventsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
+/**
+ * Fragment to display the user's events
+ */
 public class UserEventsFragment extends Fragment {
 
     private FragmentUserEventsBinding mBinding;
     private UserEventsViewModel mViewModel;
     private final UserEventsViewModel.UserEventsViewModelFactory mFactory;
 
+    /**
+     * Constructor of the UserEventsFragment
+     */
     public UserEventsFragment() {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
+    /**
+     * Constructor of the UserEventsFragment, only for testing purpose!
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public UserEventsFragment(@NonNull Database database) {
         mFactory = new UserEventsViewModel.UserEventsViewModelFactory();

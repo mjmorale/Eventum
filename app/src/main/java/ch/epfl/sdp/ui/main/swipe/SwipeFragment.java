@@ -22,6 +22,9 @@ import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
+/**
+ * Fragment for the swiping cards
+ */
 public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
 
     private FragmentSwipeBinding mBinding;
@@ -32,12 +35,20 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private EventDetailFragment mInfoFragment;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
 
+    /**
+     * Constructor of the swipe fragment, only for testing purpose!
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public SwipeFragment(@NonNull Database database) {
         mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactory.setDatabase(database);
     }
 
+    /**
+     * Constructor of the swipe fragment
+     */
     public SwipeFragment() {}
 
     @Override
