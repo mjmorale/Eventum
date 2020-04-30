@@ -21,6 +21,7 @@ import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
@@ -30,7 +31,6 @@ import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
-import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -52,16 +52,21 @@ import static org.mockito.Mockito.when;
 public class ChatFragmentTest {
 
     private  ChatFragment chatFragment = ChatFragment.getInstance("anyRef");
+
     @Mock
     private Database mDatabaseMock;
+
     @Mock
     private CollectionQuery mCollectionQueryMock;
+
     @Mock
     private DocumentQuery mDocumentQueryMock;
+
     @Mock
     private FilterQuery mFilterQueryMock;
+
     @Mock
-    private FirebaseAuthenticator mFirebaseAuthenticatorMock;
+    private Authenticator mAuthenticatorMock;
 
     private DatabaseObject<ChatMessage> mChatMessage = new DatabaseObject<>("fdgsetgserg", new ChatMessage("Hello", new Date(), "anyRef", " "));
 
@@ -82,16 +87,13 @@ public class ChatFragmentTest {
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mLiveData);
-
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(mChatMessage.getObject().getUid(), " ", " "));
 
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             ((Query.OnQueryCompleteCallback) args[1]).onQueryComplete(QueryResult.success("fake"));
             return null;
         }).when(mCollectionQueryMock).create(any(), any());
-
-        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo(mChatMessage.getObject().getUid(), " ", " "));
-
     }
 
     @SuppressWarnings("unchecked")
@@ -103,7 +105,7 @@ public class ChatFragmentTest {
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mAuthenticatorMock)
         );
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
@@ -114,9 +116,9 @@ public class ChatFragmentTest {
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mAuthenticatorMock)
         );
-        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
@@ -129,7 +131,7 @@ public class ChatFragmentTest {
     @SuppressWarnings("unchecked")
     @Test
     public void ChatFragment_Test_receiver() {
-        when(mFirebaseAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("newRef", " ", " "));
 
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
@@ -138,7 +140,7 @@ public class ChatFragmentTest {
                 ChatFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mFirebaseAuthenticatorMock)
+                new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mAuthenticatorMock)
         );
 
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));

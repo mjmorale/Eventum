@@ -69,11 +69,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onRightCardExit(Object o) {
         mViewModel.joinEvent(((DatabaseObject<Event>) o).getId(), result -> {
-            if(result.isSuccessful()) {
-                Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+            if(!result.isSuccessful()) {
+                Toast.makeText(getContext(), "Cannot accept event.", Toast.LENGTH_SHORT).show();
             }
         });
         mNumberSwipe += 1;

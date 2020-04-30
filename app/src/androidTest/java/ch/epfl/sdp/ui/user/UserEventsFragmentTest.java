@@ -1,5 +1,8 @@
 package ch.epfl.sdp.ui.user;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -17,6 +20,7 @@ import java.util.List;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.intent.Intents;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
@@ -27,14 +31,21 @@ import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.user.events.UserEventsFragment;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -100,5 +111,26 @@ public class UserEventsFragmentTest {
 
         onView(withId(R.id.user_events_empty_msg)).check(matches(not(isDisplayed())));
         onView(withText(DUMMY_EVENT.getTitle())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void UserEventsFragment_ClickOnItemLaunchesEventActivity() {
+        mScenario.onFragment(fragment -> {
+            mEventList.setValue(Arrays.asList(new DatabaseObject<>("testuid", DUMMY_EVENT)));
+        });
+
+        Intents.init();
+
+        intending(hasComponent("ch.epfl.sdp.ui.event.EventActivity"))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
+
+        onView(withText(DUMMY_EVENT.getTitle())).perform(click());
+
+        intended(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, "testuid")
+        ));
+
+        Intents.release();
     }
 }

@@ -6,22 +6,39 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 
+import com.google.firebase.auth.AuthCredential;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.test.espresso.intent.Intents;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
+import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -42,6 +59,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultEventFragmentTest {
 
     private final static String DUMMY_TITLE = "title";
@@ -64,7 +82,15 @@ public class DefaultEventFragmentTest {
     @Mock
     private DocumentQuery mDocumentQueryMock;
 
+    @Mock
+    private FilterQuery mFilterQueryMock;
+
+    @Mock
+    private Authenticator<AuthCredential> mAuthenticatorMock;
+
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
+
+    LiveData<List<DatabaseObject<ChatMessage>>> mChatLiveData = new MutableLiveData<>();
 
     @Before
     public void setup() {
@@ -123,6 +149,26 @@ public class DefaultEventFragmentTest {
         onView(withId(R.id.date)).check(matches(isDisplayed()));
         onView(withId(R.id.address)).check(matches(isDisplayed()));
         onView(withId(R.id.minimap)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void DefaultEventFragment_LaunchesChatWithCorrectValues() {
+        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
+        when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
+        when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
+        when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
+        when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mChatLiveData);
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
+        ServiceProvider.getInstance().setDatabase(mDatabaseMock);
+        ServiceProvider.getInstance().setAuthenticator(mAuthenticatorMock);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+        scenario(bundle);
+
+        onView(withId(R.id.chat_button)).perform(click());
+
+        onView(withId(R.id.button_chatbox_send)).check(matches(isDisplayed()));
     }
 
 }

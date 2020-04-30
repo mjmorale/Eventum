@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -29,10 +31,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
@@ -70,6 +75,34 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityTest {
 
+    private static final EventBuilder sEventBuilder = new EventBuilder();
+    private static final Event DUMMY_EVENT1 = sEventBuilder
+            .setTitle("event1")
+            .setDescription("description1")
+            .setAddress("address1")
+            .setDate(new Date())
+            .setImageId("id1")
+            .setOrganizerRef("ref1")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
+    private static final Event DUMMY_EVENT2 = sEventBuilder
+            .setTitle("event2")
+            .setDescription("description2")
+            .setAddress("address2")
+            .setDate(new Date())
+            .setImageId("id2")
+            .setOrganizerRef("ref2")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
+    private static final Event DUMMY_EVENT3 = sEventBuilder
+            .setTitle("event3")
+            .setDescription("description3")
+            .setAddress("address3")
+            .setDate(new Date())
+            .setImageId("id3")
+            .setOrganizerRef("ref3")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
     private static final String DUMMY_EVENTREF = "saielrkfuth2n340i7fz";
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
@@ -305,7 +338,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void MainActivity_FilterSettingsShowCorrectValues() {
+    public void MainActivity_FilterSettings_ShowCorrectValues() {
         launchDefaultActivity(DUMMY_USERREF);
 
         onView(withId(R.id.main_actionbar_search))
@@ -320,5 +353,22 @@ public class MainActivityTest {
 
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("10km")));
+    }
+
+    @Test
+    public void MainActivity_FilterSettings_ResultLiveDataIsCorrectlyFiltered() throws Throwable {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        DatabaseObject<Event> event1 = new DatabaseObject<>("event1", DUMMY_EVENT1);
+        DatabaseObject<Event> event2 = new DatabaseObject<>("event2", DUMMY_EVENT2);
+        DatabaseObject<Event> event3 = new DatabaseObject<>("event3", DUMMY_EVENT3);
+
+        mActivity.runOnUiThread(() -> {
+            mAttendingEventsLiveData.setValue(Arrays.asList(event2));
+            mEventsLiveData.setValue(Arrays.asList(event1, event2, event3));
+            mOwnedEventsLiveData.setValue(Arrays.asList(event3));
+        });
+
+        onView(withText(event1.getObject().getTitle())).check(matches(isDisplayed()));
     }
 }
