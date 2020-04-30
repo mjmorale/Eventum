@@ -1,4 +1,3 @@
-
 package ch.epfl.sdp.ui.main.attending;
 
 import androidx.annotation.VisibleForTesting;
@@ -14,14 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
 
 public class AttendingListFragment extends Fragment {
@@ -30,7 +25,7 @@ public class AttendingListFragment extends Fragment {
     private AttendingListViewModel mViewModel;
     private FragmentAttendingListBinding mBinding;
 
-    private AttendingEventAdapter mAdapter;
+    private EventListAdapter mAdapter;
 
     public AttendingListFragment() {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
@@ -54,17 +49,15 @@ public class AttendingListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new AttendingEventAdapter(new ArrayList<>());
+        mAdapter = new EventListAdapter();
         mBinding.attendingListView.setAdapter(mAdapter);
         mBinding.attendingListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mViewModel = new ViewModelProvider(this, mFactory).get(AttendingListViewModel.class);
 
-        if(mViewModel.getAttendingEvents().hasObservers()) {
-            mViewModel.getAttendingEvents().removeObservers(getViewLifecycleOwner());
-        }
         mViewModel.getAttendingEvents().observe(getViewLifecycleOwner(), events -> {
-            mAdapter.setAttendingEvents(events);
+            mAdapter.clear();
+            mAdapter.addAll(events);
         });
     }
 

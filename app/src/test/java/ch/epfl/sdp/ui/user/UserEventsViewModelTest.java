@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.ui.user.events.UserEventsViewModel;
 
 public class UserEventsViewModelTest {
 
