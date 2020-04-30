@@ -17,7 +17,9 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
-    private List<Event> mEventList;
+    public interface OnItemClickListener {
+        void OnItemClicked(Event event);
+    }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
@@ -27,7 +29,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             super(itemView);
             mTitle = itemView.findViewById(R.id.eventlist_item_title);
         }
+
+        public void setClickListener(@NonNull Event event, @NonNull OnItemClickListener listener) {
+            verifyNotNull(event, listener);
+            itemView.setOnClickListener(v -> listener.OnItemClicked(event));
+        }
     }
+
+    private List<Event> mEventList;
+    private OnItemClickListener mItemClickListener = null;
 
     public EventListAdapter() {
         mEventList = new ArrayList<>();
@@ -52,6 +62,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         notifyDataSetChanged();
     }
 
+    public void setOnItemClickListener(@NonNull OnItemClickListener listener) {
+        mItemClickListener = verifyNotNull(listener);
+    }
+
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,6 +78,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = mEventList.get(position);
         holder.mTitle.setText(event.getTitle());
+        if(mItemClickListener != null) {
+            holder.setClickListener(event, mItemClickListener);
+        }
     }
 
     @Override
