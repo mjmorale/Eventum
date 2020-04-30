@@ -97,10 +97,11 @@ public class DefaultEventFragmentTest {
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(DefaultEventFragment.class, mDatabaseMock, "anyRef")
         );
+
     }
     @SuppressWarnings("unchecked")
     @Test
-    public void DefaultEventFragment_CalendarIntent() {
+    public void DefaultEventFragment_CalendarIntent() throws InterruptedException {
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
 
@@ -116,12 +117,11 @@ public class DefaultEventFragmentTest {
                 hasExtra(CalendarContract.Events.EVENT_LOCATION,eventTest.getAddress()),
                 hasExtra(CalendarContract.Events.DESCRIPTION,eventTest.getDescription())
         )).respondWith(result);
-        onView(withId(R.id.calendarButton)).perform(click());
-
+        onView(withId(R.id.calendar_Button)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
-
+        
         Intents.release();
-
+        Thread.sleep(1000);
     }
 
     @Test
