@@ -29,6 +29,9 @@ import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Fragment for the map with events markers
+ */
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     private MapViewModel mViewModel;
@@ -39,6 +42,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private MapView mMapView;
     private float mZoomLevel = 12;
 
+    /**
+     * Constructor of the map fragment, only for testing purpose!
+     *
+     * @param mapManager {@link ch.epfl.sdp.map.MapManager}
+     * @param locationService {@link ch.epfl.sdp.map.LocationService}
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database) {
         verifyNotNull(mapManager, database, locationService);
@@ -50,6 +60,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mFactoryFilterSettings.setLocationService(locationService);
     }
 
+    /**
+     * Constructor of the map fragment (initialize the map view model)
+     */
     public MapFragment() {
         mFactoryMap = new MapViewModel.MapViewModelFactory();
     }

@@ -14,4 +14,35 @@
     <string
         name="defaultImageURL"
         >https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com/o/eventDefault.jpg?alt=media&amp;token=a6d345fa-a513-478d-a019-2307ee50022b</string>
+    <string name="title">Title</string>
+    <string name="john_doe">John Doe</string>
+    <string name="hi_man_how_are_you">hi man, how are you?</string>
+    <string name="_11_40">11:40</string>
+    <string name="name_create">Name:</string>
+    <string name="title_maj">title</string>
+    <string name="description_create">Description:</string>
+    <string name="description">description</string>
+    <string name="address_create">Address:</string>
+    <string name="address">address</string>
+    <string name="delete_button">delete button</string>
+    <string name="plus">+</string>
+    <string name="statistics">Statistics</string>
+    <string name="my_events">My events</string>
+    <string name="anonymous">anonymous</string>
+    <string name="anonymous_email">anonymous@epfl.ch</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="attending">Attending</string>
+    <string name="settings">Settings</string>
+    <string name="hello_hello">hello, hello!</string>
+    <string name="content_description_image">Profile image of the event</string>
+    <string name="accept">ACCEPT</string>
+    <string name="deny">DENY</string>
+    <string name="default_title_1">Prévention des épidémies avec l\'unité 731</string>
+    <string name="default_description_1">Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !</string>
+    <string name="default_date_1">11 Septembre 2001</string>
+    <string name="user_events">User events</string>
+    <string name="user_statistics">User statistics</string>
+    <string name="filter">Filter</string>
+    <string name="default_filter_range">5km</string>
 </resources>

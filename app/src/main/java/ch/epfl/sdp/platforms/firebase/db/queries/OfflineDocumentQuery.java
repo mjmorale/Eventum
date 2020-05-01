@@ -1,5 +1,6 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
@@ -38,10 +39,12 @@ public class OfflineDocumentQuery<T> extends FirebaseQuery implements DocumentQu
 
     }
 
+
     @Override
-    public <Event> void set(@NonNull Event event, @NonNull OnQueryCompleteCallback<Void> callback) {
-        ObjectSaver<ch.epfl.sdp.Event> eventSaver = new EventSaver();
-        eventSaver.saveFile(event, mDocReference.getId(), event.getDate());
+    public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {
+        Event event = (Event) object;
+        EventSaver<ch.epfl.sdp.Event> eventSaver = new EventSaver();
+//        eventSaver.saveFile(event, mDocReference.getId(), event.getDate());
     }
 
     @Override

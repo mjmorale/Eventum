@@ -6,12 +6,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import androidx.lifecycle.LiveData;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.map.MapManager;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,6 +36,9 @@ public class DefaultEventViewModelTest {
 
     @Mock
     private LiveData<Event> mEventLiveData;
+
+    @Mock
+    private MapManager mMapManagerMock;
 
     @Before
     public void setup() {
@@ -55,5 +63,16 @@ public class DefaultEventViewModelTest {
         DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
 
         assertNotNull(vm.getEvent());
+    }
+
+    @Test
+    public void DefaultEventViewModel_InitializesMap() {
+        when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+        when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
+        when(mDocumentQuery.livedata(Event.class)).thenReturn(mEventLiveData);
+        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+
+        vm.addMapManager(mMapManagerMock);
+        assertTrue(vm.setEventOnMap(new LatLng(10, 10), "event_name", 15f));
     }
 }

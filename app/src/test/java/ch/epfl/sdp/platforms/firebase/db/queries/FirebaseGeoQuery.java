@@ -114,8 +114,6 @@ public class FirebaseGeoQuery {
 
     @Test
     public void firebaseGeoFirestoreQuery_Get_CallsCallback(){
-
-
         FirebaseGeoFirestoreQuery firebaseGeoFirestoreQuery = new FirebaseGeoFirestoreQuery(mDb, mGeoFirestore, mLocation, DUMMY_RADIUS);
         when(mDocumentSnapshot.getData()).thenReturn(
                 new HashMap<String, Object>(){{
@@ -125,6 +123,7 @@ public class FirebaseGeoQuery {
                     this.put("address", "Chemin");
                     this.put("location", new GeoPoint(64, 65));
                     this.put("imageId", "URL");
+                    this.put("organizer", "organizerRef");
                 }}
         );
         ArrayList mDocuments = new ArrayList(){{this.add(mDocumentSnapshot); }};

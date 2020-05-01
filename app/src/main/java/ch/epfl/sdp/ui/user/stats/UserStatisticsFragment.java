@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.user;
+package ch.epfl.sdp.ui.user.stats;
 
 import android.os.Bundle;
 
@@ -18,17 +18,28 @@ import ch.epfl.sdp.databinding.FragmentUserStatisticsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 
+/**
+ * Fragment to display statistics about a user
+ */
 public class UserStatisticsFragment extends Fragment {
 
     private FragmentUserStatisticsBinding mBinding;
     private UserStatisticsViewModel mViewModel;
     private final UserStatisticsViewModel.UserStatisticsViewModelFactory mFactory;
 
+    /**
+     * Constructor of the UserStatisticsFragment
+     */
     public UserStatisticsFragment() {
         mFactory = new UserStatisticsViewModel.UserStatisticsViewModelFactory();
         mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
     }
 
+    /**
+     * Constructor of the UserStatisticsFragment, only for testing purpose!
+     *
+     * @param database {@link ch.epfl.sdp.db.Database}
+     */
     @VisibleForTesting
     public UserStatisticsFragment(@NonNull Database database) {
         mFactory = new UserStatisticsViewModel.UserStatisticsViewModelFactory();

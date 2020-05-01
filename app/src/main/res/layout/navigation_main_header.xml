@@ -31,14 +31,14 @@
             android:id="@+id/main_nav_header_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="anonymous"
+            android:text="@string/anonymous"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
             android:id="@+id/main_nav_header_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="anonymous@epfl.ch" />
+            android:text="@string/anonymous_email" />
 
     </LinearLayout>
 

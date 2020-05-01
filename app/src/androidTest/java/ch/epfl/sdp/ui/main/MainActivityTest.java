@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collection;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
@@ -37,6 +38,7 @@ import ch.epfl.sdp.User;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
@@ -57,6 +59,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -76,8 +80,12 @@ public class MainActivityTest {
     @Mock
     private DocumentQuery mDocumentQuery;
 
+    @Mock
+    private LocationQuery mLocationQuery;
+
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Event>> mEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Collection<Event>> mLocationEventsLiveData = new MutableLiveData<>();
 
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
@@ -247,6 +255,8 @@ public class MainActivityTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(userRef)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.atLocation(any(), anyDouble())).thenReturn(mLocationQuery);
+        when(mLocationQuery.liveData(Event.class)).thenReturn(mLocationEventsLiveData);
         when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
         ServiceProvider.getInstance().setDatabase(mDatabase);
 

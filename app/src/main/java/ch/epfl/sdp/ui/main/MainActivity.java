@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,6 +41,9 @@ import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
+/**
+ * The main activity of the application
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private final static int PERMISSION_LOCATION = 0;
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private View mMainNavHeaderView;
 
+    /**
+     * Constructor of the main activity
+     */
     public MainActivity() {
         mFactory = new MainViewModel.MainViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
@@ -238,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LocationService locationService = new GoogleLocationService((LocationManager) getSystemService(Context.LOCATION_SERVICE));
 
         mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFilterSettingsFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFilterSettingsFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFilterSettingsFactory.setLocationService(locationService);
     }
 

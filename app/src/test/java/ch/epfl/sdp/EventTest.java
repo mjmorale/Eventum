@@ -29,9 +29,10 @@ public class EventTest  {
     private String address = "Lausanne, Switzerland";
     private Context context = new Activity();
     private Date dateEvent = new Date();
-
-
+    String organizerRef = "organizerref";
     String imageId = "URL";
+
+
 
     @Test
     public void EventBuilder_CheckCorrectData()
@@ -43,6 +44,7 @@ public class EventTest  {
                               .setAddress(address)
                               .setLocation(location)
                               .setImageId(imageId)
+                              .setOrganizerRef(organizerRef)
                               .build();
 
         assertEquals(e.getTitle(), title);
@@ -50,11 +52,12 @@ public class EventTest  {
         assertEquals(e.getDate(), date);
         assertEquals(e.getAddress(), address);
         assertEquals(e.getImageId(), imageId);
+        assertEquals(e.getOrganizer(), organizerRef);
     }
 
     @Test
     public void Event_AddingEvent() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId);
+        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
@@ -78,7 +81,7 @@ public class EventTest  {
 
     @Test
     public void Event_AddingSameEvent() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId);
+        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
@@ -94,8 +97,8 @@ public class EventTest  {
 
     @Test
     public void Event_getAllEvents() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId);
-        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId);
+        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef);
+        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef);
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
@@ -114,7 +117,7 @@ public class EventTest  {
 
     @Test
     public void Event_AddingEventAndRemovedBecauseOutdated() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId);
+        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId, organizerRef);
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()-1);
@@ -129,7 +132,7 @@ public class EventTest  {
 
     @Test
     public void Event_getSingleFile() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId);
+        Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testGetSingleFile",dateEvent,context);
@@ -154,7 +157,7 @@ public class EventTest  {
 
     @Test
     public void Event_removeFileExist() throws IOException, ClassNotFoundException {
-        Event event = new Event(title, description, date, address, location, imageId);
+        Event event = new Event(title, description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
 

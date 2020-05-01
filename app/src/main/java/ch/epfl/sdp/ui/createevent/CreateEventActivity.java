@@ -7,6 +7,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.ActivityCreateEventBinding;
 
+/**
+ * Activity for the creation of a new event
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private ActivityCreateEventBinding mBinding;

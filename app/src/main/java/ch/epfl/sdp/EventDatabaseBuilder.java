@@ -21,6 +21,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         GeoPoint location = (GeoPoint)data.get("location");
         String address = (String)data.get("address");
         String imageId = (String)data.get("imageId");
+        String organizerRef = (String)data.get("organizer");
 
         EventBuilder eventBuilder = new EventBuilder();
         Event newEvent = eventBuilder.setTitle(title)
@@ -29,6 +30,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
                 .setAddress(address)
                 .setLocation(new LatLng(location.getLatitude(), location.getLongitude()))
                 .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
                 .build();
 
         return newEvent;
@@ -48,6 +50,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
             put("address", event.getAddress());
             put("location", new GeoPoint(event.getLocation().latitude, event.getLocation().longitude));
             put("imageId", event.getImageId());
+            put("organizer", event.getOrganizer());
         }};
     }
 

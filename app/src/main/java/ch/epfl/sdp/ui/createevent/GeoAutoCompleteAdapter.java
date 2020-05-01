@@ -17,12 +17,20 @@ import java.util.List;
 
 import ch.epfl.sdp.R;
 
+/**
+ * Adapter to handle autocomplete requests from geo search
+ */
 public class GeoAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     private static final int MAX_RESULTS = 10;
     private Context mContext;
     private List<GeoSearchResult> mResultList = new ArrayList();
 
+    /**
+     * Constructor of the GeoAutoCompleteAdapter
+     *
+     * @param context
+     */
     public GeoAutoCompleteAdapter(Context context) { mContext = context; }
 
     @Override

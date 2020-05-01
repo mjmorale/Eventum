@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.auth;
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -15,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static org.hamcrest.core.AllOf.allOf;
@@ -32,6 +35,9 @@ public class AuthActivityTest {
     public void AuthActivity_OnLoggedIn_LaunchesMainActivityWithEmptyBundle() {
         mActivity.launchActivity(new Intent());
         Intents.init();
+
+        intending(hasComponent("ch.epfl.sdp.ui.main.MainActivity"))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
 
         mActivity.getActivity().onLoggedIn(DUMMY_USER_REF);
         intended(allOf(
