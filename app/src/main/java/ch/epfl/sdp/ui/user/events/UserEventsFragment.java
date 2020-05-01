@@ -78,9 +78,7 @@ public class UserEventsFragment extends Fragment {
         });
 
         mAdapter.setOnItemClickListener(event -> {
-            Intent intent = new Intent(getContext(), EventActivity.class);
-            intent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER);
-            intent.putExtra(UIConstants.BUNDLE_EVENT_REF, event.getId());
+            Intent intent = EventActivity.getStartIntent(getContext(), EventActivity.EventActivityMode.ORGANIZER, event.getId());
             startActivity(intent);
         });
     }

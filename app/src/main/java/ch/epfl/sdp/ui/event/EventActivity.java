@@ -6,6 +6,7 @@ import ch.epfl.sdp.databinding.ActivityEventBinding;
 import ch.epfl.sdp.ui.UIConstants;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,21 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private ActivityEventBinding mBinding;
+
+    /**
+     * Create a start intent for the EventActivity
+     *
+     * @param context The context to use in the intent
+     * @param mode The start mode for the activity
+     * @param eventRef The database reference of the event to display
+     * @return The constructed intent to start the activity
+     */
+    public static Intent getStartIntent(Context context, EventActivity.EventActivityMode mode, String eventRef) {
+        Intent intent = new Intent(context, EventActivity.class);
+        intent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, mode);
+        intent.putExtra(UIConstants.BUNDLE_EVENT_REF, eventRef);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

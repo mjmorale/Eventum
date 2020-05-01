@@ -69,9 +69,7 @@ public class AttendingListFragment extends Fragment {
 
         mAdapter = new EventListAdapter();
         mAdapter.setOnItemClickListener(event -> {
-            Intent intent = new Intent(getContext(), EventActivity.class);
-            intent.putExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE);
-            intent.putExtra(UIConstants.BUNDLE_EVENT_REF, event.getId());
+            Intent intent = EventActivity.getStartIntent(getContext(), EventActivity.EventActivityMode.ATTENDEE, event.getId());
             startActivity(intent);
         });
         mBinding.attendingListView.setAdapter(mAdapter);
