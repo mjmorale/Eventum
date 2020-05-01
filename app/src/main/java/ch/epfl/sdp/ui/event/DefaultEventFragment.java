@@ -38,6 +38,9 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
     private DefaultEventViewModel mViewModel;
 
+    private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
+    private LiteMapViewModel mMapViewModel;
+
     private FragmentDefaultEventBinding mBinding;
 
     private Sharing mEventSharing;
@@ -67,6 +70,8 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
 
     /**
@@ -80,6 +85,8 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
+
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
 
     @Override
@@ -101,51 +108,8 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
 
         mBinding.minimap.onCreate(savedInstanceState);
         mBinding.minimap.getMapAsync(this);
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBinding.minimap.onStart();
-    }
-
-    @Override
-    public void onPause() {
-        mBinding.minimap.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mBinding.minimap.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        mBinding.minimap.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        mBinding.minimap.onStop();
-        super.onStop();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mBinding.minimap.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mFactory.setMapManager(new GoogleMapManager(googleMap));
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-
-        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
-        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDateStr());
@@ -153,8 +117,10 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
             Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
-            mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
         });
+
+        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
+        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
         mBinding.chatButton.setOnClickListener(v-> getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -163,6 +129,17 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
                 .commit());
 
         mBinding.calendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMapFactory.setMapManager(new GoogleMapManager(googleMap));
+
+        mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mMapViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
+        });
     }
 
     @Override
@@ -178,6 +155,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBinding = null;
     }
 
     private Intent getCalendarIntent() {
@@ -193,6 +171,6 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis()+1);
 
-        return  intent;
+        return intent;
     }
 }

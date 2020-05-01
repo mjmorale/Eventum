@@ -28,7 +28,7 @@ public class DefaultEventViewModel extends ViewModel {
          * Constructor of the DefaultEventViewModel factory
          */
         DefaultEventViewModelFactory() {
-            super(String.class, MapManager.class);
+            super(String.class);
         }
 
         /**
@@ -40,14 +40,10 @@ public class DefaultEventViewModel extends ViewModel {
             setValue(0, verifyNotNull(eventRef));
         }
 
-        void setMapManager(@NonNull MapManager mapManager) {
-            setValue(1, verifyNotNull(mapManager));
-        }
     }
 
     private LiveData<Event> mEvent;
 
-    private MapManager mMapManager;
     private final DocumentQuery mEventDocumentQuery;
     private final String mEventRef;
 
@@ -55,13 +51,11 @@ public class DefaultEventViewModel extends ViewModel {
      * Constructor of the DefaultEventViewModel, the factory should be used instead of this
      *
      * @param eventRef the reference of the event to display
-     * @param mapManager The map manager service to use
      * @param database The database service to use
      */
-    public DefaultEventViewModel(@NonNull String eventRef, @NonNull MapManager mapManager, @NonNull Database database) {
+    public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
         verifyNotNull(eventRef, database);
         mEventRef = eventRef;
-        mMapManager = mapManager;
         mEventDocumentQuery = database.query("events").document(eventRef);
     }
 
@@ -86,15 +80,4 @@ public class DefaultEventViewModel extends ViewModel {
         return mEventRef;
     }
 
-    /**
-     * Adds an event at the given location and centers the map on that location
-     * @param latLng the coordinates of the event
-     * @param eventName the name of the event
-     * @param zoomLevel the zoom level of the map
-     */
-    public void setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
-        mMapManager.clear();
-        mMapManager.addMarker(eventName, latLng);
-        mMapManager.moveCamera(latLng, zoomLevel);
-    }
 }

@@ -35,9 +35,6 @@ public class DefaultEventViewModelTest {
     @Mock
     private LiveData<Event> mEventLiveData;
 
-    @Mock
-    private MapManager mMapManagerMock;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -47,7 +44,7 @@ public class DefaultEventViewModelTest {
     public void DefaultEventViewModel_Constructor_ReferencesTheEventCollection() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mMapManagerMock, mDatabase);
+        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
 
         verify(mDatabase).query("events");
         verify(mCollectionQuery).document(DUMMY_STRING);
@@ -58,7 +55,7 @@ public class DefaultEventViewModelTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         when(mDocumentQuery.liveData(Event.class)).thenReturn(mEventLiveData);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mMapManagerMock, mDatabase);
+        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
 
         assertNotNull(vm.getEvent());
     }
