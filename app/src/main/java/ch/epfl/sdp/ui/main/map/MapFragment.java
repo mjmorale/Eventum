@@ -32,8 +32,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 /**
  * Fragment for the map with events markers
  */
-public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
-
+public class MapFragment extends Fragment {
     private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactoryMap;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
@@ -79,7 +78,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mFactoryMap.setLocationService(locationService);
 
         mMapView.getMapAsync(googleMap -> {
-            googleMap.setOnMarkerClickListener(this);
             googleMap.setMyLocationEnabled(true);
 
             mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
@@ -95,6 +93,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             });
 
             mViewModel.centerCamera(getContext(), mZoomLevel);
+
+            MapMarkerInfoWindowView infoView = new MapMarkerInfoWindowView(mViewModel, getContext());
+            googleMap.setInfoWindowAdapter(infoView);
         });
 
         return mBinding.getRoot();
@@ -122,15 +123,5 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(this.getId(), new EventDetailFragment(mViewModel.getEventFromMarker(marker),this))
-                .commit();
-        return true;
     }
 }
