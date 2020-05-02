@@ -104,7 +104,7 @@ public class DefaultEventFragment extends Fragment{
         mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDateStr());
+            mBinding.date.setText(event.getDate().toString());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
