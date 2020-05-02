@@ -176,12 +176,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) {
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
-//        String date = mBinding.date.getDayOfMonth() + "/" + (mBinding.date.getMonth() + 1) + "/" + mBinding.date.getYear();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(mBinding.date.getYear(), mBinding.date.getMonth(), mBinding.date.getDayOfMonth());
+        calendar.set(mBinding.date.getYear(), mBinding.date.getMonth(), mBinding.date.getDayOfMonth(),
+                mBinding.time.getCurrentHour(), mBinding.time.getCurrentMinute(), 0);
         Date date = calendar.getTime();
-
-
 
         String address = mBinding.geoAutocomplete.getText().toString();
         checkInput(title, description, date, address);
