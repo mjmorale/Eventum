@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class EventTest  {
     private LatLng location = new LatLng(100,100);
     private String address = "Lausanne, Switzerland";
     private Context context = new Activity();
+    private File path = context.getFilesDir();
     private Date dateEvent = new Date();
     String organizerRef = "organizerref";
     String imageId = "URL";
@@ -60,7 +62,7 @@ public class EventTest  {
         Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
-        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,path);
 
         File newFile = new File(context.getFilesDir(),"testAddEvent");
 
@@ -75,8 +77,8 @@ public class EventTest  {
         assertEquals(event, eventRead);
 
         //clean files
-        eventSaver.removeSingleEvent("testAddEvent",context);
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleEvent("testAddEvent",path);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
@@ -84,15 +86,15 @@ public class EventTest  {
         Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
-        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
-        eventSaver.saveEvent(event,"testAddEvent",dateEvent,context);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,path);
+        eventSaver.saveEvent(event,"testAddEvent",dateEvent,path);
 
-        List listEvent = eventSaver.getAllEvents(context);
+        List listEvent = eventSaver.getAllEvents(path);
         assertEquals(listEvent.size(),1);
 
         //clean files
-        eventSaver.removeSingleEvent("testAddEvent",context);
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleEvent("testAddEvent",path);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
@@ -102,17 +104,17 @@ public class EventTest  {
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
-        eventSaver.saveEvent(event,"testGetAllEvent1",dateEvent,context);
-        eventSaver.saveEvent(event2,"testGetAllEvent2",dateEvent,context);
+        eventSaver.saveEvent(event,"testGetAllEvent1",dateEvent,path);
+        eventSaver.saveEvent(event2,"testGetAllEvent2",dateEvent,path);
 
-        List listEvent = eventSaver.getAllEvents(context);
+        List listEvent = eventSaver.getAllEvents(path);
         assertTrue(listEvent.contains(event));
         assertTrue(listEvent.contains(event2));
 
         //clean files
-        eventSaver.removeSingleEvent("testGetAllEvent1",context);
-        eventSaver.removeSingleEvent("testGetAllEvent2",context);
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleEvent("testGetAllEvent1",path);
+        eventSaver.removeSingleEvent("testGetAllEvent2",path);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
@@ -121,13 +123,13 @@ public class EventTest  {
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()-1);
-        eventSaver.saveEvent(event,"testOutdatedEvent",dateEvent,context);
+        eventSaver.saveEvent(event,"testOutdatedEvent",dateEvent,path);
 
-        List listEvent = eventSaver.getAllEvents(context);
+        List listEvent = eventSaver.getAllEvents(path);
         assertFalse(listEvent.contains(event));
 
         //clean files
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
@@ -135,24 +137,24 @@ public class EventTest  {
         Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId, organizerRef);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
-        eventSaver.saveEvent(event,"testGetSingleFile",dateEvent,context);
+        eventSaver.saveEvent(event,"testGetSingleFile",dateEvent,path);
 
-        Event eventResult = (Event)eventSaver.getSingleFile("testGetSingleFile", context);
+        Event eventResult = (Event)eventSaver.getSingleFile("testGetSingleFile", path);
         assertNotNull(eventResult);
         assertEquals(eventResult,event);
 
         //clean files
-        eventSaver.removeSingleEvent("testGetSingleFile",context);
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleEvent("testGetSingleFile",path);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
     public void Event_removeFileNotExist() throws IOException, ClassNotFoundException {
         EventSaver eventSaver = new EventSaver();
-        boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveWrong",context);
+        boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveWrong",path);
         assertFalse(beenRemoved);
         //clean files
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 
     @Test
@@ -161,11 +163,11 @@ public class EventTest  {
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
 
-        eventSaver.saveEvent(event,"testRemoveOK",dateEvent,context);
+        eventSaver.saveEvent(event,"testRemoveOK",dateEvent,path);
 
-        boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveOK",context);
+        boolean beenRemoved = eventSaver.removeSingleEvent("testRemoveOK",path);
         assertTrue(beenRemoved);
         //clean files
-        eventSaver.removeSingleFile("eventStatusFiles",context);
+        eventSaver.removeSingleFile("eventStatusFiles",path);
     }
 }

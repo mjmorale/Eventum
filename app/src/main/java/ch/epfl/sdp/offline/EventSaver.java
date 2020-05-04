@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class EventSaver <Event> extends ObjectSaver {
@@ -28,54 +29,59 @@ public class EventSaver <Event> extends ObjectSaver {
      * @param docReference Id of the document (Event)
      * @param deleteDate When we can delete the temp file
      */
-    public void saveEvent(Event toSave, String docReference, Date deleteDate,Context context) throws IOException, ClassNotFoundException {
-        HashMap<String, Date> statusFiles = getEventStatusFiles(context);
-        saveFile((Serializable) toSave,docReference,deleteDate, context);
+    public void saveEvent(Event toSave, String docReference, Date deleteDate,File path) throws IOException, ClassNotFoundException {
+        HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
+
+        Map<String,Object> metaData = new HashMap<String, Object>();
+        Date lastModifyDate = new Date();
+        metaData.put("deleteDate",deleteDate);
+        metaData.put("lastModifyDate",lastModifyDate);
+
+        saveFile((Serializable) toSave,docReference, path);
 
         //update status
-        statusFiles.put(docReference, deleteDate);
-        System.out.println(statusFiles);
-        updateEventStatusFiles(statusFiles,context);
+        statusFiles.put(docReference, metaData);
+        updateEventStatusFiles(statusFiles,path);
 
         //remove old files
         for (String key: statusFiles.keySet()) {
-            if (Objects.requireNonNull(statusFiles.get(key)).before(new Date())){
-                removeSingleEvent(key, context);
+            Date deleteDateStorage = (Date) statusFiles.get(key).get("deleteDate");
+            if (deleteDateStorage.before(new Date())){
+                removeSingleEvent(key, path);
             }
         }
     }
 
-    public List<Event> getAllEvents(Context context) throws IOException, ClassNotFoundException {
-        HashMap<String, Date> statusFiles = getEventStatusFiles(context);
+    public List<Event> getAllEvents(File path) throws IOException, ClassNotFoundException {
+        HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<String>(statusFiles.keySet());
-        System.out.println(listReference);
-        return getMultipleFile(listReference,context);
+        return getMultipleFile(listReference,path);
     }
 
-    public boolean removeSingleEvent(String docReference, Context context) throws IOException, ClassNotFoundException {
-        removeSingleFile(docReference,context);
-        HashMap<String, Date> statusFiles = getEventStatusFiles(context);
-        Date elementRemoved = statusFiles.remove(docReference);
-        updateEventStatusFiles(statusFiles,context);
+    public boolean removeSingleEvent(String docReference, File path) throws IOException, ClassNotFoundException {
+        removeSingleFile(docReference,path);
+        HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
+        Map<String, Object> elementRemoved = statusFiles.remove(docReference);
+        updateEventStatusFiles(statusFiles,path);
         boolean elementIsRemoved = (elementRemoved != null);
         return elementIsRemoved;
     }
 
-    private HashMap<String, Date> getEventStatusFiles(Context context) throws IOException, ClassNotFoundException {
-        File statusFile = new File(context.getFilesDir(), "eventStatusFiles");
-        if (!statusFile.exists()) return  new HashMap<String, Date>();;
+    private HashMap<String, Map<String,Object>> getEventStatusFiles(File path) throws IOException, ClassNotFoundException {
+        File statusFile = new File(path, "eventStatusFiles");
+        if (!statusFile.exists()) return  new HashMap<String, Map<String,Object>>();;
         FileInputStream fi = new FileInputStream(statusFile);
         ObjectInputStream oi = new ObjectInputStream(fi);
 
-        HashMap<String, Date> eventStatusFiles = (HashMap<String, Date>) oi.readObject();
+        HashMap<String, Map<String,Object>> eventStatusFiles = (HashMap<String, Map<String,Object>>) oi.readObject();
         oi.close();
         fi.close();
 
         return eventStatusFiles;
     }
 
-    private void  updateEventStatusFiles(HashMap<String, Date> eventStatusFiles, Context context) throws IOException {
-        File statusFile = new File(context.getFilesDir(), "eventStatusFiles");
+    private void  updateEventStatusFiles(HashMap<String, Map<String,Object>> eventStatusFiles, File path) throws IOException {
+        File statusFile = new File(path, "eventStatusFiles");
         FileOutputStream f = new FileOutputStream(statusFile);
         ObjectOutputStream o = new ObjectOutputStream((f));
         o.writeObject(eventStatusFiles);
