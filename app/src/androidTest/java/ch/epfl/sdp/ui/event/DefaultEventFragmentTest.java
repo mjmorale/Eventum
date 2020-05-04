@@ -102,7 +102,8 @@ public class DefaultEventFragmentTest {
                 hasType("vnd.android.cursor.item/event"),
                 hasExtra(CalendarContract.Events.TITLE, DUMMY_TITLE),
                 hasExtra(CalendarContract.Events.EVENT_LOCATION, DUMMY_EVENT.getAddress()),
-                hasExtra(CalendarContract.Events.DESCRIPTION, DUMMY_EVENT.getDescription())
+                hasExtra(CalendarContract.Events.DESCRIPTION, DUMMY_EVENT.getDescription()),
+                hasExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, DUMMY_EVENT.getDate().getTime())
         )).respondWith(result);
         onView(withId(R.id.calendar_Button)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));

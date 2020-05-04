@@ -156,15 +156,14 @@ public class DefaultEventFragment extends Fragment{
     private Intent getCalendarIntent() {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra(CalendarContract.Events.TITLE, mBinding.title.getText().toString());
-        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mBinding.address.getText().toString());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, mBinding.description.getText().toString());
-        String[] date = mBinding.date.getText().toString().split("/");
-        GregorianCalendar calDate = new GregorianCalendar(Integer.parseInt(date[2]),
-                                                            Integer.parseInt(date[1]),
-                                                                Integer.parseInt(date[0]));
-        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calDate.getTimeInMillis());
-        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calDate.getTimeInMillis()+1);
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            intent.putExtra(CalendarContract.Events.TITLE, event.getTitle());
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getAddress());
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription());
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDate().getTime());
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+1);
+            intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+        });
 
         return  intent;
     }
