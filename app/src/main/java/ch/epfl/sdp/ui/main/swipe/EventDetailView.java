@@ -23,6 +23,8 @@ public class EventDetailView extends LinearLayout {
     }
 
     public void setEvent(Event event) {
+        mBinding.defaultEventLayout.scrollTo(0, 0);
+        
         mBinding.title.setText(event.getTitle());
         mBinding.description.setText(event.getDescription());
         mBinding.date.setText(event.getDateStr());
