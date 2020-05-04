@@ -28,7 +28,7 @@ public class EventDetailFragment extends Fragment {
      * @param event on which informations will be displayed
      * @param fragment to go back to
      */
-    public EventDetailFragment(Event event, Fragment fragment){
+    public EventDetailFragment(Event event, Fragment fragment) {
         super();
         this.mEvent = event;
         this.mFragment = fragment;

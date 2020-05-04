@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -95,9 +96,17 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mNumberSwipe = 0;
         });
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                showCardList();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
-            mInfoFragment = new EventDetailFragment(mEventList.get(0),this);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
+            mBinding.eventDetailView.setEvent(mEventList.get(itemPosition));
+            showEventDetail();
         });
 
         return mBinding.getRoot();
@@ -107,5 +116,15 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
+    }
+
+    private void showEventDetail() {
+        mBinding.cardsListView.setVisibility(View.GONE);
+        mBinding.eventDetailView.setVisibility(View.VISIBLE);
+    }
+
+    private void showCardList() {
+        mBinding.eventDetailView.setVisibility(View.GONE);
+        mBinding.cardsListView.setVisibility(View.VISIBLE);
     }
 }
