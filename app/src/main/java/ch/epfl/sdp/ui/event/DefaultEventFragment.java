@@ -161,8 +161,7 @@ public class DefaultEventFragment extends Fragment{
             intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getAddress());
             intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription());
             intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDate().getTime());
-            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+1);
-            intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+10800000);
         });
 
         return  intent;
