@@ -44,8 +44,8 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
         TextView description = mMarkerView.findViewById(R.id.map_event_description);
 //        ImageView image = mMarkerView.findViewById(R.id.map_event_image);
         title.setText(event.getTitle());
-        description.setText(event.getDescription());
         date.setText(event.getDate().toString());
+        description.setText(event.getDescription());
 //        Glide.with(mContext).load(event.getImageId()).into(image);
 
         return mMarkerView;
