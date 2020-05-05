@@ -13,8 +13,8 @@ import java.net.URL;
 
 public class OpenWeatherMapFetcher implements WeatherFetcher {
 
-    LatLng mLocation;
-    String apiK;
+    private LatLng mLocation;
+    private String apiK;
 
     public OpenWeatherMapFetcher(LatLng location) {
         mLocation = location;

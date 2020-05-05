@@ -7,12 +7,11 @@ import java.util.HashMap;
 
 public class Weather {
 
-    public String dataString;
-    public JSONObject data;
+    private String dataString;
+    private JSONObject data;
 
     public Weather(String data) throws JSONException {
         dataString = data;
-
         this.data = new JSONObject(data);
     }
 
@@ -43,7 +42,6 @@ public class Weather {
 
         return dayInfo;
     }
-
 
     private HashMap<Integer, Long> getForecastTimestamps() throws JSONException {
        HashMap<Integer, Long> timestamps = new HashMap<>();
