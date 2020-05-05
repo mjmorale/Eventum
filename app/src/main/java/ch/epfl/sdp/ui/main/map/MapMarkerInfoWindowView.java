@@ -10,6 +10,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.zip.Inflater;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 
@@ -26,13 +28,11 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
     /**
      * @param mapViewModel the view model of the map where the markers are
      * @param context the environment the application is currently running in
+     * @param inflater
      */
-    public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context) {
-
+    public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context, LayoutInflater inflater) {
         mMapViewModel = mapViewModel;
         mContext = context;
-
-        LayoutInflater inflater = LayoutInflater.from(mContext);
         mMarkerView = inflater.inflate(R.layout.view_map_marker_info_window, null);
     }
 
@@ -42,11 +42,11 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
         TextView title = mMarkerView.findViewById(R.id.map_event_title);
         TextView date = mMarkerView.findViewById(R.id.map_event_date);
         TextView description = mMarkerView.findViewById(R.id.map_event_description);
-        ImageView image = mMarkerView.findViewById(R.id.map_event_image);
+//        ImageView image = mMarkerView.findViewById(R.id.map_event_image);
         title.setText(event.getTitle());
         description.setText(event.getDescription());
         date.setText(event.getDate().toString());
-        Glide.with(mContext).load(event.getImageId()).into(image);
+//        Glide.with(mContext).load(event.getImageId()).into(image);
 
         return mMarkerView;
     }

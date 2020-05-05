@@ -94,7 +94,7 @@ public class MapFragment extends Fragment {
 
             mViewModel.centerCamera(getContext(), mZoomLevel);
 
-            MapMarkerInfoWindowView infoView = new MapMarkerInfoWindowView(mViewModel, getContext());
+            MapMarkerInfoWindowView infoView = new MapMarkerInfoWindowView(mViewModel, getContext(), inflater);
             googleMap.setInfoWindowAdapter(infoView);
         });
 

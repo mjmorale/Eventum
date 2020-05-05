@@ -63,7 +63,26 @@ public class MapFragmentTest {
                 new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
         );
 
+
+
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
+
+//    @Test
+//    public void MapFragment_MarkerCanBeClicked() throws InterruptedException {
+//
+//        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQuery);
+//        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLive);
+//
+//        FragmentScenario<MapFragment> scenario = FragmentScenario.launchInContainer(
+//                MapFragment.class,
+//                new Bundle(),
+//                R.style.Theme_AppCompat,
+//                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
+//        );
+//
+//
+//        Thread.sleep(3000);
+//    }
 }
 
