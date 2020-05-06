@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 /**
  * Adapter to fill the swipe cards with events
@@ -43,9 +44,7 @@ public class CardArrayAdapter extends ArrayAdapter<Event> {
 
         name.setText(event.getTitle());
 
-            Glide.with(getContext())
-                    .load(event.getImageId())
-                    .into(imageView);
+        ImageGetter.getImage(getContext(), event.getImageId(), imageView);
 
         description.setText(event.getDescription());
         return convertView;

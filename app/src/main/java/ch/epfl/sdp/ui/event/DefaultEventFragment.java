@@ -22,6 +22,7 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
@@ -108,7 +109,7 @@ public class DefaultEventFragment extends Fragment{
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
+            ImageGetter.getImage(getContext(), event.getImageId(), mBinding.imageView);
         });
 
         mBinding.chatButton.setOnClickListener(v->{

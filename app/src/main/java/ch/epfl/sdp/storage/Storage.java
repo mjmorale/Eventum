@@ -1,6 +1,8 @@
 package ch.epfl.sdp.storage;
 
+import android.content.Context;
 import android.net.Uri;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
@@ -17,4 +19,6 @@ public interface Storage {
      * @param callback called when the upload is finished
      */
     void uploadImage(@NonNull Uri imageUri, @NonNull FirestoreStorage.UrlReadyCallback callback);
+
+
 }
