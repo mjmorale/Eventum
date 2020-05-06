@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Weather {
 
@@ -22,27 +23,45 @@ public class Weather {
         this.data = new JSONObject(data);
     }
 
-    public long getResponseTimestamp() throws JSONException {
-        long time = data.getJSONObject("current").getLong("dt");
+    public double getTemp(int day) throws JSONException {
+        JSONObject dayData = getDayJSON(day);
 
-        return time;
+        return dayData.getJSONObject("temp").getDouble("day");
     }
 
+    public double getFeelsLikeTemp(int day) throws JSONException {
+        JSONObject dayData = getDayJSON(day);
+
+        return dayData.getJSONObject("feels_like").getDouble("day");
+    }
+
+    public Map<String, Object> getWeather(int day) throws JSONException {
+        JSONObject weatherData = getDayJSON(day).getJSONObject("weather");
+
+        HashMap<String, Object> weatherMap = new HashMap<>();
+
+        weatherMap.put("id", weatherData.getInt("id"));
+        weatherMap.put("main", weatherData.getString("main"));
+        weatherMap.put("description", weatherData.getString("description"));
+        weatherMap.put("icon", weatherData.getString("icon"));
+
+        return weatherMap;
+    }
 
     public String getString() {
         return dataString;
     }
 
-    private boolean updatedRecently(Date date) throws JSONException {
-        long currentTime = date.getTime() / 1000;
+    public boolean updatedRecently(Date date) throws JSONException {
+        long currentTime = DateToSecs(date);
 
         long response = this.getResponseTimestamp();
 
         return currentTime < (response + SECONDS_IN_DAY);
     }
 
-    private int getClosestDay(Date date) throws JSONException {
-        long currentTime = date.getTime() / 1000;
+    public int getClosestDay(Date date) throws JSONException {
+        long currentTime = DateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
 
@@ -58,8 +77,8 @@ public class Weather {
         return -1;
     }
 
-    private boolean isForecastAvailable(Date date) throws JSONException {
-        long currentTime = date.getTime() / 1000;
+    public boolean isForecastAvailable(Date date) throws JSONException {
+        long currentTime = DateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
         long minTime = timestamps.get(0) - SECONDS_IN_HALF_DAY;
@@ -68,26 +87,18 @@ public class Weather {
         return currentTime >= minTime && currentTime <= maxTime;
     }
 
-    private JSONObject getDayJSON(int day) throws JSONException {
-        return data.getJSONObject(Integer.toString(day));
+    private static long DateToSecs(Date date) {
+        return date.getTime() / 1000;
     }
 
-    private HashMap<String, Object> getDayInfo(int day) throws JSONException {
+    private long getResponseTimestamp() throws JSONException {
+        long time = data.getJSONObject("current").getLong("dt");
 
-        JSONObject dayData = getDayJSON(day);
+        return time;
+    }
 
-        HashMap<String, Object> dayInfo = new HashMap<>();
-        dayInfo.put("temp", dayData.getJSONObject("temp").getDouble("day"));
-        dayInfo.put("feels_like", dayData.getJSONObject("feels_like").getDouble("day"));
-
-        JSONObject weatherData = dayData.getJSONObject("weather");
-        dayInfo.put("weatherId",weatherData.getInt("id"));
-        dayInfo.put("weatherTitle", weatherData.getString("main"));
-        dayInfo.put("weatherDescription", weatherData.getString("description"));
-        dayInfo.put("weatherIcon", weatherData.getString("icon"));
-
-
-        return dayInfo;
+    private JSONObject getDayJSON(int day) throws JSONException {
+        return data.getJSONObject(Integer.toString(day));
     }
 
     private List<Long> getForecastTimestamps() throws JSONException {
