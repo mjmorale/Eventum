@@ -8,15 +8,22 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
@@ -26,6 +33,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  * View model for the filtering of events
  */
 public class FilterSettingsViewModel extends ViewModel {
+
     /**
      * Factory for the FilterSettingsViewModel
      */
@@ -34,7 +42,7 @@ public class FilterSettingsViewModel extends ViewModel {
          * Constructor of the FilterSettingsViewModel factory
          */
         public FilterSettingsViewModelFactory() {
-            super(LocationService.class);
+            super(LocationService.class, Authenticator.class);
         }
 
         /**
@@ -45,25 +53,56 @@ public class FilterSettingsViewModel extends ViewModel {
         public void setLocationService(@NonNull LocationService locationService) {
             setValue(0, verifyNotNull(locationService));
         }
+
+        public void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
+        }
     }
 
     private final CollectionQuery mEventQuery;
-    private final MediatorLiveData<Collection<Event>> mResultsLiveData = new MediatorLiveData<>();
     private final LocationService mLocationService;
+    private final UserInfo mUserInfo;
 
-    private LiveData<Collection<Event>> mCurrentLivedataSource;
-    private LiveData<List<Event>> mRootLiveDataSource;
+    private final MediatorLiveData<Collection<DatabaseObject<Event>>> mResultsLiveData = new MediatorLiveData<>();
+    private LiveData<Collection<DatabaseObject<Event>>> mCurrentLivedataSource;
+    private LiveData<List<DatabaseObject<Event>>> mRootLiveDataSource;
+    private LiveData<List<DatabaseObject<Event>>> mAttendedEventsLiveData;
+    private LiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData;
+
+    private Collection<DatabaseObject<Event>> mFilteredEvents = new ArrayList<>();
+    private Collection<DatabaseObject<Event>> mAttendedEvents = new ArrayList<>();
+    private Collection<DatabaseObject<Event>> mOwnedEvents = new ArrayList<>();
+
+    private Map<String, DatabaseObject<Event>> mEvents = new ConcurrentHashMap<>();
 
     /**
      * Constructor of the FilterSettingsViewModel, the factory should be used instead of this
      *
-     * @param locationService {@link ch.epfl.sdp.map.LocationService}
-     * @param database {@link ch.epfl.sdp.db.Database}
+     * @param locationService The location service to use
+     * @param authenticator The authentication service to use
+     * @param database The database service to use
      */
-    public FilterSettingsViewModel(@NonNull LocationService locationService, @NonNull Database database) {
+    public FilterSettingsViewModel(@NonNull LocationService locationService, @NonNull Authenticator authenticator, @NonNull Database database) {
+        mUserInfo = authenticator.getCurrentUser();
         mEventQuery = database.query("events");
         mRootLiveDataSource = mEventQuery.liveData(Event.class);
-        mResultsLiveData.addSource(mRootLiveDataSource, mResultsLiveData::postValue);
+        mAttendedEventsLiveData = mEventQuery.whereArrayContains("attendees", mUserInfo.getUid()).liveData(Event.class);
+        mOwnedEventsLiveData = mEventQuery.whereFieldEqualTo("organizer", mUserInfo.getUid()).liveData(Event.class);
+        mResultsLiveData.addSource(mAttendedEventsLiveData, databaseObjects -> {
+            mAttendedEvents = databaseObjects;
+            combineEvents();
+            postCurrentEvents();
+        });
+        mResultsLiveData.addSource(mOwnedEventsLiveData, databaseObjects -> {
+            mOwnedEvents = databaseObjects;
+            combineEvents();
+            postCurrentEvents();
+        });
+        mResultsLiveData.addSource(mRootLiveDataSource, databaseObjects -> {
+            mFilteredEvents = databaseObjects;
+            combineEvents();
+            postCurrentEvents();
+        });
         mLocationService = locationService;
     }
 
@@ -72,7 +111,7 @@ public class FilterSettingsViewModel extends ViewModel {
      *
      * @return the filtered events
      */
-    public LiveData<Collection<Event>> getFilteredEvents() {
+    public LiveData<Collection<DatabaseObject<Event>>> getFilteredEvents() {
         return mResultsLiveData;
     }
 
@@ -91,9 +130,34 @@ public class FilterSettingsViewModel extends ViewModel {
         } else {
             mResultsLiveData.removeSource(mCurrentLivedataSource);
         }
-        mCurrentLivedataSource =
-                mEventQuery.atLocation(locationGeoPoint, radiusSetting).liveData(Event.class);
+        mCurrentLivedataSource = mEventQuery.atLocation(locationGeoPoint, radiusSetting).liveData(Event.class);
         mResultsLiveData.postValue(new ArrayList<>());
-        mResultsLiveData.addSource(mCurrentLivedataSource, mResultsLiveData::postValue);
+        mResultsLiveData.addSource(mCurrentLivedataSource, databaseObjects -> {
+            mFilteredEvents = databaseObjects;
+            combineEvents();
+            postCurrentEvents();
+        });
+    }
+
+    public void joinEvent(@NonNull String eventRef, @NonNull Query.OnQueryCompleteCallback<Void> callback) {
+        verifyNotNull(eventRef, callback);
+        mEventQuery.document(eventRef).update("attendees", FieldValue.arrayUnion(mUserInfo.getUid()), callback);
+    }
+
+    private void combineEvents() {
+        mEvents.clear();
+        for(DatabaseObject<Event> event: mFilteredEvents) {
+            mEvents.put(event.getId(), event);
+        }
+        for(DatabaseObject<Event> event: mAttendedEvents) {
+            mEvents.remove(event.getId());
+        }
+        for(DatabaseObject<Event> event: mOwnedEvents) {
+            mEvents.remove(event.getId());
+        }
+    }
+
+    private void postCurrentEvents() {
+        mResultsLiveData.postValue(mEvents.values());
     }
 }

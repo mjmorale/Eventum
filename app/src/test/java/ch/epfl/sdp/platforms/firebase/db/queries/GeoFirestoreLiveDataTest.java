@@ -72,13 +72,13 @@ public class GeoFirestoreLiveDataTest {
     @Test
     public void GeoFirestoreLiveData_OnActive_MethodsWork(){
         doAnswer(invocation -> {
-                GeoQueryDataEventListener obj = invocation.getArgument(0);
-                obj.onDocumentChanged(mDocumentSnapshot, mGeoPoint);
-                obj.onDocumentEntered(mDocumentSnapshot, mGeoPoint);
-                obj.onDocumentExited(mDocumentSnapshot);
-                obj.onDocumentMoved(mDocumentSnapshot, mGeoPoint);
-                obj.onGeoQueryError(mException);
-                obj.onGeoQueryReady();
+            GeoQueryDataEventListener obj = invocation.getArgument(0);
+            obj.onDocumentChanged(mDocumentSnapshot, mGeoPoint);
+            obj.onDocumentEntered(mDocumentSnapshot, mGeoPoint);
+            obj.onDocumentExited(mDocumentSnapshot);
+            obj.onDocumentMoved(mDocumentSnapshot, mGeoPoint);
+            obj.onGeoQueryError(mException);
+            obj.onGeoQueryReady();
             return null;
         }).when(mGeoQuery).addGeoQueryDataEventListener(any());
 
@@ -101,6 +101,5 @@ public class GeoFirestoreLiveDataTest {
         verify(mData, times(2)).put(any(),any());
         verify(mData, times(2)).remove(any());
     }
-
 
 }
