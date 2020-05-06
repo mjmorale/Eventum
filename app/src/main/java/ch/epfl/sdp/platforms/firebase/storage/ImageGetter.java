@@ -32,20 +32,21 @@ public class ImageGetter {
 
         final Bitmap[] bitmap = new Bitmap[1];
 
-        if(1 == 0 && !imageFile.isDirectory()){
+        if(imageFile.exists()){
             bitmap[0] = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            imageView.setImageBitmap(bitmap[0]);
         } else {
             Glide.with(context).asBitmap().load(imageId).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                    bitmap[0] = resource;
+                    saveInCache(imageFile, resource);
+                    imageView.setImageBitmap(bitmap[0]);
+
                 }
             });
 
-            saveInCache(imageFile, bitmap[0]);
         }
 
-        imageView.setImageBitmap(bitmap[0]);
     }
 
     private static void saveInCache(File file, Bitmap bitmap){
