@@ -2,6 +2,7 @@ package ch.epfl.sdp.db.queries;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObject;
 
 import com.google.firebase.firestore.GeoPoint;
 
@@ -21,7 +22,7 @@ public interface LocationQuery extends Query {
      * @param callback class that will be called once the result is returned
      * @param <T> type that should be returned
      */
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> void get(@NonNull Class<T> type, @NonNull Query.OnQueryCompleteCallback<List<DatabaseObject<T>>> callback);
 
     /**
      * Get the livedata the object associated to this query.
@@ -29,5 +30,6 @@ public interface LocationQuery extends Query {
      * @param type class type that should be returned
      * @param <T> type that should be returned
      */
-    <T> LiveData<Collection<T>> liveData(@NonNull Class<T> type);
+    <T> LiveData<Collection<DatabaseObject<T>>> liveData(@NonNull Class<T> type);
+
 }

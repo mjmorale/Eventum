@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData;
 
 import org.imperiumlabs.geofirestore.GeoFirestore;
 
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
@@ -49,6 +50,11 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
     }
 
     @Override
+    public FilterQuery whereArrayContains(@NonNull String field, Object value) {
+        return new FirebaseFilterQuery(mDb, mCollection.whereArrayContains(verifyNotNull(field), value));
+    }
+
+    @Override
     public FilterQuery orderBy(@NonNull String field) {
         return new FirebaseFilterQuery(mDb, mCollection.orderBy(verifyNotNull(field)));
     }
@@ -68,13 +74,13 @@ public class FirebaseCollectionQuery extends FirebaseQuery implements Collection
 
 
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<DatabaseObject<T>>> callback) {
         verifyNotNull(type, callback);
         handleQuerySnapshot(mCollection.get(), type, callback);
     }
 
     @Override
-    public <T> LiveData<List<T>> liveData(@NonNull Class<T> type) {
+    public <T> LiveData<List<DatabaseObject<T>>> liveData(@NonNull Class<T> type) {
         return new FirebaseQueryLiveData(mCollection, verifyNotNull(type));
     }
 

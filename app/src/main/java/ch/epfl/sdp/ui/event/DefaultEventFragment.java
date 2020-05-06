@@ -14,15 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.MapView;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 import java.util.GregorianCalendar;
 
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
@@ -33,13 +33,17 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 /**
  * Fragment to display some detail information of an event
  */
-public class DefaultEventFragment extends Fragment{
+public class DefaultEventFragment extends Fragment implements OnMapReadyCallback {
 
-    private DefaultEventViewModel mViewModel;
-    private FragmentDefaultEventBinding mBinding;
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
+    private DefaultEventViewModel mViewModel;
+
+    private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
+    private LiteMapViewModel mMapViewModel;
+
+    private FragmentDefaultEventBinding mBinding;
+
     private Sharing mEventSharing;
-    private MapView mMapView;
     private float mZoomLevel = 15;
     private int LAUNCH_CALENDAR = 3;
 
@@ -65,8 +69,9 @@ public class DefaultEventFragment extends Fragment{
      */
     public DefaultEventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
 
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
 
     /**
@@ -80,6 +85,8 @@ public class DefaultEventFragment extends Fragment{
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
+
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
 
     @Override
@@ -99,9 +106,10 @@ public class DefaultEventFragment extends Fragment{
             mFactory.setEventRef(args.getString(UIConstants.BUNDLE_EVENT_REF));
         }
 
+        mBinding.minimap.onCreate(savedInstanceState);
+        mBinding.minimap.getMapAsync(this);
+
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
-        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             mBinding.date.setText(event.getDate().toString());
@@ -111,17 +119,27 @@ public class DefaultEventFragment extends Fragment{
             Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
         });
 
-        mBinding.chatButton.setOnClickListener(v->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), ChatFragment.getInstance(mViewModel.getEventRef())).addToBackStack(null).commit();
+        mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
+        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
+
+        mBinding.chatButton.setOnClickListener(v-> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(getId(), ChatFragment.getInstance(mViewModel.getEventRef()))
+                .addToBackStack(null)
+                .commit());
+
+        mBinding.calendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMapFactory.setMapManager(new GoogleMapManager(googleMap));
+
+        mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mMapViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
         });
-
-        mBinding.calendarButton.setOnClickListener(v->{
-            startActivityForResult(getCalendarIntent(),LAUNCH_CALENDAR);
-                });
-
-
-        initMinimap(savedInstanceState);
-
     }
 
     @Override
@@ -132,19 +150,6 @@ public class DefaultEventFragment extends Fragment{
                 Toast.makeText(getContext(), "No Calendar app found", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void initMinimap(@Nullable Bundle savedInstanceState) {
-        mMapView = mBinding.getRoot().findViewById(R.id.minimap);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(googleMap -> {
-
-            mViewModel.addMapManager(new GoogleMapManager(googleMap));
-            mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-                mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
-           });
-
-        });
     }
 
     @Override
@@ -164,6 +169,6 @@ public class DefaultEventFragment extends Fragment{
             intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+10800000);
         });
 
-        return  intent;
+        return intent;
     }
 }

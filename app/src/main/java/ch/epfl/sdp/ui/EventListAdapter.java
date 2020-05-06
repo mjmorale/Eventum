@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.db.DatabaseObject;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -31,7 +32,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
          * Called when the user clicks on an event of the adapter.
          * @param event The event that was clicked on.
          */
-        void OnItemClicked(@NonNull Event event);
+        void OnItemClicked(@NonNull DatabaseObject<Event> event);
     }
 
     /**
@@ -52,13 +53,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
          * @param listener The listener function.
          * @throws IllegalArgumentException One or more argument is null.
          */
-        public void setClickListener(@NonNull Event event, @NonNull OnItemClickListener listener) {
+        public void setClickListener(@NonNull DatabaseObject<Event> event, @NonNull OnItemClickListener listener) {
             verifyNotNull(event, listener);
             itemView.setOnClickListener(v -> listener.OnItemClicked(event));
         }
     }
 
-    private List<Event> mEventList;
+    private List<DatabaseObject<Event>> mEventList;
     private OnItemClickListener mItemClickListener = null;
 
     /**
@@ -73,7 +74,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
      * @param events The list of initial events.
      * @throws IllegalArgumentException The list of event is null.
      */
-    public EventListAdapter(@NonNull List<Event> events) {
+    public EventListAdapter(@NonNull List<DatabaseObject<Event>> events) {
         mEventList = verifyNotNull(events);
     }
 
@@ -92,7 +93,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
      * @param events The list of events to add to the adapter
      * @throws IllegalArgumentException The list of event is null.
      */
-    public void addAll(@NonNull List<Event> events) {
+    public void addAll(@NonNull List<DatabaseObject<Event>> events) {
         mEventList.addAll(verifyNotNull(events));
         notifyDataSetChanged();
     }
@@ -116,8 +117,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = mEventList.get(position);
-        holder.mTitle.setText(event.getTitle());
+        DatabaseObject<Event> event = mEventList.get(position);
+        holder.mTitle.setText(event.getObject().getTitle());
         if(mItemClickListener != null) {
             holder.setClickListener(event, mItemClickListener);
         }

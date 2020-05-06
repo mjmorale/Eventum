@@ -70,7 +70,7 @@ public class SettingsViewModel extends ViewModel {
      */
     public LiveData<User> getUser() {
         if(mUserLiveData == null) {
-            mUserLiveData = mUserDocument.livedata(User.class);
+            mUserLiveData = mUserDocument.liveData(User.class);
         }
         return mUserLiveData;
     }

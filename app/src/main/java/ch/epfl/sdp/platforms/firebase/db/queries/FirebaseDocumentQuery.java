@@ -71,7 +71,7 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> LiveData<T> livedata(@NonNull Class<T> type) {
+    public <T> LiveData<T> liveData(@NonNull Class<T> type) {
         return new FirebaseDocumentLiveData(mDocument, type);
     }
 

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseFilterQuery;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
@@ -103,7 +102,7 @@ public class FirebaseFilterQueryTest {
         firebaseFilterQuery.get(String.class, s -> {
             assertTrue(s.isSuccessful());
             for(int i = 0; i < s.getData().size(); i++) {
-                assertEquals(DUMMY_STRINGS[i], s.getData().get(i));
+                assertEquals(DUMMY_STRINGS[i], s.getData().get(i).getObject());
             }
         });
 
@@ -158,6 +157,20 @@ public class FirebaseFilterQueryTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    public void FirebaseFilterQuery_WhereArrayContains_FailsWithNullFirstArgument() {
+        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
+        firebaseFilterQuery.whereArrayContains(null, DUMMY_OBJECT);
+    }
+
+    @Test
+    public void FirebaseFilterQuery_WhereArrayContains_FiltersQueryWithCorrectParameters() {
+        FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
+        firebaseFilterQuery.whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+
+        verify(mQuery).whereArrayContains(DUMMY_STRING, DUMMY_OBJECT);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
     public void FirebaseFilterQuery_OrderBy_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
         firebaseFilterQuery.orderBy(null);
@@ -194,13 +207,13 @@ public class FirebaseFilterQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseFilterQuery_Livedata_FailsWithNullArgument() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(null);
+        firebaseFilterQuery.liveData(null);
     }
 
     @Test
     public void FirebaseFilterQuery_Livedata_CreationOfLivedataDoesNotFail() {
         FirebaseFilterQuery firebaseFilterQuery = new FirebaseFilterQuery(mDb, mQuery);
-        firebaseFilterQuery.livedata(String.class);
+        firebaseFilterQuery.liveData(String.class);
     }
 
 
