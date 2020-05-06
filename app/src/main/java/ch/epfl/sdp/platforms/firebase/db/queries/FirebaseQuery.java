@@ -1,6 +1,7 @@
 package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import androidx.annotation.NonNull;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.Query;
@@ -47,9 +48,9 @@ public abstract class FirebaseQuery {
             if(t.isSuccessful()) {
                 DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
                 List<DocumentSnapshot> docs = t.getResult().getDocuments();
-                List<T> data = new ArrayList<>();
+                List<DatabaseObject<T>> data = new ArrayList<>();
                 for(DocumentSnapshot doc: docs) {
-                    data.add(builder.buildFromMap(doc.getData()));
+                    data.add(new DatabaseObject<>(doc.getId(), builder.buildFromMap(doc.getData())));
                 }
                 callback.onQueryComplete(QueryResult.success(data));
             }
