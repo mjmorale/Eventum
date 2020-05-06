@@ -42,10 +42,8 @@ public class ImageGetter {
             Glide.with(context).asBitmap().load(imageId).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                    saveInCache(imageFile, resource);
-
                     imageView.setImageBitmap(bitmap[0]);
-
+                    saveInCache(imageFile, resource);
                 }
             });
 

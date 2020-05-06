@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFilterSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFilterSettingsFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFilterSettingsFactory.setLocationService(locationService);
+        mFilterSettingsFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
 
     private String getUserRefFromIntent(Intent intent) {

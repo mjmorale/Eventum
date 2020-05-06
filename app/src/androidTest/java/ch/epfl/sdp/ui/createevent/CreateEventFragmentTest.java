@@ -46,6 +46,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
@@ -58,6 +59,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.AllOf.allOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -79,6 +81,8 @@ public class CreateEventFragmentTest {
 
     private Activity mActivity;
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
+    private FragmentScenario<CreateEventFragment> mScenario;
 
     @Rule
     public GrantPermissionRule mPermissionReadStorage =
@@ -104,6 +108,7 @@ public class CreateEventFragmentTest {
 
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
+
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             Event event = (Event) args[0];
@@ -117,13 +122,13 @@ public class CreateEventFragmentTest {
             return null;
         }).when(mCollectionQuery).create(any(), any());
 
-        FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
+        mScenario = FragmentScenario.launchInContainer(
                 CreateEventFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory<>(CreateEventFragment.class, mStorage, mDatabase, mAuthenticator));
 
-        scenario.onFragment(fragment -> {
+        mScenario.onFragment(fragment -> {
             mActivity = fragment.getActivity();
         });
     }
