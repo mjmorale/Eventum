@@ -1,8 +1,5 @@
 package ch.epfl.sdp.weather;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
