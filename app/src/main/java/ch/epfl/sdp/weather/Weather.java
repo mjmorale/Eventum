@@ -21,7 +21,7 @@ public class Weather {
 
     public Weather(String data) {
         dataString = data;
-        gson  = new JsonParser().parse(dataString).getAsJsonObject();
+        gson = new JsonParser().parse(dataString).getAsJsonObject();
 
     }
 
