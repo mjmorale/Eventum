@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.firebase.firestore.DocumentReference;
 
 import androidx.annotation.NonNull;
+import ch.epfl.sdp.db.DatabaseObject;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 

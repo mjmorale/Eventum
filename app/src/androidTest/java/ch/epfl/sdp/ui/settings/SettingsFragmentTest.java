@@ -55,7 +55,7 @@ public class SettingsFragmentTest {
 
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticator);
         ServiceProvider.getInstance().setDatabase(mDatabase);
 

@@ -60,7 +60,7 @@ public interface DocumentQuery extends Query {
      * @param type class type that should be returned
      * @param <T> type that should be returned
      */
-    <T> LiveData<T> livedata(@NonNull Class<T> type);
+    <T> LiveData<T> liveData(@NonNull Class<T> type);
 
     /**
      * Delete the object associated to this query.

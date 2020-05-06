@@ -15,15 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.ArrayList;
+import java.util.List;
 
+import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
 
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
@@ -60,9 +60,9 @@ public class ChatFragment extends Fragment {
     /**
      * Constructor of the chat fragment, only for testing purposes!
      *
-     * @param database
-     * @param eventRef the reference of an event
-     * @param firebaseAuthenticator
+     * @param database The database service to use
+     * @param eventRef The database reference of the current event
+     * @param authenticator The authentication service to use
      */
     @VisibleForTesting
     public ChatFragment(@NonNull Database database, @NonNull String eventRef, @NonNull Authenticator authenticator) {
@@ -104,7 +104,11 @@ public class ChatFragment extends Fragment {
         mBinding.reyclerviewMessageList.setAdapter(mAdapter);
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
-            mAdapter.setChatList(messages);
+            List<ChatMessage> chat = new ArrayList<>();
+            for(DatabaseObject<ChatMessage> object : messages) {
+                chat.add(object.getObject());
+            }
+            mAdapter.setChatList(chat);
             mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
         });
 

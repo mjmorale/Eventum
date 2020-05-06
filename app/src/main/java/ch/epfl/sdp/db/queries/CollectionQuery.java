@@ -5,10 +5,9 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObject;
 
 import com.google.firebase.firestore.GeoPoint;
-
-import org.imperiumlabs.geofirestore.GeoFirestore.CompletionCallback;
 
 /**
  * A Collection is a list of documents {@link ch.epfl.sdp.db.queries.DocumentQuery} this is
@@ -29,6 +28,11 @@ public interface CollectionQuery extends Query {
      * {@link ch.epfl.sdp.db.queries.FilterQuery#whereFieldEqualTo(String, Object)}
      */
     FilterQuery whereFieldEqualTo(@NonNull String field, Object value);
+
+    /**
+     * {@link ch.epfl.sdp.db.queries.FilterQuery#whereArrayContains(String, Object)}
+     */
+    FilterQuery whereArrayContains(@NonNull String field, Object value);
 
     /**
      * {@link ch.epfl.sdp.db.queries.FilterQuery#orderBy(String)}
@@ -58,7 +62,7 @@ public interface CollectionQuery extends Query {
      * @param callback class that will be called once the result is returned
      * @param <T> type that should be returned
      */
-    <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback);
+    <T> void get(@NonNull Class<T> type, @NonNull Query.OnQueryCompleteCallback<List<DatabaseObject<T>>> callback);
 
     /**
      * Get the livedata the object associated to this query.
@@ -66,7 +70,7 @@ public interface CollectionQuery extends Query {
      * @param type class type that should be returned
      * @param <T> type that should be returned
      */
-    <T> LiveData<List<T>> liveData(@NonNull Class<T> type);
+    <T> LiveData<List<DatabaseObject<T>>> liveData(@NonNull Class<T> type);
 
     /**
      * Create an object inside the collection associated to this query.
@@ -76,6 +80,6 @@ public interface CollectionQuery extends Query {
      *                 reference of the created object
      * @param <T> type that should be created
      */
-    <T> void create(@NonNull T object, @NonNull OnQueryCompleteCallback<String> callback);
+    <T> void create(@NonNull T object, @NonNull Query.OnQueryCompleteCallback<String> callback);
 
 }

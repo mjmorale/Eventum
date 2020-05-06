@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -29,20 +31,26 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
+import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
-import ch.epfl.sdp.ui.settings.FilterView;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -67,12 +75,44 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityTest {
 
+    private static final EventBuilder sEventBuilder = new EventBuilder();
+    private static final Event DUMMY_EVENT1 = sEventBuilder
+            .setTitle("event1")
+            .setDescription("description1")
+            .setAddress("address1")
+            .setDate(new Date())
+            .setImageId("id1")
+            .setOrganizerRef("ref1")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
+    private static final Event DUMMY_EVENT2 = sEventBuilder
+            .setTitle("event2")
+            .setDescription("description2")
+            .setAddress("address2")
+            .setDate(new Date())
+            .setImageId("id2")
+            .setOrganizerRef("ref2")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
+    private static final Event DUMMY_EVENT3 = sEventBuilder
+            .setTitle("event3")
+            .setDescription("description3")
+            .setAddress("address3")
+            .setDate(new Date())
+            .setImageId("id3")
+            .setOrganizerRef("ref3")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
     private static final String DUMMY_EVENTREF = "saielrkfuth2n340i7fz";
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
+    private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final User DUMMY_USER = new User("testname", "testemail");
 
     @Mock
     private Database mDatabase;
+
+    @Mock
+    private Authenticator mAuthenticator;
 
     @Mock
     private CollectionQuery mCollectionQuery;
@@ -83,9 +123,17 @@ public class MainActivityTest {
     @Mock
     private LocationQuery mLocationQuery;
 
+    @Mock
+    private FilterQuery mArrayFilterQuery;
+
+    @Mock
+    private FilterQuery mFieldFilterQuery;
+
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Event>> mEventsLiveData = new MutableLiveData<>();
-    private MutableLiveData<Collection<Event>> mLocationEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
 
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
@@ -144,9 +192,18 @@ public class MainActivityTest {
 
         intending(hasComponent("ch.epfl.sdp.ui.createevent.CreateEventActivity")).respondWith(result);
 
+        intending(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENTREF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER)))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
+
         onView(withId(R.id.main_actionbar_add)).perform(click());
 
-        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+        intended(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENTREF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ORGANIZER)));
 
         Intents.release();
     }
@@ -255,10 +312,16 @@ public class MainActivityTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(userRef)).thenReturn(mDocumentQuery);
+        when(mCollectionQuery.whereArrayContains(anyString(), any())).thenReturn(mArrayFilterQuery);
+        when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFieldFilterQuery);
         when(mCollectionQuery.atLocation(any(), anyDouble())).thenReturn(mLocationQuery);
         when(mLocationQuery.liveData(Event.class)).thenReturn(mLocationEventsLiveData);
-        when(mDocumentQuery.livedata(User.class)).thenReturn(mUserLiveData);
+        when(mArrayFilterQuery.liveData(Event.class)).thenReturn(mAttendingEventsLiveData);
+        when(mFieldFilterQuery.liveData(Event.class)).thenReturn(mOwnedEventsLiveData);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
+        when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         ServiceProvider.getInstance().setDatabase(mDatabase);
+        ServiceProvider.getInstance().setAuthenticator(mAuthenticator);
 
         Intent intent = new Intent();
         intent.putExtra(UIConstants.BUNDLE_USER_REF, userRef);
@@ -275,7 +338,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void MainActivity_FilterSettingsShowCorrectValues() {
+    public void MainActivity_FilterSettings_ShowCorrectValues() {
         launchDefaultActivity(DUMMY_USERREF);
 
         onView(withId(R.id.main_actionbar_search))
@@ -290,5 +353,22 @@ public class MainActivityTest {
 
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("10km")));
+    }
+
+    @Test
+    public void MainActivity_FilterSettings_ResultLiveDataIsCorrectlyFiltered() throws Throwable {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        DatabaseObject<Event> event1 = new DatabaseObject<>("event1", DUMMY_EVENT1);
+        DatabaseObject<Event> event2 = new DatabaseObject<>("event2", DUMMY_EVENT2);
+        DatabaseObject<Event> event3 = new DatabaseObject<>("event3", DUMMY_EVENT3);
+
+        mActivity.runOnUiThread(() -> {
+            mAttendingEventsLiveData.setValue(Arrays.asList(event2));
+            mEventsLiveData.setValue(Arrays.asList(event1, event2, event3));
+            mOwnedEventsLiveData.setValue(Arrays.asList(event3));
+        });
+
+        onView(withText(event1.getObject().getTitle())).check(matches(isDisplayed()));
     }
 }

@@ -23,9 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
-import ch.epfl.sdp.platforms.firebase.db.queries.FirebaseDocumentQuery;
 import ch.epfl.sdp.utils.MockStringBuilder;
 
 import static org.junit.Assert.assertEquals;
@@ -172,13 +169,13 @@ public class FirebaseDocumentQueryTest {
     @Test (expected = IllegalArgumentException.class)
     public void FirebaseDocumentQuery_Livedata_FailsWithNullArgument() {
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
-        firebaseDocumentQuery.livedata(null);
+        firebaseDocumentQuery.liveData(null);
     }
 
     @Test
     public void FirebaseDocumentQuery_Livedata_CreationDoesNotFail() {
         FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
-        LiveData<String> stringLiveData = firebaseDocumentQuery.livedata(String.class);
+        LiveData<String> stringLiveData = firebaseDocumentQuery.liveData(String.class);
     }
 
     @Test (expected = IllegalArgumentException.class)
