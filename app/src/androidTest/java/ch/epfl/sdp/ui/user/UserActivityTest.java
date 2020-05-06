@@ -22,6 +22,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -53,7 +54,7 @@ public class UserActivityTest {
     @Mock
     private Authenticator<AuthCredential> mAuthenticator;
 
-    private LiveData<List<Event>> mEventsLiveData = new MutableLiveData<>();
+    private LiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
 
     @Rule
     public ActivityTestRule<UserActivity> mActivity = new ActivityTestRule<>(UserActivity.class, false, false);
@@ -65,7 +66,7 @@ public class UserActivityTest {
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFilterQuery);
-        when(mFilterQuery.livedata(Event.class)).thenReturn(mEventsLiveData);
+        when(mFilterQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
 
         ServiceProvider.getInstance().setDatabase(mDatabase);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticator);
