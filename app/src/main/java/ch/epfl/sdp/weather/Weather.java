@@ -3,6 +3,10 @@ package ch.epfl.sdp.weather;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,38 +16,40 @@ import java.util.Map;
 public class Weather {
 
     private String dataString;
-    private JSONObject data;
+    private JsonObject gson;
 
     private final long SECONDS_IN_DAY = 24 * 3600;
     private final long SECONDS_IN_HALF_DAY = 12 * 3600;
 
 
-    public Weather(String data) throws JSONException {
+    public Weather(String data) {
         dataString = data;
-        this.data = new JSONObject(data);
+        gson  = new JsonParser().parse(dataString).getAsJsonObject();
+
     }
 
-    public double getTemp(int day) throws JSONException {
-        JSONObject dayData = getDayJSON(day);
+    public double getTemp(int day) {
+        JsonObject dayData = getDayJson(day);
 
-        return dayData.getJSONObject("temp").getDouble("day");
+        return dayData.getAsJsonObject("temp").get("day").getAsDouble();
     }
 
-    public double getFeelsLikeTemp(int day) throws JSONException {
-        JSONObject dayData = getDayJSON(day);
+    public double getFeelsLikeTemp(int day) {
+        JsonObject dayData = getDayJson(day);
 
-        return dayData.getJSONObject("feels_like").getDouble("day");
+        return dayData.getAsJsonObject("feels_like").get("day").getAsDouble();
     }
 
-    public Map<String, Object> getWeather(int day) throws JSONException {
-        JSONObject weatherData = getDayJSON(day).getJSONObject("weather");
+    public Map<String, Object> getWeather(int day) {
+
+        JsonObject weatherData = getDayJson(day).getAsJsonArray("weather").get(0).getAsJsonObject();
 
         HashMap<String, Object> weatherMap = new HashMap<>();
 
-        weatherMap.put("id", weatherData.getInt("id"));
-        weatherMap.put("main", weatherData.getString("main"));
-        weatherMap.put("description", weatherData.getString("description"));
-        weatherMap.put("icon", weatherData.getString("icon"));
+        weatherMap.put("id", weatherData.get("id").getAsInt());
+        weatherMap.put("main", weatherData.get("main").getAsString());
+        weatherMap.put("description", weatherData.get("description").getAsString());
+        weatherMap.put("icon", weatherData.get("icon").getAsString());
 
         return weatherMap;
     }
@@ -52,7 +58,7 @@ public class Weather {
         return dataString;
     }
 
-    public boolean updatedRecently(Date date) throws JSONException {
+    public boolean updatedRecently(Date date) {
         long currentTime = DateToSecs(date);
 
         long response = this.getResponseTimestamp();
@@ -60,7 +66,7 @@ public class Weather {
         return currentTime < (response + SECONDS_IN_DAY);
     }
 
-    public int getClosestDay(Date date) throws JSONException {
+    public int getClosestDay(Date date) {
         long currentTime = DateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
@@ -77,7 +83,7 @@ public class Weather {
         return -1;
     }
 
-    public boolean isForecastAvailable(Date date) throws JSONException {
+    public boolean isForecastAvailable(Date date) {
         long currentTime = DateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
@@ -91,21 +97,23 @@ public class Weather {
         return date.getTime() / 1000;
     }
 
-    private long getResponseTimestamp() throws JSONException {
-        long time = data.getJSONObject("current").getLong("dt");
+    private long getResponseTimestamp() {
+        long time = gson.getAsJsonObject("current").get("dt").getAsLong();
 
         return time;
     }
 
-    private JSONObject getDayJSON(int day) throws JSONException {
-        return data.getJSONObject(Integer.toString(day));
+    private JsonObject getDayJson(int day) {
+        return gson.getAsJsonArray("daily").get(day).getAsJsonObject();
     }
 
-    private List<Long> getForecastTimestamps() throws JSONException {
+    private List<Long> getForecastTimestamps() {
        ArrayList<Long> timestamps = new ArrayList<>();
 
+       JsonArray dailyData = gson.getAsJsonArray("daily");
+
         for (int i = 0; i <= 7; i++) {
-            long time = data.getJSONObject(Integer.toString(i)).getLong("dt");
+            long time = dailyData.get(i).getAsJsonObject().get("dt").getAsLong();
             timestamps.add(time);
         }
 
