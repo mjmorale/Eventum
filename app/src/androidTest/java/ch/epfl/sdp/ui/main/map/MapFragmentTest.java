@@ -4,9 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
-import androidx.test.rule.GrantPermissionRule;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -63,26 +61,7 @@ public class MapFragmentTest {
                 new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
         );
 
-
-
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
-
-//    @Test
-//    public void MapFragment_MarkerCanBeClicked() throws InterruptedException {
-//
-//        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQuery);
-//        when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLive);
-//
-//        FragmentScenario<MapFragment> scenario = FragmentScenario.launchInContainer(
-//                MapFragment.class,
-//                new Bundle(),
-//                R.style.Theme_AppCompat,
-//                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabaseMock)
-//        );
-//
-//
-//        Thread.sleep(3000);
-//    }
 }
 

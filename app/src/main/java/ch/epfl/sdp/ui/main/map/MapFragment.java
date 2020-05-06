@@ -12,9 +12,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -25,7 +23,6 @@ import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
-import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 

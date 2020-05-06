@@ -18,9 +18,7 @@ import java.util.Date;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
