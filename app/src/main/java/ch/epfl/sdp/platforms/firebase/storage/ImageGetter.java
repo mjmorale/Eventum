@@ -3,10 +3,12 @@ package ch.epfl.sdp.platforms.firebase.storage;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -32,18 +34,22 @@ public class ImageGetter {
 
         final Bitmap[] bitmap = new Bitmap[1];
 
-        if(imageFile.exists()){
+        if(imageFile.exists() && !imageFile.isDirectory()){
             bitmap[0] = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imageView.setImageBitmap(bitmap[0]);
         } else {
+            MutableLiveData<Drawable> image = new MutableLiveData<Drawable>();
             Glide.with(context).asBitmap().load(imageId).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     saveInCache(imageFile, resource);
+
                     imageView.setImageBitmap(bitmap[0]);
 
                 }
             });
+
+
 
         }
 
