@@ -1,5 +1,6 @@
 package ch.epfl.sdp.ui.user.events;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,8 @@ import ch.epfl.sdp.databinding.FragmentUserEventsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
+import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.event.EventActivity;
 
 /**
  * Fragment to display the user's events
@@ -72,6 +75,11 @@ public class UserEventsFragment extends Fragment {
             mBinding.userEventsEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
             mAdapter.clear();
             mAdapter.addAll(events);
+        });
+
+        mAdapter.setOnItemClickListener(event -> {
+            Intent intent = EventActivity.getStartIntent(getContext(), EventActivity.EventActivityMode.ORGANIZER, event.getId());
+            startActivity(intent);
         });
     }
 }

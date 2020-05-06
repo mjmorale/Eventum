@@ -10,6 +10,7 @@ import java.util.List;
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
@@ -42,7 +43,7 @@ public class ChatViewModel extends ViewModel {
 
     private CollectionQuery mMessageCollection;
     private FilterQuery mOrderedMessagesQuery;
-    private LiveData<List<ChatMessage>> mMessageLiveData;
+    private LiveData<List<DatabaseObject<ChatMessage>>> mMessageLiveData;
     private UserInfo mUser;
 
     /**
@@ -67,7 +68,6 @@ public class ChatViewModel extends ViewModel {
      * @param callback called when the upload is done
      */
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
-
         ChatMessage chatMessage = new ChatMessage(message, new Date(), mUser.getUid(), mUser.getDisplayName());
         mMessageCollection.create(chatMessage, res -> {
             if (!res.isSuccessful()) {
@@ -90,9 +90,9 @@ public class ChatViewModel extends ViewModel {
      *
      * @return the messages
      */
-    public LiveData<List<ChatMessage>> getMessages() {
+    public LiveData<List<DatabaseObject<ChatMessage>>> getMessages() {
         if (mMessageLiveData == null) {
-            mMessageLiveData = mOrderedMessagesQuery.livedata(ChatMessage.class);
+            mMessageLiveData = mOrderedMessagesQuery.liveData(ChatMessage.class);
         }
         return mMessageLiveData;
     }

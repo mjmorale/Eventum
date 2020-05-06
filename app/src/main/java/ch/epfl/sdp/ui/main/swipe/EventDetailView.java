@@ -2,24 +2,30 @@ package ch.epfl.sdp.ui.main.swipe;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.CardviewEventDetailBinding;
+import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 
-public class EventDetailView extends LinearLayout {
-    private CardviewEventDetailBinding mBinding;
+public class EventDetailView extends RelativeLayout {
+    private FragmentDefaultEventBinding mBinding;
 
     public EventDetailView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        inflate(context, R.layout.cardview_event_detail, this);
+        inflate(context, R.layout.fragment_default_event, this);
 
-        mBinding = CardviewEventDetailBinding.bind(this);
+        mBinding = FragmentDefaultEventBinding.bind(this);
+
+        mBinding.backButton.setVisibility(GONE);
+        mBinding.calendarButton.setVisibility(GONE);
+        mBinding.chatButton.setVisibility(GONE);
+        mBinding.sharingButton.setVisibility(GONE);
     }
 
     public void setEvent(Event event) {
@@ -33,15 +39,9 @@ public class EventDetailView extends LinearLayout {
         Glide.with(getContext())
                 .load(event.getImageId())
                 .into(mBinding.imageView);
+    }
 
-        //mMapView.onCreate(savedInstanceState);
-/*        mMapView.getMapAsync(googleMap -> {
-
-            mViewModel.addMapManager(new GoogleMapManager(googleMap));
-            mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-                mViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
-            });
-
-        });*/
+    public MapView getMapView() {
+        return mBinding.minimap;
     }
 }

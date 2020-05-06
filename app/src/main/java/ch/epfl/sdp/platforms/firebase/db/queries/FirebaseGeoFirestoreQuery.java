@@ -15,6 +15,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.db.queries.LocationQuery;
@@ -38,7 +39,7 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
     }
 
     @Override
-    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<T>> callback) {
+    public <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<List<DatabaseObject<T>>> callback) {
         verifyNotNull(type, callback);
 
         mGeoFirestore.getAtLocation(mLocation, mRadius, (list, e) -> {
@@ -47,7 +48,7 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
     }
 
     @Override
-    public <T> LiveData<Collection<T>> liveData(@NonNull Class<T> type) {
+    public <T> LiveData<Collection<DatabaseObject<T>>> liveData(@NonNull Class<T> type) {
         return new GeoFirestoreLiveData<T>(mGeoFirestore.queryAtLocation(mLocation, mRadius), verifyNotNull(type));
     }
 
@@ -63,9 +64,9 @@ public class FirebaseGeoFirestoreQuery extends FirebaseQuery implements Location
         }
         else {
             DatabaseObjectBuilder<T> builder = DatabaseObjectBuilderRegistry.getBuilder(type);
-            List<T> data = new ArrayList<>();
+            List<DatabaseObject<T>> data = new ArrayList<>();
             for(DocumentSnapshot doc: documents) {
-                data.add(builder.buildFromMap(doc.getData()));
+                data.add(new DatabaseObject(doc.getId(), builder.buildFromMap(doc.getData())));
             }
             callback.onQueryComplete(QueryResult.success(data));
         }
