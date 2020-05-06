@@ -9,6 +9,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
@@ -31,7 +32,7 @@ public class UserEventsViewModel extends ViewModel {
         }
     }
 
-    private LiveData<List<Event>> mOrganizedEvents;
+    private LiveData<List<DatabaseObject<Event>>> mOrganizedEvents;
 
     private FilterQuery mOrganizedEventsQuery;
 
@@ -50,9 +51,9 @@ public class UserEventsViewModel extends ViewModel {
      * @return A livedata containing the list of events organized by the current user.
      * @see LiveData
      */
-    public LiveData<List<Event>> getOrganizedEvents() {
+    public LiveData<List<DatabaseObject<Event>>> getOrganizedEvents() {
         if(mOrganizedEvents == null) {
-            mOrganizedEvents = mOrganizedEventsQuery.livedata(Event.class);
+            mOrganizedEvents = mOrganizedEventsQuery.liveData(Event.class);
         }
         return mOrganizedEvents;
     }

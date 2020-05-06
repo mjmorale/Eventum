@@ -2,27 +2,30 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.imperiumlabs.geofirestore.listeners.GeoQueryDataEventListener;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
+import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
-public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
+public class GeoFirestoreLiveData<TType> extends LiveData<Collection<DatabaseObject<TType>>> {
 
     private final DatabaseObjectBuilder<TType> mBuilder;
     private final GeoQuery mGeoQuery;
-    private Map<String, TType> mData = new HashMap<>();
+    private Map<String, DatabaseObject<TType>> mData = new HashMap<>();
 
     GeoFirestoreLiveData(@NonNull GeoQuery geoQuery, @NonNull Class<TType> type) {
         verifyNotNull(geoQuery, type);
@@ -73,7 +76,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
 
     private void addDocument(@NonNull DocumentSnapshot document) {
         verifyNotNull(document);
-        mData.put(document.getId(), mBuilder.buildFromMap(document.getData()));
+        mData.put(document.getId(), new DatabaseObject<>(document.getId(), mBuilder.buildFromMap(document.getData())));
         postCurrentValue();
     }
 
@@ -88,7 +91,7 @@ public class GeoFirestoreLiveData<TType> extends LiveData<Collection<TType>> {
     }
 
     @VisibleForTesting
-    public void setmData(Map<String, TType> mData){
+    public void setmData(Map<String, DatabaseObject<TType>> mData){
         this.mData = mData;
     }
 }
