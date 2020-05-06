@@ -42,7 +42,7 @@
             <TextView
                 android:id="@+id/map_event_date"
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
