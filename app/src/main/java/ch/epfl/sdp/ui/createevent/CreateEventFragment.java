@@ -32,6 +32,7 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -154,9 +155,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
 
     private void displayImage() {
-        Glide.with(this)
-                .load(this.mImageUri)
-                .into(this.mBinding.imageView);
+        ImageGetter.getInstance().getImage(getContext(), this.mImageUri, this.mBinding.imageView);
         mBinding.imageView.setTag("new_image");
     }
 

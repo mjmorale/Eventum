@@ -13,14 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.util.GregorianCalendar;
 
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
 import ch.epfl.sdp.db.Database;
+
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -119,7 +120,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
+            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
         });
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();

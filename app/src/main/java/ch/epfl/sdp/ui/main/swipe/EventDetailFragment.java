@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 /**
  * Fragment to display details about an event.
@@ -44,9 +45,8 @@ public class EventDetailFragment extends Fragment {
         mBinding.title.setText(mEvent.getTitle());
         mBinding.address.setText(mEvent.getAddress());
 
-        Glide.with(getContext())
-                .load(mEvent.getImageId())
-                .into(mBinding.imageView);
+
+        ImageGetter.getInstance().getImage(getContext(), mEvent.getImageId(), mBinding.imageView);
 
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
