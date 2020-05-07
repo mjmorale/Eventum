@@ -182,7 +182,8 @@ public class SwipeFragmentTest {
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
-        mEventsLiveData.postValue(events);
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+        Thread.sleep(1500);
 
         onView(withId(R.id.cards_list_view)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
