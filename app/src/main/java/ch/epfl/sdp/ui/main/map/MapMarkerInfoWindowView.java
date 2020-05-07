@@ -1,20 +1,13 @@
 package ch.epfl.sdp.ui.main.map;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
+import androidx.annotation.VisibleForTesting;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-
-import java.util.zip.Inflater;
-
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-
 
 /**
  * View for displaying an information window on a marker click on the map
@@ -26,14 +19,29 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
     private Context mContext;
 
     /**
+     * Constructor of the MapMarkerInfoWindowView
+     *
      * @param mapViewModel the view model of the map where the markers are
      * @param context the environment the application is currently running in
-     * @param inflater
      */
-    public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context, LayoutInflater inflater) {
+    public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context) {
         mMapViewModel = mapViewModel;
         mContext = context;
-        mMarkerView = inflater.inflate(R.layout.view_map_marker_info_window, null);
+        mMarkerView = mMarkerView.inflate(mContext, R.layout.view_map_marker_info_window, null);
+    }
+
+    /**
+     * Constructor of the MapMarkerInfoWindowView, only for testing purpose!
+     *
+     * @param mapViewModel the view model of the map where the markers are
+     * @param context the environment the application is currently running in
+     * @param view for testing
+     */
+    @VisibleForTesting
+    public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context, View view) {
+        mMapViewModel = mapViewModel;
+        mContext = context;
+        mMarkerView = view;
     }
 
     @Override

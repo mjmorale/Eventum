@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.databinding.ViewMapMarkerInfoWindowBinding;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -29,13 +31,10 @@ public class MapMarkerInfoWindowViewTest {
     private static final String DESCRIPTION = "description";
 
     @Mock
-    private Context mContext;
-
-    @Mock
     private MapViewModel mMapViewModel;
 
     @Mock
-    private LayoutInflater mInflater;
+    private Context mContext;
 
     @Mock
     private View mMarkerView;
@@ -55,25 +54,14 @@ public class MapMarkerInfoWindowViewTest {
     @Mock
     private Marker mMarker;
 
-    @Mock
-    private Date mDate;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void MapMarkerInfoWindowView_ConstructorTest() {
-        when(mInflater.inflate(R.layout.view_map_marker_info_window, null)).thenReturn(mMarkerView);
-        new MapMarkerInfoWindowView(mMapViewModel, mContext, mInflater);
-        verify(mInflater).inflate(R.layout.view_map_marker_info_window, null);
-    }
-
-    @Test
     public void MapMarkerInfoWindowView_getInfoWindowTest() {
-        when(mInflater.inflate(R.layout.view_map_marker_info_window, null)).thenReturn(mMarkerView);
-        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mInflater);
+        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView);
 
         when(mMapViewModel.getEventFromMarker(mMarker)).thenReturn(mEvent);
         when(mMarkerView.findViewById(anyInt())).thenReturn(mTitleView);
