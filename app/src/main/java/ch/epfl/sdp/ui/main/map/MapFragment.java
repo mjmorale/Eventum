@@ -12,9 +12,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -27,15 +25,13 @@ import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
-import ch.epfl.sdp.ui.main.swipe.EventDetailFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
  * Fragment for the map with events markers
  */
-public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
-
+public class MapFragment extends Fragment {
     private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactoryMap;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
@@ -82,7 +78,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         mFactoryMap.setLocationService(locationService);
 
         mMapView.getMapAsync(googleMap -> {
-            googleMap.setOnMarkerClickListener(this);
             googleMap.setMyLocationEnabled(true);
 
             mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
@@ -98,6 +93,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             });
 
             mViewModel.centerCamera(getContext(), mZoomLevel);
+
+            googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
         });
 
         return mBinding.getRoot();
@@ -125,15 +122,5 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        getActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(this.getId(), new EventDetailFragment(mViewModel.getEventFromMarker(marker),this))
-                .commit();
-        return true;
     }
 }
