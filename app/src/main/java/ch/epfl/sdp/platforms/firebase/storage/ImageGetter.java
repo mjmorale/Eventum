@@ -3,12 +3,10 @@ package ch.epfl.sdp.platforms.firebase.storage;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -27,15 +25,13 @@ public class ImageGetter {
 
     private static ImageGetter INSTANCE;
 
-    private ImageGetter(){};
+    private ImageGetter() {}
 
     /**
-     *
      * @return The instance of ImageGetter
      */
-    public static ImageGetter getInstance(){
-        if(INSTANCE == null)
-        {
+    public static ImageGetter getInstance() {
+        if (INSTANCE == null) {
             INSTANCE = new ImageGetter();
         }
         return INSTANCE;
@@ -44,8 +40,9 @@ public class ImageGetter {
     /**
      * Downloads an image and puts it into the imageView to display. Also saves it in cache
      * and loads it from there if possible
-     * @param context The context in which the image should be displayed / loaded.
-     * @param imageId A link to an image, URL, Uri.. Should work with Glide.load()
+     *
+     * @param context   The context in which the image should be displayed / loaded.
+     * @param imageId   A link to an image, URL, Uri.. Should work with Glide.load()
      * @param imageView The ImageView that will hold the image.
      */
     public void getImage(@NonNull Context context, @NonNull Object imageId, @NonNull ImageView imageView) {
@@ -61,7 +58,7 @@ public class ImageGetter {
 
         final Bitmap[] bitmap = new Bitmap[1];
 
-        if(imageFile.exists() && !imageFile.isDirectory()){
+        if (imageFile.exists() && !imageFile.isDirectory()) {
             bitmap[0] = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imageView.setImageBitmap(bitmap[0]);
         } else {
@@ -74,22 +71,22 @@ public class ImageGetter {
             });
 
 
-
         }
 
     }
 
     /**
      * Saves the bitmap in target file
-     * @param file The file that will contain the bitmap
+     *
+     * @param file   The file that will contain the bitmap
      * @param bitmap The bitmap to be written in the file
      */
-    private static void saveInCache(File file, Bitmap bitmap){
+    private static void saveInCache(File file, Bitmap bitmap) {
 
-        try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
