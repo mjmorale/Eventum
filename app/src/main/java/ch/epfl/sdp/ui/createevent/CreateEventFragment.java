@@ -168,7 +168,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
     private void checkInput(String title, String description, Date date, String address) throws IllegalArgumentException {
         verifyNotNull(title, description, date);
-        if (title.isEmpty() || description.isEmpty() || date == null || address.isEmpty()) {
+        if (title.isEmpty() || description.isEmpty() || address.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }

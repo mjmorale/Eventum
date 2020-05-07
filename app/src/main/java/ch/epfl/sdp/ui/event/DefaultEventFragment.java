@@ -46,7 +46,9 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     private Sharing mEventSharing;
     private float mZoomLevel = 15;
     private int LAUNCH_CALENDAR = 3;
-    private  int THREE_HOURS = 10800000;
+    private final int  ONE_MINUTE = 60000;
+    private final int ONE_HOUR = 60 * ONE_MINUTE;
+    private final int THREE_HOURS = 3 * ONE_HOUR;
 
     /**
      * Method to create an instance of the fragment for a specific event
@@ -113,7 +115,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDate().toString());
+            mBinding.date.setText(event.getDateStr());
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
