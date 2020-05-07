@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
-
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImageGetterTest {
@@ -27,9 +24,6 @@ public class ImageGetterTest {
 
     @Mock
     ImageView mImageView;
-
-    String STRING = "1234";
-
 
     @Before
     public void setup() {

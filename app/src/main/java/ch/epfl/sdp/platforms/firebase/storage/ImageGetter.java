@@ -55,7 +55,6 @@ public class ImageGetter {
         String filename = Integer.toString(imageStringHash).replace('-', '1');
 
         File imageFile = new File(context.getCacheDir(), filename);
-
         Bitmap bitmap;
 
         if (imageFile.exists() && imageFile.isFile()) {
@@ -69,10 +68,7 @@ public class ImageGetter {
                     saveInCache(imageFile, resource);
                 }
             });
-
-
         }
-
     }
 
     /**
@@ -84,7 +80,6 @@ public class ImageGetter {
     private static void saveInCache(File file, Bitmap bitmap) {
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
