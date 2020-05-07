@@ -3,6 +3,7 @@ package ch.epfl.sdp.platforms.firebase.storage;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -55,10 +56,9 @@ public class ImageGetter {
         String filename = Integer.toString(imageStringHash).replace('-', '1');
 
         File imageFile = new File(context.getCacheDir(), filename);
-        Bitmap bitmap;
 
         if (imageFile.exists() && imageFile.isFile()) {
-            bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imageView.setImageBitmap(bitmap);
         } else {
             Glide.with(context).asBitmap().load(imageId).into(new SimpleTarget<Bitmap>() {
@@ -82,7 +82,8 @@ public class ImageGetter {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
         } catch (Exception e) {
-            e.printStackTrace();
+            String stacktrage = Log.getStackTraceString(e);
+            Log.e("Image Save in Cache", stacktrage);
         }
     }
 }
