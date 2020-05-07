@@ -14,13 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAttendingListBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.offline.EventSaver;
 import ch.epfl.sdp.ui.EventListAdapter;
 import ch.epfl.sdp.ui.ServiceProvider;
-import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
 
 /**
@@ -41,6 +43,7 @@ public class AttendingListFragment extends Fragment {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setObjectSaver(new EventSaver());
     }
 
     /**
@@ -50,9 +53,11 @@ public class AttendingListFragment extends Fragment {
      * @param authenticator The authentication service to use
      */
     @VisibleForTesting
-    public AttendingListFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
+    public AttendingListFragment(@NonNull Authenticator authenticator, @NonNull EventSaver eventSaver, @NonNull File cacheDir, @NonNull Database database) {
         mFactory = new AttendingListViewModel.AttendingListViewModelFactory();
         mFactory.setAuthenticator(authenticator);
+        mFactory.setObjectSaver(eventSaver);
+        mFactory.setCacheDir(cacheDir);
         mFactory.setDatabase(database);
     }
 
@@ -75,12 +80,18 @@ public class AttendingListFragment extends Fragment {
         mBinding.attendingListView.setAdapter(mAdapter);
         mBinding.attendingListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // If injected using the constructor then do not get it from the context
+        if(mFactory.getCacheDir() == null) {
+            mFactory.setCacheDir(getContext().getFilesDir());
+        }
         mViewModel = new ViewModelProvider(this, mFactory).get(AttendingListViewModel.class);
 
         mViewModel.getAttendingEvents().observe(getViewLifecycleOwner(), events -> {
-            mBinding.attendingEmptyListMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
-            mAdapter.clear();
-            mAdapter.addAll(events);
+            if(events != null) {
+                mBinding.attendingEmptyListMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.GONE);
+                mAdapter.clear();
+                mAdapter.addAll(events);
+            }
         });
     }
 

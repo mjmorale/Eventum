@@ -1,6 +1,5 @@
 package ch.epfl.sdp.offline;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,21 +16,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * Classes implementing this abstract class allows to save an Object in the app-specific storage
  * It works with the database to keep the local copy up to date
  */
 public abstract class ObjectSaver <T extends Serializable> implements OfflineDatabaseSaver {
 
-    static private HashMap<String, Date> statusFiles = new HashMap<String, Date>();
+    static private HashMap<String, Date> statusFiles = new HashMap<>();
 
     /**
      * Saves an object in a file
      * @param toSave The object to save in the collection
      * @param docReference Id of the document
      */
-    public void saveFile(T toSave, String docReference,File path) throws IOException {
+    public void saveFile(T toSave, String docReference, File path) throws IOException {
         File newFile = new File(path, docReference);
 
         if (newFile.exists()) {
@@ -83,8 +81,8 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
         return tempRead;
     }
 
-    public void removeSingleFile(String docReference, File path) throws IOException, ClassNotFoundException {
-        File fileDescriptor = new File(path,docReference);
+    public void removeSingleFile(String docReference, File path) {
+        File fileDescriptor = new File(path, docReference);
         fileDescriptor.delete();
     }
 

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.databinding.FragmentUserStatisticsBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.ServiceProvider;
 
 /**
  * Fragment to display statistics about a user
@@ -32,7 +33,7 @@ public class UserStatisticsFragment extends Fragment {
      */
     public UserStatisticsFragment() {
         mFactory = new UserStatisticsViewModel.UserStatisticsViewModelFactory();
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     /**

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class FirebaseQueryLiveData<TType> extends FirebaseLiveData<TType, List<D
                 }
             }
             else {
+                // If an exception occurred post null
+                postValue(null);
                 Log.e("FirestoreLiveData", "Exception during update", e);
             }
         }));

@@ -34,7 +34,7 @@ public abstract class FirebaseQuery {
                 if(doc.exists()) {
                     data = builder.buildFromMap(doc.getData());
                 }
-                callback.onQueryComplete(QueryResult.success(data, doc.getId()));
+                callback.onQueryComplete(QueryResult.success(data));
             }
             else {
                 callback.onQueryComplete(QueryResult.failure(t.getException()));

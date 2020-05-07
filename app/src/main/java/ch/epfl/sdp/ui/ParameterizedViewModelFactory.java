@@ -49,6 +49,17 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
         mParameters.set(id, object);
     }
 
+    /**
+     * @param id The id of the parameter to fetch
+     * @return The current value of the parameter with the specified id
+     */
+    public Object getValue(int id) {
+        if(id < 0 || id >= mParameters.size()) {
+            throw new IllegalArgumentException("Value index out of range");
+        }
+        return mParameters.get(id);
+    }
+
     @SuppressWarnings("unchecked")
     @NonNull
     @Override

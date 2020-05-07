@@ -13,7 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventSaver <Event> extends ObjectSaver {
+import ch.epfl.sdp.Event;
+import ch.epfl.sdp.db.DatabaseObject;
+
+public class EventSaver extends ObjectSaver<Event> {
 
     @Override
     protected String getCollectionString() {
@@ -26,7 +29,7 @@ public class EventSaver <Event> extends ObjectSaver {
      * @param docReference Id of the document (Event)
      * @param deleteDate When we can delete the temp file
      */
-    public void saveEvent(Event toSave, String docReference, Date deleteDate,File path) throws IOException, ClassNotFoundException {
+    public void saveEvent(Event toSave, String docReference, Date deleteDate, File path) throws IOException, ClassNotFoundException {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
 
         Map<String,Object> metaData = new HashMap<String, Object>();
@@ -34,7 +37,7 @@ public class EventSaver <Event> extends ObjectSaver {
         metaData.put("deleteDate",deleteDate);
         metaData.put("lastModifyDate",lastModifyDate);
 
-        saveFile((Serializable) toSave,docReference, path);
+        saveFile(toSave, docReference, path);
 
         //update status
         statusFiles.put(docReference, metaData);
@@ -49,10 +52,23 @@ public class EventSaver <Event> extends ObjectSaver {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Event> getAllEvents(File path) throws IOException, ClassNotFoundException {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
-        List<String> listReference = new ArrayList<String>(statusFiles.keySet());
-        return getMultipleFile(listReference,path);
+        List<String> listReference = new ArrayList<>(statusFiles.keySet());
+        return getMultipleFile(listReference, path);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) throws IOException, ClassNotFoundException {
+        HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
+        List<String> listReference = new ArrayList<>(statusFiles.keySet());
+        List<Event> listEvents = getMultipleFile(listReference, path);
+        List<DatabaseObject<Event>> listDatabaseObjects = new ArrayList<>();
+        for(int i = 0; i < listReference.size(); i++) {
+            listDatabaseObjects.add(new DatabaseObject<>(listReference.get(i), listEvents.get(i)));
+        }
+        return listDatabaseObjects;
     }
 
     public boolean removeSingleEvent(String docReference, File path) throws IOException, ClassNotFoundException {
@@ -64,9 +80,9 @@ public class EventSaver <Event> extends ObjectSaver {
         return elementIsRemoved;
     }
 
-    private HashMap<String, Map<String,Object>> getEventStatusFiles(File path) throws IOException, ClassNotFoundException {
+    private HashMap<String, Map<String, Object>> getEventStatusFiles(File path) throws IOException, ClassNotFoundException {
         File statusFile = new File(path, "eventStatusFiles");
-        if (!statusFile.exists()) return  new HashMap<String, Map<String,Object>>();;
+        if (!statusFile.exists()) return new HashMap<>();
         FileInputStream fi = new FileInputStream(statusFile);
         ObjectInputStream oi = new ObjectInputStream(fi);
 
