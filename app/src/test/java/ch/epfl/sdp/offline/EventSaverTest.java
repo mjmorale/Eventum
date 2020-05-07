@@ -15,11 +15,13 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.db.DatabaseObject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class EventSaverTest {
 
@@ -87,6 +89,35 @@ public class EventSaverTest {
         List listEvent = eventSaver.getAllEvents(path);
         assertTrue(listEvent.contains(event));
         assertTrue(listEvent.contains(event2));
+
+        //clean files
+        eventSaver.removeSingleEvent("testGetAllEvent1", path);
+        eventSaver.removeSingleEvent("testGetAllEvent2", path);
+        eventSaver.removeSingleFile("eventStatusFiles", path);
+    }
+
+    @Test
+    public void Event_getAllEventsWithRefs() throws IOException, ClassNotFoundException {
+        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef);
+        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef);
+
+        EventSaver eventSaver = new EventSaver();
+        dateEvent.setYear(dateEvent.getYear()+1);
+        eventSaver.saveEvent(event,"testGetAllEvent1", dateEvent, path);
+        eventSaver.saveEvent(event2,"testGetAllEvent2", dateEvent, path);
+
+        List<DatabaseObject<Event>> listEvent = eventSaver.getAllEventsWithRefs(path);
+        for(DatabaseObject<Event> o: listEvent) {
+            if(o.getId().equals("testGetAllEvent1")) {
+                assertEquals(event, o.getObject());
+            }
+            else if(o.getId().equals("testGetAllEvent2")) {
+                assertEquals(event2, o.getObject());
+            }
+            else {
+                fail();
+            }
+        }
 
         //clean files
         eventSaver.removeSingleEvent("testGetAllEvent1", path);
