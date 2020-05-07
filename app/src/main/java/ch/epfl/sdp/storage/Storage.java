@@ -1,10 +1,9 @@
 package ch.epfl.sdp.storage;
 
-import android.content.Context;
 import android.net.Uri;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 
 /**
