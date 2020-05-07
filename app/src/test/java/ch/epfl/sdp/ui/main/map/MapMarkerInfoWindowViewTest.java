@@ -24,6 +24,10 @@ import static org.mockito.Mockito.when;
 
 public class MapMarkerInfoWindowViewTest {
 
+    private static final String TITLE = "title";
+    private static final String DATE = "date";
+    private static final String DESCRIPTION = "description";
+
     @Mock
     private Context mContext;
 
@@ -47,9 +51,6 @@ public class MapMarkerInfoWindowViewTest {
 
     @Mock
     private TextView mDescriptionView;
-
-    @Mock
-    private ImageView mImageView;
 
     @Mock
     private Marker mMarker;
@@ -79,16 +80,15 @@ public class MapMarkerInfoWindowViewTest {
         when(mMarkerView.findViewById(R.id.map_event_date)).thenReturn(mDateView);
         when(mMarkerView.findViewById(R.id.map_event_description)).thenReturn(mDescriptionView);
 
-        when(mEvent.getTitle()).thenReturn("title");
-        when(mEvent.getDate()).thenReturn(mDate);
-        when(mDate.toString()).thenReturn("date");
-        when(mEvent.getDescription()).thenReturn("description");
+        when(mEvent.getTitle()).thenReturn(TITLE);
+        when(mEvent.getDateStr()).thenReturn(DATE);
+        when(mEvent.getDescription()).thenReturn(DESCRIPTION);
 
         view.getInfoWindow(mMarker);
         verify(mMapViewModel).getEventFromMarker(mMarker);
 
-        verify(mTitleView).setText("title");
-        verify(mDateView).setText("date");
-        verify(mDescriptionView).setText("description");
+        verify(mTitleView).setText(TITLE);
+        verify(mDateView).setText(DATE);
+        verify(mDescriptionView).setText(DESCRIPTION);
     }
 }
