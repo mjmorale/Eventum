@@ -17,10 +17,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+
 import androidx.lifecycle.ViewModelProvider;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -89,6 +93,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
         mBinding.createButton.setOnClickListener(this);
         mBinding.addImageButton.setOnClickListener(this);
+        mBinding.time.setIs24HourView(true);
     }
 
     @Override
@@ -161,9 +166,9 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding = null;
     }
 
-    private void checkInput(String title, String description, String date, String address) throws IllegalArgumentException {
+    private void checkInput(String title, String description, Date date, String address) throws IllegalArgumentException {
         verifyNotNull(title, description, date);
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || address.isEmpty()) {
+        if (title.isEmpty() || description.isEmpty() || address.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
@@ -171,7 +176,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private void tryCreateEvent(@NonNull CreateEventViewModel.OnEventCreatedCallback callback) {
         String title = mBinding.title.getText().toString();
         String description = mBinding.description.getText().toString();
-        String date = mBinding.date.getDayOfMonth() + "/" + (mBinding.date.getMonth() + 1) + "/" + mBinding.date.getYear();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(mBinding.date.getYear(), mBinding.date.getMonth(), mBinding.date.getDayOfMonth(),
+                mBinding.time.getCurrentHour(), mBinding.time.getCurrentMinute(), 0);
+        Date date = calendar.getTime();
+
         String address = mBinding.geoAutocomplete.getText().toString();
         checkInput(title, description, date, address);
 
