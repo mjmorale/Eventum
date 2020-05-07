@@ -93,11 +93,7 @@ public class AttendingListViewModel extends ViewModel {
             if(databaseObjects != null) {
                 // If online, update the cache
                 for(DatabaseObject<Event> object: databaseObjects) {
-                    try {
-                        mCache.saveEvent(object.getObject(), object.getId(), object.getObject().getDate(), mCacheDir);
-                    } catch (IOException | ClassNotFoundException e) {
-                        Log.e(TAG, "Cannot save event to the cache", e);
-                    }
+                    mCache.saveEvent(object.getObject(), object.getId(), object.getObject().getDate(), mCacheDir);
                 }
             }
 
