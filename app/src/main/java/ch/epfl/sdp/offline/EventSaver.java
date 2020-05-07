@@ -2,6 +2,7 @@ package ch.epfl.sdp.offline;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObject;
@@ -29,7 +31,7 @@ public class EventSaver extends ObjectSaver<Event> {
      * @param docReference Id of the document (Event)
      * @param deleteDate When we can delete the temp file
      */
-    public void saveEvent(Event toSave, String docReference, Date deleteDate, File path) throws IOException, ClassNotFoundException {
+    public void saveEvent(Event toSave, String docReference, Date deleteDate,File path) {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
 
         Map<String,Object> metaData = new HashMap<String, Object>();
@@ -45,14 +47,15 @@ public class EventSaver extends ObjectSaver<Event> {
 
         //remove old files
         for (String key: statusFiles.keySet()) {
-            Date deleteDateStorage = (Date) statusFiles.get(key).get("deleteDate");
+            Date deleteDateStorage = (Date) Objects.requireNonNull(statusFiles.get(key)).get("deleteDate");
+            assert deleteDateStorage != null;
             if (deleteDateStorage.before(new Date())){
                 removeSingleEvent(key, path);
             }
         }
     }
 
-    public List<Event> getAllEvents(File path) throws IOException, ClassNotFoundException {
+    public List<Event> getAllEvents(File path) {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());
         return getMultipleFile(listReference, path);
@@ -69,34 +72,34 @@ public class EventSaver extends ObjectSaver<Event> {
         return listDatabaseObjects;
     }
 
-    public boolean removeSingleEvent(String docReference, File path) throws IOException, ClassNotFoundException {
+    public boolean removeSingleEvent(String docReference, File path) {
         removeSingleFile(docReference,path);
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         Map<String, Object> elementRemoved = statusFiles.remove(docReference);
         updateEventStatusFiles(statusFiles,path);
-        boolean elementIsRemoved = (elementRemoved != null);
-        return elementIsRemoved;
+        return (elementRemoved != null);
     }
 
-    private HashMap<String, Map<String, Object>> getEventStatusFiles(File path) throws IOException, ClassNotFoundException {
+    private HashMap<String, Map<String,Object>> getEventStatusFiles(File path) {
         File statusFile = new File(path, "eventStatusFiles");
-        if (!statusFile.exists()) return new HashMap<>();
-        FileInputStream fi = new FileInputStream(statusFile);
-        ObjectInputStream oi = new ObjectInputStream(fi);
+        if (!statusFile.exists()) return  new HashMap<String, Map<String,Object>>();
 
-        HashMap<String, Map<String,Object>> eventStatusFiles = (HashMap<String, Map<String,Object>>) oi.readObject();
-        oi.close();
-        fi.close();
+        HashMap<String, Map<String,Object>> eventStatusFiles = null;
 
+        try (FileInputStream fi = new FileInputStream(statusFile);ObjectInputStream oi = new ObjectInputStream(fi);){
+            eventStatusFiles = (HashMap<String, Map<String,Object>>) oi.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return eventStatusFiles;
     }
 
-    private void  updateEventStatusFiles(HashMap<String, Map<String,Object>> eventStatusFiles, File path) throws IOException {
+    private void  updateEventStatusFiles(HashMap<String, Map<String,Object>> eventStatusFiles, File path) {
         File statusFile = new File(path, "eventStatusFiles");
-        FileOutputStream f = new FileOutputStream(statusFile);
-        ObjectOutputStream o = new ObjectOutputStream((f));
-        o.writeObject(eventStatusFiles);
-        o.close();
-        f.close();
+        try(FileOutputStream f = new FileOutputStream(statusFile);ObjectOutputStream o = new ObjectOutputStream((f));){
+            o.writeObject(eventStatusFiles);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

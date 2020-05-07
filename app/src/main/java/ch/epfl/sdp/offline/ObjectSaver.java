@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,7 +30,8 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @param toSave The object to save in the collection
      * @param docReference Id of the document
      */
-    public void saveFile(T toSave, String docReference, File path) throws IOException {
+    public void saveFile(T toSave, String docReference,File path) {
+
         File newFile = new File(path, docReference);
 
         if (newFile.exists()) {
@@ -37,30 +39,30 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
         }
 
         //save file
-        FileOutputStream f = new FileOutputStream(newFile);
-        ObjectOutputStream o = new ObjectOutputStream((f));
-        o.writeObject(toSave);
-        o.close();
-        f.close();
+        try (FileOutputStream f = new FileOutputStream(newFile); ObjectOutputStream o = new ObjectOutputStream((f))) {
+            o.writeObject(toSave);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * @param listReference list of id from files you want to get
      * @return
      */
-    public List<T> getMultipleFile(List<String> listReference, File path) throws IOException, ClassNotFoundException {
+    public List<T> getMultipleFile(List<String> listReference, File path)  {
         List<T> result = new ArrayList<T>();
 
         for (String docReference : listReference) {
             File fileDescriptor = new File(path,docReference);
-            FileInputStream fi = new FileInputStream(fileDescriptor);
-            ObjectInputStream oi = new ObjectInputStream(fi);
 
-            T tempRead = (T) oi.readObject();
-            result.add(tempRead);
+            try (FileInputStream fi = new FileInputStream(fileDescriptor); ObjectInputStream oi = new ObjectInputStream(fi)) {
 
-            oi.close();
-            fi.close();
+                T tempRead = (T) oi.readObject();
+                result.add(tempRead);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -69,20 +71,20 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @param docReference Id of the document
      * @return
      */
-    public T getSingleFile(String docReference, File path) throws IOException, ClassNotFoundException {
-        File fileDescriptor = new File(path, docReference);
-        FileInputStream fi = new FileInputStream(fileDescriptor);
-        ObjectInputStream oi = new ObjectInputStream(fi);
+    public T getSingleFile(String docReference, File path) {
+        File fileDescriptor = new File(path,docReference);
 
-        T tempRead = (T) oi.readObject();
-        oi.close();
-        fi.close();
-
+        T tempRead = null;
+        try (FileInputStream fi = new FileInputStream(fileDescriptor); ObjectInputStream oi = new ObjectInputStream(fi);){
+            tempRead = (T) oi.readObject();}
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return tempRead;
     }
 
     public void removeSingleFile(String docReference, File path) {
-        File fileDescriptor = new File(path, docReference);
+        File fileDescriptor = new File(path,docReference);
         fileDescriptor.delete();
     }
 
