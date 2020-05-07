@@ -72,6 +72,14 @@
                 android:layout_marginTop="20dp">
             </DatePicker>
 
+            <TimePicker
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner"
+                android:layout_marginTop="1dp">
+            </TimePicker>
+
             <TextView
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
