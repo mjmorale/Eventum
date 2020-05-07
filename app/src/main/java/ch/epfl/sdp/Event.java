@@ -27,7 +27,7 @@ public class Event implements Serializable {
     private double mLatitude;
     private double mLongitude;
     private final String mOrganizerRef;
-    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
     public Event(@NonNull String title,
                  @NonNull String description,

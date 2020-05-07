@@ -46,6 +46,9 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     private Sharing mEventSharing;
     private float mZoomLevel = 15;
     private int LAUNCH_CALENDAR = 3;
+    private final int  ONE_MINUTE = 60000;
+    private final int ONE_HOUR = 60 * ONE_MINUTE;
+    private final int THREE_HOURS = 3 * ONE_HOUR;
 
     /**
      * Method to create an instance of the fragment for a specific event
@@ -166,7 +169,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
             intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getAddress());
             intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription());
             intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDate().getTime());
-            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+10800000);
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDate().getTime()+THREE_HOURS);
         });
 
         return intent;
