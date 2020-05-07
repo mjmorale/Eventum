@@ -177,7 +177,6 @@ public class CreateEventFragmentTest {
         onView(withText(R.string.no_image_chosen))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-
         Thread.sleep(1000);
     }
 

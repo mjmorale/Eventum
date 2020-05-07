@@ -15,12 +15,12 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -119,7 +119,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            Glide.with(getContext()).load(event.getImageId()).into(mBinding.imageView);
+            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
         });
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();

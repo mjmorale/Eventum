@@ -6,12 +6,12 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.EventDetailBinding;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 /**
  * View that shows information about a clicked event, it is a static view and thus not interactive
@@ -51,9 +51,7 @@ public class EventDetailView extends RelativeLayout {
         mBinding.date.setText(event.getDateStr());
         mBinding.address.setText(event.getAddress());
 
-        Glide.with(getContext())
-                .load(event.getImageId())
-                .into(mBinding.imageView);
+        ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
     }
 
     /**

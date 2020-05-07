@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+
 import ch.epfl.sdp.db.DatabaseObject;
 
 /**
@@ -42,9 +44,7 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
         name.setText(event.getTitle());
 
-        Glide.with(getContext())
-                .load(event.getImageId())
-                .into(imageView);
+        ImageGetter.getInstance().getImage(getContext(), event.getImageId(), imageView);
 
         description.setText(event.getDescription());
         return convertView;
