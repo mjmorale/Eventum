@@ -127,7 +127,7 @@ public class DefaultEventFragmentTest {
                 hasExtra(CalendarContract.Events.DESCRIPTION, DUMMY_EVENT.getDescription()),
                 hasExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, DUMMY_EVENT.getDate().getTime())
         )).respondWith(result);
-        onView(withId(R.id.calendar_Button)).perform(click());
+        onView(withId(R.id.event_detail_calendar_button)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
         
         Intents.release();
@@ -163,7 +163,7 @@ public class DefaultEventFragmentTest {
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
         scenario(bundle);
 
-        onView(withId(R.id.chat_button)).perform(click());
+        onView(withId(R.id.event_detail_chat_button)).perform(click());
 
         onView(withId(R.id.button_chatbox_send)).check(matches(isDisplayed()));
     }
