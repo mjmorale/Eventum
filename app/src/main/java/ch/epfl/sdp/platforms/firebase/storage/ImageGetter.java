@@ -28,6 +28,8 @@ public class ImageGetter {
 
     private ImageGetter() {}
 
+    private static final String  TAG = "ImageGetter";
+
     /**
      * @return The instance of ImageGetter
      */
@@ -80,10 +82,11 @@ public class ImageGetter {
     private static void saveInCache(File file, Bitmap bitmap) {
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            // 100 is quality
+            int maximumQuality = 100;
+            bitmap.compress(Bitmap.CompressFormat.PNG, maximumQuality, fileOutputStream);
         } catch (Exception e) {
-            String stacktrage = Log.getStackTraceString(e);
-            Log.e("Image Save in Cache", stacktrage);
+            Log.e(TAG, "Cannot save image in cache", e);
         }
     }
 }
