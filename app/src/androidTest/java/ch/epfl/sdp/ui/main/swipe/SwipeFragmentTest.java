@@ -178,7 +178,7 @@ public class SwipeFragmentTest {
     @Test
     public void SwipeFragment_ClickSToDetailled() throws InterruptedException {
         scenario();
-
+        UiDevice uiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
@@ -191,7 +191,7 @@ public class SwipeFragmentTest {
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
 
 
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+        uiDevice.pressBack();
 
         onView(withId(R.id.cards_list_view)).perform(swipeLeft());
 
@@ -202,7 +202,7 @@ public class SwipeFragmentTest {
         onView(allOf(withText(eventTest2.getDescription()), isDisplayed())).check(matches(isDisplayed()));
 
 
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+        uiDevice.pressBack();
 
         onView(withId(R.id.cards_list_view)).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest2.getTitle()),isDisplayed())).check(matches(isDisplayed()));
