@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,7 +20,7 @@ import java.util.List;
  * Classes implementing this abstract class allows to save an Object in the app-specific storage
  * It works with the database to keep the local copy up to date
  */
-public abstract class ObjectSaver <T extends Serializable> implements OfflineDatabaseSaver {
+public abstract class ObjectSaver <T extends Serializable> {
 
     static private HashMap<String, Date> statusFiles = new HashMap<>();
 
