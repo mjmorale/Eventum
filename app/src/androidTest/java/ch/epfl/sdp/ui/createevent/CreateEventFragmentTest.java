@@ -9,7 +9,6 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -78,6 +77,9 @@ public class CreateEventFragmentTest {
     private static final int DAY = mMockEvent.getDate().getDay();
     private static final int MONTH = mMockEvent.getDate().getMonth();
     private static final int YEAR = mMockEvent.getDate().getYear();
+    private static final int HOURS = mMockEvent.getDate().getHours();
+    private static final int MINUTES = mMockEvent.getDate().getMinutes();
+
 
     private Activity mActivity;
     private UiDevice mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -203,6 +205,10 @@ public class CreateEventFragmentTest {
 
         onView(withId(R.id.date)).perform(
                 PickerActions.setDate(YEAR, MONTH, DAY),
+                closeSoftKeyboard());
+
+        onView(withId(R.id.time)).perform(
+                PickerActions.setTime(HOURS, MINUTES),
                 closeSoftKeyboard());
 
         onView(withId(R.id.geo_autocomplete)).perform(
