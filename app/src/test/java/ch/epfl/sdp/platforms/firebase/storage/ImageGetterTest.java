@@ -57,6 +57,4 @@ public class ImageGetterTest {
         assertTrue(ret.getClass().equals(ImageGetter.class));
     }
 
-
-
 }

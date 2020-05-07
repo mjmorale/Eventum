@@ -50,17 +50,17 @@ public class ImageGetter {
 
         int imageStringHash = imageId.hashCode();
 
-        // This line is very practical when playing around with the cache and avoids having
+        // This line is very practical when testing the cache with adb and avoids having
         // an ugly - in the cache file name
         String filename = Integer.toString(imageStringHash).replace('-', '1');
 
         File imageFile = new File(context.getCacheDir(), filename);
 
-        final Bitmap[] bitmap = new Bitmap[1];
+        Bitmap bitmap;
 
-        if (imageFile.exists() && !imageFile.isDirectory()) {
-            bitmap[0] = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            imageView.setImageBitmap(bitmap[0]);
+        if (imageFile.exists() && imageFile.isFile()) {
+            bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            imageView.setImageBitmap(bitmap);
         } else {
             Glide.with(context).asBitmap().load(imageId).into(new SimpleTarget<Bitmap>() {
                 @Override
