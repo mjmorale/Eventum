@@ -1,9 +1,17 @@
 package ch.epfl.sdp.ui.main.swipe;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -31,15 +39,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -53,7 +70,7 @@ public class SwipeFragmentTest {
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
-
+    private FragmentScenario mScenario;
     @Mock
     private Database mDatabase;
 
@@ -106,7 +123,7 @@ public class SwipeFragmentTest {
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
 
-        FragmentScenario.launchInContainer(
+       mScenario= FragmentScenario.launchInContainer(
                 SwipeFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
@@ -159,17 +176,29 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_ClickSToDetailled() {
+    public void SwipeFragment_ClickSToDetailled() throws InterruptedException {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
         mEventsLiveData.postValue(events);
 
+        onView(withId(R.id.cards_list_view)).perform(swipeLeft());
         onView(withId(R.id.cards_list_view)).perform(click());
-
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.default_event_layout)).perform(swipeUp());
+        onView(withId(R.id.minimap)).perform(click());
+        Thread.sleep(5000);
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+
+        onView(withId(R.id.cards_list_view)).perform(click());
+        onView(withText(eventTest1.getTitle())).check(matches(isDisplayed()));
     }
+
+
 
 }
 
