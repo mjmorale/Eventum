@@ -94,7 +94,7 @@ public class Weather {
         return date.getTime() / 1000;
     }
 
-    private long getResponseTimestamp() {
+    public long getResponseTimestamp() {
         long time = gson.getAsJsonObject("current").get("dt").getAsLong();
 
         return time;

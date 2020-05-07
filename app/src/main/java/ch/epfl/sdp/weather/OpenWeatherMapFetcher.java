@@ -1,5 +1,13 @@
 package ch.epfl.sdp.weather;
 
+import android.content.Context;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
@@ -13,19 +21,26 @@ import java.net.URL;
 
 public class OpenWeatherMapFetcher implements WeatherFetcher {
 
+
     private LatLng mLocation;
-    private String apiK;
+    private String apiK = "7c35ebdff45e1d54db43876dfcb0c320";
+
 
     public OpenWeatherMapFetcher(LatLng location) {
         mLocation = location;
-        apiK = "7c35ebdff45e1d54db43876dfcb0c320";
     }
 
     @Override
-    public Weather getWeather() throws Exception {
+    public void fetch(Context context, WeatherFetcher.onResponseCallback callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
         String url = getURL();
-        String data = getDataFromURL(url);
-        return new Weather(data);
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> callback.onSuccess(new Weather(response)),
+                error -> callback.onFailure());
+
+        queue.add(stringRequest);
     }
 
     private String getURL() {
