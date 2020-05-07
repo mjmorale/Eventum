@@ -1,25 +1,25 @@
 package ch.epfl.sdp.ui.event;
 
-import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.ViewModelProvider;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-import java.util.GregorianCalendar;
-
-import ch.epfl.sdp.databinding.FragmentDefaultEventBinding;
+import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -33,7 +33,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 /**
  * Fragment to display some detail information of an event
  */
-public class DefaultEventFragment extends Fragment implements OnMapReadyCallback {
+public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
     private DefaultEventViewModel mViewModel;
@@ -41,7 +41,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
     private LiteMapViewModel mMapViewModel;
 
-    private FragmentDefaultEventBinding mBinding;
+    private EventDetailBinding mBinding;
 
     private Sharing mEventSharing;
     private float mZoomLevel = 15;
@@ -56,13 +56,13 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
      * @param eventRef the event reference
      * @return the fragment
      */
-    public static DefaultEventFragment getInstance(@NonNull String eventRef) {
+    public static EventFragment getInstance(@NonNull String eventRef) {
         verifyNotNull(eventRef);
 
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, eventRef);
 
-        DefaultEventFragment fragment = new DefaultEventFragment();
+        EventFragment fragment = new EventFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -70,7 +70,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     /**
      * Constructor of the DefaultEventFragment
      */
-    public DefaultEventFragment() {
+    public EventFragment() {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
 
@@ -84,7 +84,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
      * @param eventRef the reference of an event
      */
     @VisibleForTesting
-    public DefaultEventFragment(@NonNull Database database, @NonNull String eventRef) {
+    public EventFragment(@NonNull Database database, @NonNull String eventRef) {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
@@ -95,7 +95,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = FragmentDefaultEventBinding.inflate(inflater, container, false);
+        mBinding = EventDetailBinding.inflate(inflater, container, false);
 
         return mBinding.getRoot();
     }
@@ -123,15 +123,15 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
         });
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
-        mBinding.sharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
+        mBinding.eventDetailSharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
 
-        mBinding.chatButton.setOnClickListener(v-> getActivity().getSupportFragmentManager()
+        mBinding.eventDetailChatButton.setOnClickListener(v-> getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(getId(), ChatFragment.getInstance(mViewModel.getEventRef()))
                 .addToBackStack(null)
                 .commit());
 
-        mBinding.calendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
+        mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
     }
 
     @Override

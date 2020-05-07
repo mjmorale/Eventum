@@ -8,12 +8,9 @@ import android.provider.CalendarContract;
 
 import com.google.firebase.auth.AuthCredential;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.test.espresso.intent.Intents;
 
 import org.junit.Before;
@@ -23,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
 import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
@@ -103,11 +99,11 @@ public class DefaultEventFragmentTest {
 
     @SuppressWarnings("unchecked")
     private void scenario(Bundle bundle) {
-        FragmentScenario<DefaultEventFragment> scenario = FragmentScenario.launchInContainer(
-                DefaultEventFragment.class,
+        FragmentScenario<EventFragment> scenario = FragmentScenario.launchInContainer(
+                EventFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(DefaultEventFragment.class, mDatabaseMock, "anyRef")
+                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef")
         );
 
     }
