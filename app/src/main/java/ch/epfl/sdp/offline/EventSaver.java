@@ -52,14 +52,12 @@ public class EventSaver extends ObjectSaver<Event> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<Event> getAllEvents(File path) throws IOException, ClassNotFoundException {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());
         return getMultipleFile(listReference, path);
     }
 
-    @SuppressWarnings("unchecked")
     public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) throws IOException, ClassNotFoundException {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());

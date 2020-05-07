@@ -8,6 +8,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import androidx.annotation.NonNull;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.offline.EventSaver;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;

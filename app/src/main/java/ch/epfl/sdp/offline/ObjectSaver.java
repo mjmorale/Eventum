@@ -70,7 +70,7 @@ public abstract class ObjectSaver <T extends Serializable> implements OfflineDat
      * @return
      */
     public T getSingleFile(String docReference, File path) throws IOException, ClassNotFoundException {
-        File fileDescriptor = new File(path,docReference);
+        File fileDescriptor = new File(path, docReference);
         FileInputStream fi = new FileInputStream(fileDescriptor);
         ObjectInputStream oi = new ObjectInputStream(fi);
 
