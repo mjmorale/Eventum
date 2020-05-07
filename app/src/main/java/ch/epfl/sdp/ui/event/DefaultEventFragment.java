@@ -120,7 +120,7 @@ public class DefaultEventFragment extends Fragment implements OnMapReadyCallback
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            ImageGetter.getImage(getContext(), event.getImageId(), mBinding.imageView);
+            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
         });
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();

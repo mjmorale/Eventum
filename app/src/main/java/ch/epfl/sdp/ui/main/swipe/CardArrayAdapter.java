@@ -44,7 +44,7 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
         name.setText(event.getTitle());
 
-        ImageGetter.getImage(getContext(), event.getImageId(), imageView);
+        ImageGetter.getInstance().getImage(getContext(), event.getImageId(), imageView);
 
         description.setText(event.getDescription());
         return convertView;

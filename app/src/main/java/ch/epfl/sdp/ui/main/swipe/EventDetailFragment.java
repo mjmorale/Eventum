@@ -46,7 +46,7 @@ public class EventDetailFragment extends Fragment {
         mBinding.address.setText(mEvent.getAddress());
 
 
-        ImageGetter.getImage(getContext(), mEvent.getImageId(), mBinding.imageView);
+        ImageGetter.getInstance().getImage(getContext(), mEvent.getImageId(), mBinding.imageView);
 
         mBinding.backButton.setClickable(true);
         Fragment thisFragment = this;
