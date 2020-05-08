@@ -20,7 +20,6 @@ public class FirebaseFilterQuery extends FirebaseQuery implements FilterQuery {
 
     FirebaseFilterQuery(@NonNull FirebaseFirestore database, @NonNull Query query) {
         super(database);
-
         mQuery = verifyNotNull(query);
     }
 

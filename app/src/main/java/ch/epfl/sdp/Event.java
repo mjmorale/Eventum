@@ -4,22 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+
 /**
  * Data structure that holds all information about an event
  */
-public class Event {
+public class Event implements Serializable {
 
     private final String mDescription;
     private final Date mDate;
     private final String mTitle;
     private final String mImageId;
     private final String mAddress;
-    private final LatLng mLocation;
+
+    private double mLatitude;
+    private double mLongitude;
     private final String mOrganizerRef;
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
@@ -34,10 +40,42 @@ public class Event {
         mDescription = description;
         mDate = date;
         mAddress = address;
-        mLocation = location;
+
+        mLatitude = location.latitude;
+        mLongitude = location.longitude;
+
         mImageId = imageId;
         mOrganizerRef = organizerRef;
     }
+
+    /**
+     * This constructor is here for the
+     * @param title Event title
+     * @param description Description for the event
+     * @param date The date where the event is happening
+     * @param address The address of where the event is happening
+     * @param latitude The latitude of where the event is happening
+     * @param longitude The longitude of where the event is happening
+     * @param imageId An URL to an image for the Event
+     */
+    public Event(@NonNull String title,
+                 @NonNull String description,
+                 @NonNull Date date,
+                 @NonNull String address,
+                 double latitude,
+                 double longitude,
+                 @NonNull String  imageId,
+                 @NonNull String organizerRef) {
+        mTitle = title;
+        mDescription = description;
+        mDate = date;
+        mAddress = address;
+        mLatitude = latitude;
+        mLatitude = longitude;
+        mImageId = imageId;
+        mOrganizerRef = organizerRef;
+    }
+
 
     /**
      * Utility method to convert a Date class into a human readable date using a specified format.
@@ -93,7 +131,8 @@ public class Event {
      * @return location in latitude and longitude associated to this event
      */
     public LatLng getLocation() {
-        return mLocation;
+        // Necessary so that Event is Serializable
+        return new LatLng(mLatitude, mLongitude);
     }
 
     /**
@@ -110,6 +149,29 @@ public class Event {
         return mAddress;
     }
 
+    @Override
+    public String toString(){
+        return "Title:" + mTitle + "\nDescription:" + mDescription + "\nDate:" + mDate + "\nAddress:"
+                + mAddress + "\nLatitude:" + mLatitude + "\nLongitude:" + mLongitude
+                + "\nimageID:" + mImageId;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o)
+            return true;
+        if(o == null)
+            return false;
+
+        if(getClass() != o.getClass())
+            return false;
+        Event obj = (Event) o;
+
+        return mTitle.equals(obj.mTitle) && mDescription.equals(obj.mDescription)
+                && mDate.equals(obj.mDate) && mAddress.equals(obj.mAddress)
+                && mLatitude == obj.mLatitude && mLongitude == obj.mLongitude
+                && mImageId.equals(obj.mImageId) && mOrganizerRef.equals(obj.mOrganizerRef);
+    }
     /**
      * @return The event's organizer database reference
      */

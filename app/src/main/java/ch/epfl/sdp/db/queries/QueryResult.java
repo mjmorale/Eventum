@@ -1,5 +1,6 @@
 package ch.epfl.sdp.db.queries;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
@@ -55,4 +56,5 @@ public class QueryResult<T> {
     public T getData() {
         return mData;
     }
+
 }

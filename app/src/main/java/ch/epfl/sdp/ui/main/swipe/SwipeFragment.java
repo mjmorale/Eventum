@@ -111,10 +111,13 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
 
         mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-            mArrayAdapter.clear();
-            mArrayAdapter.addAll(events);
-            mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
-            mNumberSwipe = 0;
+            if (events != null) {
+                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+                mArrayAdapter.clear();
+                mArrayAdapter.addAll(events);
+                mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
+                mNumberSwipe = 0;
+            }
         });
 
         mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
