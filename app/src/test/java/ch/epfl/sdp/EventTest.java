@@ -2,29 +2,40 @@ package ch.epfl.sdp;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import android.app.Activity;
+import android.content.Context;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Path;
 import java.util.Date;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import ch.epfl.sdp.offline.EventSaver;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import ch.epfl.sdp.Event;
+public class EventTest  {
 
-public class EventTest {
-
-    String title = "Real Fake Event";
-    String description = "This is really happening";
-    Date date = new Date(2020,11,10);
-    LatLng location = new LatLng(100,100);
-    String address = "Lausanne, Switzerland";
-    String imageId = "URL";
+    private String title = "title";
+    private String description = "This is really happening";
+    private Date date = new Date(2020,11,10);
+    private LatLng location = new LatLng(100,100);
+    private String address = "Lausanne, Switzerland";
+    private Context context = new Activity();
+    private File path = context.getFilesDir();
+    private Date dateEvent = new Date();
     String organizerRef = "organizerref";
+    String imageId = "URL";
 
     @Test
-    public void EventBuilder_CheckCorrectData()
-    {
+    public void EventBuilder_CheckCorrectData() {
         EventBuilder eventBuilder = new EventBuilder();
         Event e = eventBuilder.setTitle(title)
                               .setDescription(description)

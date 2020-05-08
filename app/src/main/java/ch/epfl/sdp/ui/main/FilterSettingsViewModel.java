@@ -89,19 +89,25 @@ public class FilterSettingsViewModel extends ViewModel {
         mAttendedEventsLiveData = mEventQuery.whereArrayContains("attendees", mUserInfo.getUid()).liveData(Event.class);
         mOwnedEventsLiveData = mEventQuery.whereFieldEqualTo("organizer", mUserInfo.getUid()).liveData(Event.class);
         mResultsLiveData.addSource(mAttendedEventsLiveData, databaseObjects -> {
-            mAttendedEvents = databaseObjects;
-            combineEvents();
-            postCurrentEvents();
+            if(databaseObjects != null) {
+                mAttendedEvents = databaseObjects;
+                combineEvents();
+                postCurrentEvents();
+            }
         });
         mResultsLiveData.addSource(mOwnedEventsLiveData, databaseObjects -> {
-            mOwnedEvents = databaseObjects;
-            combineEvents();
-            postCurrentEvents();
+            if(databaseObjects != null) {
+                mOwnedEvents = databaseObjects;
+                combineEvents();
+                postCurrentEvents();
+            }
         });
         mResultsLiveData.addSource(mRootLiveDataSource, databaseObjects -> {
-            mFilteredEvents = databaseObjects;
-            combineEvents();
-            postCurrentEvents();
+            if(databaseObjects != null) {
+                mFilteredEvents = databaseObjects;
+                combineEvents();
+                postCurrentEvents();
+            }
         });
         mLocationService = locationService;
     }

@@ -39,12 +39,12 @@ public class HeaderFragmentTest extends SettingsFragmentTest {
 
     @Test
     public void HeaderFragment_LogoutCallsAuthenticator() {
-        onView(withText("Log out")).perform(click());
-
         Intents.init();
 
         intending(hasComponent("ch.epfl.sdp.ui.auth.AuthActivity"))
                 .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
+
+        onView(withText("Log out")).perform(click());
 
         verify(mAuthenticator).logout();
 
