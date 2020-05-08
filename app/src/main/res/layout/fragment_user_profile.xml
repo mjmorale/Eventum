@@ -8,16 +8,12 @@
 
     <ImageView
         android:id="@+id/user_profile_photo"
-        android:layout_width="240dp"
-        android:layout_height="192dp"
-        android:layout_marginStart="85dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="84dp"
+        android:layout_width="411dp"
+        android:layout_height="289dp"
+        android:layout_marginBottom="31dp"
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/user_profile_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_person_black_24dp" />
@@ -25,13 +21,10 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="409dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="-14dp"
-        tools:layout_editor_absoluteY="442dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toTopOf="parent"></com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/user_profile_bio"

@@ -61,7 +61,12 @@ public class UserProfileFragment extends Fragment {
             requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_STORAGE);
         });
-        mBinding.userProfileName.setText(mViewModel.getUser().getDisplayName());
+
+        mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
+            mBinding.userProfileName.setText(user.getName());
+            mBinding.userProfileBio.setText(user.getDescription());
+            ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
+        });
     }
 
     @Override
@@ -91,8 +96,7 @@ public class UserProfileFragment extends Fragment {
         }
     }
     private void displayImage() {
-        ImageGetter.getInstance().getImage(getContext(), this.mImageUri, this.mBinding.userProfilePhoto);
-        mBinding.userProfilePhoto.setTag("new_image");
+        ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
     }
 
     @Override
@@ -101,4 +105,9 @@ public class UserProfileFragment extends Fragment {
         mBinding = null;
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
+    }
 }
