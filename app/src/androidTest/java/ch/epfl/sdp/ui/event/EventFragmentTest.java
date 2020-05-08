@@ -56,7 +56,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultEventFragmentTest {
+public class EventFragmentTest {
 
     private final static String DUMMY_TITLE = "title";
     private final static String DUMMY_DESCRIPTION = "description";
@@ -109,7 +109,7 @@ public class DefaultEventFragmentTest {
     }
     @SuppressWarnings("unchecked")
     @Test
-    public void DefaultEventFragment_CalendarIntent() throws InterruptedException {
+    public void EventFragment_CalendarIntent() throws InterruptedException {
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
 
@@ -135,7 +135,7 @@ public class DefaultEventFragmentTest {
     }
 
     @Test
-    public void DefaultEventFragment_EventIsLoaded() {
+    public void EventFragment_EventIsLoaded() {
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
         scenario(bundle);
@@ -149,7 +149,7 @@ public class DefaultEventFragmentTest {
     }
 
     @Test
-    public void DefaultEventFragment_LaunchesChatWithCorrectValues() {
+    public void EventFragment_LaunchesChatWithCorrectValues() {
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
