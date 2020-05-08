@@ -1,9 +1,9 @@
 package ch.epfl.sdp.weather;
 
 import android.content.Context;
+import android.location.Location;
 
-import com.android.volley.RequestQueue;
-
+import com.google.android.gms.maps.model.LatLng;
 
 public interface WeatherFetcher {
 
@@ -12,5 +12,5 @@ public interface WeatherFetcher {
         void onFailure();
     }
 
-    void fetch(Context context, WeatherFetcher.onResponseCallback callback);
+    void fetch(Context context, WeatherFetcher.onResponseCallback callback, LatLng location);
 }

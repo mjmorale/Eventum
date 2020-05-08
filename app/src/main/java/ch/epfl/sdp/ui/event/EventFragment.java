@@ -18,6 +18,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.util.Date;
+import java.util.Map;
+
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -27,6 +31,9 @@ import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
+import ch.epfl.sdp.weather.OpenWeatherMapFetcher;
+import ch.epfl.sdp.weather.Weather;
+import ch.epfl.sdp.weather.WeatherFetcher;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -40,6 +47,10 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
     private LiteMapViewModel mMapViewModel;
+
+    private final WeatherViewModel.WeatherViewModelFactory mWeatherFactory;
+    private WeatherViewModel mWeatherViewModel;
+    private WeatherFetcher mWeatherFetcher;
 
     private EventDetailBinding mBinding;
 
@@ -71,10 +82,17 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * Constructor of the DefaultEventFragment
      */
     public EventFragment() {
+        Database database = ServiceProvider.getInstance().getDatabase();
+
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
-        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setDatabase(database);
+
+        mWeatherFactory =  new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory.setDatabase(database);
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
+
+        mWeatherFetcher = new OpenWeatherMapFetcher();
     }
 
     /**
@@ -84,12 +102,19 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * @param eventRef the reference of an event
      */
     @VisibleForTesting
-    public EventFragment(@NonNull Database database, @NonNull String eventRef) {
+    public EventFragment(@NonNull Database database, @NonNull String eventRef, @NonNull WeatherFetcher fetcher) {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
 
+        mWeatherFactory = new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory.setDatabase(database);
+        mWeatherFactory.setEventRef(eventRef);
+
+
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
+
+        mWeatherFetcher = fetcher;
     }
 
     @Override
@@ -106,7 +131,9 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         Bundle args = getArguments();
         if(args != null) {
-            mFactory.setEventRef(args.getString(UIConstants.BUNDLE_EVENT_REF));
+            String eventRef = args.getString(UIConstants.BUNDLE_EVENT_REF);
+            mFactory.setEventRef(eventRef);
+            mWeatherFactory.setEventRef(eventRef);
         }
 
         mBinding.minimap.onCreate(savedInstanceState);
@@ -132,6 +159,78 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                 .commit());
 
         mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
+
+        getWeather();
+    }
+
+    private void getWeather() {
+        mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
+
+        mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
+            if (weatherList == null || weatherList.isEmpty()) {
+                updateWeather();
+
+                mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+                mBinding.weatherLayout.setVisibility(View.GONE);
+            }
+            else {
+                Weather latestWeather = weatherList.get(weatherList.size() - 1).getObject();
+                if (!latestWeather.updatedRecently(new Date())) {
+                    updateWeather();
+                }
+                showWeather(latestWeather);
+
+                //TODO show weather data
+            }
+
+        });
+    }
+    private void showWeather(Weather weather) {
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event-> {
+            Date eventDate = event.getDate();
+            if (weather.isForecastAvailable(eventDate)) {
+                int closestDay = weather.getClosestDay(eventDate);
+
+                String temp = new StringBuilder().append("Temperature: ").append(Math.round(weather.getTemp(closestDay))).append(" °C").toString();
+                String feelsLike = new StringBuilder().append("Feels like: ").append(Math.round(weather.getFeelsLikeTemp(closestDay))).append(" °C").toString();
+
+                mBinding.tempView.setText(temp);
+                mBinding.feelsLikeView.setText(feelsLike);
+
+                Map<String, Object> weatherInfo = weather.getWeather(closestDay);
+
+                mBinding.weatherType.setText((String) weatherInfo.get("main"));
+                mBinding.weatherIcon.setImageResource((int) weatherInfo.get("icon"));
+
+                mBinding.noWeatherLayout.setVisibility(View.GONE);
+                mBinding.weatherLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+                mBinding.weatherLayout.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void updateWeather()  {
+
+        WeatherFetcher.onResponseCallback responseCallback = new WeatherFetcher.onResponseCallback() {
+            @Override
+            public void onSuccess(Weather weather) {
+                mWeatherViewModel.add(weather);
+            }
+
+            @Override
+            public void onFailure() {
+                Toast.makeText(getContext(), "Weather API is currently down", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mWeatherFetcher.fetch(getContext(), responseCallback, event.getLocation());
+        });
     }
 
     @Override

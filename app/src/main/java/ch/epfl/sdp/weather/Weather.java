@@ -1,5 +1,7 @@
 package ch.epfl.sdp.weather;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sdp.R;
+
 public class Weather {
 
     private String dataString;
@@ -19,7 +23,7 @@ public class Weather {
     private final long SECONDS_IN_HALF_DAY = 12 * 3600;
 
 
-    public Weather(String data) {
+    public Weather(@NonNull String data) {
         dataString = data;
         gson = new JsonParser().parse(dataString).getAsJsonObject();
 
@@ -43,10 +47,9 @@ public class Weather {
 
         HashMap<String, Object> weatherMap = new HashMap<>();
 
-        weatherMap.put("id", weatherData.get("id").getAsInt());
         weatherMap.put("main", weatherData.get("main").getAsString());
         weatherMap.put("description", weatherData.get("description").getAsString());
-        weatherMap.put("icon", weatherData.get("icon").getAsString());
+        weatherMap.put("icon", Weather.getWeatherIcon(weatherData.get("icon").getAsString()));
 
         return weatherMap;
     }
@@ -90,10 +93,6 @@ public class Weather {
         return currentTime >= minTime && currentTime <= maxTime;
     }
 
-    private static long DateToSecs(Date date) {
-        return date.getTime() / 1000;
-    }
-
     public long getResponseTimestamp() {
         long time = gson.getAsJsonObject("current").get("dt").getAsLong();
 
@@ -117,4 +116,35 @@ public class Weather {
         return timestamps;
     }
 
+    private static int getWeatherIcon(String iconName) {
+        HashMap<String, Integer> nameToIcon = new HashMap<>();
+        nameToIcon.put("01d", R.drawable.weather_01d);
+        nameToIcon.put("01n", R.drawable.weather_01n);
+        nameToIcon.put("02d", R.drawable.weather_02d);
+        nameToIcon.put("02n", R.drawable.weather_02n);
+        nameToIcon.put("03d", R.drawable.weather_03d);
+        nameToIcon.put("04d", R.drawable.weather_04d);
+        nameToIcon.put("04n", R.drawable.weather_04n);
+        nameToIcon.put("09d", R.drawable.weather_09d);
+        nameToIcon.put("09n", R.drawable.weather_09n);
+        nameToIcon.put("10d", R.drawable.weather_10d);
+        nameToIcon.put("10n", R.drawable.weather_10n);
+        nameToIcon.put("11d", R.drawable.weather_11d);
+        nameToIcon.put("11n", R.drawable.weather_11n);
+        nameToIcon.put("13d", R.drawable.weather_13d);
+        nameToIcon.put("13n", R.drawable.weather_13n);
+        nameToIcon.put("50d", R.drawable.weather_50d);
+        nameToIcon.put("50n", R.drawable.weather_50n);
+
+        if (nameToIcon.containsKey(iconName)) {
+            return nameToIcon.get(iconName);
+        }
+        else {
+            return android.R.color.transparent;
+        }
+    }
+
+    private static long DateToSecs(Date date) {
+        return date.getTime() / 1000;
+    }
 }

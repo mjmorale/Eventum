@@ -34,8 +34,10 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.mocks.MockWeatherFetcher;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.weather.WeatherFetcher;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -84,6 +86,9 @@ public class EventFragmentTest {
     @Mock
     private Authenticator<AuthCredential> mAuthenticatorMock;
 
+
+    private WeatherFetcher mWeatherFetcherMock = new MockWeatherFetcher();
+
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
 
     LiveData<List<DatabaseObject<ChatMessage>>> mChatLiveData = new MutableLiveData<>();
@@ -103,7 +108,7 @@ public class EventFragmentTest {
                 EventFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef")
+                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef", mWeatherFetcherMock)
         );
 
     }
