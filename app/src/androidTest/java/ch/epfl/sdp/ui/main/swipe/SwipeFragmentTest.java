@@ -204,7 +204,6 @@ public class SwipeFragmentTest {
         onView(allOf(withText(eventTest2.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest2.getDescription()), isDisplayed())).check(matches(isDisplayed()));
 
-
 //         uiDevice.pressBack();
 
 //         onView(withId(R.id.cards_list_view)).check(matches(isDisplayed()));
