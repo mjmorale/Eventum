@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/cardView_event"
-    tools:context=".ui.event.DefaultEventFragment">
+    tools:context=".ui.event.EventFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/default_event_layout"
@@ -105,16 +105,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
-            android:layout_margin="16dp"
-            android:src="@drawable/check"
-            app:layout_anchorGravity="bottom|center" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/sharing_Button"
+            android:id="@+id/event_detail_sharing_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center"
@@ -125,7 +116,7 @@
             android:focusable="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/chat_button"
+            android:id="@+id/event_detail_chat_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|right"
@@ -135,7 +126,7 @@
             android:focusable="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/calendar_Button"
+            android:id="@+id/event_detail_calendar_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top|right"
