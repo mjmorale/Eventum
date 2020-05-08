@@ -117,6 +117,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             mNumberSwipe = 0;
         });
 
+        mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
+
         return mBinding.getRoot();
     }
 
@@ -129,7 +131,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             Event selectedEvent = mArrayAdapter.getItem(itemPosition).getObject();
             mMapViewModel.setEventOnMap(selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
             mBinding.eventDetailView.setEvent(selectedEvent);
-            showEventDetail();
+            mBinding.eventDetailView.callOnClick();
         });
 
         setupBackButton();
