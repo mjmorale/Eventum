@@ -7,15 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -23,25 +25,30 @@ import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 
 /**
  * Fragment for the swiping cards
  */
-public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener {
+public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onFlingListener, OnMapReadyCallback {
 
     private FragmentSwipeBinding mBinding;
     private ArrayAdapter<DatabaseObject<Event>> mArrayAdapter;
     private int mNumberSwipe = 0;
+    private float mZoomLevel = 15;
 
-    private EventDetailFragment mInfoFragment;
-    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactory;
-    private FilterSettingsViewModel mViewModel;
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mSettingsFactory;
+    private FilterSettingsViewModel mSettingsViewModel;
 
-    public SwipeFragment() {}
+    private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
+    private LiteMapViewModel mMapViewModel;
+
+    public SwipeFragment() {
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
+    }
 
     /**
      * Constructor of the swipe fragment, only for testing purpose!
@@ -50,10 +57,12 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
      */
     @VisibleForTesting
     public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, LocationService locationService) {
-        mFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFactory.setDatabase(database);
-        mFactory.setAuthenticator(authenticator);
-        mFactory.setLocationService(locationService);
+        mSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mSettingsFactory.setDatabase(database);
+        mSettingsFactory.setAuthenticator(authenticator);
+        mSettingsFactory.setLocationService(locationService);
+
+        mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
 
     @Override
@@ -68,7 +77,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     @Override
     public void onRightCardExit(Object o) {
-        mViewModel.joinEvent(((DatabaseObject<Event>) o).getId(), result -> {
+        mSettingsViewModel.joinEvent(((DatabaseObject<Event>) o).getId(), result -> {
             if(!result.isSuccessful()) {
                 Toast.makeText(getContext(), "Cannot accept event.", Toast.LENGTH_SHORT).show();
             }
@@ -92,13 +101,19 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mArrayAdapter = new CardArrayAdapter(getContext());
         mArrayAdapter.setNotifyOnChange(true);
+
         mBinding.cardsListView.setAdapter(mArrayAdapter);
         mBinding.cardsListView.setFlingListener(this);
 
-        mViewModel = new ViewModelProvider(requireActivity(), mFactory).get(FilterSettingsViewModel.class);
+        mBinding.eventDetailView.getMapView().onCreate(savedInstanceState);
+        mBinding.eventDetailView.getMapView().getMapAsync(this);
 
-        mViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-            if(events != null) {
+        mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
+
+
+        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+
+           if (events != null) {
                 mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
                 mArrayAdapter.clear();
                 mArrayAdapter.addAll(events);
@@ -107,17 +122,49 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         });
 
-        mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
-            mInfoFragment = new EventDetailFragment(((DatabaseObject<Event>)dataObject).getObject(),this);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(this.getId(), mInfoFragment).commit();
-        });
+        mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMapFactory.setMapManager(new GoogleMapManager(googleMap));
+        mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
+
+        mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
+            Event selectedEvent = mArrayAdapter.getItem(itemPosition).getObject();
+            mMapViewModel.setEventOnMap(selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
+            mBinding.eventDetailView.setEvent(selectedEvent);
+            mBinding.eventDetailView.callOnClick();
+        });
+
+        setupBackButton();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mBinding = null;
+    }
+
+    private void showEventDetail() {
+        mBinding.cardsListView.setVisibility(View.GONE);
+        mBinding.eventDetailView.setVisibility(View.VISIBLE);
+    }
+
+    private void showCardList() {
+        mBinding.eventDetailView.setVisibility(View.GONE);
+        mBinding.cardsListView.setVisibility(View.VISIBLE);
+    }
+
+    private void setupBackButton() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showCardList();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 }

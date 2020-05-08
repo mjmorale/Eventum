@@ -31,4 +31,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    <ch.epfl.sdp.ui.main.swipe.EventDetailView
+        android:id="@+id/event_detail_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
 </FrameLayout>

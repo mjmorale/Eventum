@@ -14,13 +14,13 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class LiteMapViewModel extends ViewModel {
 
-    static class LiteMapViewModelFactory extends ParameterizedViewModelFactory {
+    public static class LiteMapViewModelFactory extends ParameterizedViewModelFactory {
 
-        LiteMapViewModelFactory() {
+        public LiteMapViewModelFactory() {
             super(MapManager.class);
         }
 
-        void setMapManager(@NonNull MapManager mapManager) {
+        public void setMapManager(@NonNull MapManager mapManager) {
             setValue(0, verifyNotNull(mapManager));
         }
     }
