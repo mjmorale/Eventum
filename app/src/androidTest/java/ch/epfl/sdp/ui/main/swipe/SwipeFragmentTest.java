@@ -182,7 +182,8 @@ public class SwipeFragmentTest {
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
-        mEventsLiveData.postValue(events);
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
 
         onView(withId(R.id.cards_list_view)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
@@ -190,24 +191,7 @@ public class SwipeFragmentTest {
         onView(allOf(withText(eventTest1.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
 
-
-        uiDevice.pressBack();
-
-        onView(withId(R.id.cards_list_view)).perform(swipeLeft());
-
-        onView(withId(R.id.cards_list_view)).perform(click());
-        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
-
-        onView(allOf(withText(eventTest2.getTitle()), isDisplayed())).check(matches(isDisplayed()));
-        onView(allOf(withText(eventTest2.getDescription()), isDisplayed())).check(matches(isDisplayed()));
-
-
-        uiDevice.pressBack();
-
-        onView(withId(R.id.cards_list_view)).check(matches(isDisplayed()));
-        onView(allOf(withText(eventTest2.getTitle()),isDisplayed())).check(matches(isDisplayed()));
-        onView(allOf(withText(eventTest2.getDescription()),isDisplayed())).check(matches(isDisplayed()));
-
+        
     }
 
 
