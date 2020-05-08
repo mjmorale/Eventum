@@ -110,9 +110,14 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
 
+<<<<<<< HEAD
 
         mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
           if(events != null) {
+=======
+        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+            if (events != null) {
+>>>>>>> ca64f08b14b1750529d4d3bde5bd04e5b7a6f0fc
                 mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
                 mArrayAdapter.clear();
                 mArrayAdapter.addAll(events);
@@ -120,6 +125,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
                 mNumberSwipe = 0;
             }
         });
+
+        mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
 
         return mBinding.getRoot();
     }
@@ -133,7 +140,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             Event selectedEvent = mArrayAdapter.getItem(itemPosition).getObject();
             mMapViewModel.setEventOnMap(selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
             mBinding.eventDetailView.setEvent(selectedEvent);
-            showEventDetail();
+            mBinding.eventDetailView.callOnClick();
         });
 
         setupBackButton();
