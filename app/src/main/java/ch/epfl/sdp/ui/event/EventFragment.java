@@ -141,13 +141,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
 
-        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDateStr());
-            mBinding.description.setText(event.getDescription());
-            mBinding.title.setText(event.getTitle());
-            mBinding.address.setText(event.getAddress());
-            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
-        });
+
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.eventDetailSharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
@@ -160,10 +154,21 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
 
-        getWeather();
+        setEvent();
+        setWeather();
     }
 
-    private void getWeather() {
+    private void setEvent() {
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(event.getDateStr());
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
+            mBinding.address.setText(event.getAddress());
+            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
+        });
+    }
+
+    private void setWeather() {
         mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
 
         mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
@@ -179,8 +184,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                     updateWeather();
                 }
                 showWeather(latestWeather);
-
-                //TODO show weather data
             }
 
         });
