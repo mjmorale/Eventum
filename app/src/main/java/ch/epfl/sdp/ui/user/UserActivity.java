@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.ActivityUserBinding;
 import ch.epfl.sdp.ui.user.events.UserEventsFragment;
+import ch.epfl.sdp.ui.user.profile.UserProfileFragment;
 import ch.epfl.sdp.ui.user.stats.UserStatisticsFragment;
 
 import com.google.android.material.tabs.TabLayout;
@@ -56,6 +57,9 @@ public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSe
             case 1:
                 getSupportFragmentManager().beginTransaction()
                         .replace(mBinding.userContent.getId(), new UserEventsFragment()).commit();
+                break;
+            case 2:  getSupportFragmentManager().beginTransaction()
+                    .replace(mBinding.userContent.getId(), new UserProfileFragment()).commit();
                 break;
         }
     }

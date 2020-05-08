@@ -15,7 +15,10 @@ public class User {
 
     private final String mName;
     private final String mEmail;
-
+    private String mImageId;
+    private String mDescription;
+    private final String DEFAULT_URL = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
+            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
     /**
      * Construct a new User instance
      *
@@ -26,9 +29,36 @@ public class User {
     public User(@NonNull String name, @NonNull String email) {
         this.mName = verifyNotNull(name);
         this.mEmail = verifyNotNull(email);
+        this.mImageId= DEFAULT_URL;
+        this.mDescription="Hey there! I am using Eventum.";
         if(name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public User(@NonNull String name, @NonNull String email, @NonNull String imageId, @NonNull String description) {
+        this(name, email);
+        this.mImageId=verifyNotNull(imageId);
+        this.mDescription=verifyNotNull(description);
+        if(imageId.isEmpty() || description.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void setImage(@NonNull String imageId){
+        this.mImageId= verifyNotNull(imageId);
+        //check image id is correct
+    }
+
+    public void setDescription(String description){
+        this.mDescription = verifyNotNull(description);
+        //check description is not empty etc
+    }
+    public String getImageId(){
+        return mImageId;
+    }
+    public String getDescription(){
+        return mDescription;
     }
 
     /**
