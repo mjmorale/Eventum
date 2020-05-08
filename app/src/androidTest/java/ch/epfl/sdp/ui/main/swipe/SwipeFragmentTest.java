@@ -196,10 +196,11 @@ public class SwipeFragmentTest {
         
          Thread.sleep(1500);
         
-         onView(withId(R.id.cards_list_view)).perform(swipeLeft());
-
-        onView(withId(R.id.cards_list_view)).perform(click());
-        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+         onView(withId(R.id.cards_list_view)).perform(swipeLeft(), click());
+         
+         Thread.sleep(1500);
+       
+         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
 
 //         onView(allOf(withText(eventTest2.getTitle()), isDisplayed())).check(matches(isDisplayed()));
 //         onView(allOf(withText(eventTest2.getDescription()), isDisplayed())).check(matches(isDisplayed()));
