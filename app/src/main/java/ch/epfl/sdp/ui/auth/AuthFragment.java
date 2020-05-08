@@ -33,6 +33,7 @@ import ch.epfl.sdp.databinding.FragmentAuthBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
 public class AuthFragment extends Fragment implements View.OnClickListener {
@@ -53,8 +54,8 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
-        mFactory.setAuthenticator(new FirebaseAuthenticator(FirebaseAuth.getInstance()));
-        mFactory.setDatabase(new FirestoreDatabase(FirebaseFirestore.getInstance()));
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @VisibleForTesting

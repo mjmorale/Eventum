@@ -92,6 +92,8 @@ public class AuthViewModel<CredType> extends ViewModel {
                 }
             }
             else {
+                // We are offline
+                mUserRef.postValue("offline");
                 Log.e(TAG, "Cannot query the database", existsResult.getException());
             }
         });
