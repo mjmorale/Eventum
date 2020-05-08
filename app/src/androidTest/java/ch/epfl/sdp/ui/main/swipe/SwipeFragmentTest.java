@@ -191,6 +191,7 @@ public class SwipeFragmentTest {
         onView(allOf(withText(eventTest1.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
 
+        
     }
 
 
