@@ -94,6 +94,5 @@ public class MapMarkerInfoWindowViewTest {
         verify(mDateView).setText(dateStr);
         verify(mDescriptionView).setText(description);
         verify(mImageGetter).getImage(mContext, imageId, mImageView);
-
     }
 }

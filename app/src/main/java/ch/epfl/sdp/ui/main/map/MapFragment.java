@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +13,9 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -95,6 +98,18 @@ public class MapFragment extends Fragment {
             mViewModel.centerCamera(getContext(), mZoomLevel);
 
             googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
+
+            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show(); // delete xxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+                }
+            });
         });
 
         return mBinding.getRoot();
