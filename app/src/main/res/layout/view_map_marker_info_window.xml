@@ -31,6 +31,13 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"/>
 
+            <ImageView
+                android:id="@+id/map_event_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/event_default"/>
+
             <TextView
                 android:id="@+id/map_event_date"
                 android:textColor="@color/black"
