@@ -29,6 +29,7 @@ import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
+import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -111,12 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show(); // delete xxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
-
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new SwipeFragment()).commit();
             }
         });
     }
