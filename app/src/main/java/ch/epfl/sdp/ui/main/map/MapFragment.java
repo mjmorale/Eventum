@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
@@ -34,7 +35,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 /**
  * Fragment for the map with events markers
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactoryMap;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
@@ -80,39 +81,44 @@ public class MapFragment extends Fragment {
                 new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
         mFactoryMap.setLocationService(locationService);
 
-        mMapView.getMapAsync(googleMap -> {
-            googleMap.setMyLocationEnabled(true);
-
-            mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
-            mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
-
-            FilterSettingsViewModel filterSettingsViewModel =
-                    new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
-
-            filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-                mViewModel.clearEvents();
-                for(DatabaseObject<Event> event: events)
-                    mViewModel.addEvent(event.getObject());
-            });
-
-            mViewModel.centerCamera(getContext(), mZoomLevel);
-
-            googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
-
-            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show(); // delete xxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
-
-                }
-            });
-        });
+        mMapView.getMapAsync(this);
 
         return mBinding.getRoot();
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        googleMap.setMyLocationEnabled(true);
+
+        mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
+        mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
+
+        FilterSettingsViewModel filterSettingsViewModel =
+                new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
+
+        filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+            mViewModel.clearEvents();
+            for(DatabaseObject<Event> event: events)
+                mViewModel.addEvent(event.getObject());
+        });
+
+        mViewModel.centerCamera(getContext(), mZoomLevel);
+
+        googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
+
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show(); // delete xxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+            }
+        });
     }
 
     @Override
