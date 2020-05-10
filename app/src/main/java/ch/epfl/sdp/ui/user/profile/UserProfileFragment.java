@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,20 +21,23 @@ import javax.annotation.Nullable;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentUserProfileBinding;
+import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
-import ch.epfl.sdp.ui.UIConstants;
 
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
 public class UserProfileFragment extends Fragment {
-    private UserProfileViewModel mViewModel;
-    private final UserProfileViewModel.MyViewModelFactory mFactory;
-    private static final int PERMISSION_STORAGE = 100;
 
+    private static final int PERMISSION_STORAGE = 100;
+    private final UserProfileViewModel.MyViewModelFactory mFactory;
+    private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
+    private FirestoreStorage.UrlReadyCallback mUploadCallBack;
+    private Storage mStorage;
 
 
     public UserProfileFragment() {
@@ -42,8 +46,6 @@ public class UserProfileFragment extends Fragment {
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
     }
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -58,15 +60,48 @@ public class UserProfileFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, mFactory).get(UserProfileViewModel.class);
         mBinding.userProfilePhoto.setOnClickListener(v -> {
-            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSION_STORAGE);
-        });
+            loadImage(ServiceProvider.getInstance().getStorage(), new FirestoreStorage.UrlReadyCallback() {
+                @Override
+                public void onSuccess(String url) {
+                    mViewModel.updateImageId(url);
+                }
 
+                @Override
+                public void onFailure() {
+                }
+            });
+        });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
             mBinding.userProfileBio.setText(user.getDescription());
             ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
         });
+
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
+    }
+
+
+
+
+
+
+    public void loadImage(Storage storage, FirestoreStorage.UrlReadyCallback uploadCallBack) {
+        mUploadCallBack = uploadCallBack;
+        mStorage = storage;
+        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                PERMISSION_STORAGE);
     }
 
     @Override
@@ -77,37 +112,22 @@ public class UserProfileFragment extends Fragment {
 
         if (hasPermission) {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, RC_CHOOSE_PHOTO);
+            startActivityForResult(intent, RC_CHOOSE_PHOTO, null);
 
         } else {
             Toast.makeText(getContext(), R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
-                displayImage();
-                mViewModel.uploadImage(mImageUri);
+                ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
+                mStorage.uploadImage(mImageUri, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-    private void displayImage() {
-        ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinding = null;
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-        mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 }

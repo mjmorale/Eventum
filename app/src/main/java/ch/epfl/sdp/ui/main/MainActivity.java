@@ -29,6 +29,7 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -40,6 +41,8 @@ import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
+
+import static androidx.test.InstrumentationRegistry.getContext;
 
 /**
  * The main activity of the application
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
                 TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
 
+                ImageGetter.getInstance().getImage(getApplicationContext(), user.getImageId(),mMainNavHeaderView.findViewById(R.id.main_nav_header_profile_picture));
                 username.setText(user.getName());
                 email.setText(user.getEmail());
             }
