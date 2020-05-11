@@ -107,7 +107,7 @@ public class SwipeFragmentTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    private void scenario() {
+    private void mockSetup() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
@@ -122,6 +122,10 @@ public class SwipeFragmentTest {
         when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
+    }
+
+    private void scenario() {
+        mockSetup();
 
        mScenario= FragmentScenario.launchInContainer(
                 SwipeFragment.class,
@@ -176,7 +180,7 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_ClickSToDetailled() throws InterruptedException {
+    public void SwipeFragment_ClickSToDetailed() throws InterruptedException {
         scenario();
         UiDevice uiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         List<DatabaseObject<Event>> events = new ArrayList<>();
@@ -188,11 +192,34 @@ public class SwipeFragmentTest {
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
-
-        
     }
 
+    @Test
+    public void SwipeFragment_FromTheMapWithBundleShowTheRightCard() throws InterruptedException {
+        mockSetup();
+
+        Bundle bundle = new Bundle();
+        bundle.putFloat("eventHash", eventTest2.hashCode());
+
+        mScenario= FragmentScenario.launchInContainer(
+                SwipeFragment.class,
+                bundle,
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
 
 
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
+        Thread.sleep(1500);
+
+        onView(withText("title2")).check(matches(isDisplayed()));
+        onView(withId(R.id.cards_list_view)).perform(swipeRight());
+
+        Thread.sleep(1500);
+        onView(withText("title")).check(matches(isDisplayed()));
+    }
 }
 
