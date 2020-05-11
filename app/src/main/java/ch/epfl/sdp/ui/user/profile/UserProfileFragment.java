@@ -58,7 +58,7 @@ public class UserProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this, mFactory).get(UserProfileViewModel.class);
+        mViewModel = new ViewModelProvider(this, mUserProfileViewModelFactory).get(UserProfileViewModel.class);
         mBinding.userProfilePhoto.setOnClickListener(v -> {
             loadImage(ServiceProvider.getInstance().getStorage(), new FirestoreStorage.UrlReadyCallback() {
                 @Override
