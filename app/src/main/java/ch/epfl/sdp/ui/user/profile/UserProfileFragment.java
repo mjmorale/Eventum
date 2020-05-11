@@ -42,9 +42,9 @@ public class UserProfileFragment extends Fragment {
 
     public UserProfileFragment() {
         mFactory = new UserProfileViewModel.MyViewModelFactory();
-        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @Override
@@ -76,8 +76,6 @@ public class UserProfileFragment extends Fragment {
             mBinding.userProfileBio.setText(user.getDescription());
             ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
         });
-
-
     }
 
     @Override
@@ -91,11 +89,6 @@ public class UserProfileFragment extends Fragment {
         super.onPause();
         mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
-
-
-
-
-
 
     public void loadImage(Storage storage, FirestoreStorage.UrlReadyCallback uploadCallBack) {
         mUploadCallBack = uploadCallBack;
