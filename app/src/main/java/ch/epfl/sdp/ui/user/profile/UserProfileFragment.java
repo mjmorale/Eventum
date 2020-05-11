@@ -41,9 +41,8 @@ public class UserProfileFragment extends Fragment {
 
     public UserProfileFragment() {
         mUserProfileViewModelFactory = new UserProfileViewModel.UserProfileViewModelFactory();
-        mUserProfileViewModelFactory.setStorage(ServiceProvider.getInstance().getStorage());
-        mUserProfileViewModelFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
-        mUserProfileViewModelFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mUserProfileViewModelFactory.setCurrentUserId(ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid());
+        mUserProfileViewModelFactory.setUserCollection(ServiceProvider.getInstance().getDatabase().query("users"));
     }
 
     @Override

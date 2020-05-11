@@ -13,64 +13,46 @@ import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
+import ch.epfl.sdp.ui.ParameterizedViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class UserProfileViewModel extends ViewModel {
     private final CollectionQuery mUserCollection;
-    private Storage mStorage;
-    private UserInfo mUserInfo;
     private LiveData<User> mUserLiveData;
+    private String mCurrentUserId;
 
-    public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
-        verifyNotNull(database);
-        mUserInfo = authenticator.getCurrentUser();
-        mUserCollection = database.query("users");
-    }
-
-    public void updateDescription(String description) {
-        mUserCollection.document(mUserInfo.getUid()).update("description", description, new Query.OnQueryCompleteCallback<Void>() {
-            @Override
-            public void onQueryComplete(QueryResult<Void> result) {
-
-            }
-        });
+    public UserProfileViewModel(@NonNull String currentUserId, CollectionQuery userCollection) {
+        mCurrentUserId=currentUserId;
+        mUserCollection = userCollection;
     }
 
     public void updateImageId(String imageId) {
-        mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, new Query.OnQueryCompleteCallback<Void>() {
-            @Override
-            public void onQueryComplete(QueryResult<Void> result) {
+        mUserCollection.document(mCurrentUserId).update("imageId", imageId, result -> { });
+    }
 
-            }
-        });
+    public void updateDescription(String description) {
+        mUserCollection.document(mCurrentUserId).update("description", description, result -> { });
     }
 
     public LiveData<User> getUserLive() {
         if (mUserLiveData == null) {
-            mUserLiveData = mUserCollection.document(mUserInfo.getUid()).liveData(User.class);
+            mUserLiveData = mUserCollection.document(mCurrentUserId).liveData(User.class);
         }
         return mUserLiveData;
     }
 
-    public Storage getStorage() {
-        return mStorage;
-    }
-
-    static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
-
+    static class UserProfileViewModelFactory extends ParameterizedViewModelFactory {
         UserProfileViewModelFactory() {
-            super(Storage.class, Authenticator.class);
+            super(String.class, CollectionQuery.class);
         }
 
-        void setStorage(@NonNull Storage storage) {
-            setValue(0, verifyNotNull(storage));
+        void setCurrentUserId(@NonNull String currentUserId) {
+            setValue(0, verifyNotNull(currentUserId));
         }
-
-        void setAuthenticator(@NonNull Authenticator authenticator) {
-            setValue(1, verifyNotNull(authenticator));
+        void setUserCollection(@NonNull CollectionQuery userCollection) {
+            setValue(1, verifyNotNull(userCollection));
         }
-
     }
 
 
