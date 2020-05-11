@@ -13,6 +13,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -152,8 +153,11 @@ public class FilterSettingsViewModel extends ViewModel {
 
     private void combineEvents() {
         mEvents.clear();
+        Date now = new Date();
         for(DatabaseObject<Event> event: mFilteredEvents) {
-            mEvents.put(event.getId(), event);
+            if(now.compareTo(event.getObject().getDate()) < 0) {
+                mEvents.put(event.getId(), event);
+            }
         }
         for(DatabaseObject<Event> event: mAttendedEvents) {
             mEvents.remove(event.getId());
