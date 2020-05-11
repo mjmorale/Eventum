@@ -56,6 +56,7 @@ public class UserProfileViewModel extends ViewModel {
     public Storage getStorage(){
         return  mStorage;
     }
+
     static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
 
         UserProfileViewModelFactory() {

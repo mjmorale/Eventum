@@ -32,7 +32,7 @@ import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 public class UserProfileFragment extends Fragment {
 
     private static final int PERMISSION_STORAGE = 100;
-    private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
+    private final UserProfileViewModel.UserProfileViewModelFactory mUserProfileViewModelFactory;
     private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
@@ -41,10 +41,10 @@ public class UserProfileFragment extends Fragment {
 
 
     public UserProfileFragment() {
-        mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
-        mFactory.setStorage(ServiceProvider.getInstance().getStorage());
-        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
-        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mUserProfileViewModelFactory = new UserProfileViewModel.UserProfileViewModelFactory();
+        mUserProfileViewModelFactory.setStorage(ServiceProvider.getInstance().getStorage());
+        mUserProfileViewModelFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+        mUserProfileViewModelFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @Override
