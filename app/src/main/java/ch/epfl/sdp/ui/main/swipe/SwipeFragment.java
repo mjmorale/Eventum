@@ -121,7 +121,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
                 mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
                 mNumberSwipe = 0;
 
-                float eventHash = bundleEventHash();
+                int eventHash = bundleEventHash();
                 if (eventHash != DEFAULT_VALUE) specificEventFromBundleOnTop(eventHash);
             }
         });
@@ -172,16 +172,16 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
-    private float bundleEventHash() {
+    private int bundleEventHash() {
         Bundle bundle = this.getArguments();
-        float eventHash = DEFAULT_VALUE;
+        int eventHash = DEFAULT_VALUE;
         if (bundle != null) {
-            eventHash = bundle.getFloat("eventHash", DEFAULT_VALUE);
+            eventHash = bundle.getInt("eventHash", DEFAULT_VALUE);
         }
         return eventHash;
     }
 
-    private void specificEventFromBundleOnTop(float eventHash) {
+    private void specificEventFromBundleOnTop(int eventHash) {
         DatabaseObject<Event> searchedDatabaseObject = null;
         for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
             DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);

@@ -112,7 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Bundle bundle = new Bundle();
-                bundle.putFloat("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
+                bundle.putInt("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
                 SwipeFragment swipeFragment = new SwipeFragment();
                 swipeFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, swipeFragment).commit();

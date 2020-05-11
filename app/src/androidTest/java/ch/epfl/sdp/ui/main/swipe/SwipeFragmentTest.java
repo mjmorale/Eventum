@@ -199,7 +199,7 @@ public class SwipeFragmentTest {
         mockSetup();
 
         Bundle bundle = new Bundle();
-        bundle.putFloat("eventHash", eventTest2.hashCode());
+        bundle.putInt("eventHash", eventTest2.hashCode());
 
         mScenario= FragmentScenario.launchInContainer(
                 SwipeFragment.class,
