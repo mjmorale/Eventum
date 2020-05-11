@@ -29,6 +29,7 @@ import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
+import ch.epfl.sdp.ui.main.map.MapFragment;
 
 /**
  * Fragment for the swiping cards
@@ -47,6 +48,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private LiteMapViewModel mMapViewModel;
 
     private final int DEFAULT_VALUE = 0;
+    private int mEventHash;
 
     public SwipeFragment() {
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
@@ -75,6 +77,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onLeftCardExit(Object o) {
         mNumberSwipe += 1;
+        goBackToMapIfConditionsAreMet();
     }
 
     @Override
@@ -85,6 +88,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         });
         mNumberSwipe += 1;
+        goBackToMapIfConditionsAreMet();
     }
 
     @Override
@@ -112,17 +116,25 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
 
-        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+        mEventHash = bundleEventHash();
 
+        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
            if (events != null) {
                 mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-                mArrayAdapter.clear();
-                mArrayAdapter.addAll(events);
-                mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
-                mNumberSwipe = 0;
 
-                int eventHash = bundleEventHash();
-                if (eventHash != DEFAULT_VALUE) specificEventFromBundleOnTop(eventHash);
+               if (mEventHash != DEFAULT_VALUE) {
+                   for (DatabaseObject<Event> event : events) {
+                       if (mEventHash == event.getObject().hashCode()) {
+                           mArrayAdapter.clear();
+                           mArrayAdapter.add(event);
+                       }
+                   }
+               } else {
+                   mArrayAdapter.clear();
+                   mArrayAdapter.addAll(events);
+                   mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
+               }
+                mNumberSwipe = 0;
             }
         });
 
@@ -181,17 +193,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         return eventHash;
     }
 
-    private void specificEventFromBundleOnTop(int eventHash) {
-        DatabaseObject<Event> searchedDatabaseObject = null;
-        for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
-            DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);
-            if (eventHash == (databaseObject.getObject().hashCode())) {
-                searchedDatabaseObject = databaseObject;
-            }
-        }
-        if (searchedDatabaseObject != null) {
-            mArrayAdapter.remove(searchedDatabaseObject); // not working !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            mArrayAdapter.insert(searchedDatabaseObject, 0);
+    private void goBackToMapIfConditionsAreMet() {
+        if (mArrayAdapter.isEmpty() && bundleEventHash() != DEFAULT_VALUE) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new MapFragment()).commit();
         }
     }
 }
