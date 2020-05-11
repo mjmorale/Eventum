@@ -47,16 +47,16 @@ public class User {
 
     public void setImage(@NonNull String imageId){
         this.mImageId= verifyNotNull(imageId);
-        //check image id is correct
     }
 
     public void setDescription(String description){
         this.mDescription = verifyNotNull(description);
-        //check description is not empty etc
     }
+
     public String getImageId(){
         return mImageId;
     }
+    
     public String getDescription(){
         return mDescription;
     }

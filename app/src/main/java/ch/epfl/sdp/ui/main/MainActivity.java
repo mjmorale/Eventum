@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(mBinding.mainToolbar);
 
         setupToolbarNavigation();
-
         // Build the view model
         mFactory.setUserRef(getUserRefFromIntent(getIntent()));
         mViewModel = new ViewModelProvider(this, mFactory).get(MainViewModel.class);
@@ -88,15 +87,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (user != null) {
                 TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
                 TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
-
                 ImageGetter.getInstance().getImage(getApplicationContext(), user.getImageId(),mMainNavHeaderView.findViewById(R.id.main_nav_header_profile_picture));
                 username.setText(user.getName());
-                email.setText(user.getEmail());
-            }
+                email.setText(user.getEmail()); }
         });
 
         addFilterSettingsListener();
-
         if (savedInstanceState == null) {
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,

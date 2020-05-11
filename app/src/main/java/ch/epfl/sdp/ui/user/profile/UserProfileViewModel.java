@@ -56,9 +56,9 @@ public class UserProfileViewModel extends ViewModel {
     public Storage getStorage(){
         return  mStorage;
     }
-    static class MyViewModelFactory extends DatabaseViewModelFactory {
+    static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
 
-        MyViewModelFactory() {
+        UserProfileViewModelFactory() {
             super(Storage.class, Authenticator.class);
         }
 
