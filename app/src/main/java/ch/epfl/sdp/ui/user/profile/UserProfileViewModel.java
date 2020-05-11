@@ -53,8 +53,8 @@ public class UserProfileViewModel extends ViewModel {
         return mUserLiveData;
     }
 
-    public Storage getStorage(){
-        return  mStorage;
+    public Storage getStorage() {
+        return mStorage;
     }
 
     static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
