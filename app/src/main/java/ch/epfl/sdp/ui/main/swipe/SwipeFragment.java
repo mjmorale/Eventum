@@ -112,7 +112,6 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
 
-
         mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
 
            if (events != null) {
@@ -121,7 +120,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
                 mArrayAdapter.addAll(events);
                 mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
                 mNumberSwipe = 0;
-               specificEventFromBundleOnTop();
+
+                float eventHash = bundleEventHash();
+                if (eventHash != DEFAULT_VALUE) specificEventFromBundleOnTop(eventHash);
             }
         });
 
@@ -171,26 +172,26 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
-    private void specificEventFromBundleOnTop() {
-        // to have a event on top when clicking on it on the map
+    private float bundleEventHash() {
         Bundle bundle = this.getArguments();
         float eventHash = DEFAULT_VALUE;
         if (bundle != null) {
             eventHash = bundle.getFloat("eventHash", DEFAULT_VALUE);
         }
+        return eventHash;
+    }
 
-        if (eventHash != DEFAULT_VALUE) {
-            DatabaseObject<Event> searchedDatabaseObject = null;
-            for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
-                DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);
-                if (eventHash == (databaseObject.getObject().hashCode())) {
-                    searchedDatabaseObject = databaseObject;
-                }
+    private void specificEventFromBundleOnTop(float eventHash) {
+        DatabaseObject<Event> searchedDatabaseObject = null;
+        for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
+            DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);
+            if (eventHash == (databaseObject.getObject().hashCode())) {
+                searchedDatabaseObject = databaseObject;
             }
-            if (searchedDatabaseObject != null) {
-                mArrayAdapter.remove(searchedDatabaseObject); // not working !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                mArrayAdapter.insert(searchedDatabaseObject, 0);
-            }
+        }
+        if (searchedDatabaseObject != null) {
+            mArrayAdapter.remove(searchedDatabaseObject); // not working !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            mArrayAdapter.insert(searchedDatabaseObject, 0);
         }
     }
 }
