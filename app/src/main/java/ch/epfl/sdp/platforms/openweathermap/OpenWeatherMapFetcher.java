@@ -1,4 +1,4 @@
-package ch.epfl.sdp.weather;
+package ch.epfl.sdp.platforms.openweathermap;
 
 import android.content.Context;
 
@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import ch.epfl.sdp.weather.Weather;
+import ch.epfl.sdp.weather.WeatherFetcher;
 
 public class OpenWeatherMapFetcher implements WeatherFetcher {
 

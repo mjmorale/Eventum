@@ -19,7 +19,6 @@ public class Weather {
     private String dataString;
     private JsonObject gson;
 
-    private final long SECONDS_IN_DAY = 24 * 3600;
     private final long SECONDS_IN_HALF_DAY = 12 * 3600;
 
 
@@ -63,7 +62,7 @@ public class Weather {
 
         long response = this.getResponseTimestamp();
 
-        return currentTime < (response + SECONDS_IN_DAY);
+        return currentTime < (response + (SECONDS_IN_HALF_DAY / 2));
     }
 
     public int getClosestDay(Date date) {

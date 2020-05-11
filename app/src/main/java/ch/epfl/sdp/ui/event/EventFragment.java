@@ -21,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -31,7 +30,7 @@ import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
-import ch.epfl.sdp.weather.OpenWeatherMapFetcher;
+import ch.epfl.sdp.platforms.openweathermap.OpenWeatherMapFetcher;
 import ch.epfl.sdp.weather.Weather;
 import ch.epfl.sdp.weather.WeatherFetcher;
 
