@@ -174,20 +174,22 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private void specificEventFromBundleOnTop() {
         // to have a event on top when clicking on it on the map
         Bundle bundle = this.getArguments();
+        float eventHash = DEFAULT_VALUE;
         if (bundle != null) {
-            float eventHash = bundle.getFloat("eventHash", DEFAULT_VALUE);
-            if (eventHash != DEFAULT_VALUE) {
-                DatabaseObject<Event> searchedDatabaseObject = null;
-                for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
-                    DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);
-                    if (eventHash == (databaseObject.getObject().hashCode())) {
-                        searchedDatabaseObject = databaseObject;
-                    }
+            eventHash = bundle.getFloat("eventHash", DEFAULT_VALUE);
+        }
+
+        if (eventHash != DEFAULT_VALUE) {
+            DatabaseObject<Event> searchedDatabaseObject = null;
+            for (int index = 0; index < mArrayAdapter.getCount() && searchedDatabaseObject == null; index++) {
+                DatabaseObject<Event> databaseObject = mArrayAdapter.getItem(index);
+                if (eventHash == (databaseObject.getObject().hashCode())) {
+                    searchedDatabaseObject = databaseObject;
                 }
-                if (searchedDatabaseObject != null) {
-                    mArrayAdapter.remove(searchedDatabaseObject); // not working !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    mArrayAdapter.insert(searchedDatabaseObject, 0);
-                }
+            }
+            if (searchedDatabaseObject != null) {
+                mArrayAdapter.remove(searchedDatabaseObject); // not working !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                mArrayAdapter.insert(searchedDatabaseObject, 0);
             }
         }
     }
