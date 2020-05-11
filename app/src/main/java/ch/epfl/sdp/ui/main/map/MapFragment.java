@@ -87,7 +87,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return mBinding.getRoot();
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -112,7 +111,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new SwipeFragment()).commit();
+                Bundle bundle = new Bundle();
+                bundle.putFloat("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
+                SwipeFragment swipeFragment = new SwipeFragment();
+                swipeFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, swipeFragment).commit();
             }
         });
     }
