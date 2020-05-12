@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -88,14 +89,7 @@ public class AttendingListFragment extends Fragment {
         mBinding.attendingListView.setAdapter(mAdapter);
         mBinding.attendingListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        SwipeToDeleteCallback itemCallback = new SwipeToDeleteCallback(getContext()) {
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                removeEvent(viewHolder.getAdapterPosition());
-            }
-        };
-        ItemTouchHelper h = new ItemTouchHelper(itemCallback);
-        h.attachToRecyclerView(mBinding.attendingListView);
+        setupSwipeToDeleteCallback(getContext());
 
         // If injected using the constructor then do not get it from the context
         if(mFactory.getCacheDir() == null) {
@@ -112,8 +106,19 @@ public class AttendingListFragment extends Fragment {
         });
     }
 
-    private void removeEvent(int position) {
-        new AlertDialog.Builder(getContext())
+    private void setupSwipeToDeleteCallback(Context context) {
+        SwipeToDeleteCallback itemCallback = new SwipeToDeleteCallback(getContext()) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                removeEvent(context, viewHolder.getAdapterPosition());
+            }
+        };
+        ItemTouchHelper h = new ItemTouchHelper(itemCallback);
+        h.attachToRecyclerView(mBinding.attendingListView);
+    }
+
+    private void removeEvent(Context context, int position) {
+        new AlertDialog.Builder(context)
                 .setTitle("Leave event")
                 .setMessage("Are you sure you want to unsubscribe from this event?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
