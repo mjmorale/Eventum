@@ -103,7 +103,8 @@ public class AttendingListViewModel extends ViewModel {
             if(!result.isSuccessful()) {
                 mCache.saveEvent(removed, eventRef, removed.getDate(), mCacheDir);
                 try {
-                    mCachedEventsLiveData.postValue(mCache.getAllEventsWithRefs(mCacheDir));
+                    List<DatabaseObject<Event>> cache = mCache.getAllEventsWithRefs(mCacheDir);
+                    mCachedEventsLiveData.postValue(cache);
                 }
                 catch (IOException | ClassNotFoundException e) {
                     Log.e(TAG, "Cannot read events from the cache", e);
