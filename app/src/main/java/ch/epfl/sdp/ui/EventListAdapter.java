@@ -108,15 +108,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     }
 
     /**
-     * Remove an item at a certain position in the adapter.
-     * @param position The index of the object to remove.
-     */
-    public void remove(int position) {
-        mEventList.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    /**
      * Set the click listener for the items of the adapter.
      * @param listener The on click listener for the adapter.
      * @throws IllegalArgumentException The listener is null.
