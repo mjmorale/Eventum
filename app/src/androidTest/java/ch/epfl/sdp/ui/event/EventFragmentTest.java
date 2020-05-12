@@ -104,6 +104,7 @@ public class EventFragmentTest {
         MockitoAnnotations.initMocks(this);
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
+        when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mDocumentQueryMock.liveData(Event.class)).thenReturn(mEventsLive);
         mEventsLive.postValue(DUMMY_EVENT);
 

@@ -139,8 +139,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         mBinding.minimap.getMapAsync(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-
-
+        mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.eventDetailSharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
@@ -168,7 +167,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setWeather() {
-        mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
 
         mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
             if (weatherList == null || weatherList.isEmpty()) {
