@@ -75,7 +75,7 @@ public class UserProfileFragment extends Fragment {
             mBinding.userProfileBio.setText(user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
-            mBinding.userProfileEmail.setText(user.getEmail());
+            //mBinding.userProfileEmail.setText(user.getEmail());
         });
     }
 
