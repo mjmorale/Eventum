@@ -2,6 +2,8 @@ package ch.epfl.sdp.ui.main.attending;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.FieldValue;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -18,7 +20,10 @@ import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
+import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.offline.EventSaver;
 import ch.epfl.sdp.offline.ObjectSaver;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
@@ -60,6 +65,8 @@ public class AttendingListViewModel extends ViewModel {
 
     private LiveData<List<DatabaseObject<Event>>> mAttendingLiveData;
     private MediatorLiveData<List<DatabaseObject<Event>>> mCachedEventsLiveData = new MediatorLiveData<>();
+    private final CollectionQuery mEventCollection;
+    private final String mUserRef;
 
     private final File mCacheDir;
     private final EventSaver mCache;
@@ -74,7 +81,9 @@ public class AttendingListViewModel extends ViewModel {
         mCache = eventSaver;
         mCacheDir = cacheDir;
         UserInfo user = authenticator.getCurrentUser();
-        mAttendingLiveData = database.query("events").whereArrayContains("attendees", user.getUid()).liveData(Event.class);
+        mUserRef = user.getUid();
+        mEventCollection = database.query("events");
+        mAttendingLiveData = mEventCollection.whereArrayContains("attendees", mUserRef).liveData(Event.class);
         setupCachedEventLiveData();
     }
 
@@ -85,6 +94,22 @@ public class AttendingListViewModel extends ViewModel {
      */
     public LiveData<List<DatabaseObject<Event>>> getAttendingEvents() {
         return mCachedEventsLiveData;
+    }
+
+    public void leaveEvent(String eventRef) {
+        Event removed = mCache.getSingleFile(eventRef, mCacheDir);
+        mCache.removeSingleEvent(eventRef, mCacheDir);
+        mEventCollection.document(eventRef).update("attendees", FieldValue.arrayRemove(mUserRef), result -> {
+            if(!result.isSuccessful()) {
+                mCache.saveEvent(removed, eventRef, removed.getDate(), mCacheDir);
+                try {
+                    mCachedEventsLiveData.postValue(mCache.getAllEventsWithRefs(mCacheDir));
+                }
+                catch (IOException | ClassNotFoundException e) {
+                    Log.e(TAG, "Cannot read events from the cache", e);
+                }
+            }
+        });
     }
 
     private void setupCachedEventLiveData() {
