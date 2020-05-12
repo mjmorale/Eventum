@@ -31,19 +31,12 @@ import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 public class UserProfileFragment extends Fragment {
 
     private static final int PERMISSION_STORAGE = 100;
-    private final UserProfileViewModel.UserProfileViewModelFactory mUserProfileViewModelFactory;
     private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
     private Storage mStorage;
 
-
-    public UserProfileFragment() {
-        mUserProfileViewModelFactory = new UserProfileViewModel.UserProfileViewModelFactory();
-        mUserProfileViewModelFactory.setCurrentUserId(ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid());
-        mUserProfileViewModelFactory.setUserCollection(ServiceProvider.getInstance().getDatabase().query("users"));
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,7 +49,10 @@ public class UserProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this, mUserProfileViewModelFactory).get(UserProfileViewModel.class);
+        mViewModel = new UserProfileViewModel(
+                ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid()
+                ,ServiceProvider.getInstance().getDatabase().query("users")
+        );
         mBinding.userProfilePhoto.setOnClickListener(v -> {
             loadImage(ServiceProvider.getInstance().getStorage(), new FirestoreStorage.UrlReadyCallback() {
                 @Override

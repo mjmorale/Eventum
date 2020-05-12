@@ -42,18 +42,6 @@ public class UserProfileViewModel extends ViewModel {
         return mUserLiveData;
     }
 
-    static class UserProfileViewModelFactory extends ParameterizedViewModelFactory {
-        UserProfileViewModelFactory() {
-            super(String.class, CollectionQuery.class);
-        }
-
-        void setCurrentUserId(@NonNull String currentUserId) {
-            setValue(0, verifyNotNull(currentUserId));
-        }
-        void setUserCollection(@NonNull CollectionQuery userCollection) {
-            setValue(1, verifyNotNull(userCollection));
-        }
-    }
 
 
 }
