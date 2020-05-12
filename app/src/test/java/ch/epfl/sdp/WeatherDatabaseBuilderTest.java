@@ -5,10 +5,13 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.Map;
 
+import ch.epfl.sdp.db.DatabaseObjectBuilder;
 import ch.epfl.sdp.db.DatabaseObjectBuilderRegistry;
 import ch.epfl.sdp.weather.Weather;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 public class WeatherDatabaseBuilderTest {
 
@@ -37,6 +40,13 @@ public class WeatherDatabaseBuilderTest {
         assertEquals(mockWeather.isForecastAvailable(mockDate), resultWeather.isForecastAvailable(mockDate));
         assertEquals(mockWeather.getClosestDay(mockDate), resultWeather.getClosestDay(mockDate));
         assertEquals(mockWeather.getString(), resultWeather.getString());
+    }
+
+    @Test
+    public void WeatherDatabaseBuilder_HasNoLocation() {
+        DatabaseObjectBuilder<Weather> builder = DatabaseObjectBuilderRegistry.getBuilder(Weather.class);
+        assertFalse(builder.hasLocation());
+        assertNull(builder.getLocation(mockWeather));
     }
 
 }

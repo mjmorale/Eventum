@@ -11,6 +11,8 @@ import ch.epfl.sdp.weather.WeatherFetcher;
 
 public class MockWeatherFetcher implements WeatherFetcher {
 
+    public MockWeatherFetcher() {}
+
     @Override
     public void fetch(Context context, onResponseCallback callback, LatLng location) {
         String data =  Resources.getSystem().getString(R.string.default_weather);

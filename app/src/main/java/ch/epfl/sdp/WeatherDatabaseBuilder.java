@@ -39,7 +39,7 @@ public class WeatherDatabaseBuilder extends DatabaseObjectBuilder<Weather> {
 
     @Nullable
     @Override
-    public LatLng getLocation(@NonNull Weather object) {
+    public LatLng getLocation(@NonNull Weather weather) {
         return null;
     }
 }

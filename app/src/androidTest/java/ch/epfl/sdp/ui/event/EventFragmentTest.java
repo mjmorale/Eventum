@@ -95,7 +95,7 @@ public class EventFragmentTest {
 
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
 
-    private LiveData<List<DatabaseObject<Weather>>> mWeatherLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Weather>>> mWeatherLiveData = new MutableLiveData<>();
 
     private LiveData<List<DatabaseObject<ChatMessage>>> mChatLiveData = new MutableLiveData<>();
 
@@ -110,6 +110,7 @@ public class EventFragmentTest {
 
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(Weather.class)).thenReturn(mWeatherLiveData);
+        mWeatherLiveData.postValue(null);
     }
 
     @SuppressWarnings("unchecked")
