@@ -39,6 +39,7 @@ public class FirebaseDocumentQueryTest {
 
     private final static String DUMMY_STRING = "test";
     private final static Exception DUMMY_EXCEPTION = new Exception();
+    private final static Object DUMMY_OBJECT = new Object();
 
     @Mock
     private FirebaseFirestore mDb;
@@ -161,6 +162,87 @@ public class FirebaseDocumentQueryTest {
         query.get(String.class, s -> {
             assertFalse(s.isSuccessful());
             assertEquals(DUMMY_EXCEPTION, s.getException());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_GetField_FailsWithNullFirstArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.getField(null, result -> {});
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void FirebaseDocumentQuery_GetField_FailsWithNullSecondArgument() {
+        FirebaseDocumentQuery firebaseDocumentQuery = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        firebaseDocumentQuery.getField("field", null);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_GetField_CallsCallbackWithExceptionIfErrorOccurred() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(false);
+        when(mDocumentSnapshotTask.getException()).thenReturn(DUMMY_EXCEPTION);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.getField("field", s -> {
+            assertFalse(s.isSuccessful());
+            assertEquals(DUMMY_EXCEPTION, s.getException());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_GetField_CallsCallbackWithNullValueIfDocumentDoesNotExist() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
+        when(mDocumentSnapshot.exists()).thenReturn(false);
+        when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.getField("field", s -> {
+            assertTrue(s.isSuccessful());
+            assertNull(s.getData());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_GetField_CallsCallbackWithNullValueIfFieldDoesNotExist() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
+        when(mDocumentSnapshot.exists()).thenReturn(true);
+        when(mDocumentSnapshot.get("field")).thenReturn(null);
+        when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.getField("field", s -> {
+            assertTrue(s.isSuccessful());
+            assertNull(s.getData());
+        });
+
+        mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);
+    }
+
+    @Test
+    public void FirebaseDocumentQuery_GetField_CallsCallbackWithCorrectValueIfSuccessful() {
+        when(mDocumentSnapshotTask.addOnCompleteListener(mDocumentSnapshotCompleteListenerCaptor.capture())).thenReturn(null);
+        when(mDocumentSnapshotTask.isSuccessful()).thenReturn(true);
+        when(mDocumentSnapshot.exists()).thenReturn(true);
+        when(mDocumentSnapshot.get("field")).thenReturn(DUMMY_OBJECT);
+        when(mDocumentSnapshotTask.getResult()).thenReturn(mDocumentSnapshot);
+        when(mDocumentReference.get()).thenReturn(mDocumentSnapshotTask);
+
+        FirebaseDocumentQuery query = new FirebaseDocumentQuery(mDb, mDocumentReference);
+        query.getField("field", s -> {
+            assertTrue(s.isSuccessful());
+            assertEquals(DUMMY_OBJECT, s.getData());
         });
 
         mDocumentSnapshotCompleteListenerCaptor.getValue().onComplete(mDocumentSnapshotTask);

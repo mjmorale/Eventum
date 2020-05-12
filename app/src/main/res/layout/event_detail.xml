@@ -126,6 +126,15 @@
             android:focusable="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/event_detail_attendee_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:tint="@color/white"
+            android:src="@drawable/ic_people_black_24dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/event_detail_calendar_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

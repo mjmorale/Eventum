@@ -24,6 +24,7 @@ import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
+import ch.epfl.sdp.ui.event.attendee.AttendeeFragment;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
@@ -130,6 +131,13 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                 .replace(getId(), ChatFragment.getInstance(mViewModel.getEventRef()))
                 .addToBackStack(null)
                 .commit());
+
+        mBinding.eventDetailAttendeeButton.setOnClickListener(v -> { getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                .replace(getId(), AttendeeFragment.getInstance(mViewModel.getEventRef()))
+                .addToBackStack(null)
+                .commit();
+        });
 
         mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
     }
