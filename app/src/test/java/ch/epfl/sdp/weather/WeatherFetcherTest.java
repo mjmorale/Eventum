@@ -12,6 +12,8 @@ import ch.epfl.sdp.R;
 
 public class WeatherFetcherTest {
 
+
+
     @Test
     public void WeatherFetcherWorks() throws Exception {
 //        OpenWeatherMapFetcher fetcher = new OpenWeatherMapFetcher(new LatLng(46.5, 7.2));
