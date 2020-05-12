@@ -42,7 +42,6 @@ import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
-import static androidx.test.InstrumentationRegistry.getContext;
 
 /**
  * The main activity of the application

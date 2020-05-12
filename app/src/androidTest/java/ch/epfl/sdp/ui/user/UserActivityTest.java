@@ -19,11 +19,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
+import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.utils.TestUtils;
@@ -49,7 +51,11 @@ public class UserActivityTest {
     private CollectionQuery mCollectionQuery;
 
     @Mock
+    private DocumentQuery mDocumentQuery;
+    @Mock
     private FilterQuery mFilterQuery;
+    @Mock
+    private LiveData<User> mUserLiveData;
 
     @Mock
     private Authenticator<AuthCredential> mAuthenticator;
@@ -67,7 +73,8 @@ public class UserActivityTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.whereFieldEqualTo(anyString(), any())).thenReturn(mFilterQuery);
         when(mFilterQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
-
+        when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
+        when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         ServiceProvider.getInstance().setDatabase(mDatabase);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticator);
 
