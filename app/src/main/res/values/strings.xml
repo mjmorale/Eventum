@@ -45,4 +45,5 @@
     <string name="user_statistics">User statistics</string>
     <string name="filter">Filter</string>
     <string name="default_filter_range">5km</string>
+    <string name="profile_image_of_the_user" />
 </resources>
