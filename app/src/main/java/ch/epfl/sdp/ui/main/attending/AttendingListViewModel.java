@@ -96,19 +96,19 @@ public class AttendingListViewModel extends ViewModel {
         return mCachedEventsLiveData;
     }
 
+    /**
+     * Unsubscribe the current user to a given event reference.
+     *
+     * @param eventRef The reference of the event to leave.
+     */
     public void leaveEvent(String eventRef) {
         Event removed = mCache.getSingleFile(eventRef, mCacheDir);
         mCache.removeSingleEvent(eventRef, mCacheDir);
         mEventCollection.document(eventRef).update("attendees", FieldValue.arrayRemove(mUserRef), result -> {
             if(!result.isSuccessful()) {
+                // If the user could not be removed from the event, restore the cache
                 mCache.saveEvent(removed, eventRef, removed.getDate(), mCacheDir);
-                try {
-                    List<DatabaseObject<Event>> cache = mCache.getAllEventsWithRefs(mCacheDir);
-                    mCachedEventsLiveData.postValue(cache);
-                }
-                catch (IOException | ClassNotFoundException e) {
-                    Log.e(TAG, "Cannot read events from the cache", e);
-                }
+                postCurrentCacheContent();
             }
         });
     }
@@ -122,14 +122,17 @@ public class AttendingListViewModel extends ViewModel {
                     mCache.saveEvent(object.getObject(), object.getId(), object.getObject().getDate(), mCacheDir);
                 }
             }
-
             // Once the cache is up to date, return all events from the cache
-            try {
-                List<DatabaseObject<Event>> events = mCache.getAllEventsWithRefs(mCacheDir);
-                mCachedEventsLiveData.postValue(events);
-            } catch (IOException | ClassNotFoundException e) {
-                Log.e(TAG, "Cannot read events from the cache", e);
-            }
+            postCurrentCacheContent();
         });
+    }
+
+    private void postCurrentCacheContent() {
+        try {
+            List<DatabaseObject<Event>> events = mCache.getAllEventsWithRefs(mCacheDir);
+            mCachedEventsLiveData.postValue(events);
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e(TAG, "Cannot read events from the cache", e);
+        }
     }
 }

@@ -2,7 +2,6 @@ package ch.epfl.sdp.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -16,6 +15,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import ch.epfl.sdp.R;
 
+/**
+ * ItemTouchHelper callback that display a red banner and a bin when trying to dismiss a recycler
+ * view item.
+ * Taken from https://www.journaldev.com/23164/android-recyclerview-swipe-to-delete-undo
+ */
 public abstract class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
 
     private Paint mClearPaint;
@@ -26,6 +30,10 @@ public abstract class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
     private int mIntrinsicWidth;
     private int mIntrinsicHeight;
 
+    /**
+     * Create a new SwipeToDeleteCallback for a given context
+     * @param context The current application context
+     */
     public SwipeToDeleteCallback(Context context) {
         mBackground = new ColorDrawable();
         mBackgroundColor = ContextCompat.getColor(context, R.color.red);
@@ -57,13 +65,13 @@ public abstract class SwipeToDeleteCallback extends ItemTouchHelper.Callback {
         boolean isCancelled = dX == 0 && !isCurrentlyActive;
 
         if (isCancelled) {
-            clearCanvas(c, itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+            clearCanvas(c, itemView.getRight() + dX, (float)itemView.getTop(), (float)itemView.getRight(), (float)itemView.getBottom());
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             return;
         }
 
         mBackground.setColor(mBackgroundColor);
-        mBackground.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+        mBackground.setBounds(itemView.getRight() + (int)dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         mBackground.draw(c);
 
         int deleteIconTop = itemView.getTop() + (itemHeight - mIntrinsicHeight) / 2;
