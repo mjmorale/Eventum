@@ -44,6 +44,8 @@ android {
 
 dependencies {
 
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta5"
+
     // Facebook dependencies
     implementation 'com.facebook.android:facebook-share:5.15.3'
     // Library dependencies

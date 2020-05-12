@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (user != null) {
                 TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
                 TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
-                ImageGetter.getInstance().getImage(getApplicationContext(), user.getImageId(),mMainNavHeaderView.findViewById(R.id.main_nav_header_profile_picture));
+                if(!user.getImageId().isEmpty())
+                    ImageGetter.getInstance().getImage(getApplicationContext(), user.getImageId(),mMainNavHeaderView.findViewById(R.id.main_nav_header_profile_picture));
                 username.setText(user.getName());
                 email.setText(user.getEmail()); }
         });

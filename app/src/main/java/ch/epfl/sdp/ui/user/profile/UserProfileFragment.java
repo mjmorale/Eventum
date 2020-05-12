@@ -66,13 +66,16 @@ public class UserProfileFragment extends Fragment {
 
                 @Override
                 public void onFailure() {
+                    Toast.makeText(getContext(), "Operation failed, try again!", Toast.LENGTH_SHORT).show();
                 }
             });
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
             mBinding.userProfileBio.setText(user.getDescription());
-            ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
+            if(!user.getImageId().isEmpty())
+                ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
+            mBinding.userProfileEmail.setText(user.getEmail());
         });
     }
 
@@ -104,7 +107,6 @@ public class UserProfileFragment extends Fragment {
         if (hasPermission) {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, RC_CHOOSE_PHOTO, null);
-
         } else {
             Toast.makeText(getContext(), R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
         }
