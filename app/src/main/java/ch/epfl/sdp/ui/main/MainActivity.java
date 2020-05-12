@@ -98,8 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION },
-                    PERMISSION_LOCATION);
-        }
+                    PERMISSION_LOCATION); }
     }
 
     @Override
