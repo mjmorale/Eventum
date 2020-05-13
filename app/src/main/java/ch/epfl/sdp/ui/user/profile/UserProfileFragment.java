@@ -20,7 +20,9 @@ import androidx.lifecycle.ViewModelProvider;
 import javax.annotation.Nullable;
 
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentUserProfileBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -37,22 +39,22 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
+    private final UserProfileViewModel.MyViewModelFactory mFactory;
 
-    private Storage mStorage;
-    private String mCurrentUserId;
-    private CollectionQuery mUserCollection;
 
     public UserProfileFragment(){
-        mCurrentUserId= ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid();
-        mUserCollection=ServiceProvider.getInstance().getDatabase().query("users");
-        mStorage= ServiceProvider.getInstance().getStorage();
+        mFactory = new UserProfileViewModel.MyViewModelFactory();
+        mFactory.setStorage(ServiceProvider.getInstance().getStorage());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
     @VisibleForTesting
-    public UserProfileFragment(String currentUserId, CollectionQuery userCollection, Storage storage){
-        mCurrentUserId= currentUserId;
-        mUserCollection=userCollection;
-        mStorage=storage;
+    public UserProfileFragment(Storage storage, Authenticator authenticator, Database database){
+        mFactory = new UserProfileViewModel.MyViewModelFactory();
+        mFactory.setStorage(storage);
+        mFactory.setAuthenticator(authenticator);
+        mFactory.setDatabase(database);
     }
 
 
@@ -67,7 +69,7 @@ public class UserProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = new UserProfileViewModel(mCurrentUserId,mUserCollection);
+        mViewModel = new ViewModelProvider(this, mFactory).get(UserProfileViewModel.class);
 
         mBinding.userProfilePhoto.setOnClickListener(v -> {
             loadImage(new FirestoreStorage.UrlReadyCallback() {
@@ -129,7 +131,7 @@ public class UserProfileFragment extends Fragment {
                 mImageUri = data.getData();
                 ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
                 mBinding.userProfilePhoto.setTag("new_image");
-                mStorage.uploadImage(mImageUri, mUploadCallBack);
+                mViewModel.getStorage().uploadImage(mImageUri, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }

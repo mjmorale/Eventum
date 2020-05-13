@@ -21,6 +21,8 @@ import org.mockito.MockitoAnnotations;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
@@ -43,18 +45,21 @@ import static org.mockito.Mockito.when;
 public class UserProfileFragmentTest {
 
     @Mock
+    private Database mDatabaseMock;
+    @Mock
     private DocumentQuery mDocumentQueryMock;
-
-
 
     @Mock
     private CollectionQuery mCollectionQueryMock;
 
     @Mock
+    private Authenticator mAuthenticatorMock;
+
+    @Mock
     private Storage mStorageMock;
 
     private User mUser = new User("name", "email");
-
+    private UserInfo mUserInfo = new UserInfo("anyRef", mUser.getName(), mUser.getEmail());
     LiveData<User> mUserLive = new LiveData<User>() {
         @Override
         public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super User> observer) {
@@ -67,7 +72,8 @@ public class UserProfileFragmentTest {
 
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
         when(mDocumentQueryMock.liveData(User.class)).thenReturn(mUserLive);
-
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(mUserInfo);
+        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,7 +85,7 @@ public class UserProfileFragmentTest {
                 UserProfileFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(UserProfileFragment.class, "AnyUserRef", mCollectionQueryMock, mStorageMock)
+                new MockFragmentFactory(UserProfileFragment.class, mStorageMock,mAuthenticatorMock ,mDatabaseMock)
         );
 
 //        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
