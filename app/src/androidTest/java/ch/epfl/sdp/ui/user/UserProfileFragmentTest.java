@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.test.espresso.intent.Intents;
 
 import org.junit.Before;
@@ -42,8 +45,7 @@ public class UserProfileFragmentTest {
     @Mock
     private DocumentQuery mDocumentQueryMock;
 
-    @Mock
-    private MutableLiveData<User> mUserLiveMock;
+
 
     @Mock
     private CollectionQuery mCollectionQueryMock;
@@ -53,12 +55,18 @@ public class UserProfileFragmentTest {
 
     private User mUser = new User("name", "email");
 
+    LiveData<User> mUserLive = new LiveData<User>() {
+        @Override
+        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super User> observer) {
+            observer.onChanged(mUser);
+        }
+    };
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
-        when(mDocumentQueryMock.liveData(User.class)).thenReturn(mUserLiveMock);
+        when(mDocumentQueryMock.liveData(User.class)).thenReturn(mUserLive);
 
     }
 
@@ -74,7 +82,7 @@ public class UserProfileFragmentTest {
                 new MockFragmentFactory(UserProfileFragment.class, "AnyUserRef", mCollectionQueryMock, mStorageMock)
         );
 
-        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
+//        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
 
         onView(withId(R.id.user_profile_name)).check(matches(isDisplayed()));
 
