@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +21,7 @@ import javax.annotation.Nullable;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.FragmentUserProfileBinding;
+import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.storage.Storage;
@@ -35,7 +37,23 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
+
     private Storage mStorage;
+    private String mCurrentUserId;
+    private CollectionQuery mUserCollection;
+
+    public UserProfileFragment(){
+        mCurrentUserId= ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid();
+        mUserCollection=ServiceProvider.getInstance().getDatabase().query("users");
+        mStorage= ServiceProvider.getInstance().getStorage();
+    }
+
+    @VisibleForTesting
+    public UserProfileFragment(String currentUserId, CollectionQuery userCollection, Storage storage){
+        mCurrentUserId= currentUserId;
+        mUserCollection=userCollection;
+        mStorage=storage;
+    }
 
 
     @Override
@@ -49,12 +67,10 @@ public class UserProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = new UserProfileViewModel(
-                ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid()
-                ,ServiceProvider.getInstance().getDatabase().query("users")
-        );
+        mViewModel = new UserProfileViewModel(mCurrentUserId,mUserCollection);
+
         mBinding.userProfilePhoto.setOnClickListener(v -> {
-            loadImage(ServiceProvider.getInstance().getStorage(), new FirestoreStorage.UrlReadyCallback() {
+            loadImage(new FirestoreStorage.UrlReadyCallback() {
                 @Override
                 public void onSuccess(String url) {
                     mViewModel.updateImageId(url);
@@ -87,9 +103,8 @@ public class UserProfileFragment extends Fragment {
         mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 
-    public void loadImage(Storage storage, FirestoreStorage.UrlReadyCallback uploadCallBack) {
+    public void loadImage(FirestoreStorage.UrlReadyCallback uploadCallBack) {
         mUploadCallBack = uploadCallBack;
-        mStorage = storage;
         requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 PERMISSION_STORAGE);
     }
@@ -113,6 +128,7 @@ public class UserProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
                 ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
+                mBinding.userProfilePhoto.setTag("new_image");
                 mStorage.uploadImage(mImageUri, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();

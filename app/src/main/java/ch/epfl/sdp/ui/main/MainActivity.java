@@ -23,12 +23,10 @@ import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -42,7 +40,6 @@ import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
 
-import static androidx.test.InstrumentationRegistry.getContext;
 
 /**
  * The main activity of the application
