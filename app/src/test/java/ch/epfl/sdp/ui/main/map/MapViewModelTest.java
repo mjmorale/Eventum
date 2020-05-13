@@ -12,6 +12,7 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,13 +50,5 @@ public class MapViewModelTest {
         MapViewModel viewModel = new MapViewModel(mMapManager, mLocationService);
         viewModel.centerCamera(mContext, zoomLevel);
         verify(mMapManager).moveCamera(mLocation, zoomLevel);
-    }
-
-    @Test
-    public void MapViewModel_AddAndGetAnEventFromTheDictionaryReturnTheRightEvent() {
-        MapViewModel viewModel = new MapViewModel(mMapManager, mLocationService);
-        //viewModel.addEvent(mEvent);
-        //Event event = viewModel.getEventFromMarker(mMarker);
-        //assertEquals(event, mEvent);
     }
 }

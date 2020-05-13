@@ -41,6 +41,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final MapViewModel.MapViewModelFactory mFactoryMap;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
     private FragmentMapBinding mBinding;
+    private LocationService mLocationService = null;
 
     private MapView mMapView;
     private float mZoomLevel = 12;
@@ -57,7 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         verifyNotNull(mapManager, database, locationService);
         mFactoryMap = new MapViewModel.MapViewModelFactory();
         mFactoryMap.setMapManager(mapManager);
-        mFactoryMap.setLocationService(locationService);
+        mLocationService = locationService;
         mFactoryFilterSettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactoryFilterSettings.setDatabase(database);
         mFactoryFilterSettings.setLocationService(locationService);
@@ -78,9 +79,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        LocationService locationService =
-                new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
-        mFactoryMap.setLocationService(locationService);
+        if (mLocationService == null) {
+            mLocationService =
+                    new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
+
+        }
+        mFactoryMap.setLocationService(mLocationService);
 
         mMapView.getMapAsync(this);
 
