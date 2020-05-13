@@ -126,7 +126,6 @@ public class WeatherViewModel extends ViewModel {
 
     @Override
     public void onCleared() {
-//        mWeatherLiveData.removeObserver(observer);
         super.onCleared();
 
     }
