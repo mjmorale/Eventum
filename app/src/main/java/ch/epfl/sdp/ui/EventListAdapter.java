@@ -99,6 +99,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     }
 
     /**
+     * Get an item at a certain position.
+     * @param position The index of the object in the adapter.
+     * @return The object at the specified index.
+     */
+    public DatabaseObject<Event> get(int position) {
+        return mEventList.get(position);
+    }
+
+    /**
      * Set the click listener for the items of the adapter.
      * @param listener The on click listener for the adapter.
      * @throws IllegalArgumentException The listener is null.
