@@ -79,7 +79,8 @@ public class SwipeFragmentTest {
     private static final String DUMMY_DISTANCE_EVENT1 = "201m";
     private static final String DUMMY_DISTANCE_EVENT2 = "3.4km";
 
-    private FragmentScenario mScenario;
+    private FragmentScenario<SwipeFragment> mScenario;
+
     @Mock
     private Database mDatabase;
 
@@ -102,17 +103,18 @@ public class SwipeFragmentTest {
     private LocationQuery mLocationQuery;
 
     private EventBuilder eventBuilder = new EventBuilder();
+
     private Event eventTest1 = eventBuilder
             .setTitle("title")
             .setDescription("description")
-            .setDate("01/01/2020")
+            .setDate("01/01/2020 00:00")
             .setLocation(new LatLng(46.518748, 6.567795))
             .setOrganizerRef("organizer1")
             .build();
     private Event eventTest2 = eventBuilder
             .setTitle("title2")
             .setDescription("description2")
-            .setDate("02/01/2020")
+            .setDate("02/01/2020 00:00")
             .setLocation(new LatLng(46.541122, 6.601410))
             .setOrganizerRef("organizer2")
             .build();
@@ -221,23 +223,17 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_ClickSToDetailled() throws InterruptedException {
+    public void SwipeFragment_ClickSToDetailled() {
         scenario();
-        UiDevice uiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
-        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+        mScenario.onFragment(fragment -> mEventsLiveData.setValue(events));
 
         onView(withId(R.id.cards_list_view)).perform(click());
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
-
-        
     }
-
-
-
 }
 
