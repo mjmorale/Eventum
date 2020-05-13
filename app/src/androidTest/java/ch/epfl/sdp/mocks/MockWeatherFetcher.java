@@ -1,11 +1,9 @@
 package ch.epfl.sdp.mocks;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.weather.Weather;
 import ch.epfl.sdp.weather.WeatherFetcher;
 

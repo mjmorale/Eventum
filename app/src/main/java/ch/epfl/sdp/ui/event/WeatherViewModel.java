@@ -124,13 +124,7 @@ public class WeatherViewModel extends ViewModel {
         mWeatherFetcher.fetch(context, responseCallback, location);
     }
 
-    @Override
-    public void onCleared() {
-        super.onCleared();
-
-    }
-
-    public void deleteOldWeather(List<DatabaseObject<Weather>> databaseObjects) {
+    private void deleteOldWeather(List<DatabaseObject<Weather>> databaseObjects) {
         // Delete all out of date weather data
         Comparator<DatabaseObject<Weather>> compareByTimestampReverse =
                 (w1, w2) -> Long.compare(w2.getObject().getResponseTimestamp(), w1.getObject().getResponseTimestamp());

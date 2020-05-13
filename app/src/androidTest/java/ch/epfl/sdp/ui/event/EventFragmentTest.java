@@ -34,7 +34,6 @@ import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
-import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockWeatherFetcher;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -187,7 +186,6 @@ public class EventFragmentTest {
 
         Weather oldWeather = new Weather(oldWeatherData);
         Weather newWeather = new Weather(newWeatherData);
-
 
         Event DUMMY_EVENT_2 = sEventBuilder
                 .setTitle(DUMMY_TITLE)
