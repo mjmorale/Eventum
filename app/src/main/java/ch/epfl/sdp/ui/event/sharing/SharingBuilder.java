@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.sharing;
+package ch.epfl.sdp.ui.event.sharing;
 
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public class SharingBuilder {
     /**
      * Build the sharing
      *
-     * @return the sharing {@link ch.epfl.sdp.ui.sharing.Sharing}
+     * @return the sharing {@link ch.epfl.sdp.ui.event.sharing.Sharing}
      */
     public Sharing build() {
         verifyNotNull(mRef);

@@ -128,6 +128,7 @@ public class UserProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 mImageUri = data.getData();
                 ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
+                mBinding.userProfilePhoto.setTag("new_image");
                 mStorage.uploadImage(mImageUri, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();

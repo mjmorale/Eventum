@@ -10,7 +10,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
-import ch.epfl.sdp.ui.sharing.Sharing;
+import ch.epfl.sdp.ui.event.sharing.Sharing;
 
 import org.junit.Rule;
 import org.junit.Test;

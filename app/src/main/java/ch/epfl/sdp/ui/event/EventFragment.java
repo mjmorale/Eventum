@@ -25,8 +25,8 @@ import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
-import ch.epfl.sdp.ui.sharing.Sharing;
-import ch.epfl.sdp.ui.sharing.SharingBuilder;
+import ch.epfl.sdp.ui.event.sharing.Sharing;
+import ch.epfl.sdp.ui.event.sharing.SharingBuilder;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 

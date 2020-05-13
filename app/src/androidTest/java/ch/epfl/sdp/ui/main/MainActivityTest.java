@@ -190,7 +190,7 @@ public class MainActivityTest {
         resultIntent.putExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENTREF);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent);
 
-        intending(hasComponent("ch.epfl.sdp.ui.createevent.CreateEventActivity")).respondWith(result);
+        intending(hasComponent("ch.epfl.sdp.ui.event.createevent.CreateEventActivity")).respondWith(result);
 
         intending(allOf(
                 hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
@@ -217,7 +217,7 @@ public class MainActivityTest {
         Intent resultIntent = new Intent();
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultIntent);
 
-        intending(hasComponent("ch.epfl.sdp.ui.createevent.CreateEventActivity")).respondWith(result);
+        intending(hasComponent("ch.epfl.sdp.ui.event.createevent.CreateEventActivity")).respondWith(result);
 
         onView(withId(R.id.main_actionbar_add)).perform(click());
 

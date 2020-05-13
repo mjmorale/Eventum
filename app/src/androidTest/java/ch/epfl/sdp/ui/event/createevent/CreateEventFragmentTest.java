@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.createevent;
+package ch.epfl.sdp.ui.event.createevent;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -189,7 +189,6 @@ public class CreateEventFragmentTest {
                 new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         clickAddImageButton();
-
        onView(withId(R.id.imageView)).check(matches(withTagValue(is((Object) "new_image"))));
     }
 

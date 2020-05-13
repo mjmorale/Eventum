@@ -23,17 +23,15 @@ import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.createevent.CreateEventActivity;
+import ch.epfl.sdp.ui.event.createevent.CreateEventActivity;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 import ch.epfl.sdp.ui.main.map.MapFragment;

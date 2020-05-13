@@ -1,10 +1,15 @@
 package ch.epfl.sdp.ui.user;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.intent.Intents;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,9 +26,14 @@ import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.user.profile.UserProfileFragment;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -46,14 +56,15 @@ public class UserProfileFragmentTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
+        when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
+        when(mDocumentQueryMock.liveData(User.class)).thenReturn(mUserLiveMock);
+
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void UserProfileFragment_test1() {
-
-        when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
-        when(mDocumentQueryMock.liveData(User.class)).thenReturn(mUserLiveMock);
 
 
         FragmentScenario<UserProfileFragment> scenario = FragmentScenario.launchInContainer(
@@ -67,6 +78,18 @@ public class UserProfileFragmentTest {
 
         onView(withId(R.id.user_profile_name)).check(matches(isDisplayed()));
 
+        Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
+        Intent intent = new Intent();
+        intent.setData(uri);
+        Instrumentation.ActivityResult result =
+                new Instrumentation.ActivityResult(Activity.RESULT_OK, intent);
+
+        Intents.init();
+        intending(hasAction("android.intent.action.PICK")).respondWith(result);
+        onView(withId(R.id.user_profile_photo)).perform(click());
+        Intents.release();
+
+        onView(withId(R.id.user_profile_photo)).check(matches(withTagValue(is((Object) "new_image"))));
     }
 
 }

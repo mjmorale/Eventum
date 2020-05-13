@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.createevent;
+package ch.epfl.sdp.ui.event.createevent;
 
 import android.net.Uri;
 import androidx.annotation.NonNull;

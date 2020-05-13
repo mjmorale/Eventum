@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.createevent;
+package ch.epfl.sdp.ui.event.createevent;
 
 import android.Manifest;
 import android.app.Activity;
@@ -17,11 +17,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
+
 import com.google.android.gms.maps.model.LatLng;
-import java.text.ParseException;
+
 import java.util.Calendar;
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.sharing;
+package ch.epfl.sdp.ui.event.sharing;
 
 import android.content.Intent;
 

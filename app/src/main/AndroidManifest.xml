@@ -25,7 +25,7 @@
             android:label="User profile"
             android:parentActivityName=".ui.main.MainActivity" />
         <activity
-            android:name=".ui.createevent.CreateEventActivity"
+            android:name=".ui.event.createevent.CreateEventActivity"
             android:label="New Event"
             android:parentActivityName=".ui.main.MainActivity" />
         <activity
