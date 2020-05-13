@@ -1,6 +1,7 @@
 package ch.epfl.sdp.ui.main.swipe;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 import ch.epfl.sdp.db.DatabaseObject;
@@ -21,13 +23,16 @@ import ch.epfl.sdp.db.DatabaseObject;
  */
 public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
+    private LocationService mLocationService;
+
     /**
      * Constructor of the CardArrayAdapter
      *
      * @param context the environment the application is currently running in
      */
-    public CardArrayAdapter(Context context){
+    public CardArrayAdapter(Context context, LocationService locationService){
         super(context, R.layout.cardview_swipe_item);
+        mLocationService = locationService;
     }
 
     @NonNull
@@ -38,11 +43,15 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.cardview_swipe_item, parent, false);
         }
 
+        float distanceInKm = mLocationService.distanceTo(getContext(), event.getLocation()) / 1000.0f;
+
         TextView name = convertView.findViewById(R.id.eventName);
         ImageView imageView = convertView.findViewById(R.id.imageCard);
         TextView description = convertView.findViewById(R.id.eventDescription);
+        TextView distance = convertView.findViewById(R.id.eventDistance);
 
         name.setText(event.getTitle());
+        distance.setText(String.format(", %.1fkm", distanceInKm));
 
         ImageGetter.getInstance().getImage(getContext(), event.getImageId(), imageView);
 

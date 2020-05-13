@@ -25,6 +25,7 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
+import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockLocationService;
 
@@ -55,11 +56,14 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSubstring;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -70,6 +74,8 @@ public class SwipeFragmentTest {
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
+    private static final String DUMMY_DISTANCE = "2.0km";
+
     private FragmentScenario mScenario;
     @Mock
     private Database mDatabase;
@@ -140,6 +146,7 @@ public class SwipeFragmentTest {
 
         Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
+        onView(withId(R.id.eventDistance)).check(matches(withSubstring(DUMMY_DISTANCE)));
     }
 
     @Test
