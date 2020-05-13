@@ -155,7 +155,8 @@ public class FilterSettingsViewModel extends ViewModel {
         mEvents.clear();
         Date now = new Date();
         for(DatabaseObject<Event> event: mFilteredEvents) {
-            if(now.compareTo(event.getObject().getDate()) < 0) {
+            // Check that the event date is in the future
+            if(event.getObject().getDate().after(now)) {
                 mEvents.put(event.getId(), event);
             }
         }
