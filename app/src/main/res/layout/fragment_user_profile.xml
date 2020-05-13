@@ -34,15 +34,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.63" />
+            app:layout_constraintVertical_bias="0.695" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ImageView
         android:id="@+id/email_imageview"
-        android:layout_width="17dp"
-        android:layout_height="42dp"
+        android:layout_width="22dp"
+        android:layout_height="49dp"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/userProfileEmail"
@@ -85,21 +85,21 @@
         android:layout_width="357dp"
         android:layout_height="128dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="87dp"
+        android:layout_marginTop="69dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="144dp"
         android:background="@color/white"
         android:backgroundTint="#F6F4F4"
         android:ellipsize="none"
         android:fadingEdge="none"
         android:hint="Write about yourself here"
-        android:visibility="visible"
         android:paddingLeft="10dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userProfileEmail"
+        app:layout_constraintTop_toBottomOf="@+id/email_imageview"
         tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView
