@@ -186,7 +186,6 @@ public class SwipeFragmentTest {
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
 
-
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
         mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});

@@ -59,6 +59,8 @@ public class MapFragmentTest {
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
+    private static final double FAKE_GPS_LATITUDE = 46.5296363;
+    private static final double FAKE_GPS_LONGITUDE = 6.561525199999999;
     private static final LatLng POSITION_1 = new LatLng(46.5296363, 6.561525199999999);
     private static final LatLng POSITION_2 = new LatLng(46.518003199999995, 6.5922564);
 
@@ -126,8 +128,8 @@ public class MapFragmentTest {
         when(mCollectionQuery.document(DUMMY_EVENTREF2)).thenReturn(mDocumentQuery);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
 
-        mLocation.setLatitude(46.5296363);
-        mLocation.setLongitude(6.561525199999999);
+        mLocation.setLatitude(FAKE_GPS_LATITUDE);
+        mLocation.setLongitude(FAKE_GPS_LONGITUDE);
         when(mMockLocationService.getLastKnownLocation(any())).thenReturn(mLocation);
     }
 
