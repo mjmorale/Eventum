@@ -146,6 +146,17 @@ public class SwipeFragmentTest {
 
         Thread.sleep(1500);
         onView(withText("title")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void SwipeFragment_DistanceIsShown() throws InterruptedException {
+        scenario();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mEventsLiveData.postValue(events);
+
+        Thread.sleep(1500);
         onView(withId(R.id.eventDistance)).check(matches(withSubstring(DUMMY_DISTANCE)));
     }
 
