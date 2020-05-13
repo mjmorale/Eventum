@@ -198,8 +198,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     }
 
     private void goBackToMapIfConditionsAreMet() {
-        if (mArrayAdapter.isEmpty() && bundleEventHash() != DEFAULT_VALUE) {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, new MapFragment()).commit();
+        if (mArrayAdapter.isEmpty() && mEventHash != DEFAULT_VALUE) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.cards_list_view_container, new MapFragment()).commit();
         }
     }
 }

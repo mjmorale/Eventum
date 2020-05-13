@@ -118,7 +118,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 bundle.putInt("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
                 SwipeFragment swipeFragment = new SwipeFragment();
                 swipeFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.main_container, swipeFragment).commit();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, swipeFragment).commit();
             }
         });
     }
