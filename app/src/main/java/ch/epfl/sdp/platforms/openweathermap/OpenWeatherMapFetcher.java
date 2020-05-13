@@ -12,10 +12,12 @@ import com.google.android.gms.maps.model.LatLng;
 import ch.epfl.sdp.weather.Weather;
 import ch.epfl.sdp.weather.WeatherFetcher;
 
+/**
+ * Fetches data using OpenWeatherMap's OneCall API, fetching is done asynchronously using Volley
+ */
 public class OpenWeatherMapFetcher implements WeatherFetcher {
 
     private String apiK = "7c35ebdff45e1d54db43876dfcb0c320";
-
 
     public OpenWeatherMapFetcher() {}
 

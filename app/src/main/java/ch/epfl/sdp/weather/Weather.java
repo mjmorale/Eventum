@@ -14,6 +14,9 @@ import java.util.Map;
 
 import ch.epfl.sdp.R;
 
+/**
+ * Weather forecast for an entire week at a specific location
+ */
 public class Weather {
 
     private String dataString;
@@ -22,24 +25,47 @@ public class Weather {
     private final long SECONDS_IN_HALF_DAY = 12 * 3600;
 
 
-    public Weather(@NonNull String data) {
-        dataString = data;
+    /**
+     * Constructor for the weather class
+     *
+     * @param json string of json containing the weather forecast
+     */
+    public Weather(@NonNull String json) {
+        dataString = json;
         gson = new JsonParser().parse(dataString).getAsJsonObject();
 
     }
 
+    /**
+     * Gets the average temperature at a given day
+     *
+     * @param day day closest to the event date, can be obtained using getClosestDay(Date date)
+     * @return average temperature
+     */
     public double getTemp(int day) {
         JsonObject dayData = getDayJson(day);
 
         return dayData.getAsJsonObject("temp").get("day").getAsDouble();
     }
 
+    /**
+     * Gets the feels like temperature at a given day
+     *
+     * @param day day closest to the event date
+     * @return feels like temperature
+     */
     public double getFeelsLikeTemp(int day) {
         JsonObject dayData = getDayJson(day);
 
         return dayData.getAsJsonObject("feels_like").get("day").getAsDouble();
     }
 
+    /**
+     * Gets the weather forecast (i.e. sunny, rain, etc...) at a given day
+     *
+     * @param day day closest to the event date
+     * @return  map containing the main weather's name, a description of the weather and the weather's associated icon
+     */
     public Map<String, Object> getWeather(int day) {
 
         JsonObject weatherData = getDayJson(day).getAsJsonArray("weather").get(0).getAsJsonObject();
@@ -53,10 +79,23 @@ public class Weather {
         return weatherMap;
     }
 
+
+    /**
+     * Gets the entire weather forecast as a string
+     *
+     * @return the entire weather forecast
+     */
     public String getString() {
+
         return dataString;
     }
 
+    /**
+     * Checks if the weather was updated recently (within the past 6 hours)
+     *
+     * @param date the current time
+     * @return True if the event was updated recently, False otherwise
+     */
     public boolean updatedRecently(Date date) {
         long currentTime = DateToSecs(date);
 
@@ -65,6 +104,12 @@ public class Weather {
         return currentTime < (response + (SECONDS_IN_HALF_DAY / 2));
     }
 
+    /**
+     * Gets the closest forecast day for a given date
+     *
+     * @param date date at which the event is happening
+     * @return the closest forecast day if the forecast is available, -1 otherwise
+     */
     public int getClosestDay(Date date) {
         long currentTime = DateToSecs(date);
 
@@ -82,6 +127,12 @@ public class Weather {
         return -1;
     }
 
+    /**
+     * Checks if the forecast is available at a given date
+     *
+     * @param date date at which the event is happening
+     * @return true if the forecast is available, false otherwise
+     */
     public boolean isForecastAvailable(Date date) {
         long currentTime = DateToSecs(date);
 
@@ -92,6 +143,11 @@ public class Weather {
         return currentTime >= minTime && currentTime <= maxTime;
     }
 
+    /**
+     * Gets the timestamp at which the weather forecast was fetched
+     *
+     * @return timestamp in seconds from unix epoch
+     */
     public long getResponseTimestamp() {
         long time = gson.getAsJsonObject("current").get("dt").getAsLong();
 
