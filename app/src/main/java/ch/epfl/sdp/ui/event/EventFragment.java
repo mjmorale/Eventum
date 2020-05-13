@@ -21,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.event;
 
 import android.content.Context;
-import android.location.Location;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,7 +35,7 @@ public class WeatherViewModel extends ViewModel {
     static class WeatherViewModelFactory extends DatabaseViewModelFactory {
 
         /**
-         * Constructor of the WeatherViewModel factory
+         * Argument-free constructor of the WeatherViewModel factory used to define the object types used in the ViewModel
          */
         WeatherViewModelFactory() {
             super(String.class, WeatherFetcher.class);
