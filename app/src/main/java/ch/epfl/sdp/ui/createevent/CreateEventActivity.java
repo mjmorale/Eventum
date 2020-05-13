@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.event.createevent;
+package ch.epfl.sdp.ui.createevent;
 
 import android.os.Bundle;
 import android.view.View;
