@@ -46,6 +46,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,12 +55,27 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MapFragmentTest {
-
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
-
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
+    private static final LatLng POSITION_1 = new LatLng(46.5296363, 6.561525199999999);
+    private static final LatLng POSITION_2 = new LatLng(46.518003199999995, 6.5922564);
+
+    private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
+
+    private EventBuilder eventBuilder = new EventBuilder();
+    private Event eventTest1 = eventBuilder.setTitle("event1").setDescription("description").setDate("01/01/2030").
+            setOrganizerRef("organizer1").setLocation(POSITION_1).build();
+    private Event eventTest2 = eventBuilder.setTitle("event2").setDescription("description2").setDate("02/01/2030").
+            setOrganizerRef("organizer2").setLocation(POSITION_2).build();
+    private FragmentScenario mScenario;
+    private Location mLocation = new Location("Default");
+    UiDevice mUiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
     @Mock
     private Database mDatabase;
@@ -85,21 +101,8 @@ public class MapFragmentTest {
     @Mock
     private MockLocationService mMockLocationService;
 
-    private MutableLiveData<List<DatabaseObject<Event>>> mEventsLive = new MutableLiveData<>();
-
     @Mock
     private MapManager mMapManagerMock;
-
-    private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<DatabaseObject<Event>>> mAttendingEventsLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData = new MutableLiveData<>();
-    private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
-
-    private EventBuilder eventBuilder = new EventBuilder();
-    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").setOrganizerRef("organizer1").setLocation(new LatLng(46.5296363, 6.561525199999999)).build();
-    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("02/01/2020").setOrganizerRef("organizer2").setLocation(new LatLng(46.518003199999995, 6.5922564)).build();
-    private FragmentScenario mScenario;
 
     @Rule
     public GrantPermissionRule permissionFineRule =
@@ -108,11 +111,6 @@ public class MapFragmentTest {
     @Before
     public void setup(){
         MockitoAnnotations.initMocks(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void MapFragment_CheckThatMapIsDisplayedWithMockDatabase() throws InterruptedException, UiObjectNotFoundException {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
@@ -124,19 +122,16 @@ public class MapFragmentTest {
         when(mFieldFilterQuery.liveData(Event.class)).thenReturn(mOwnedEventsLiveData);
         when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
-
-
         when(mCollectionQuery.document(DUMMY_EVENTREF1)).thenReturn(mDocumentQuery);
         when(mCollectionQuery.document(DUMMY_EVENTREF2)).thenReturn(mDocumentQuery);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
 
+        mLocation.setLatitude(46.5296363);
+        mLocation.setLongitude(6.561525199999999);
+        when(mMockLocationService.getLastKnownLocation(any())).thenReturn(mLocation);
+    }
 
-        Location location = new Location("Default");
-        location.setLatitude(46.5296363);
-        location.setLongitude(6.561525199999999);
-        when(mMockLocationService.getLastKnownLocation(any())).thenReturn(location);
-        UiDevice uiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-
+    private void scenario(){
         mScenario = FragmentScenario.launchInContainer(
                 MapFragment.class,
                 new Bundle(),
@@ -148,13 +143,25 @@ public class MapFragmentTest {
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
         mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+    }
 
-        UiObject marker = uiDevice.findObject(new UiSelector().descriptionContains("title"));
-        marker.click();
-
-
-//        Thread.sleep(150000000);
+    @Test
+    public void MapFragment_CheckThatMapIsDisplayedWithMockDatabase() {
+        scenario();
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
-}
 
+    @Test
+    public void MapFragment_CheckThatTestMarkersAreDisplayedAndClickable() throws UiObjectNotFoundException {
+        scenario();
+
+        UiObject marker1 = mUiDevice.findObject(new UiSelector().descriptionContains("event1"));
+        UiObject marker2 = mUiDevice.findObject(new UiSelector().descriptionContains("event2"));
+
+        assertNotNull(marker1);
+        assertNotNull(marker2);
+
+        marker1.click();
+        marker2.click();
+    }
+}

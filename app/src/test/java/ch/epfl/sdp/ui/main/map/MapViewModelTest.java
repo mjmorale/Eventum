@@ -12,7 +12,6 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

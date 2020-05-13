@@ -8,11 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Set;
 
 import ch.epfl.sdp.Event;

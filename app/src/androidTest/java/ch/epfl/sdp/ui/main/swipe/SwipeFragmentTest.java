@@ -1,15 +1,9 @@
 package ch.epfl.sdp.ui.main.swipe;
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
@@ -39,20 +33,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
-import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intending;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -105,9 +91,6 @@ public class SwipeFragmentTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    private void mockSetup() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
@@ -125,8 +108,6 @@ public class SwipeFragmentTest {
     }
 
     private void scenario() {
-        mockSetup();
-
        mScenario= FragmentScenario.launchInContainer(
                 SwipeFragment.class,
                 new Bundle(),
@@ -180,7 +161,7 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_ClickSToDetailed() throws InterruptedException {
+    public void SwipeFragment_ClickSToDetailed() {
         scenario();
         UiDevice uiDevice =  UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         List<DatabaseObject<Event>> events = new ArrayList<>();
@@ -196,8 +177,6 @@ public class SwipeFragmentTest {
 
     @Test
     public void SwipeFragment_FromTheMapWithBundleShowTheRightCard() throws InterruptedException {
-        mockSetup();
-
         Bundle bundle = new Bundle();
         bundle.putInt("eventHash", eventTest2.hashCode());
 
