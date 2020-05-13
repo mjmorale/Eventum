@@ -130,7 +130,7 @@ public class WeatherViewModel extends ViewModel {
 
     }
 
-    private void deleteOldWeather(List<DatabaseObject<Weather>> databaseObjects) {
+    public void deleteOldWeather(List<DatabaseObject<Weather>> databaseObjects) {
         // Delete all out of date weather data
         Comparator<DatabaseObject<Weather>> compareByTimestampReverse =
                 (w1, w2) -> Long.compare(w2.getObject().getResponseTimestamp(), w1.getObject().getResponseTimestamp());
