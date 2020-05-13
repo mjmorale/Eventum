@@ -5,24 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     tools:context=".ui.user.profile.ProfileFragment">
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:background="@color/colorPrimary">
-        <ImageView
-            android:id="@+id/user_picture"
-            android:background="@drawable/circle_smaller"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryBright">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:contentDescription="@string/profile_image_of_the_user"/>
-    </FrameLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/user_interests"/>
+            android:orientation="vertical">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:background="@color/colorPrimary">
+                <ImageView
+                    android:id="@+id/user_picture"
+                    android:background="@drawable/circle_smaller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/profile_image_of_the_user"
+                    android:src="@drawable/ic_person_black_24dp"/>
+            </FrameLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_profile_name"
+                android:layout_marginTop="10dp"
+                android:textSize="26sp"
+                android:text="Name Name"
+                android:textAlignment="center"
+                android:textColor="@color/grey_darker"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_interests"
+                android:textStyle="normal"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="Description"
+                android:textColor="@color/grey"/>
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
 
