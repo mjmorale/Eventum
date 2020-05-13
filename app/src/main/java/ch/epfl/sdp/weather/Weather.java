@@ -14,6 +14,8 @@ import java.util.Map;
 
 import ch.epfl.sdp.R;
 
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+
 /**
  * Weather forecast for an entire week at a specific location
  */
@@ -31,6 +33,7 @@ public class Weather {
      * @param json string of json containing the weather forecast
      */
     public Weather(@NonNull String json) {
+        verifyNotNull(json);
         dataString = json;
         gson = new JsonParser().parse(dataString).getAsJsonObject();
 
@@ -96,8 +99,9 @@ public class Weather {
      * @param date the current time
      * @return True if the event was updated recently, False otherwise
      */
-    public boolean updatedRecently(Date date) {
-        long currentTime = DateToSecs(date);
+    public boolean updatedRecently(@NonNull Date date) {
+        verifyNotNull(date);
+        long currentTime = dateToSecs(date);
 
         long response = this.getResponseTimestamp();
 
@@ -110,8 +114,9 @@ public class Weather {
      * @param date date at which the event is happening
      * @return the closest forecast day if the forecast is available, -1 otherwise
      */
-    public int getClosestDay(Date date) {
-        long currentTime = DateToSecs(date);
+    public int getClosestDay(@NonNull Date date) {
+        verifyNotNull(date);
+        long currentTime = dateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
 
@@ -133,8 +138,9 @@ public class Weather {
      * @param date date at which the event is happening
      * @return true if the forecast is available, false otherwise
      */
-    public boolean isForecastAvailable(Date date) {
-        long currentTime = DateToSecs(date);
+    public boolean isForecastAvailable(@NonNull Date date) {
+        verifyNotNull(date);
+        long currentTime = dateToSecs(date);
 
         ArrayList<Long> timestamps = new ArrayList<>(getForecastTimestamps());
         long minTime = timestamps.get(0) - SECONDS_IN_HALF_DAY;
@@ -199,7 +205,7 @@ public class Weather {
         }
     }
 
-    private static long DateToSecs(Date date) {
+    private static long dateToSecs(Date date) {
         return date.getTime() / 1000;
     }
 }

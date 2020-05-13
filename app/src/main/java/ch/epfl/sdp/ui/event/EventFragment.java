@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -49,7 +50,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private final WeatherViewModel.WeatherViewModelFactory mWeatherFactory;
     private WeatherViewModel mWeatherViewModel;
-    private WeatherFetcher mWeatherFetcher;
 
     private EventDetailBinding mBinding;
 
@@ -87,11 +87,10 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         mFactory.setDatabase(database);
 
         mWeatherFactory =  new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory.setWeatherFetcher(new OpenWeatherMapFetcher());
         mWeatherFactory.setDatabase(database);
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
-
-        mWeatherFetcher = new OpenWeatherMapFetcher();
     }
 
     /**
@@ -109,11 +108,10 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         mWeatherFactory = new WeatherViewModel.WeatherViewModelFactory();
         mWeatherFactory.setDatabase(database);
         mWeatherFactory.setEventRef(eventRef);
+        mWeatherFactory.setWeatherFetcher(fetcher);
 
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
-
-        mWeatherFetcher = fetcher;
     }
 
     @Override
@@ -168,70 +166,50 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private void setWeather() {
 
-        mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
-            if (weatherList == null || weatherList.isEmpty()) {
-                updateWeather();
-
-                mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
-                mBinding.weatherLayout.setVisibility(View.GONE);
-            }
-            else {
-                Weather latestWeather = weatherList.get(weatherList.size() - 1).getObject();
-                if (!latestWeather.updatedRecently(new Date())) {
-                    updateWeather();
-                }
-                showWeather(latestWeather);
-            }
-
-        });
-    }
-    private void showWeather(Weather weather) {
-
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event-> {
-            Date eventDate = event.getDate();
-            if (weather.isForecastAvailable(eventDate)) {
-                int closestDay = weather.getClosestDay(eventDate);
+            mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
+                if (weatherList == null || weatherList.isEmpty()) {
+                    mWeatherViewModel.updateWeather(getContext(), event.getLocation());
 
-                String temp = new StringBuilder().append("Temperature: ").append(Math.round(weather.getTemp(closestDay))).append(" °C").toString();
-                String feelsLike = new StringBuilder().append("Feels like: ").append(Math.round(weather.getFeelsLikeTemp(closestDay))).append(" °C").toString();
+                    mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+                    mBinding.weatherLayout.setVisibility(View.GONE);
+                }
+                else {
+                    Weather latestWeather = weatherList.get(weatherList.size() - 1).getObject();
+                    if (!latestWeather.updatedRecently(new Date())) {
+                        mWeatherViewModel.updateWeather(getContext(), event.getLocation());
+                    }
+                    showWeather(latestWeather, event.getDate());
+                }
 
-                mBinding.tempView.setText(temp);
-                mBinding.feelsLikeView.setText(feelsLike);
-
-                Map<String, Object> weatherInfo = weather.getWeather(closestDay);
-
-                mBinding.weatherType.setText((String) weatherInfo.get("main"));
-                mBinding.weatherIcon.setImageResource((int) weatherInfo.get("icon"));
-
-                mBinding.noWeatherLayout.setVisibility(View.GONE);
-                mBinding.weatherLayout.setVisibility(View.VISIBLE);
-            }
-            else {
-                mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
-                mBinding.weatherLayout.setVisibility(View.GONE);
-            }
-        });
-
-    }
-
-    private void updateWeather()  {
-
-        WeatherFetcher.onResponseCallback responseCallback = new WeatherFetcher.onResponseCallback() {
-            @Override
-            public void onSuccess(Weather weather) {
-                mWeatherViewModel.add(weather);
-            }
-
-            @Override
-            public void onFailure() {
-                Toast.makeText(getContext(), "Weather API is currently down", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mWeatherFetcher.fetch(getContext(), responseCallback, event.getLocation());
+            });
         });
     }
+    private void showWeather(Weather weather, Date eventDate) {
+
+        if (weather.isForecastAvailable(eventDate)) {
+            int closestDay = weather.getClosestDay(eventDate);
+
+            String temp = new StringBuilder().append("Temperature: ").append(Math.round(weather.getTemp(closestDay))).append(" °C").toString();
+            String feelsLike = new StringBuilder().append("Feels like: ").append(Math.round(weather.getFeelsLikeTemp(closestDay))).append(" °C").toString();
+
+            mBinding.tempView.setText(temp);
+            mBinding.feelsLikeView.setText(feelsLike);
+
+            Map<String, Object> weatherInfo = weather.getWeather(closestDay);
+
+            mBinding.weatherType.setText((String) weatherInfo.get("main"));
+            mBinding.weatherIcon.setImageResource((int) weatherInfo.get("icon"));
+
+            mBinding.noWeatherLayout.setVisibility(View.GONE);
+            mBinding.weatherLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+            mBinding.weatherLayout.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
