@@ -118,25 +118,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mEventHash = bundleEventHash();
 
-        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-           if (events != null) {
-                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-
-               if (mEventHash != DEFAULT_VALUE) {
-                   for (DatabaseObject<Event> event : events) {
-                       if (mEventHash == event.getObject().hashCode()) {
-                           mArrayAdapter.clear();
-                           mArrayAdapter.add(event);
-                       }
-                   }
-               } else {
-                   mArrayAdapter.clear();
-                   mArrayAdapter.addAll(events);
-                   mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
-               }
-                mNumberSwipe = 0;
-            }
-        });
+        addEventsInArrayAdapter();
 
         mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
 
@@ -182,6 +164,28 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
+    private void addEventsInArrayAdapter() {
+        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+            if (events != null) {
+                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+
+                if (mEventHash != DEFAULT_VALUE) {
+                    for (DatabaseObject<Event> event : events) {
+                        if (mEventHash == event.getObject().hashCode()) {
+                            mArrayAdapter.clear();
+                            mArrayAdapter.add(event);
+                        }
+                    }
+                } else {
+                    mArrayAdapter.clear();
+                    mArrayAdapter.addAll(events);
+                    mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
+                }
+                mNumberSwipe = 0;
+            }
+        });
     }
 
     private int bundleEventHash() {
