@@ -125,9 +125,9 @@ public class AttendingListFragment extends Fragment {
                     DatabaseObject<Event> event = mAdapter.get(position);
                     mViewModel.leaveEvent(event.getId());
                 })
-                .setNegativeButton(android.R.string.no, ((dialog, which) -> {
-                    mAdapter.notifyItemChanged(position);
-                }))
+                .setNegativeButton(android.R.string.no,
+                        ((dialog, which) -> mAdapter.notifyItemChanged(position))
+                )
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
