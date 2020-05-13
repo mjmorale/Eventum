@@ -1,19 +1,22 @@
 package ch.epfl.sdp.ui.main.swipe;
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.intent.Intents;
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.uiautomator.UiDevice;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList  ;
+import java.util.Collection;
+import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -27,45 +30,23 @@ import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
-import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockLocationService;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
-import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intending;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSubstring;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -107,14 +88,14 @@ public class SwipeFragmentTest {
     private Event eventTest1 = eventBuilder
             .setTitle("title")
             .setDescription("description")
-            .setDate("01/01/2020 00:00")
+            .setDate("01/01/2100 00:00")
             .setLocation(new LatLng(46.518748, 6.567795))
             .setOrganizerRef("organizer1")
             .build();
     private Event eventTest2 = eventBuilder
             .setTitle("title2")
             .setDescription("description2")
-            .setDate("02/01/2020 00:00")
+            .setDate("02/01/2100 00:00")
             .setLocation(new LatLng(46.541122, 6.601410))
             .setOrganizerRef("organizer2")
             .build();
