@@ -84,7 +84,7 @@ public class UserProfileFragmentTest {
 
 //        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
 
-        onView(withId(R.id.user_profile_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.user_profile_photo)).check(matches(isDisplayed()));
 
         Uri uri = Uri.parse("android.resource://ch.epfl.sdp/drawable/add_image");
         Intent intent = new Intent();

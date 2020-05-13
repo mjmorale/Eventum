@@ -1,78 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:isScrollContainer="false">
 
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="5dp"
-        android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="410dp"
+        android:layout_height="238dp"
+        android:background="@drawable/bacround_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/userProfileName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:orientation="vertical"
-            >
-            <androidx.cardview.widget.CardView
-                android:id="@+id/myCardView"
-                android:layout_width="200dp"
-                android:layout_weight="0.6"
-                android:layout_height="200dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginHorizontal="70dp"
-                app:cardCornerRadius="100dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                >
+            android:layout_marginStart="158dp"
+            android:layout_marginEnd="152dp"
+            android:layout_marginBottom="124dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Username"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
-                <ImageView
-                    android:id="@+id/user_profile_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:clickable="true"
-                    app:srcCompat="@drawable/ic_person_black_24dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/email_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="137dp"
+        android:layout_marginBottom="140dp"
+        app:layout_constraintBottom_toTopOf="@+id/userProfileBio"
+        app:layout_constraintEnd_toStartOf="@+id/userProfileEmail"
+        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_mail_black_24dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_weight="0.6"
-                android:layout_marginTop="30dp"
-                android:background="@color/colorPrimary"/>
+    <TextView
+        android:id="@+id/userProfileEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:layout_marginBottom="140dp"
+        android:text="user@email.com"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/userProfileBio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myCardView"
+        app:layout_constraintVertical_bias="1.0" />
 
-            <TextView
-                android:id="@+id/user_profile_name"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:paddingLeft="30dp"
-                android:text="Username"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:background="@color/white_grey"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="369dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/userProfileEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userProfileBio">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_weight="0.6"
-                android:layout_marginTop="30dp"
-                android:background="@color/colorPrimary"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/user_profile_bio"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:hint="Write about youself here"
-                android:textSize="17sp"
-                android:padding="10dp"
-                android:textColor="@color/black"
-                android:background="@color/white_grey"/>
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/userProfileBio"
+        android:layout_width="357dp"
+        android:layout_height="128dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="30dp"
+        android:hint="Write about yourself here"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.558"
+        tools:visibility="visible" />
 
-        </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/myCardView"
+        android:layout_width="200dp"
+        android:layout_weight="0.6"
+        android:layout_height="200dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginHorizontal="110dp"
+        app:cardCornerRadius="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:layout_constraintBottom_toTopOf="@+id/email_imageview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/user_profile_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_person_black_24dp" />
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
