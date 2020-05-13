@@ -71,9 +71,9 @@ public class MapFragmentTest {
     private MutableLiveData<Collection<DatabaseObject<Event>>> mLocationEventsLiveData = new MutableLiveData<>();
 
     private EventBuilder eventBuilder = new EventBuilder();
-    private Event eventTest1 = eventBuilder.setTitle("event1").setDescription("description").setDate("01/01/2030").
+    private Event eventTest1 = eventBuilder.setTitle("event1").setDescription("description").setDate("02/01/2100 00:00").
             setOrganizerRef("organizer1").setLocation(POSITION_1).build();
-    private Event eventTest2 = eventBuilder.setTitle("event2").setDescription("description2").setDate("02/01/2030").
+    private Event eventTest2 = eventBuilder.setTitle("event2").setDescription("description2").setDate("02/01/2100 00:00").
             setOrganizerRef("organizer2").setLocation(POSITION_2).build();
     private FragmentScenario mScenario;
     private Location mLocation = new Location("Default");
