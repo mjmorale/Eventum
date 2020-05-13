@@ -8,6 +8,8 @@ import android.location.LocationManager;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ch.epfl.sdp.map.LocationService;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
@@ -38,5 +40,15 @@ public final class GoogleLocationService implements LocationService {
             return defaultLocation;
         }
         return location;
+    }
+
+    @Override
+    public float distanceTo(Context context, LatLng location) {
+        Location currentLocation = getLastKnownLocation(context);
+        Location toLocation = new Location(LocationManager.GPS_PROVIDER);
+        toLocation.setLatitude(location.latitude);
+        toLocation.setLongitude(location.longitude);
+
+        return currentLocation.distanceTo(toLocation);
     }
 }

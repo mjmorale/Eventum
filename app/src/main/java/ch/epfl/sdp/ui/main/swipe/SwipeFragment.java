@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.main.swipe;
 
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
@@ -37,6 +40,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     private FragmentSwipeBinding mBinding;
     private ArrayAdapter<DatabaseObject<Event>> mArrayAdapter;
+    private LocationService mLocationService;
     private int mNumberSwipe = 0;
     private float mZoomLevel = 15;
 
@@ -56,11 +60,12 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
      * @param database {@link ch.epfl.sdp.db.Database}
      */
     @VisibleForTesting
-    public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, LocationService locationService) {
+    public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, @NonNull LocationService locationService) {
         mSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mSettingsFactory.setDatabase(database);
         mSettingsFactory.setAuthenticator(authenticator);
         mSettingsFactory.setLocationService(locationService);
+        mLocationService = locationService;
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -99,7 +104,10 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
 
-        mArrayAdapter = new CardArrayAdapter(getContext());
+        if (mLocationService == null)
+            mLocationService = new GoogleLocationService((LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE));
+
+        mArrayAdapter = new CardArrayAdapter(getContext(), mLocationService);
         mArrayAdapter.setNotifyOnChange(true);
 
         mBinding.cardsListView.setAdapter(mArrayAdapter);
