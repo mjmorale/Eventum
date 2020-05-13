@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
@@ -39,6 +41,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSubstring;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.mockito.ArgumentMatchers.any;
@@ -254,6 +257,9 @@ public class SwipeFragmentTest {
         Thread.sleep(1500);
 
         onView(withId(R.id.cards_list_view)).perform(swipeLeft());
+
+        Thread.sleep(1500);
+
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 }
