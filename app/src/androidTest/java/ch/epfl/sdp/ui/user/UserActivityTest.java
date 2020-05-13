@@ -76,7 +76,7 @@ public class UserActivityTest {
 
     @Test
     public void UserActivity_DisplayUserStatisticsAsDefault() {
-        onView(withText("User statistics")).check(matches(isDisplayed()));
+        onView(withText("My Profile")).check(matches(isDisplayed()));
     }
 
     @Test

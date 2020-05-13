@@ -14,6 +14,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -32,7 +33,7 @@ public class AccountFragment extends PreferenceFragmentCompat {
 
     private SettingsViewModel mViewModel;
 
-    private EditTextPreference mAccountNamePreference;
+    private Preference mAccountNamePreference;
     private Preference mAccountEmailPreference;
     private Preference mAccountDeletePreference;
 
@@ -53,14 +54,14 @@ public class AccountFragment extends PreferenceFragmentCompat {
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if(user != null) {
-                mAccountNamePreference.setText(user.getName());
+                mAccountNamePreference.setSummary(user.getName());
                 mAccountEmailPreference.setSummary(user.getEmail());
             }
         });
 
-        setupAccountNamePref(mAccountNamePreference);
         setupAccountDeletePref(mAccountDeletePreference);
     }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -76,21 +77,6 @@ public class AccountFragment extends PreferenceFragmentCompat {
         super.onDetach();
 
         mLogoutListener = null;
-    }
-
-    private void setupAccountNamePref(@NonNull EditTextPreference accountNamePreference) {
-        verifyNotNull(accountNamePreference);
-
-        accountNamePreference.setOnBindEditTextListener(TextView::setSingleLine);
-        accountNamePreference.setOnPreferenceChangeListener((preference, newValue) -> {
-            mViewModel.setUserName((String)newValue, result -> {
-                if(!result.isSuccessful()) {
-                    Log.e(TAG, "Failed to set new username", result.getException());
-                    Toast.makeText(getContext(), "Cannot set username", Toast.LENGTH_LONG).show();
-                }
-            });
-            return false;
-        });
     }
 
     private void setupAccountDeletePref(@NonNull Preference accountDeletePreference) {

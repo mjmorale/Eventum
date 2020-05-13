@@ -15,7 +15,8 @@ public class User {
 
     private final String mName;
     private final String mEmail;
-
+    private String mImageId;
+    private String mDescription;
     /**
      * Construct a new User instance
      *
@@ -26,9 +27,33 @@ public class User {
     public User(@NonNull String name, @NonNull String email) {
         this.mName = verifyNotNull(name);
         this.mEmail = verifyNotNull(email);
+        this.mImageId= "";
+        this.mDescription="";
         if(name.isEmpty() || email.isEmpty()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public User(@NonNull String name, @NonNull String email, @NonNull String imageId, @NonNull String description) {
+        this(name, email);
+        this.mImageId=verifyNotNull(imageId);
+        this.mDescription=verifyNotNull(description);
+    }
+
+    public void setImage(@NonNull String imageId){
+        this.mImageId= verifyNotNull(imageId);
+    }
+
+    public void setDescription(String description){
+        this.mDescription = verifyNotNull(description);
+    }
+
+    public String getImageId(){
+        return mImageId;
+    }
+    
+    public String getDescription(){
+        return mDescription;
     }
 
     /**

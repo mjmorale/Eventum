@@ -6,6 +6,8 @@
     <color name="red">#EC4749</color>
     <color name="black">#2F343F</color>
     <color name="grey">#485060</color>
+    <color name="white_grey">#EDEDED</color>
     <color name="white">#F5F5F5</color>
+    <color name="headerTextColor">#ECE3E3</color>
     <color name="transparentGrey">#B3485060</color>
 </resources>
