@@ -13,6 +13,8 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
@@ -74,7 +76,8 @@ public class SwipeFragmentTest {
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
-    private static final String DUMMY_DISTANCE = "2.0km";
+    private static final String DUMMY_DISTANCE_EVENT1 = "201m";
+    private static final String DUMMY_DISTANCE_EVENT2 = "3.4km";
 
     private FragmentScenario mScenario;
     @Mock
@@ -99,8 +102,20 @@ public class SwipeFragmentTest {
     private LocationQuery mLocationQuery;
 
     private EventBuilder eventBuilder = new EventBuilder();
-    private Event eventTest1 = eventBuilder.setTitle("title").setDescription("description").setDate("01/01/2020").setOrganizerRef("organizer1").build();
-    private Event eventTest2 = eventBuilder.setTitle("title2").setDescription("description2").setDate("02/01/2020").setOrganizerRef("organizer2").build();
+    private Event eventTest1 = eventBuilder
+            .setTitle("title")
+            .setDescription("description")
+            .setDate("01/01/2020")
+            .setLocation(new LatLng(46.518748, 6.567795))
+            .setOrganizerRef("organizer1")
+            .build();
+    private Event eventTest2 = eventBuilder
+            .setTitle("title2")
+            .setDescription("description2")
+            .setDate("02/01/2020")
+            .setLocation(new LatLng(46.541122, 6.601410))
+            .setOrganizerRef("organizer2")
+            .build();
 
     private MutableLiveData<User> mUserLiveData = new MutableLiveData<>();
     private MutableLiveData<List<DatabaseObject<Event>>> mEventsLiveData = new MutableLiveData<>();
@@ -129,7 +144,7 @@ public class SwipeFragmentTest {
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
 
-       mScenario= FragmentScenario.launchInContainer(
+       mScenario = FragmentScenario.launchInContainer(
                 SwipeFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
@@ -149,7 +164,19 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_DistanceIsShown() throws InterruptedException {
+    public void SwipeFragment_DistanceIsShownInMeters() throws InterruptedException {
+        scenario();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
+        mEventsLiveData.postValue(events);
+
+        Thread.sleep(1500);
+        onView(withId(R.id.eventDistance)).check(matches(withSubstring(DUMMY_DISTANCE_EVENT1)));
+    }
+
+    @Test
+    public void SwipeFragment_DistanceIsShownInKilometers() throws InterruptedException {
         scenario();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
@@ -157,7 +184,7 @@ public class SwipeFragmentTest {
         mEventsLiveData.postValue(events);
 
         Thread.sleep(1500);
-        onView(withId(R.id.eventDistance)).check(matches(withSubstring(DUMMY_DISTANCE)));
+        onView(withId(R.id.eventDistance)).check(matches(withSubstring(DUMMY_DISTANCE_EVENT2)));
     }
 
     @Test
