@@ -17,6 +17,23 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class UserProfileViewModel extends ViewModel {
+
+    static class MyViewModelFactory extends DatabaseViewModelFactory {
+
+        MyViewModelFactory() {
+            super(Storage.class, Authenticator.class);
+        }
+
+        void setStorage(@NonNull Storage storage) {
+            setValue(0, verifyNotNull(storage));
+        }
+
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
+        }
+
+    }
+
     private final CollectionQuery mUserCollection;
     private Storage mStorage;
     private UserInfo mUserInfo;
@@ -56,22 +73,6 @@ public class UserProfileViewModel extends ViewModel {
 
     public Storage getStorage(){
         return  mStorage;
-    }
-
-    static class MyViewModelFactory extends DatabaseViewModelFactory {
-
-        MyViewModelFactory() {
-            super(Storage.class, Authenticator.class);
-        }
-
-        void setStorage(@NonNull Storage storage) {
-            setValue(0, verifyNotNull(storage));
-        }
-
-        void setAuthenticator(@NonNull Authenticator authenticator) {
-            setValue(1, verifyNotNull(authenticator));
-        }
-
     }
 
 

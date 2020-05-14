@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.test.espresso.intent.Intents;
 
@@ -46,6 +45,7 @@ public class UserProfileFragmentTest {
 
     @Mock
     private Database mDatabaseMock;
+
     @Mock
     private DocumentQuery mDocumentQueryMock;
 
@@ -59,13 +59,14 @@ public class UserProfileFragmentTest {
     private Storage mStorageMock;
 
     private User mUser = new User("name", "email");
-    private UserInfo mUserInfo = new UserInfo("anyRef", mUser.getName(), mUser.getEmail());
     LiveData<User> mUserLive = new LiveData<User>() {
         @Override
         public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super User> observer) {
             observer.onChanged(mUser);
         }
     };
+    private UserInfo mUserInfo = new UserInfo("anyRef", mUser.getName(), mUser.getEmail());
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -85,7 +86,7 @@ public class UserProfileFragmentTest {
                 UserProfileFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(UserProfileFragment.class, mStorageMock,mAuthenticatorMock ,mDatabaseMock)
+                new MockFragmentFactory(UserProfileFragment.class, mStorageMock, mAuthenticatorMock, mDatabaseMock)
         );
 
 //        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
@@ -103,7 +104,7 @@ public class UserProfileFragmentTest {
         onView(withId(R.id.user_profile_photo)).perform(click());
         Intents.release();
 
-        onView(withId(R.id.user_profile_photo)).check(matches(withTagValue(is((Object) "new_image"))));
+        onView(withId(R.id.user_profile_photo)).check(matches(withTagValue(is("new_image"))));
     }
 
 }
