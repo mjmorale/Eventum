@@ -18,7 +18,7 @@ public class UserDatabaseObjectBuilderTest {
         Map<String, Object> data = DatabaseObjectBuilderRegistry.getBuilder(User.class).serializeToMap(user);
         User resultUser = DatabaseObjectBuilderRegistry.getBuilder(User.class).buildFromMap(data);
 
-        assertEquals("testname", user.getName());
-        assertEquals("testmail", user.getEmail());
+        assertEquals("testname", resultUser.getName());
+        assertEquals("testmail", resultUser.getEmail());
     }
 }

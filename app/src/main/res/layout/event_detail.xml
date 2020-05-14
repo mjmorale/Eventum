@@ -84,11 +84,130 @@
                     xmlns:map="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/minimap"
                     android:layout_width="match_parent"
-                    android:layout_height="330dp"
-                    android:paddingBottom="80dp"
+                    android:layout_height="250dp"
                     map:cameraZoom="15"
                     map:mapType="normal"
                     map:liteMode="true" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/noWeatherLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="80dp">
+
+                    <TextView
+                        android:id="@+id/noWeatherText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/forecast_unavailable"
+                        android:textSize="22sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/weatherLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="80dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/weatherHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="Weather Forecast"
+                        android:textAllCaps="false"
+                        android:textColor="@color/grey"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tempView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="Temperature: 20 °C"
+                        android:textColor="@color/design_default_color_secondary_variant"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toStartOf="@+id/divider"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/weatherHeader" />
+
+                    <TextView
+                        android:id="@+id/feelsLikeView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="Feels like: 15 °C"
+                        android:textColor="@color/design_default_color_secondary_variant"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toStartOf="@+id/divider"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tempView" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="2dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/grey"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/weatherType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sunny"
+                            android:textAlignment="center"
+                            android:textColor="@color/grey"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/weatherIcon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:contentDescription="Weather Icon"
+                            android:src="@drawable/weather_01d" />
+
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

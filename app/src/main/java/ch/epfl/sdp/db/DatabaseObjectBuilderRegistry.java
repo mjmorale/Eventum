@@ -11,6 +11,8 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventDatabaseBuilder;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.UserDatabaseBuilder;
+import ch.epfl.sdp.WeatherDatabaseBuilder;
+import ch.epfl.sdp.weather.Weather;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -25,6 +27,7 @@ public class DatabaseObjectBuilderRegistry {
 
         mBuilders.put(User.class, new UserDatabaseBuilder());
 
+        mBuilders.put(Weather.class, new WeatherDatabaseBuilder());
     }
 
     public static <T> void registerBuilder(@NonNull Class<T> type, @NonNull Class<? extends DatabaseObjectBuilder<T>> builder) {
