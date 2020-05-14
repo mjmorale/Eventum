@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import ch.epfl.sdp.databinding.UserProfileBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -38,6 +40,14 @@ public class ProfileFragment extends Fragment {
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
+    @VisibleForTesting
+    public ProfileFragment(Database database, String userRef){
+        mFactory = new ProfileViewModel.ProfileViewModelFactory();
+        mFactory.setDatabase(database);
+        mFactory.setUserRef(userRef);
+
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState){
@@ -60,6 +70,7 @@ public class ProfileFragment extends Fragment {
             ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userPicture);
             mBinding.userProfileName.setText(user.getName());
             mBinding.userInterests.setText(user.getDescription());
+            mBinding.userEmail.setText(user.getEmail());
         });
 
     }
