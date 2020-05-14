@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 
 
+import com.google.firebase.firestore.ServerTimestamp;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,9 +15,11 @@ import java.util.Date;
  */
 public class ChatMessage {
     private final String mText;
-    private final Date mDate;
     private final String mUserId;
     private final String mName;
+
+    @ServerTimestamp
+    private Date mDate;
 
     @SuppressLint("SimpleDateFormat")
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -27,9 +30,19 @@ public class ChatMessage {
                        @NonNull String name) {
 
         verifyNotNull(text, date, uid, name);
-
         mText = text;
         mDate = date;
+        mUserId = uid;
+        mName = name;
+    }
+
+
+    public ChatMessage(@NonNull String text,
+                       @NonNull String uid,
+                       @NonNull String name) {
+
+        verifyNotNull(text, uid, name);
+        mText = text;
         mUserId = uid;
         mName = name;
     }
@@ -59,12 +72,19 @@ public class ChatMessage {
         return mDate;
     }
 
+    public void setDate(Date date) {
+        this.mDate = date;
+    }
+
     /**
      * Gives the date as a string
      * @return string representation of the time at which the message was sent
      */
     public String getDateStr() {
-        return formatDate(mDate);
+        if (mDate == null) //if a new message is created with the device, backend define the date but it's not available right now here
+            return formatDate(new Date());
+        else
+            return formatDate(mDate);
     }
 
     /**
