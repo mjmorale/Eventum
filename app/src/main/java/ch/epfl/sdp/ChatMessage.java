@@ -24,6 +24,13 @@ public class ChatMessage {
     @SuppressLint("SimpleDateFormat")
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    /**
+     * Constructor of message if date not from firebase
+     * @param text Text of the message
+     * @param date Date of the message
+     * @param uid UID of the creator
+     * @param name Name of the creator
+     */
     public ChatMessage(@NonNull String text,
                        @NonNull Date date,
                        @NonNull String uid,
@@ -37,6 +44,12 @@ public class ChatMessage {
     }
 
 
+    /**
+     * Constructor of message if date from firebase
+     * @param text Text of the message
+     * @param uid UID of the creator
+     * @param name Name of the creator
+     */
     public ChatMessage(@NonNull String text,
                        @NonNull String uid,
                        @NonNull String name) {
@@ -72,6 +85,10 @@ public class ChatMessage {
         return mDate;
     }
 
+    /**
+     * Set the date of the message, this method is useful for firebase as it need to change serverTimestamp to a real date
+     * @param date a Date object containing the date at which the message was sent
+     */
     public void setDate(Date date) {
         this.mDate = date;
     }
