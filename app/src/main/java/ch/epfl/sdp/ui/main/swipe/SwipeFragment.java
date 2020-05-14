@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.main.swipe;
 
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
@@ -26,9 +27,11 @@ import ch.epfl.sdp.databinding.FragmentSwipeBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
+import ch.epfl.sdp.ui.main.map.MapFragment;
 
 /**
  * Fragment for the swiping cards
@@ -37,6 +40,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     private FragmentSwipeBinding mBinding;
     private ArrayAdapter<DatabaseObject<Event>> mArrayAdapter;
+    private LocationService mLocationService;
     private int mNumberSwipe = 0;
     private float mZoomLevel = 15;
 
@@ -45,6 +49,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
     private LiteMapViewModel mMapViewModel;
+
+    private final int DEFAULT_VALUE = 0;
+    private int mEventHash;
 
     public SwipeFragment() {
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
@@ -56,11 +63,12 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
      * @param database {@link ch.epfl.sdp.db.Database}
      */
     @VisibleForTesting
-    public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, LocationService locationService) {
+    public SwipeFragment(@NonNull Database database, @NonNull Authenticator authenticator, @NonNull LocationService locationService) {
         mSettingsFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mSettingsFactory.setDatabase(database);
         mSettingsFactory.setAuthenticator(authenticator);
         mSettingsFactory.setLocationService(locationService);
+        mLocationService = locationService;
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -73,6 +81,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onLeftCardExit(Object o) {
         mNumberSwipe += 1;
+        goBackToMapIfConditionsAreMet();
     }
 
     @Override
@@ -83,6 +92,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         });
         mNumberSwipe += 1;
+        goBackToMapIfConditionsAreMet();
     }
 
     @Override
@@ -99,7 +109,10 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentSwipeBinding.inflate(inflater, container, false);
 
-        mArrayAdapter = new CardArrayAdapter(getContext());
+        if (mLocationService == null)
+            mLocationService = new GoogleLocationService((LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE));
+
+        mArrayAdapter = new CardArrayAdapter(getContext(), mLocationService);
         mArrayAdapter.setNotifyOnChange(true);
 
         mBinding.cardsListView.setAdapter(mArrayAdapter);
@@ -110,17 +123,9 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
         mSettingsViewModel = new ViewModelProvider(requireActivity(), mSettingsFactory).get(FilterSettingsViewModel.class);
 
+        mEventHash = bundleEventHash();
 
-        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-
-           if (events != null) {
-                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-                mArrayAdapter.clear();
-                mArrayAdapter.addAll(events);
-                mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
-                mNumberSwipe = 0;
-            }
-        });
+        addEventsInArrayAdapter();
 
         mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
 
@@ -162,9 +167,52 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                showCardList();
+                if (mEventHash != DEFAULT_VALUE && mBinding.eventDetailView.getVisibility() == View.GONE) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.cards_list_view_container, new MapFragment()).commit();
+                } else {
+                    showCardList();
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
+    private void addEventsInArrayAdapter() {
+        mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+            if (events != null) {
+                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+
+                if (mEventHash != DEFAULT_VALUE) {
+                    for (DatabaseObject<Event> event : events) {
+                        if (mEventHash == event.getObject().hashCode()) {
+                            mArrayAdapter.clear();
+                            mArrayAdapter.add(event);
+                        }
+                    }
+                } else {
+                    mArrayAdapter.clear();
+                    mArrayAdapter.addAll(events);
+                    mArrayAdapter.sort((o1, o2) -> o1.getObject().getDate().compareTo(o2.getObject().getDate()));
+                }
+                mNumberSwipe = 0;
+            }
+        });
+    }
+
+    private int bundleEventHash() {
+        Bundle bundle = this.getArguments();
+        int eventHash = DEFAULT_VALUE;
+        if (bundle != null) {
+            eventHash = bundle.getInt("eventHash", DEFAULT_VALUE);
+        }
+        return eventHash;
+    }
+
+    private void goBackToMapIfConditionsAreMet() {
+        if (mArrayAdapter.isEmpty() && mEventHash != DEFAULT_VALUE) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.cards_list_view_container, new MapFragment()).commit();
+        }
     }
 }

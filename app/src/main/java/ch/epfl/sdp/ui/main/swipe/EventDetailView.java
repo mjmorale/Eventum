@@ -36,6 +36,8 @@ public class EventDetailView extends RelativeLayout {
         mBinding.eventDetailCalendarButton.setVisibility(GONE);
         mBinding.eventDetailChatButton.setVisibility(GONE);
         mBinding.eventDetailSharingButton.setVisibility(GONE);
+        mBinding.weatherLayout.setVisibility(GONE);
+        mBinding.noWeatherLayout.setVisibility(GONE);
     }
 
     /**
