@@ -2,6 +2,7 @@ package ch.epfl.sdp.ui.main.map;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -17,6 +18,7 @@ import java.util.Date;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -52,6 +54,12 @@ public class MapMarkerInfoWindowViewTest {
     private TextView mDescriptionView;
 
     @Mock
+    private ImageView mImageView;
+
+    @Mock
+    private ImageGetter mImageGetter;
+
+    @Mock
     private Marker mMarker;
 
     @Before
@@ -61,7 +69,7 @@ public class MapMarkerInfoWindowViewTest {
 
     @Test
     public void MapMarkerInfoWindowView_getInfoWindowTest() {
-        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView);
+        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView, mImageGetter);
 
         EventBuilder eventBuilder = new EventBuilder();
         Event event = eventBuilder.setTitle(title)
@@ -77,6 +85,7 @@ public class MapMarkerInfoWindowViewTest {
         when(mMarkerView.findViewById(anyInt())).thenReturn(mTitleView);
         when(mMarkerView.findViewById(R.id.map_event_date)).thenReturn(mDateView);
         when(mMarkerView.findViewById(R.id.map_event_description)).thenReturn(mDescriptionView);
+        when(mMarkerView.findViewById(R.id.map_event_image)).thenReturn(mImageView);
 
         view.getInfoWindow(mMarker);
         verify(mMapViewModel).getEventFromMarker(mMarker);
@@ -84,5 +93,6 @@ public class MapMarkerInfoWindowViewTest {
         verify(mTitleView).setText(title);
         verify(mDateView).setText(dateStr);
         verify(mDescriptionView).setText(description);
+        verify(mImageGetter).getImage(mContext, imageId, mImageView);
     }
 }

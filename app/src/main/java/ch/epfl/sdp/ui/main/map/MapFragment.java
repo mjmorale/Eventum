@@ -12,7 +12,10 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Marker;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -25,17 +28,19 @@ import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
+import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
  * Fragment for the map with events markers
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapViewModel mViewModel;
     private final MapViewModel.MapViewModelFactory mFactoryMap;
     private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
     private FragmentMapBinding mBinding;
+    private LocationService mLocationService = null;
 
     private MapView mMapView;
     private float mZoomLevel = 12;
@@ -52,7 +57,7 @@ public class MapFragment extends Fragment {
         verifyNotNull(mapManager, database, locationService);
         mFactoryMap = new MapViewModel.MapViewModelFactory();
         mFactoryMap.setMapManager(mapManager);
-        mFactoryMap.setLocationService(locationService);
+        mLocationService = locationService;
         mFactoryFilterSettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
         mFactoryFilterSettings.setDatabase(database);
         mFactoryFilterSettings.setLocationService(locationService);
@@ -73,31 +78,50 @@ public class MapFragment extends Fragment {
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        LocationService locationService =
-                new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
-        mFactoryMap.setLocationService(locationService);
+        if (mLocationService == null) {
+            mLocationService =
+                    new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
 
-        mMapView.getMapAsync(googleMap -> {
-            googleMap.setMyLocationEnabled(true);
+        }
+        mFactoryMap.setLocationService(mLocationService);
 
-            mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
-            mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
-
-            FilterSettingsViewModel filterSettingsViewModel =
-                    new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
-
-            filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-                mViewModel.clearEvents();
-                for(DatabaseObject<Event> event: events)
-                    mViewModel.addEvent(event.getObject());
-            });
-
-            mViewModel.centerCamera(getContext(), mZoomLevel);
-
-            googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
-        });
+        mMapView.getMapAsync(this);
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        googleMap.setMyLocationEnabled(true);
+
+        mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
+        mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
+
+        FilterSettingsViewModel filterSettingsViewModel =
+                new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
+
+        filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
+            mViewModel.clearEvents();
+            for(DatabaseObject<Event> event: events)
+                mViewModel.addEvent(event.getObject());
+        });
+
+        mViewModel.centerCamera(getContext(), mZoomLevel);
+
+        googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
+
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
+                SwipeFragment swipeFragment = new SwipeFragment();
+                swipeFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.mapView, swipeFragment).commit();
+            }
+        });
     }
 
     @Override
