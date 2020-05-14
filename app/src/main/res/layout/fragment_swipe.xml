@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.swipe.SwipeFragment">
+    tools:context=".ui.main.swipe.SwipeFragment"
+    android:id="@+id/cards_list_view_container">
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/cards_list_view"
