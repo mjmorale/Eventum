@@ -4,19 +4,10 @@ import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 
 import com.google.android.gms.maps.model.LatLng;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList  ;
-import java.util.Collection;
-import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
@@ -32,6 +23,17 @@ import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockLocationService;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -109,9 +111,6 @@ public class SwipeFragmentTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    private void scenario() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.liveData(Event.class)).thenReturn(mEventsLiveData);
         when(mCollectionQuery.document(DUMMY_USERREF)).thenReturn(mDocumentQuery);
@@ -126,10 +125,23 @@ public class SwipeFragmentTest {
         when(mDocumentQuery.liveData(User.class)).thenReturn(mUserLiveData);
         when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
         doNothing().when(mDocumentQuery).update(anyString(), any(), any());
+    }
 
-       mScenario = FragmentScenario.launchInContainer(
+    private void scenario() {
+        mScenario = FragmentScenario.launchInContainer(
                 SwipeFragment.class,
                 new Bundle(),
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
+    }
+
+    private void scenarioWithBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventHash", eventTest2.hashCode());
+
+        mScenario = FragmentScenario.launchInContainer(
+                SwipeFragment.class,
+                bundle,
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
     }
@@ -204,7 +216,7 @@ public class SwipeFragmentTest {
     }
 
     @Test
-    public void SwipeFragment_ClickSToDetailled() {
+    public void SwipeFragment_ClickSToDetailed() {
         scenario();
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
@@ -215,6 +227,56 @@ public class SwipeFragmentTest {
         onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getTitle()), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText(eventTest1.getDescription()), isDisplayed())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void SwipeFragment_FromTheMapWithBundleShowTheRightCard() throws InterruptedException {
+        scenarioWithBundle();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
+        Thread.sleep(1500);
+
+        onView(withText("title2")).check(matches(isDisplayed()));
+        onView(withId(R.id.cards_list_view)).perform(click());
+        onView(allOf(withText(eventTest2.getTitle()), isDisplayed())).check(matches(isDisplayed()));
+        onView(allOf(withText(eventTest2.getDescription()), isDisplayed())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void SwipeFragment_FromTheMapWithBundleBackToMapAfterSwipe() throws InterruptedException {
+        scenarioWithBundle();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
+        Thread.sleep(1500);
+
+        onView(withId(R.id.cards_list_view)).perform(swipeLeft());
+
+        Thread.sleep(1500);
+
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+    }
+
+    @Test
+    public void SwipeFragment_FromTheMapWithBundleBackToMapAfterBack() throws InterruptedException {
+        scenarioWithBundle();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
+        Thread.sleep(1500);
+
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+
+        Thread.sleep(1500);
+
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
 }
 

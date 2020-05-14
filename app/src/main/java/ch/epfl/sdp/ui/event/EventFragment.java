@@ -18,6 +18,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.util.Date;
+import java.util.Map;
+
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -27,6 +30,9 @@ import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
+import ch.epfl.sdp.platforms.openweathermap.OpenWeatherMapFetcher;
+import ch.epfl.sdp.weather.Weather;
+import ch.epfl.sdp.weather.WeatherFetcher;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -40,6 +46,9 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
     private LiteMapViewModel mMapViewModel;
+
+    private final WeatherViewModel.WeatherViewModelFactory mWeatherFactory;
+    private WeatherViewModel mWeatherViewModel;
 
     private EventDetailBinding mBinding;
 
@@ -71,8 +80,14 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * Constructor of the DefaultEventFragment
      */
     public EventFragment() {
+        Database database = ServiceProvider.getInstance().getDatabase();
+
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
-        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setDatabase(database);
+
+        mWeatherFactory =  new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory.setWeatherFetcher(new OpenWeatherMapFetcher());
+        mWeatherFactory.setDatabase(database);
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -84,10 +99,16 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * @param eventRef the reference of an event
      */
     @VisibleForTesting
-    public EventFragment(@NonNull Database database, @NonNull String eventRef) {
+    public EventFragment(@NonNull Database database, @NonNull String eventRef, @NonNull WeatherFetcher fetcher) {
         mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
+
+        mWeatherFactory = new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory.setDatabase(database);
+        mWeatherFactory.setEventRef(eventRef);
+        mWeatherFactory.setWeatherFetcher(fetcher);
+
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -106,21 +127,16 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         Bundle args = getArguments();
         if(args != null) {
-            mFactory.setEventRef(args.getString(UIConstants.BUNDLE_EVENT_REF));
+            String eventRef = args.getString(UIConstants.BUNDLE_EVENT_REF);
+            mFactory.setEventRef(eventRef);
+            mWeatherFactory.setEventRef(eventRef);
         }
 
         mBinding.minimap.onCreate(savedInstanceState);
         mBinding.minimap.getMapAsync(this);
 
         mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
-
-        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mBinding.date.setText(event.getDateStr());
-            mBinding.description.setText(event.getDescription());
-            mBinding.title.setText(event.getTitle());
-            mBinding.address.setText(event.getAddress());
-            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
-        });
+        mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
         mBinding.eventDetailSharingButton.setOnClickListener(v->startActivity(mEventSharing.getShareIntent()));
@@ -132,7 +148,67 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                 .commit());
 
         mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
+
+        setEvent();
+        setWeather();
     }
+
+    private void setEvent() {
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            mBinding.date.setText(event.getDateStr());
+            mBinding.description.setText(event.getDescription());
+            mBinding.title.setText(event.getTitle());
+            mBinding.address.setText(event.getAddress());
+            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
+        });
+    }
+
+    private void setWeather() {
+
+        mViewModel.getEvent().observe(getViewLifecycleOwner(), event-> {
+            mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
+                if (weatherList == null || weatherList.isEmpty()) {
+                    mWeatherViewModel.updateWeather(getContext(), event.getLocation());
+
+                    mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+                    mBinding.weatherLayout.setVisibility(View.GONE);
+                }
+                else {
+                    Weather latestWeather = weatherList.get(weatherList.size() - 1).getObject();
+                    if (!latestWeather.updatedRecently(new Date())) {
+                        mWeatherViewModel.updateWeather(getContext(), event.getLocation());
+                    }
+                    showWeather(latestWeather, event.getDate());
+                }
+
+            });
+        });
+    }
+    private void showWeather(Weather weather, Date eventDate) {
+
+        if (weather.isForecastAvailable(eventDate)) {
+            int closestDay = weather.getClosestDay(eventDate);
+
+            String temp = new StringBuilder().append("Temperature: ").append(Math.round(weather.getTemp(closestDay))).append(" °C").toString();
+            String feelsLike = new StringBuilder().append("Feels like: ").append(Math.round(weather.getFeelsLikeTemp(closestDay))).append(" °C").toString();
+
+            mBinding.tempView.setText(temp);
+            mBinding.feelsLikeView.setText(feelsLike);
+
+            Map<String, Object> weatherInfo = weather.getWeather(closestDay);
+
+            mBinding.weatherType.setText((String) weatherInfo.get("main"));
+            mBinding.weatherIcon.setImageResource((int) weatherInfo.get("icon"));
+
+            mBinding.noWeatherLayout.setVisibility(View.GONE);
+            mBinding.weatherLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            mBinding.noWeatherLayout.setVisibility(View.VISIBLE);
+            mBinding.weatherLayout.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
