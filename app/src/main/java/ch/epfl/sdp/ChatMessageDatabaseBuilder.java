@@ -23,7 +23,7 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
         String name = (String) data.get("name");
 
 
-        ChatMessage message = new ChatMessage(text, uid, name);
+        ChatMessage message = new ChatMessage(text,null, uid, name);
         if (timestamp != null)
             message.setDate(timestamp.toDate());
 

@@ -3,6 +3,7 @@ package ch.epfl.sdp;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 import com.google.firebase.firestore.ServerTimestamp;
@@ -17,8 +18,6 @@ public class ChatMessage {
     private final String mText;
     private final String mUserId;
     private final String mName;
-
-    @ServerTimestamp
     private Date mDate;
 
     @SuppressLint("SimpleDateFormat")
@@ -32,30 +31,13 @@ public class ChatMessage {
      * @param name Name of the creator
      */
     public ChatMessage(@NonNull String text,
-                       @NonNull Date date,
-                       @NonNull String uid,
-                       @NonNull String name) {
-
-        verifyNotNull(text, date, uid, name);
-        mText = text;
-        mDate = date;
-        mUserId = uid;
-        mName = name;
-    }
-
-
-    /**
-     * Constructor of message if date from firebase
-     * @param text Text of the message
-     * @param uid UID of the creator
-     * @param name Name of the creator
-     */
-    public ChatMessage(@NonNull String text,
+                       @Nullable Date date,
                        @NonNull String uid,
                        @NonNull String name) {
 
         verifyNotNull(text, uid, name);
         mText = text;
+        mDate = date;
         mUserId = uid;
         mName = name;
     }
