@@ -1,5 +1,9 @@
 package ch.epfl.sdp.ui.user.profile;
 
+import android.content.Context;
+import android.net.Uri;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,15 +13,15 @@ import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
-import ch.epfl.sdp.db.queries.Query;
-import ch.epfl.sdp.db.queries.QueryResult;
+import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
- *View model typically used in User profile fragment
+ * View model typically used in User profile fragment
  */
 public class UserProfileViewModel extends ViewModel {
 
@@ -31,16 +35,16 @@ public class UserProfileViewModel extends ViewModel {
         }
 
         /**
-         * @brief sets up the storage
          * @param storage used to upload pictures
+         * @brief sets up the storage
          */
         void setStorage(@NonNull Storage storage) {
             setValue(0, verifyNotNull(storage));
         }
 
         /**
-         * @brief sets up the authenticaator
          * @param authenticator to get the current user
+         * @brief sets up the authenticaator
          */
         void setAuthenticator(@NonNull Authenticator authenticator) {
             setValue(1, verifyNotNull(authenticator));
@@ -52,48 +56,38 @@ public class UserProfileViewModel extends ViewModel {
     private Storage mStorage;
     private UserInfo mUserInfo;
     private LiveData<User> mUserLiveData;
-
     /**
-     * @Constructor should  only be used by the userProfileViewModelFactory
-     * @param storage used to upload pictures
+     * @param storage       used to upload pictures
      * @param authenticator to get the current user
-     * @param database to get the users collections
+     * @param database      to get the users collections
+     * @Constructor should  only be used by the userProfileViewModelFactory
      */
     public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database);
-        mStorage=storage;
+        mStorage = storage;
         mUserInfo = authenticator.getCurrentUser();
         mUserCollection = database.query("users");
     }
 
     /**
-     * @brief updates the description of a user in the database
      * @param description to be added
+     * @brief updates the description of a user in the database
      */
     public void updateDescription(String description) {
-        mUserCollection.document(mUserInfo.getUid()).update("description", description, new Query.OnQueryCompleteCallback<Void>() {
-            @Override
-            public void onQueryComplete(QueryResult<Void> result) {
-
-            }
+        mUserCollection.document(mUserInfo.getUid()).update("description", description, result -> {
         });
     }
 
     /**
-     * @brief updated the imageId of user in the database
      * @param imageId to be added
+     * @brief updated the imageId of user in the database
      */
     public void updateImageId(String imageId) {
-        mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, new Query.OnQueryCompleteCallback<Void>() {
-            @Override
-            public void onQueryComplete(QueryResult<Void> result) {
-
-            }
+        mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, result -> {
         });
     }
 
     /**
-     *
      * @return the current user live data
      */
     public LiveData<User> getUserLive() {
@@ -104,12 +98,24 @@ public class UserProfileViewModel extends ViewModel {
     }
 
     /**
-     *
      * @return the storage used to upload pictures
      */
-    public Storage getStorage(){
-        return  mStorage;
+    public Storage getStorage() {
+        return mStorage;
     }
 
+
+    /**
+     * @set an image into an image view
+     * @param imageUri of the image to be set
+     * @param context of the app
+     * @param imageView where the image to be set
+     * @param uploadCallBack after the upload
+     */
+    public void setImage(Uri imageUri, Context context, ImageView imageView, FirestoreStorage.UrlReadyCallback uploadCallBack) {
+        ImageGetter.getInstance().getImage(context, imageUri, imageView);
+        imageView.setTag("new_image");
+        mStorage.uploadImage(imageUri, uploadCallBack);
+    }
 
 }

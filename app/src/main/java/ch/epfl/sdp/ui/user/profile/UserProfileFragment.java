@@ -40,7 +40,6 @@ public class UserProfileFragment extends Fragment {
     private static final int PERMISSION_STORAGE = 100;
     private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
-    private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
     private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
 
@@ -61,7 +60,7 @@ public class UserProfileFragment extends Fragment {
      * @param database to get the current user info
      */
     @VisibleForTesting
-    public UserProfileFragment(Storage storage, Authenticator authenticator, Database database){
+    public UserProfileFragment(@NonNull Storage storage,@NonNull Authenticator authenticator,@NonNull Database database){
         mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
         mFactory.setStorage(storage);
         mFactory.setAuthenticator(authenticator);
@@ -100,7 +99,6 @@ public class UserProfileFragment extends Fragment {
             mBinding.userProfileBio.setText(user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
-            ///mBinding.userProfileEmail.setText(user.getEmail());
         });
     }
 
@@ -149,10 +147,7 @@ public class UserProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                mImageUri = data.getData();
-                ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
-                mBinding.userProfilePhoto.setTag("new_image");
-                mViewModel.getStorage().uploadImage(mImageUri, mUploadCallBack);
+                mViewModel.setImage(data.getData(), getContext(), mBinding.userProfilePhoto, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
