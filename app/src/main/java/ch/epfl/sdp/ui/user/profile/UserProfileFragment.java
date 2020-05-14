@@ -32,6 +32,9 @@ import ch.epfl.sdp.ui.ServiceProvider;
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
+/**
+ * The fragment responsible of the user profile editing
+ */
 public class UserProfileFragment extends Fragment {
 
     private static final int PERMISSION_STORAGE = 100;
@@ -39,19 +42,27 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
-    private final UserProfileViewModel.MyViewModelFactory mFactory;
+    private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
 
-
+    /**
+     * the constructor
+     */
     public UserProfileFragment(){
-        mFactory = new UserProfileViewModel.MyViewModelFactory();
+        mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
+    /**
+     * Should only be used for testing
+     * @param storage to upload pictures
+     * @param authenticator to get the current user id
+     * @param database to get the current user info
+     */
     @VisibleForTesting
     public UserProfileFragment(Storage storage, Authenticator authenticator, Database database){
-        mFactory = new UserProfileViewModel.MyViewModelFactory();
+        mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
         mFactory.setStorage(storage);
         mFactory.setAuthenticator(authenticator);
         mFactory.setDatabase(database);
@@ -105,6 +116,10 @@ public class UserProfileFragment extends Fragment {
         mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 
+    /**
+     * @brief load an image from the phone gallery
+     * @param uploadCallBack the callback after the upload result
+     */
     public void loadImage(FirestoreStorage.UrlReadyCallback uploadCallBack) {
         mUploadCallBack = uploadCallBack;
         requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -125,6 +140,12 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * @brief the result of the activity of choosing from the gallery intent
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {

@@ -16,18 +16,32 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ *View model typically used in User profile fragment
+ */
 public class UserProfileViewModel extends ViewModel {
 
-    static class MyViewModelFactory extends DatabaseViewModelFactory {
+    /**
+     * The model factory used to construct a UserProfileViewModel
+     */
+    static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
 
-        MyViewModelFactory() {
+        UserProfileViewModelFactory() {
             super(Storage.class, Authenticator.class);
         }
 
+        /**
+         * @brief sets up the storage
+         * @param storage used to upload pictures
+         */
         void setStorage(@NonNull Storage storage) {
             setValue(0, verifyNotNull(storage));
         }
 
+        /**
+         * @brief sets up the authenticaator
+         * @param authenticator to get the current user
+         */
         void setAuthenticator(@NonNull Authenticator authenticator) {
             setValue(1, verifyNotNull(authenticator));
         }
@@ -39,6 +53,12 @@ public class UserProfileViewModel extends ViewModel {
     private UserInfo mUserInfo;
     private LiveData<User> mUserLiveData;
 
+    /**
+     * @Constructor should  only be used by the userProfileViewModelFactory
+     * @param storage used to upload pictures
+     * @param authenticator to get the current user
+     * @param database to get the users collections
+     */
     public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database);
         mStorage=storage;
@@ -46,6 +66,10 @@ public class UserProfileViewModel extends ViewModel {
         mUserCollection = database.query("users");
     }
 
+    /**
+     * @brief updates the description of a user in the database
+     * @param description to be added
+     */
     public void updateDescription(String description) {
         mUserCollection.document(mUserInfo.getUid()).update("description", description, new Query.OnQueryCompleteCallback<Void>() {
             @Override
@@ -55,6 +79,10 @@ public class UserProfileViewModel extends ViewModel {
         });
     }
 
+    /**
+     * @brief updated the imageId of user in the database
+     * @param imageId to be added
+     */
     public void updateImageId(String imageId) {
         mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, new Query.OnQueryCompleteCallback<Void>() {
             @Override
@@ -64,6 +92,10 @@ public class UserProfileViewModel extends ViewModel {
         });
     }
 
+    /**
+     *
+     * @return the current user live data
+     */
     public LiveData<User> getUserLive() {
         if (mUserLiveData == null) {
             mUserLiveData = mUserCollection.document(mUserInfo.getUid()).liveData(User.class);
@@ -71,6 +103,10 @@ public class UserProfileViewModel extends ViewModel {
         return mUserLiveData;
     }
 
+    /**
+     *
+     * @return the storage used to upload pictures
+     */
     public Storage getStorage(){
         return  mStorage;
     }
