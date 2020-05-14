@@ -47,6 +47,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -162,6 +163,9 @@ public class MapFragmentTest {
 
         assertNotNull(marker1);
         assertNotNull(marker2);
+
+        assertTrue(marker1.isFocusable());
+        assertTrue(marker2.isFocusable());
 
         marker1.click();
         marker2.click();

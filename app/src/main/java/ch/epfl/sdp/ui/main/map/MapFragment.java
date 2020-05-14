@@ -119,7 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 SwipeFragment swipeFragment = new SwipeFragment();
                 swipeFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, swipeFragment).commit();
+                        .replace(R.id.mapView, swipeFragment).commit();
             }
         });
     }
