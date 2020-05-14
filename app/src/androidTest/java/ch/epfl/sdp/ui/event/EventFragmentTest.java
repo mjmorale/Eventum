@@ -51,7 +51,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -194,9 +193,7 @@ public class EventFragmentTest {
                 .setOrganizerRef(DUMMY_REF)
                 .build();
 
-        int closestDay = oldWeather.getClosestDay(DUMMY_EVENT_2.getDate());
         mEventsLive.postValue(DUMMY_EVENT_2);
-
 
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
@@ -207,13 +204,13 @@ public class EventFragmentTest {
         weatherList.add(new DatabaseObject<>("a", oldWeather));
         mWeatherLiveData.postValue(weatherList);
 
-        String oldWeatherType = (String) oldWeather.getWeather(closestDay).get("main");
+        String oldWeatherType = (String) oldWeather.getWeather(oldWeather.getClosestDay(DUMMY_EVENT_2.getDate())).get("main");
         onView(withId(R.id.weatherType)).check(matches(withText(oldWeatherType)));
 
         weatherList.add(new DatabaseObject<>("b", newWeather));
         mWeatherLiveData.postValue(weatherList);
 
-        String newWeatherType = (String) newWeather.getWeather(closestDay).get("main");
+        String newWeatherType = (String) newWeather.getWeather(newWeather.getClosestDay(DUMMY_EVENT_2.getDate())).get("main");
         onView(withId(R.id.weatherType)).check(matches(withText(newWeatherType)));
     }
 
