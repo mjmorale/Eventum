@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -133,6 +135,17 @@ public class SwipeFragmentTest {
                 new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
     }
 
+    private void scenarioWithBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventHash", eventTest2.hashCode());
+
+        mScenario = FragmentScenario.launchInContainer(
+                SwipeFragment.class,
+                bundle,
+                R.style.Theme_AppCompat,
+                new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
+    }
+
     @Test
     public void SwipeFragment_NewCardIsShow() throws InterruptedException {
         scenario();
@@ -218,14 +231,7 @@ public class SwipeFragmentTest {
 
     @Test
     public void SwipeFragment_FromTheMapWithBundleShowTheRightCard() throws InterruptedException {
-        Bundle bundle = new Bundle();
-        bundle.putInt("eventHash", eventTest2.hashCode());
-
-        mScenario = FragmentScenario.launchInContainer(
-                SwipeFragment.class,
-                bundle,
-                R.style.Theme_AppCompat,
-                new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
+        scenarioWithBundle();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
@@ -241,14 +247,7 @@ public class SwipeFragmentTest {
 
     @Test
     public void SwipeFragment_FromTheMapWithBundleBackToMapAfterSwipe() throws InterruptedException {
-        Bundle bundle = new Bundle();
-        bundle.putInt("eventHash", eventTest2.hashCode());
-
-        mScenario = FragmentScenario.launchInContainer(
-                SwipeFragment.class,
-                bundle,
-                R.style.Theme_AppCompat,
-                new MockFragmentFactory(SwipeFragment.class, mDatabase, mAuthenticator, new MockLocationService()));
+        scenarioWithBundle();
 
         List<DatabaseObject<Event>> events = new ArrayList<>();
         events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
@@ -257,6 +256,23 @@ public class SwipeFragmentTest {
         Thread.sleep(1500);
 
         onView(withId(R.id.cards_list_view)).perform(swipeLeft());
+
+        Thread.sleep(1500);
+
+        onView(withId(R.id.mapView)).check(matches((isDisplayed())));
+    }
+
+    @Test
+    public void SwipeFragment_FromTheMapWithBundleBackToMapAfterBack() throws InterruptedException {
+        scenarioWithBundle();
+
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF2, eventTest2));
+        mScenario.onFragment(fragment -> {mEventsLiveData.setValue(events);});
+
+        Thread.sleep(1500);
+
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
 
         Thread.sleep(1500);
 
