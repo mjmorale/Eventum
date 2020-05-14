@@ -168,7 +168,12 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                showCardList();
+                if (mEventHash != DEFAULT_VALUE && mBinding.eventDetailView.getVisibility() == View.GONE) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.cards_list_view_container, new MapFragment()).commit();
+                } else {
+                    showCardList();
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
@@ -207,7 +212,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     private void goBackToMapIfConditionsAreMet() {
         if (mArrayAdapter.isEmpty() && mEventHash != DEFAULT_VALUE) {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.cards_list_view_container, new MapFragment()).commit();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.cards_list_view_container, new MapFragment()).commit();
         }
     }
 }
