@@ -29,8 +29,7 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/oss117" />
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/title"

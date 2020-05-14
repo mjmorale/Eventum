@@ -7,6 +7,7 @@
     xmlns:card_view="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/map_info_window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
@@ -30,6 +31,13 @@
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"/>
+
+            <ImageView
+                android:id="@+id/map_event_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/event_default"/>
 
             <TextView
                 android:id="@+id/map_event_date"

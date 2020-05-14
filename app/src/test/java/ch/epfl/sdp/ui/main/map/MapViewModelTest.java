@@ -50,12 +50,4 @@ public class MapViewModelTest {
         viewModel.centerCamera(mContext, zoomLevel);
         verify(mMapManager).moveCamera(mLocation, zoomLevel);
     }
-
-    @Test
-    public void MapViewModel_AddAndGetAnEventFromTheDictionaryReturnTheRightEvent() {
-        MapViewModel viewModel = new MapViewModel(mMapManager, mLocationService);
-        //viewModel.addEvent(mEvent);
-        //Event event = viewModel.getEventFromMarker(mMarker);
-        //assertEquals(event, mEvent);
-    }
 }
