@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FieldValue;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,10 +23,11 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
         String uid = (String) data.get("uid");
         String name = (String) data.get("name");
 
-
-        ChatMessage message = new ChatMessage(text,null, uid, name);
-        if (timestamp != null)
-            message.setDate(timestamp.toDate());
+        Date date = null;
+        if (timestamp != null) {
+            date = timestamp.toDate();
+        }
+        ChatMessage message = new ChatMessage(text, date, uid, name);
 
         return message;
     }

@@ -68,14 +68,6 @@ public class ChatMessage {
     }
 
     /**
-     * Set the date of the message, this method is useful for firebase as it need to change serverTimestamp to a real date
-     * @param date a Date object containing the date at which the message was sent
-     */
-    public void setDate(Date date) {
-        this.mDate = date;
-    }
-
-    /**
      * Gives the date as a string
      * @return string representation of the time at which the message was sent
      */
