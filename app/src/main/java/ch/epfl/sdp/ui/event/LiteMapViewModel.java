@@ -14,38 +14,35 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class LiteMapViewModel extends ViewModel {
 
+    /**
+     *  Factory for the LiteMapViewModel
+     */
     public static class LiteMapViewModelFactory extends ParameterizedViewModelFactory {
 
+        /**
+         * Empty constructor for the factory
+         */
         public LiteMapViewModelFactory() {
-            super(MapManager.class);
-        }
-
-        public void setMapManager(@NonNull MapManager mapManager) {
-            setValue(0, verifyNotNull(mapManager));
+            super();
         }
     }
-
-    private MapManager mMapManager;
 
     /**
      * Construct a new LiteMapViewModel. This is for testing purposes, please use
      * the factory instead.
-     *
-     * @param mapManager The map manager service to use
      */
-    public LiteMapViewModel(@NonNull MapManager mapManager) {
-        mMapManager = mapManager;
-    }
+    public LiteMapViewModel() {}
 
     /**
      * Adds an event at the given location and centers the map on that location
+     * @param mapManager the map manager
      * @param latLng the coordinates of the event
      * @param eventName the name of the event
      * @param zoomLevel the zoom level of the map
      */
-    public void setEventOnMap(LatLng latLng, String eventName, float zoomLevel) {
-        mMapManager.clear();
-        mMapManager.addMarker(eventName, latLng);
-        mMapManager.moveCamera(latLng, zoomLevel);
+    public void setEventOnMap(MapManager mapManager, LatLng latLng, String eventName, float zoomLevel) {
+        mapManager.clear();
+        mapManager.addMarker(eventName, latLng);
+        mapManager.moveCamera(latLng, zoomLevel);
     }
 }
