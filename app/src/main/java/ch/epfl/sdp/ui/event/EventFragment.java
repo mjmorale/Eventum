@@ -214,9 +214,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
 
-
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            Toast.makeText(getContext(), Double.toString(event.getLocation().latitude), Toast.LENGTH_SHORT).show();
             mMapViewModel.setEventOnMap(new GoogleMapManager(googleMap), event.getLocation(), event.getTitle(), mZoomLevel);
         });
     }
