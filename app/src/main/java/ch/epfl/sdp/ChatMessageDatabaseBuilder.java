@@ -5,7 +5,9 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FieldValue;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +23,12 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
         String uid = (String) data.get("uid");
         String name = (String) data.get("name");
 
+        Date date = null;
+        if (timestamp != null) {
+            date = timestamp.toDate();
+        }
+        ChatMessage message = new ChatMessage(text, date, uid, name);
 
-        ChatMessage message = new ChatMessage(text, timestamp.toDate(), uid, name);
         return message;
     }
 
@@ -35,7 +41,7 @@ public class ChatMessageDatabaseBuilder extends DatabaseObjectBuilder<ChatMessag
     public Map<String, Object> serializeToMap(@NonNull ChatMessage message) {
         return new HashMap<String, Object>() {{
             put("text", message.getText());
-            put("date", new Timestamp(message.getDate()));
+            put("date", FieldValue.serverTimestamp());
             put("uid", message.getUid());
             put("name", message.getName());
         }};
