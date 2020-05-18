@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
+import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -108,7 +109,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         mWeatherFactory.setDatabase(database);
         mWeatherFactory.setEventRef(eventRef);
         mWeatherFactory.setWeatherFetcher(fetcher);
-
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -212,12 +212,10 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMapFactory.setMapManager(new GoogleMapManager(googleMap));
-
         mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
 
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            mMapViewModel.setEventOnMap(event.getLocation(), event.getTitle(), mZoomLevel);
+            mMapViewModel.setEventOnMap(new GoogleMapManager(googleMap), event.getLocation(), event.getTitle(), mZoomLevel);
         });
     }
 
