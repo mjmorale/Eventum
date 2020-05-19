@@ -99,6 +99,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding.createButton.setOnClickListener(this);
         mBinding.addImageButton.setOnClickListener(this);
         mBinding.time.setIs24HourView(true);
+
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.IndoorToggleButton, Indoor);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.OutdoorToggleButton, Outdoor);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.SportToggleButton, Sport);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.PartyToggleButton, Party);
     }
 
     @Override
@@ -186,11 +191,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 
         String address = mBinding.geoAutocomplete.getText().toString();
         checkInput(title, description, date, address);
-
-        mViewModel.setCategoryFromToggleButton(getView(), R.id.IndoorToggleButton, Indoor);
-        mViewModel.setCategoryFromToggleButton(getView(), R.id.OutdoorToggleButton, Outdoor);
-        mViewModel.setCategoryFromToggleButton(getView(), R.id.SportToggleButton, Sport);
-        mViewModel.setCategoryFromToggleButton(getView(), R.id.PartyToggleButton, Party);
 
         EventBuilder eventBuilder = new EventBuilder();
         Event event = eventBuilder.setTitle(title)

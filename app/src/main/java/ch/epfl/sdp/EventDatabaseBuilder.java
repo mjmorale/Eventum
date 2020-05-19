@@ -24,6 +24,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         String imageId = (String)data.get("imageId");
         String organizerRef = (String)data.get("organizer");
         ArrayList<EventCategory> categories = (ArrayList<EventCategory>)data.get("categories");
+        if (categories == null) categories = new ArrayList<EventCategory>();
 
         EventBuilder eventBuilder = new EventBuilder();
         Event newEvent = eventBuilder.setTitle(title)

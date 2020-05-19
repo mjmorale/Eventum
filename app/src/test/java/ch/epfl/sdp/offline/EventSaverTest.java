@@ -11,12 +11,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventCategory;
 import ch.epfl.sdp.db.DatabaseObject;
 
+import static ch.epfl.sdp.EventCategory.Outdoor;
+import static ch.epfl.sdp.EventCategory.Sport;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,10 +39,14 @@ public class EventSaverTest {
     private Date dateEvent = new Date();
     String organizerRef = "organizerref";
     String imageId = "URL";
+    private ArrayList<EventCategory> categories = new ArrayList<EventCategory>() {{
+        add(Sport);
+        add(Outdoor);
+    }};
 
     @Test
     public void Event_AddingEvent() throws IOException, ClassNotFoundException {
-        Event event = new Event(title + "testAddEvent", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title + "testAddEvent", description, date, address, location, imageId, organizerRef, categories);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testAddEvent", dateEvent, path);
@@ -62,7 +70,7 @@ public class EventSaverTest {
 
     @Test
     public void Event_AddingSameEvent() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title+"testAddEvent", description, date, address, location, imageId, organizerRef, categories);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testAddEvent", dateEvent, path);
@@ -78,8 +86,8 @@ public class EventSaverTest {
 
     @Test
     public void Event_getAllEvents() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef);
-        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef, categories);
+        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef, categories);
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
@@ -98,8 +106,8 @@ public class EventSaverTest {
 
     @Test
     public void Event_getAllEventsWithRefs() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef);
-        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title+"testGetAllEvent1", description, date, address, location, imageId, organizerRef, categories);
+        Event event2 = new Event(title+"testGetAllEvent2", description, date, address, location, imageId, organizerRef, categories);
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
@@ -127,7 +135,7 @@ public class EventSaverTest {
 
     @Test
     public void Event_AddingEventAndRemovedBecauseOutdated() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title+"testOutdatedEvent", description, date, address, location, imageId, organizerRef, categories);
 
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()-1);
@@ -142,7 +150,7 @@ public class EventSaverTest {
 
     @Test
     public void Event_getSingleFile() throws IOException, ClassNotFoundException {
-        Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title+"testGetSingleFile", description, date, address, location, imageId, organizerRef, categories);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
         eventSaver.saveEvent(event,"testGetSingleFile", dateEvent, path);
@@ -167,7 +175,7 @@ public class EventSaverTest {
 
     @Test
     public void Event_removeFileExist() throws IOException, ClassNotFoundException {
-        Event event = new Event(title, description, date, address, location, imageId, organizerRef);
+        Event event = new Event(title, description, date, address, location, imageId, organizerRef, categories);
         EventSaver eventSaver = new EventSaver();
         dateEvent.setYear(dateEvent.getYear()+1);
 

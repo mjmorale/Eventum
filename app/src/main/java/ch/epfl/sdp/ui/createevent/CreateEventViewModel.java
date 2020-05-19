@@ -137,6 +137,8 @@ public class CreateEventViewModel extends ViewModel {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mCategories.add(category);
+                } else {
+                    mCategories.remove(category);
                 }
             }
         });
