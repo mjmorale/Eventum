@@ -3,6 +3,7 @@ package ch.epfl.sdp.ui.user.profile;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -28,6 +29,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -90,5 +92,17 @@ public class ProfileFragmentTest {
         onView(withText(EMAIL)).check(matches(isDisplayed()));
         onView(withId(R.id.user_picture));
 
+    }
+
+    @Test
+    public void ProfileFragment_GetInstanceReturnsCorrectFragmentAndArgument(){
+        Fragment fragment = ProfileFragment.getInstance(USERREF);
+        Bundle bundle = fragment.getArguments();
+        assertEquals(bundle.getString(UIConstants.BUNDLE_USER_REF), USERREF);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ProfileFragment_GetInstanceFailsOnNullString(){
+        ProfileFragment.getInstance(null);
     }
 }

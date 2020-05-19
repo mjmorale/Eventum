@@ -29,7 +29,6 @@ public class ProfileFragment extends Fragment {
         bundle.putString(UIConstants.BUNDLE_USER_REF, verifyNotNull(userRef));
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
