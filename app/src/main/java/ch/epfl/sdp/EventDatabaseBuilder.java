@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
         String address = (String)data.get("address");
         String imageId = (String)data.get("imageId");
         String organizerRef = (String)data.get("organizer");
+        ArrayList<EventCategory> categories = (ArrayList<EventCategory>)data.get("categories");
 
         EventBuilder eventBuilder = new EventBuilder();
         Event newEvent = eventBuilder.setTitle(title)
@@ -31,6 +33,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
                 .setLocation(new LatLng(location.getLatitude(), location.getLongitude()))
                 .setImageId(imageId)
                 .setOrganizerRef(organizerRef)
+                .setCategories(categories)
                 .build();
 
         return newEvent;
@@ -51,6 +54,7 @@ public class EventDatabaseBuilder extends DatabaseObjectBuilder<Event> {
             put("location", new GeoPoint(event.getLocation().latitude, event.getLocation().longitude));
             put("imageId", event.getImageId());
             put("organizer", event.getOrganizer());
+            put("categories", event.getCategories());
         }};
     }
 
