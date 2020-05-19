@@ -141,4 +141,13 @@ public class CreateEventViewModel extends ViewModel {
             }
         });
     }
+
+    /**
+     * Method to get the categories of the event
+     *
+     * @return a list of EventCategory
+     */
+    public ArrayList<EventCategory> getCategories() {
+        return mCategories;
+    }
 }
