@@ -81,6 +81,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onLeftCardExit(Object o) {
         mNumberSwipe += 1;
+        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmptyMsg.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         goBackToMapIfConditionsAreMet();
     }
 
@@ -92,6 +93,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         });
         mNumberSwipe += 1;
+        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmptyMsg.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         goBackToMapIfConditionsAreMet();
     }
 
