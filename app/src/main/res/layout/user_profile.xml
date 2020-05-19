@@ -16,7 +16,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
-                android:background="@color/colorPrimary">
+                android:background="@drawable/color_gradient_sel">
                 <ImageView
                     android:id="@+id/user_picture"
                     android:background="@drawable/circle_smaller"
