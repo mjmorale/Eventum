@@ -2,6 +2,7 @@ package ch.epfl.sdp;
 
 import org.junit.Test;
 
+import com.google.firebase.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,6 +24,8 @@ public class ChatMessageDatabaseBuilderTest {
 
         Map<String, Object> data =
                 DatabaseObjectBuilderRegistry.getBuilder(ChatMessage.class).serializeToMap(chatMessage);
+
+        data.put("date", new Timestamp(date));  //firebase replace ServerTimestamp to date in the backend
         ChatMessage resultChatMessage = DatabaseObjectBuilderRegistry.getBuilder(ChatMessage.class).buildFromMap(data);
 
         assertEquals(chatMessage.getText(), resultChatMessage.getText());
