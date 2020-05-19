@@ -62,6 +62,7 @@ public class Event implements Serializable {
         mCategories.addAll(categories);
     }
 
+    // TO DELETE ??????????????????????????????????????????????????????????????
     /**
      * Constructor of event
      * @param title Event title
@@ -73,25 +74,25 @@ public class Event implements Serializable {
      * @param imageId An URL to an image for the Event
      * @param categories The categories of the event
      */
-    public Event(@NonNull String title,
-                 @NonNull String description,
-                 @NonNull Date date,
-                 @NonNull String address,
-                 double latitude,
-                 double longitude,
-                 @NonNull String  imageId,
-                 @NonNull String organizerRef,
-                 @NonNull ArrayList<EventCategory> categories) {
-        mTitle = title;
-        mDescription = description;
-        mDate = date;
-        mAddress = address;
-        mLatitude = latitude;
-        mLatitude = longitude;
-        mImageId = imageId;
-        mOrganizerRef = organizerRef;
-        mCategories.addAll(categories);
-    }
+//    public Event(@NonNull String title,
+//                 @NonNull String description,
+//                 @NonNull Date date,
+//                 @NonNull String address,
+//                 double latitude,
+//                 double longitude,
+//                 @NonNull String  imageId,
+//                 @NonNull String organizerRef,
+//                 @NonNull ArrayList<EventCategory> categories) {
+//        mTitle = title;
+//        mDescription = description;
+//        mDate = date;
+//        mAddress = address;
+//        mLatitude = latitude;
+//        mLatitude = longitude;
+//        mImageId = imageId;
+//        mOrganizerRef = organizerRef;
+//        mCategories.addAll(categories);
+//    }
 
     /**
      * Utility method to convert a Date class into a human readable date using a specified format.
