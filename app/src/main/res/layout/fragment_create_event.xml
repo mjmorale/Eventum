@@ -140,13 +140,13 @@
                 android:layout_margin="1dp"
                 android:orientation="horizontal">
 
-                    <ToggleButton
+                <ToggleButton
                     android:id="@+id/IndoorToggleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:checked="false"
-                    android:gravity="right|center_vertical"
+                    android:gravity="center"
                     android:textOff="Indoor"
                     android:textOn="Indoor"/>
 
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:checked="false"
-                    android:gravity="right|center_vertical"
+                    android:gravity="center"
                     android:textOff="Outdoor"
                     android:textOn="Outdoor"/>
 
@@ -166,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:checked="false"
-                    android:gravity="right|center_vertical"
+                    android:gravity="center"
                     android:textOff="Sport"
                     android:textOn="Sport"/>
 
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:checked="false"
-                    android:gravity="right|center_vertical"
+                    android:gravity="center"
                     android:textOff="Party"
                     android:textOn="Party"/>
             </LinearLayout>

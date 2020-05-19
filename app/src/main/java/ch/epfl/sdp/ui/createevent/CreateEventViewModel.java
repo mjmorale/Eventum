@@ -1,9 +1,19 @@
 package ch.epfl.sdp.ui.createevent;
 
+import android.content.Context;
 import android.net.Uri;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
+
+import java.util.ArrayList;
+
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.EventCategory;
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
@@ -53,6 +63,7 @@ public class CreateEventViewModel extends ViewModel {
     private final Storage mStorage;
     private final UserInfo mUserInfo;
     private String mImageId;
+    private final ArrayList<EventCategory> mCategories = new ArrayList<EventCategory>();
 
     /**
      * Constructor of the CreateEventViewModel, the factory should be used instead of this
@@ -111,5 +122,23 @@ public class CreateEventViewModel extends ViewModel {
      */
     public String getImageId() {
         return mImageId;
+    }
+
+    /**
+     * Method to check on a toggle button to add a category to an event
+     *
+     * @param viewId the id of the toggle button
+     * @param view the current view
+     * @param category the category to set
+     */
+    public void setCategoryFromToggleButton(View view, int viewId, EventCategory category) {
+        ToggleButton toggle = (ToggleButton) view.findViewById(viewId);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCategories.add(category);
+                }
+            }
+        });
     }
 }
