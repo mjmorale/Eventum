@@ -219,6 +219,22 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
+        onView(withId(R.id.IndoorToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.OutdoorToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.SportToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.PartyToggleButton)).perform(
+                scrollTo(),
+                click());
+
         clickCreateButton();
     }
 
