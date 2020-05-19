@@ -219,6 +219,24 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
+        clickOnCategoryButtons();
+
+        clickCreateButton();
+    }
+
+    private void clickCreateButton() {
+        onView(withId(R.id.createButton)).perform(
+                scrollTo(),
+                click());
+    }
+
+    private void clickAddImageButton() {
+        onView(withId(R.id.addImageButton)).perform(
+                scrollTo(),
+                click());
+    }
+
+    private void clickOnCategoryButtons() {
         onView(withId(R.id.IndoorToggleButton)).perform(
                 scrollTo(),
                 click());
@@ -232,20 +250,6 @@ public class CreateEventFragmentTest {
                 click());
 
         onView(withId(R.id.PartyToggleButton)).perform(
-                scrollTo(),
-                click());
-
-        clickCreateButton();
-    }
-
-    private void clickCreateButton() {
-        onView(withId(R.id.createButton)).perform(
-                scrollTo(),
-                click());
-    }
-
-    private void clickAddImageButton() {
-        onView(withId(R.id.addImageButton)).perform(
                 scrollTo(),
                 click());
     }
