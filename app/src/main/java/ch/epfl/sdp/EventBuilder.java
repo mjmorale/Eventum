@@ -3,6 +3,7 @@ package ch.epfl.sdp;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -17,6 +18,7 @@ public class EventBuilder {
     private LatLng mLocation = new LatLng(10, 10);
     private String mImageId;
     private String mOrganizerRef;
+    private final ArrayList<EventCategory> mCategories = new ArrayList<EventCategory>();
     private final String DEFAULT_URL = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
             "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
 
@@ -25,11 +27,11 @@ public class EventBuilder {
      */
     public Event build() {
         if (mImageId == null) mImageId = DEFAULT_URL;
-        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId, mOrganizerRef);
+        ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId, mOrganizerRef, mCategories);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");
         if (mOrganizerRef.isEmpty()) throw new IllegalArgumentException("Organizer reference cannot be empty");
-        return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId, mOrganizerRef);
+        return new Event(mTitle, mDescription, mDate, mAddress, mLocation, mImageId, mOrganizerRef, mCategories);
     }
 
     /**
@@ -121,6 +123,17 @@ public class EventBuilder {
      */
     public EventBuilder setOrganizerRef(String organizerRef) {
         this.mOrganizerRef = organizerRef;
+        return this;
+    }
+
+    /**
+     * Set the categories for the Event to be created.
+     *
+     * @param categories to assign
+     * @return caller class with the categories assigned
+     */
+    public EventBuilder setCategories(ArrayList<EventCategory> categories) {
+        mCategories.addAll(categories);
         return this;
     }
 }
