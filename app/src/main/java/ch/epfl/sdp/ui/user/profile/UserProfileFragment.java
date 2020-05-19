@@ -20,7 +20,9 @@ import androidx.lifecycle.ViewModelProvider;
 import javax.annotation.Nullable;
 
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentUserProfileBinding;
+import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -30,29 +32,39 @@ import ch.epfl.sdp.ui.ServiceProvider;
 import static android.app.Activity.RESULT_OK;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
+/**
+ * The fragment responsible of the user profile editing
+ */
 public class UserProfileFragment extends Fragment {
 
     private static final int PERMISSION_STORAGE = 100;
     private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
-    private Uri mImageUri;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
+    private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
 
-    private Storage mStorage;
-    private String mCurrentUserId;
-    private CollectionQuery mUserCollection;
-
+    /**
+     * the constructor
+     */
     public UserProfileFragment(){
-        mCurrentUserId= ServiceProvider.getInstance().getAuthenticator().getCurrentUser().getUid();
-        mUserCollection=ServiceProvider.getInstance().getDatabase().query("users");
-        mStorage= ServiceProvider.getInstance().getStorage();
+        mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
+        mFactory.setStorage(ServiceProvider.getInstance().getStorage());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
     }
 
+    /**
+     * Should only be used for testing
+     * @param storage to upload pictures
+     * @param authenticator to get the current user id
+     * @param database to get the current user info
+     */
     @VisibleForTesting
-    public UserProfileFragment(String currentUserId, CollectionQuery userCollection, Storage storage){
-        mCurrentUserId= currentUserId;
-        mUserCollection=userCollection;
-        mStorage=storage;
+    public UserProfileFragment(@NonNull Storage storage,@NonNull Authenticator authenticator,@NonNull Database database){
+        mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
+        mFactory.setStorage(storage);
+        mFactory.setAuthenticator(authenticator);
+        mFactory.setDatabase(database);
     }
 
 
@@ -67,7 +79,7 @@ public class UserProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = new UserProfileViewModel(mCurrentUserId,mUserCollection);
+        mViewModel = new ViewModelProvider(this, mFactory).get(UserProfileViewModel.class);
 
         mBinding.userProfilePhoto.setOnClickListener(v -> {
             loadImage(new FirestoreStorage.UrlReadyCallback() {
@@ -87,7 +99,6 @@ public class UserProfileFragment extends Fragment {
             mBinding.userProfileBio.setText(user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
-            //mBinding.userProfileEmail.setText(user.getEmail());
         });
     }
 
@@ -103,6 +114,10 @@ public class UserProfileFragment extends Fragment {
         mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 
+    /**
+     * @brief load an image from the phone gallery
+     * @param uploadCallBack the callback after the upload result
+     */
     public void loadImage(FirestoreStorage.UrlReadyCallback uploadCallBack) {
         mUploadCallBack = uploadCallBack;
         requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -123,13 +138,16 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * @brief the result of the activity of choosing from the gallery intent
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                mImageUri = data.getData();
-                ImageGetter.getInstance().getImage(getContext(), mImageUri, mBinding.userProfilePhoto);
-                mBinding.userProfilePhoto.setTag("new_image");
-                mStorage.uploadImage(mImageUri, mUploadCallBack);
+                mViewModel.setImage(data.getData(), getContext(), mBinding.userProfilePhoto, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
