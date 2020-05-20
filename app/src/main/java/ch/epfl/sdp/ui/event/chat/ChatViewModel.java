@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.event.chat;
 
+import android.provider.ContactsContract;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -45,6 +47,7 @@ public class ChatViewModel extends ViewModel {
     private FilterQuery mOrderedMessagesQuery;
     private LiveData<List<DatabaseObject<ChatMessage>>> mMessageLiveData;
     private UserInfo mUser;
+    private Database mDatabase;
 
     /**
      * Constructor of the chat view model
@@ -55,12 +58,15 @@ public class ChatViewModel extends ViewModel {
      */
     public ChatViewModel(@NonNull String eventRef, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database, eventRef, authenticator);
-
+        mDatabase=database;
         mMessageCollection = database.query("events").document(eventRef).collection("messages");
         mOrderedMessagesQuery = mMessageCollection.orderBy("date");
         mUser = authenticator.getCurrentUser();
     }
 
+    public Database getDatabase(){
+        return mDatabase;
+    }
     /**
      * Method to add a new chat message for an event in the database
      *

@@ -96,7 +96,7 @@ public class ChatFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(this, mFactory).get(ChatViewModel.class);
 
-        mAdapter = new MessageListAdapter(mViewModel.getUserRef());
+        mAdapter = new MessageListAdapter(mViewModel.getUserRef(), mViewModel.getDatabase(), getContext());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setSmoothScrollbarEnabled(true);
