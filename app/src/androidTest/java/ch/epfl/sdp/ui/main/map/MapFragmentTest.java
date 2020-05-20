@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +42,7 @@ import ch.epfl.sdp.db.queries.LocationQuery;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockLocationService;
+import ch.epfl.sdp.storage.Storage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -107,6 +109,12 @@ public class MapFragmentTest {
     @Mock
     private MapManager mMapManagerMock;
 
+    @Mock
+    private Storage mStorage;
+
+    @Mock
+    private File mCacheDir;
+
     @Rule
     public GrantPermissionRule permissionFineRule =
             GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -139,7 +147,7 @@ public class MapFragmentTest {
                 MapFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabase, mAuthenticator)
+                new MockFragmentFactory(MapFragment.class, mMapManagerMock, mMockLocationService, mDatabase, mAuthenticator, mStorage, mCacheDir)
         );
 
         List<DatabaseObject<Event>> events = new ArrayList<>();

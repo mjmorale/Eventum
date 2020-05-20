@@ -33,39 +33,45 @@ public class FirestoreStorage implements Storage {
      *
      * @param firebase The instance of the underlying firestore storage API.
      */
-    public FirestoreStorage(@NonNull FirebaseStorage firebase) {
+    public FirestoreStorage(@NonNull FirebaseStorage firebase, @NonNull ImageCache imageCache) {
         mStorage = verifyNotNull(firebase);
-        mImageCache = ImageCache.getInstance();
+        mImageCache = verifyNotNull(imageCache);
     }
 
     @Override
     public void uploadImage(@NonNull String folder, @NonNull Bitmap image, int compression, @NonNull RefReadyCallback callback) {
-        verifyNotNull(image, callback);
+        verifyNotNull(folder, image, callback);
         if(compression < 0 || compression > 100) {
             throw new IllegalArgumentException("Compression factor is between 0 and 100");
         }
-
         // Generate a random image identifier
         String imageUUID = UUID.randomUUID().toString();
         // Compress the bitmap image in the WebP format for best compression quality
         ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
         if(!image.compress(Bitmap.CompressFormat.WEBP, compression, imageBytes)) {
+            // Compression failed
             callback.onFailure(new Exception("Cannot compress given bitmap"));
         }
-        StorageMetadata metadata = new StorageMetadata.Builder()
-                .setContentType("image/webp")
-                .build();
-        // Upload the image to Firebase storage.
-        mStorage.getReference()
-                .child(folder)
-                .child(imageUUID)
-                .putBytes(imageBytes.toByteArray(), metadata)
-                .addOnSuccessListener(task -> callback.onSuccess(imageUUID))
-                .addOnFailureListener(callback::onFailure);
+        else {
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("image/webp")
+                    .build();
+            // Upload the image to Firebase storage.
+            mStorage.getReference()
+                    .child(folder)
+                    .child(imageUUID)
+                    .putBytes(imageBytes.toByteArray(), metadata)
+                    .addOnSuccessListener(task -> callback.onSuccess(imageUUID))
+                    .addOnFailureListener(callback::onFailure);
+        }
     }
 
     @Override
     public void downloadImage(@NonNull File cacheDir, @NonNull String folder, @NonNull String imageRef, int maxSizeMb, @NonNull BitmapReadyCallback callback) {
+        verifyNotNull(cacheDir, folder, imageRef, callback);
+        if(maxSizeMb <= 0) {
+            throw new IllegalArgumentException("File size should be greater than one");
+        }
         Bitmap cachedImage = mImageCache.getImage(cacheDir, imageRef);
         if(cachedImage == null) {
             // Cache does not contain image.

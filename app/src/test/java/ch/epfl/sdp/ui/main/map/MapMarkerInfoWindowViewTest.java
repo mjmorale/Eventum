@@ -19,8 +19,10 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.offline.ImageCache;
+import ch.epfl.sdp.ui.ImageViewModel;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +41,7 @@ public class MapMarkerInfoWindowViewTest {
     private MapViewModel mMapViewModel;
 
     @Mock
-    private Context mContext;
+    private ImageViewModel mImageViewModel;
 
     @Mock
     private View mMarkerView;
@@ -57,9 +59,6 @@ public class MapMarkerInfoWindowViewTest {
     private ImageView mImageView;
 
     @Mock
-    private ImageCache mImageCache;
-
-    @Mock
     private Marker mMarker;
 
     @Before
@@ -69,7 +68,7 @@ public class MapMarkerInfoWindowViewTest {
 
     @Test
     public void MapMarkerInfoWindowView_getInfoWindowTest() {
-        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView, mImageCache);
+        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mImageViewModel, mMarkerView);
 
         EventBuilder eventBuilder = new EventBuilder();
         Event event = eventBuilder.setTitle(title)
@@ -93,6 +92,6 @@ public class MapMarkerInfoWindowViewTest {
         verify(mTitleView).setText(title);
         verify(mDateView).setText(dateStr);
         verify(mDescriptionView).setText(description);
-        verify(mImageCache).getImage(mContext, imageId, mImageView);
+        verify(mImageViewModel).loadInto("events", imageId, mImageView);
     }
 }

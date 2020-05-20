@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.offline.EventSaver;
+import ch.epfl.sdp.offline.ImageCache;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
@@ -45,7 +46,7 @@ public final class ServiceProvider {
     private ServiceProvider() {
         mDatabase = new FirestoreDatabase(FirebaseFirestore.getInstance());
         mAuthenticator = new FirebaseAuthenticator(FirebaseAuth.getInstance());
-        mStorage = new FirestoreStorage(FirebaseStorage.getInstance());
+        mStorage = new FirestoreStorage(FirebaseStorage.getInstance(), ImageCache.getInstance());
     }
 
     /**

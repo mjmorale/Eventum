@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockWeatherFetcher;
+import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.weather.Weather;
@@ -52,6 +54,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -80,6 +84,12 @@ public class EventFragmentTest {
 
     @Mock
     private FilterQuery mFilterQueryMock;
+
+    @Mock
+    private Storage mStorage;
+
+    @Mock
+    private File mCacheDir;
 
     @Mock
     private Authenticator<AuthCredential> mAuthenticatorMock;
@@ -113,7 +123,7 @@ public class EventFragmentTest {
                 EventFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef", mWeatherFetcherMock)
+                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef", mWeatherFetcherMock, mStorage, mCacheDir)
         );
 
     }
