@@ -73,4 +73,9 @@ public class ImageCache {
             Log.e(TAG, "Cannot save image in cache", e);
         }
     }
+
+    private void cleanCache(File cacheDir){
+        File cacheSummary = new File(cacheDir, TAG);
+        
+    }
 }
