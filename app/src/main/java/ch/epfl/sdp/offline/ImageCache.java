@@ -96,7 +96,7 @@ public class ImageCache {
             String toDelete = status.get(smallestDate);
             status.remove(smallestDate);
             File deleteFile = new File(cacheDir, toDelete);
-            deleteFile.deleteOnExit();
+            deleteFile.delete();
             dateSet = status.keySet();
         }
         updateCacheSummary(cacheDir);
