@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui.event;
 
+import java.io.File;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;

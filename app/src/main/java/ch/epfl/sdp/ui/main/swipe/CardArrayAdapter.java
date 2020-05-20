@@ -1,6 +1,8 @@
 package ch.epfl.sdp.ui.main.swipe;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +19,29 @@ import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.offline.ImageCache;
 
 import ch.epfl.sdp.db.DatabaseObject;
+import ch.epfl.sdp.storage.Storage;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
  * Adapter to fill the swipe cards with events
  */
 public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
-    private LocationService mLocationService;
+    private static final String TAG = "CardArrayAdapter";
+
+    private final LocationService mLocationService;
+    private final Storage mStorage;
 
     /**
      * Constructor of the CardArrayAdapter
      *
      * @param context the environment the application is currently running in
      */
-    public CardArrayAdapter(Context context, LocationService locationService){
-        super(context, R.layout.cardview_swipe_item);
-        mLocationService = locationService;
+    public CardArrayAdapter(@NonNull Context context, @NonNull LocationService locationService, @NonNull Storage storage) {
+        super(verifyNotNull(context), R.layout.cardview_swipe_item);
+        mLocationService = verifyNotNull(locationService);
+        mStorage = verifyNotNull(storage);
     }
 
     @NonNull
@@ -54,11 +63,20 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
         TextView distance = convertView.findViewById(R.id.eventDistance);
 
         name.setText(event.getTitle());
+        description.setText(event.getDescription());
         distance.setText(distanceString);
 
-        ImageCache.getInstance().getImage(getContext(), event.getImageId(), imageView);
+        mStorage.downloadImage(getContext().getCacheDir(), "events", event.getImageId(), 1, new Storage.BitmapReadyCallback() {
+            @Override
+            public void onSuccess(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
 
-        description.setText(event.getDescription());
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "Cannot download image from database", e);
+            }
+        });
         return convertView;
     }
 

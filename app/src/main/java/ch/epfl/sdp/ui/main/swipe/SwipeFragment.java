@@ -29,6 +29,7 @@ import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 import ch.epfl.sdp.ui.main.map.MapFragment;
@@ -112,7 +113,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         if (mLocationService == null)
             mLocationService = new GoogleLocationService((LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE));
 
-        mArrayAdapter = new CardArrayAdapter(getContext(), mLocationService);
+        mArrayAdapter = new CardArrayAdapter(getContext(), mLocationService, ServiceProvider.getInstance().getStorage());
         mArrayAdapter.setNotifyOnChange(true);
 
         mBinding.cardsListView.setAdapter(mArrayAdapter);
@@ -139,7 +140,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
             Event selectedEvent = mArrayAdapter.getItem(itemPosition).getObject();
             mMapViewModel.setEventOnMap(new GoogleMapManager(googleMap), selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
-            mBinding.eventDetailView.setEvent(selectedEvent);
+            mBinding.eventDetailView.setEvent(selectedEvent, ServiceProvider.getInstance().getStorage());
             mBinding.eventDetailView.callOnClick();
         });
 

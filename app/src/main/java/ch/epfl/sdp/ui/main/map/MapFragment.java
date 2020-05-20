@@ -15,7 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.Marker;
+
+import java.io.File;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
@@ -27,6 +28,9 @@ import ch.epfl.sdp.map.LocationService;
 import ch.epfl.sdp.map.MapManager;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
+import ch.epfl.sdp.storage.Storage;
+import ch.epfl.sdp.ui.ImageViewModel;
+import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
 import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 
@@ -36,39 +40,60 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  * Fragment for the map with events markers
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private MapViewModel mViewModel;
-    private final MapViewModel.MapViewModelFactory mFactoryMap;
-    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFactoryFilterSettings;
+
+    private MapViewModel mMapViewModel;
+    private final MapViewModel.MapViewModelFactory mMapViewModelFactory;
+
+    private FilterSettingsViewModel.FilterSettingsViewModelFactory mFilterSettingsViewModelFactory;
+
+    private ImageViewModel mImageViewModel;
+    private final ImageViewModel.ImageViewModelFactory mImageViewModelFactory;
+
     private FragmentMapBinding mBinding;
-    private LocationService mLocationService = null;
 
     private MapView mMapView;
     private float mZoomLevel = 12;
 
     /**
-     * Constructor of the map fragment, only for testing purpose!
+     * Constructor of the map fragment, only for testing purposes!
      *
-     * @param mapManager {@link ch.epfl.sdp.map.MapManager}
-     * @param locationService {@link ch.epfl.sdp.map.LocationService}
-     * @param database {@link ch.epfl.sdp.db.Database}
+     * @param mapManager {@link MapManager}
+     * @param locationService {@link LocationService}
+     * @param database {@link Database}
+     * @param authenticator {@link Authenticator}
+     * @param storage {@link Storage}
+     * @param cacheDir The image cache directory.
      */
     @VisibleForTesting
-    public MapFragment(@NonNull MapManager mapManager, @NonNull LocationService locationService, @NonNull Database database, @NonNull Authenticator authenticator) {
-        verifyNotNull(mapManager, database, locationService);
-        mFactoryMap = new MapViewModel.MapViewModelFactory();
-        mFactoryMap.setMapManager(mapManager);
-        mLocationService = locationService;
-        mFactoryFilterSettings = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
-        mFactoryFilterSettings.setDatabase(database);
-        mFactoryFilterSettings.setLocationService(locationService);
-        mFactoryFilterSettings.setAuthenticator(authenticator);
+    public MapFragment(@NonNull MapManager mapManager,
+                       @NonNull LocationService locationService,
+                       @NonNull Database database,
+                       @NonNull Authenticator authenticator,
+                       @NonNull Storage storage,
+                       @NonNull File cacheDir) {
+        verifyNotNull(mapManager, database, locationService, authenticator, storage, cacheDir);
+
+        mMapViewModelFactory = new MapViewModel.MapViewModelFactory();
+        mMapViewModelFactory.setMapManager(mapManager);
+
+        mImageViewModelFactory = new ImageViewModel.ImageViewModelFactory();
+        mImageViewModelFactory.setStorage(storage);
+        mImageViewModelFactory.setCacheDir(cacheDir);
+
+        mFilterSettingsViewModelFactory = new FilterSettingsViewModel.FilterSettingsViewModelFactory();
+        mFilterSettingsViewModelFactory.setDatabase(database);
+        mFilterSettingsViewModelFactory.setLocationService(locationService);
+        mFilterSettingsViewModelFactory.setAuthenticator(authenticator);
     }
 
     /**
-     * Constructor of the map fragment (initialize the map view model)
+     * Construct a new MapFragment
      */
     public MapFragment() {
-        mFactoryMap = new MapViewModel.MapViewModelFactory();
+        mImageViewModelFactory = new ImageViewModel.ImageViewModelFactory();
+        mImageViewModelFactory.setStorage(ServiceProvider.getInstance().getStorage());
+
+        mMapViewModelFactory = new MapViewModel.MapViewModelFactory();
     }
 
     @Override
@@ -78,12 +103,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = mBinding.getRoot().findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        if (mLocationService == null) {
-            mLocationService =
-                    new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE));
-
+        if (mMapViewModelFactory.getLocationService() == null) {
+            mMapViewModelFactory.setLocationService(
+                new GoogleLocationService((LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE))
+            );
         }
-        mFactoryMap.setLocationService(mLocationService);
+
+        if(mImageViewModelFactory.getCacheDir() == null) {
+            mImageViewModelFactory.setCacheDir(getContext().getCacheDir());
+        }
+        mImageViewModel = new ViewModelProvider(this, mImageViewModelFactory).get(ImageViewModel.class);
 
         mMapView.getMapAsync(this);
 
@@ -92,35 +121,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         googleMap.setMyLocationEnabled(true);
 
-        mFactoryMap.setMapManager(new GoogleMapManager(googleMap));
-        mViewModel = new ViewModelProvider(this, mFactoryMap).get(MapViewModel.class);
+        mMapViewModelFactory.setMapManager(new GoogleMapManager(googleMap));
+        mMapViewModel = new ViewModelProvider(this, mMapViewModelFactory).get(MapViewModel.class);
 
         FilterSettingsViewModel filterSettingsViewModel =
-                new ViewModelProvider(requireActivity(), mFactoryFilterSettings).get(FilterSettingsViewModel.class);
+                new ViewModelProvider(requireActivity(), mFilterSettingsViewModelFactory).get(FilterSettingsViewModel.class);
 
         filterSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
-            mViewModel.clearEvents();
+            mMapViewModel.clearEvents();
             for(DatabaseObject<Event> event: events)
-                mViewModel.addEvent(event.getObject());
+                mMapViewModel.addEvent(event.getObject());
         });
 
-        mViewModel.centerCamera(getContext(), mZoomLevel);
+        mMapViewModel.centerCamera(getContext(), mZoomLevel);
 
-        googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(mViewModel,getContext()));
+        googleMap.setInfoWindowAdapter(new MapMarkerInfoWindowView(getContext(), mMapViewModel, mImageViewModel));
 
-        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("eventHash", mViewModel.getEventFromMarker(marker).hashCode());
-                SwipeFragment swipeFragment = new SwipeFragment();
-                swipeFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.mapView, swipeFragment).commit();
-            }
+        googleMap.setOnInfoWindowClickListener(marker -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("eventHash", mMapViewModel.getEventFromMarker(marker).hashCode());
+            SwipeFragment swipeFragment = new SwipeFragment();
+            swipeFragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.mapView, swipeFragment).commit();
         });
     }
 
