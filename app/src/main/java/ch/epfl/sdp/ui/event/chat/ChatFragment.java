@@ -81,6 +81,7 @@ public class ChatFragment extends Fragment {
             trySendMessage(exception -> Toast.makeText(getContext(), "Couldn't send message", Toast.LENGTH_SHORT).show());
         });
 
+
         return mBinding.getRoot();
     }
 
@@ -101,6 +102,7 @@ public class ChatFragment extends Fragment {
         layoutManager.setSmoothScrollbarEnabled(true);
 
         mBinding.reyclerviewMessageList.setLayoutManager(layoutManager);
+        mAdapter.setContext(getContext());
         mBinding.reyclerviewMessageList.setAdapter(mAdapter);
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
