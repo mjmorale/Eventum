@@ -64,8 +64,11 @@ public class FilterSettingsViewModel extends ViewModel {
     private final LocationService mLocationService;
     private final UserInfo mUserInfo;
 
+    private Double mLastRadiusSetting;
+
     private final MediatorLiveData<Collection<DatabaseObject<Event>>> mResultsLiveData = new MediatorLiveData<>();
     private LiveData<Collection<DatabaseObject<Event>>> mCurrentLivedataSource;
+    private List<String> mListCategories =new ArrayList<String>();
     private LiveData<List<DatabaseObject<Event>>> mRootLiveDataSource;
     private LiveData<List<DatabaseObject<Event>>> mAttendedEventsLiveData;
     private LiveData<List<DatabaseObject<Event>>> mOwnedEventsLiveData;
@@ -127,8 +130,20 @@ public class FilterSettingsViewModel extends ViewModel {
      *
      * @param context the environment the application is currently running in
      * @param radiusSetting the radius (km) used for filtering the events
+     * @param newCategory the category we need to add or remove
+     * @param checkCategory boolean to know if we have to add or remove
      */
-    public void setSettings(Context context, Double radiusSetting) {
+    public void setSettings(Context context, Double radiusSetting, String newCategory,Boolean checkCategory) {
+
+        if (radiusSetting == null){
+            if (mLastRadiusSetting == null)
+                radiusSetting = 5.;
+            else
+                radiusSetting = mLastRadiusSetting;
+        }else
+            mLastRadiusSetting = radiusSetting;
+
+
         Location location = mLocationService.getLastKnownLocation(context);
         GeoPoint locationGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
         if (mRootLiveDataSource != null) {
@@ -142,8 +157,33 @@ public class FilterSettingsViewModel extends ViewModel {
         mResultsLiveData.addSource(mCurrentLivedataSource, databaseObjects -> {
             mFilteredEvents = databaseObjects;
             combineEvents();
+            addOrRemoveCategory(newCategory,checkCategory);
+            filterCategories();
             postCurrentEvents();
         });
+    }
+
+    private void addOrRemoveCategory(String newCategory, Boolean checkCategory) {
+        if (newCategory != null) {
+            if (checkCategory)
+                mListCategories.add(newCategory);
+            else
+                mListCategories.remove(newCategory);
+        }
+    }
+
+    private void filterCategories() {
+        if (!mListCategories.isEmpty())
+        {
+            for(DatabaseObject<Event> event: mFilteredEvents) {
+
+                for (String category : mListCategories) {
+                    if(!event.getObject().getCategories().contains(category)) {
+                        mEvents.remove(event.getId());
+                    }
+                }
+            }
+        }
     }
 
     public void joinEvent(@NonNull String eventRef, @NonNull Query.OnQueryCompleteCallback<Void> callback) {

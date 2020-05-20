@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,13 +23,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int progressChanged = FilterView.MIN_VALUE + progress;
                 mBinding.menuMainSearch.mSeekBarValue.setText(progressChanged + "km");
-                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress + FilterView.MIN_VALUE);
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), (double) progress + FilterView.MIN_VALUE,null,null);
             }
 
             @Override
@@ -224,6 +224,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        mBinding.menuMainSearch.mOptionOutdoor.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), null, "Outdoor",b);
+            }
+        });
+        mBinding.menuMainSearch.mOptionIndoor.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), null, "Indoor",b);
+            }
+        });
+        mBinding.menuMainSearch.mOptionParty.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), null, "Party",b);
+            }
+        });
+        mBinding.menuMainSearch.mOptionSport.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mFilterSettingsViewModel.setSettings(getApplicationContext(), null, "Sport",b);
+            }
+        });
+
     }
 
     private void setupToolbarNavigation() {
