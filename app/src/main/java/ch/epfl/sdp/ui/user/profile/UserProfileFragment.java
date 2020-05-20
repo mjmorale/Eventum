@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
     private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
-
+    private Uri mImageURi;
     /**
      * the constructor
      */
@@ -90,15 +92,23 @@ public class UserProfileFragment extends Fragment {
 
                 @Override
                 public void onFailure() {
-                    Toast.makeText(getContext(), "Operation failed, try again!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Cannot change the profile picture, try again later", Toast.LENGTH_SHORT).show();
                 }
             });
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
-            mBinding.userProfileBio.setText(user.getDescription());
+            mBinding.userProfileBio.getText().clear();
+            mBinding.userProfileBio.append(user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
+        });
+
+        mBinding.userProfileCheckButton.setOnClickListener(v -> {
+            mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
+            if(mImageURi!=null)
+                mViewModel.uploadImage(mImageURi, mUploadCallBack);
+            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -111,7 +121,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 
     /**
@@ -147,7 +156,8 @@ public class UserProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                mViewModel.setImage(data.getData(), getContext(), mBinding.userProfilePhoto, mUploadCallBack);
+                mImageURi= data.getData();
+                mViewModel.displayImage(mImageURi, getContext(), mBinding.userProfilePhoto);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }

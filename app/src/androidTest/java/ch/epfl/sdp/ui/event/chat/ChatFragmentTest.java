@@ -128,7 +128,6 @@ public class ChatFragmentTest {
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
-
         onView(withText(mChatMessage.getObject().getText())).check(matches(isDisplayed()));
     }
 

@@ -82,6 +82,7 @@ public class UserProfileViewModel extends ViewModel {
      * @param imageId to be added
      * @brief updated the imageId of user in the database
      */
+
     public void updateImageId(String imageId) {
         mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, result -> {
         });
@@ -110,11 +111,12 @@ public class UserProfileViewModel extends ViewModel {
      * @param imageUri of the image to be set
      * @param context of the app
      * @param imageView where the image to be set
-     * @param uploadCallBack after the upload
      */
-    public void setImage(Uri imageUri, Context context, ImageView imageView, FirestoreStorage.UrlReadyCallback uploadCallBack) {
+    public void displayImage(Uri imageUri, Context context, ImageView imageView) {
         ImageGetter.getInstance().getImage(context, imageUri, imageView);
         imageView.setTag("new_image");
+    }
+    public void uploadImage(Uri imageUri,FirestoreStorage.UrlReadyCallback uploadCallBack){
         mStorage.uploadImage(imageUri, uploadCallBack);
     }
 

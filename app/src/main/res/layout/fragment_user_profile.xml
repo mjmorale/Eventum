@@ -6,34 +6,33 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="5dp"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="574dp"
+        android:layout_marginHorizontal="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/myCardView"
                 android:layout_width="200dp"
-                android:layout_weight="0.6"
                 android:layout_height="200dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginHorizontal="70dp"
-                app:cardCornerRadius="100dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                >
+                android:layout_marginHorizontal="70dp"
+                android:layout_marginTop="25dp"
+                android:layout_weight="0.6"
+                app:cardCornerRadius="100dp">
 
                 <ImageView
                     android:id="@+id/user_profile_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
                     android:clickable="true"
+                    android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_person_black_24dp" />
 
             </androidx.cardview.widget.CardView>
@@ -41,37 +40,48 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_weight="0.6"
                 android:layout_marginTop="30dp"
-                android:background="@color/colorPrimary"/>
+                android:layout_weight="0.6"
+                android:background="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/user_profile_name"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
+                android:background="#dddddd"
                 android:paddingLeft="30dp"
                 android:text="Username"
-                android:textSize="20sp"
                 android:textColor="@color/black"
-                android:background="#dddddd"/>
+                android:textSize="20sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_weight="0.6"
                 android:layout_marginTop="30dp"
-                android:background="@color/colorPrimary"/>
+                android:layout_weight="0.6"
+                android:background="@color/colorPrimary" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_profile_bio"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:background="#dddddd"
                 android:hint="Write about youself here"
-                android:textSize="17sp"
                 android:padding="10dp"
                 android:textColor="@color/black"
-                android:background="#dddddd"/>
+                android:textSize="17sp" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/user_profile_check_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="130dp"
+                android:clickable="true"
+                android:layout_marginBottom="30dp"
+                app:srcCompat="@drawable/check" />
         </LinearLayout>
     </ScrollView>
+
+
 </RelativeLayout>
