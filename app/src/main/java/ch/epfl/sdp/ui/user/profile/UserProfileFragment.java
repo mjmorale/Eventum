@@ -44,7 +44,7 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
     private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
-    private Uri mImageURi;
+    private String imageURl;
     /**
      * the constructor
      */
@@ -98,17 +98,24 @@ public class UserProfileFragment extends Fragment {
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
-            mBinding.userProfileBio.getText().clear();
-            mBinding.userProfileBio.append(user.getDescription());
+            mBinding.userProfileBio.getText().replace(0,mBinding.userProfileBio.getText().length(), user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
         });
+        mBinding.userProfileBio.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        mBinding.userProfileCheckButton.setOnClickListener(v -> {
-            mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
-            if(mImageURi!=null)
-                mViewModel.uploadImage(mImageURi, mUploadCallBack);
-            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mViewModel.updateDescription(s.toString());
+            }
         });
     }
 
@@ -156,8 +163,7 @@ public class UserProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                mImageURi= data.getData();
-                mViewModel.displayImage(mImageURi, getContext(), mBinding.userProfilePhoto);
+                mViewModel.setImage(data.getData(), getContext(), mBinding.userProfilePhoto, mUploadCallBack);
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
