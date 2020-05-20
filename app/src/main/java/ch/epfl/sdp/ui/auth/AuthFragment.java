@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,6 +32,8 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
 import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.offline.ConnectivityService;
+import ch.epfl.sdp.platforms.android.AndroidConnectivityService;
 import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
 import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -40,6 +43,8 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
 
     public interface OnAuthFragmentResultListener {
         void onLoggedIn(String userRef);
+
+        void onOffline();
     }
 
     private final static String TAG = "AuthFragment";
@@ -51,18 +56,23 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private AuthViewModel<AuthCredential> mViewModel;
 
     private GoogleSignInClient mGoogleSignInClient;
+    private ConnectivityService mConnectivityService;
 
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+
+        mConnectivityService = new AndroidConnectivityService();
     }
 
     @VisibleForTesting
-    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
+    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database, @NonNull ConnectivityService connectivityService) {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(authenticator);
         mFactory.setDatabase(database);
+
+        mConnectivityService = connectivityService;
     }
 
     @VisibleForTesting
@@ -96,13 +106,14 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
             if(userRef == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             }
-            else {
-                if(mAuthListener != null) {
+            else if (mAuthListener != null) {
+                if (mConnectivityService.isNetworkAvailable(getContext())) {
                     mAuthListener.onLoggedIn(userRef);
+                } else {
+                    mAuthListener.onOffline();
                 }
-                else {
-                    Log.d(TAG, "Logged in successful but no AuthListener");
-                }
+            } else {
+                Log.d(TAG, "Logged in successful but no AuthListener");
             }
         });
     }
@@ -134,6 +145,7 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
                 mViewModel.login(credential);
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
+                Toast.makeText(getContext(), "You need to be online for your first connection", Toast.LENGTH_LONG).show();
             }
         }
     }
