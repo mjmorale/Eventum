@@ -40,7 +40,7 @@ public class MapViewModel extends ViewModel {
          * @param mapManager {@link ch.epfl.sdp.map.MapManager}
          */
         void setMapManager(@NonNull MapManager mapManager ){
-            setValue(0,verifyNotNull(mapManager));
+            setValue(0, verifyNotNull(mapManager));
         }
 
         /**
@@ -49,9 +49,17 @@ public class MapViewModel extends ViewModel {
          * @param locationService {@link ch.epfl.sdp.map.LocationService}
          */
         void setLocationService(@NonNull LocationService locationService ){
-            setValue(1,verifyNotNull(locationService));
+            setValue(1, verifyNotNull(locationService));
+        }
+
+        /**
+         * @return The currently set LocationService.
+         */
+        LocationService getLocationService() {
+            return (LocationService) getValue(1);
         }
     }
+
     private MapManager<Marker> mMapManager;
     private LocationService mLocationService;
     private HashMap<Marker, Event> mEventsMarkers = new HashMap<>();
