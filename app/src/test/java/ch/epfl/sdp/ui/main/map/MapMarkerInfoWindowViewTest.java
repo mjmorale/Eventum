@@ -18,7 +18,7 @@ import java.util.Date;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import ch.epfl.sdp.offline.ImageCache;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -57,7 +57,7 @@ public class MapMarkerInfoWindowViewTest {
     private ImageView mImageView;
 
     @Mock
-    private ImageGetter mImageGetter;
+    private ImageCache mImageCache;
 
     @Mock
     private Marker mMarker;
@@ -69,7 +69,7 @@ public class MapMarkerInfoWindowViewTest {
 
     @Test
     public void MapMarkerInfoWindowView_getInfoWindowTest() {
-        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView, mImageGetter);
+        MapMarkerInfoWindowView view = new MapMarkerInfoWindowView(mMapViewModel, mContext, mMarkerView, mImageCache);
 
         EventBuilder eventBuilder = new EventBuilder();
         Event event = eventBuilder.setTitle(title)
@@ -93,6 +93,6 @@ public class MapMarkerInfoWindowViewTest {
         verify(mTitleView).setText(title);
         verify(mDateView).setText(dateStr);
         verify(mDescriptionView).setText(description);
-        verify(mImageGetter).getImage(mContext, imageId, mImageView);
+        verify(mImageCache).getImage(mContext, imageId, mImageView);
     }
 }

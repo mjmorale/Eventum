@@ -21,10 +21,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import ch.epfl.sdp.offline.ImageCache;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -159,7 +158,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mBinding.description.setText(event.getDescription());
             mBinding.title.setText(event.getTitle());
             mBinding.address.setText(event.getAddress());
-            ImageGetter.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
+            ImageCache.getInstance().getImage(getContext(), event.getImageId(), mBinding.imageView);
         });
     }
 

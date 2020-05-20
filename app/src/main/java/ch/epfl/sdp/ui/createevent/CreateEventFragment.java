@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,25 +15,25 @@ import androidx.fragment.app.Fragment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
+
 import com.google.android.gms.maps.model.LatLng;
-import java.text.ParseException;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
 import androidx.lifecycle.ViewModelProvider;
-import ch.epfl.sdp.Event;
+import ch.epfl.sdp.BitmapUtils;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentCreateEventBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -44,6 +45,9 @@ import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
  * Fragment for the creation of a new event
  */
 public class CreateEventFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "CreateEventFragment";
+
     private FragmentCreateEventBinding mBinding;
     private CreateEventViewModel mViewModel;
     private final CreateEventViewModel.CreateEventViewModelFactory mFactory;
@@ -52,7 +56,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private LatLng mSelectedLocation;
 
     private static final int PERMISSION_STORAGE = 100;
-    private Uri mImageUri;
+
+    private Bitmap mCurrentImage;
 
     /**
      * Constructor of the create event fragment
@@ -145,18 +150,21 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                mImageUri = data.getData();
-                displayImage();
-                mViewModel.uploadImage(mImageUri);
+                Uri imageUri = data.getData();
+                try {
+                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), imageUri);
+                    mCurrentImage = BitmapUtils.resizeWithHeight(imageBitmap, 600);
+                    imageBitmap.recycle();
+                    mBinding.imageView.setImageBitmap(mCurrentImage);
+                    mBinding.imageView.setTag("new_image");
+                } catch (IOException e) {
+                    Log.e(TAG, "Cannot retrieve bitmap from file uri", e);
+                    Toast.makeText(getContext(), "Cannot load image!", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(getContext(), R.string.no_image_chosen, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void displayImage() {
-        ImageGetter.getInstance().getImage(getContext(), this.mImageUri, this.mBinding.imageView);
-        mBinding.imageView.setTag("new_image");
     }
 
     @Override
@@ -183,17 +191,14 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         String address = mBinding.geoAutocomplete.getText().toString();
         checkInput(title, description, date, address);
 
-        EventBuilder eventBuilder = new EventBuilder();
-        Event event = eventBuilder.setTitle(title)
+        EventBuilder eventBuilder = new EventBuilder()
+                .setTitle(title)
                 .setDescription(description)
                 .setDate(date)
                 .setLocation(mSelectedLocation)
-                .setAddress(address)
-                .setImageId(mViewModel.getImageId())
-                .setOrganizerRef(mViewModel.getUserRef())
-                .build();
+                .setAddress(address);
 
-        mViewModel.insertEvent(event, callback);
+        mViewModel.insertEvent(eventBuilder, mCurrentImage, callback);
     }
 
 

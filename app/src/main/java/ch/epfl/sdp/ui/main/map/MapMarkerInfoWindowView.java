@@ -9,7 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import ch.epfl.sdp.offline.ImageCache;
 
 /**
  * View for displaying an information window on a marker click on the map
@@ -19,7 +19,7 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
     private View mMarkerView;
     private MapViewModel mMapViewModel;
     private Context mContext;
-    private ImageGetter mImageGetter;
+    private ImageCache mImageCache;
 
     /**
      * Constructor of the MapMarkerInfoWindowView
@@ -31,7 +31,7 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
         mMapViewModel = mapViewModel;
         mContext = context;
         mMarkerView = mMarkerView.inflate(mContext, R.layout.view_map_marker_info_window, null);
-        mImageGetter = ImageGetter.getInstance();
+        mImageCache = ImageCache.getInstance();
     }
 
     /**
@@ -40,15 +40,15 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
      * @param mapViewModel the view model of the map where the markers are
      * @param context the environment the application is currently running in
      * @param view for testing
-     * @param imageGetter for testing
+     * @param imageCache for testing
      */
     @VisibleForTesting
     public MapMarkerInfoWindowView(MapViewModel mapViewModel, Context context,
-                                   View view, ImageGetter imageGetter) {
+                                   View view, ImageCache imageCache) {
         mMapViewModel = mapViewModel;
         mContext = context;
         mMarkerView = view;
-        mImageGetter = imageGetter;
+        mImageCache = imageCache;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MapMarkerInfoWindowView implements GoogleMap.InfoWindowAdapter {
         title.setText(event.getTitle());
         date.setText(event.getDateStr());
         description.setText(event.getDescription());
-        mImageGetter.getImage(mContext, event.getImageId(), image);
+        mImageCache.getImage(mContext, event.getImageId(), image);
 
         return mMarkerView;
     }

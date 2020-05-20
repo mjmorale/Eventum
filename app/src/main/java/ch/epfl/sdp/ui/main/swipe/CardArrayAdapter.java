@@ -1,7 +1,6 @@
 package ch.epfl.sdp.ui.main.swipe;
 
 import android.content.Context;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.bumptech.glide.Glide;
+
 import java.util.Locale;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.map.LocationService;
-import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import ch.epfl.sdp.offline.ImageCache;
 
 import ch.epfl.sdp.db.DatabaseObject;
 
@@ -57,7 +56,7 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
         name.setText(event.getTitle());
         distance.setText(distanceString);
 
-        ImageGetter.getInstance().getImage(getContext(), event.getImageId(), imageView);
+        ImageCache.getInstance().getImage(getContext(), event.getImageId(), imageView);
 
         description.setText(event.getDescription());
         return convertView;

@@ -11,10 +11,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import ch.epfl.sdp.offline.ImageCache;
+
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ImageGetterTest {
+public class ImageCacheTest {
 
     @Mock
     Context mContext;
@@ -32,23 +34,23 @@ public class ImageGetterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ImageGetter_LoadImageFailsIfNullContext(){
-        ImageGetter.getInstance().getImage(null, mUri, mImageView);
+        ImageCache.getInstance().getImage(null, mUri, mImageView);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ImageGetter_LoadImageFailsIfNullLoadedObject(){
-        ImageGetter.getInstance().getImage(mContext, null, mImageView);
+        ImageCache.getInstance().getImage(mContext, null, mImageView);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ImageGetter_LoadImageFailsIfNullImageView(){
-        ImageGetter.getInstance().getImage(mContext, mUri, null);
+        ImageCache.getInstance().getImage(mContext, mUri, null);
     }
 
     @Test
     public void ImageGetter_GetInstanceReturnsImageGetterInstance(){
-        Object ret = ImageGetter.getInstance();
-        assertTrue(ret.getClass().equals(ImageGetter.class));
+        Object ret = ImageCache.getInstance();
+        assertTrue(ret.getClass().equals(ImageCache.class));
     }
 
 }
