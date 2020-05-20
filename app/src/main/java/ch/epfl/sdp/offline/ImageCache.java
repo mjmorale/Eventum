@@ -45,11 +45,7 @@ public class ImageCache {
     public Bitmap getImage(@NonNull File cacheDir, @NonNull String imageRef) {
         verifyNotNull(cacheDir, imageRef);
 
-        // This line is very practical when testing the cache with adb and avoids having
-        // an ugly '-' in the cache file name
-        String filename = imageRef.replace('-', '1');
-
-        File imageFile = new File(cacheDir, filename);
+        File imageFile = new File(cacheDir, imageRef);
 
         if (imageFile.exists() && imageFile.isFile()) {
             return BitmapFactory.decodeFile(imageFile.getAbsolutePath());
