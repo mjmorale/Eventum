@@ -92,7 +92,6 @@ public class ImageCache {
 
         // Implemented like this because in theory the number of files should not exceed MAX_CACHE_FILE_SIZE + 1
         while (cacheStatus.size() > MAX_CACHE_FILES){
-
             Date smallestDate = findSmallestInSet(dateSet);
             String toDelete = status.get(smallestDate);
             status.remove(smallestDate);
@@ -100,7 +99,6 @@ public class ImageCache {
             deleteFile.deleteOnExit();
             dateSet = status.keySet();
         }
-
         updateCacheSummary(cacheDir);
         
     }
