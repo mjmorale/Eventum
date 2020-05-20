@@ -3,17 +3,17 @@ package ch.epfl.sdp.ui.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,11 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import androidx.lifecycle.ViewModelProvider;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
@@ -34,8 +30,6 @@ import ch.epfl.sdp.databinding.FragmentAuthBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.offline.ConnectivityService;
 import ch.epfl.sdp.platforms.android.AndroidConnectivityService;
-import ch.epfl.sdp.platforms.firebase.auth.FirebaseAuthenticator;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
