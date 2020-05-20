@@ -3,6 +3,7 @@ package ch.epfl.sdp.ui.event.chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,11 @@ import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.User;
+import ch.epfl.sdp.db.Database;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
+import android.content.Context;
+
 
 /**
  * Adapter for the chat message list
@@ -24,6 +30,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private List<ChatMessage> mMessageList;
     private String mUid;
+    private static Database mDatabase;
+    private static Context mContext;
 
     private  static class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
@@ -40,16 +48,20 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void setContext(Context context){
+        mContext=context;
+    }
     private static class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
-        //ImageView profileImage;
+        ImageView profileImage;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
+
             messageText = itemView.findViewById(R.id.text_message_body);
             timeText = itemView.findViewById(R.id.text_message_time);
             nameText = itemView.findViewById(R.id.text_message_name);
-            //profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
+            profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
         }
 
         void bind(ChatMessage message) {
@@ -57,8 +69,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText.setText(message.getDateStr());
             nameText.setText(message.getName());
 
-            // Insert the profile image from the URL into the ImageView.
-            //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
+            if(mContext!=null)
+                mDatabase.query("users").document(message.getUid()).liveData(User.class).observeForever(user->{
+                    ImageGetter.getInstance().getImage(mContext, user.getImageId(), profileImage);
+                });
         }
     }
 
@@ -68,9 +82,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      *
      * @param uid the id of the user
      */
-    public MessageListAdapter(@NonNull String uid){
+    public MessageListAdapter(@NonNull String uid, @NonNull Database database, @NonNull Context context){
         mMessageList = new ArrayList<>();
         mUid = uid;
+        mDatabase=database;
+        mContext=context;
     }
 
     /**

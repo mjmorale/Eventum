@@ -31,12 +31,14 @@ import ch.epfl.sdp.ui.user.profile.UserProfileFragment;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -79,7 +81,7 @@ public class UserProfileFragmentTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void UserProfileFragment_test1() {
+    public void UserProfileFragment_test1() throws InterruptedException {
 
 
         FragmentScenario<UserProfileFragment> scenario = FragmentScenario.launchInContainer(
@@ -89,7 +91,6 @@ public class UserProfileFragmentTest {
                 new MockFragmentFactory(UserProfileFragment.class, mStorageMock, mAuthenticatorMock, mDatabaseMock)
         );
 
-//        scenario.onFragment(fragment -> {mUserLiveMock.setValue(mUser);});
 
         onView(withId(R.id.user_profile_photo)).check(matches(isDisplayed()));
 
@@ -103,8 +104,14 @@ public class UserProfileFragmentTest {
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         onView(withId(R.id.user_profile_photo)).perform(click());
         Intents.release();
+        
 
         onView(withId(R.id.user_profile_photo)).check(matches(withTagValue(is("new_image"))));
+        onView(withText(mUser.getName())).check(matches(isDisplayed()));
+        onView(withText(mUser.getDescription())).check(matches(isDisplayed()));
+
+
+        onView(withId(R.id.user_profile_bio)).perform(typeText(mUser.getDescription()));
     }
 
 }

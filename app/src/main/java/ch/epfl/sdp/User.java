@@ -39,7 +39,7 @@ public class User {
         this(name, email);
         this.mImageId=verifyNotNull(imageId);
         this.mDescription=verifyNotNull(description);
-        if(imageId.isEmpty() || description.isEmpty()) {
+        if(imageId.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }

@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding mBinding;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
     private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
-
+    private String imageURl;
     /**
      * the constructor
      */
@@ -90,15 +92,30 @@ public class UserProfileFragment extends Fragment {
 
                 @Override
                 public void onFailure() {
-                    Toast.makeText(getContext(), "Operation failed, try again!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Cannot change the profile picture, try again later", Toast.LENGTH_SHORT).show();
                 }
             });
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
-            mBinding.userProfileBio.setText(user.getDescription());
+            mBinding.userProfileBio.getText().replace(0,mBinding.userProfileBio.getText().length(), user.getDescription());
             if(!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
+        });
+        mBinding.userProfileBio.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mViewModel.updateDescription(s.toString());
+            }
         });
     }
 
@@ -111,7 +128,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
     }
 
     /**

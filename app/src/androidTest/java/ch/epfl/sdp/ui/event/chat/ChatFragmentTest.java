@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import org.junit.Before;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
@@ -76,14 +78,17 @@ public class ChatFragmentTest {
             observer.onChanged(Arrays.asList(mChatMessage));
         }
     };
-
+    private MutableLiveData<User> userLiveData = new MutableLiveData<>();
+    private User mUser = new User("Name", "Email");
     @Before
     public void setup() {
         // This function initializes the mocks before each test.
         MockitoAnnotations.initMocks(this);
 
+
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
+        when(mDocumentQueryMock.liveData(User.class)).thenReturn(userLiveData);
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mLiveData);
@@ -107,7 +112,7 @@ public class ChatFragmentTest {
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mAuthenticatorMock)
         );
-
+        scenarioSender.onFragment(fragment -> {userLiveData.setValue(mUser);});
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
@@ -123,7 +128,6 @@ public class ChatFragmentTest {
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
-
         onView(withText(mChatMessage.getObject().getText())).check(matches(isDisplayed()));
     }
 
@@ -142,7 +146,7 @@ public class ChatFragmentTest {
                 R.style.Theme_AppCompat,
                 new MockFragmentFactory(ChatFragment.class, mDatabaseMock, mChatMessage.getObject().getUid(), mAuthenticatorMock)
         );
-
+        scenarioReceinver.onFragment(fragment -> {userLiveData.setValue(mUser);});
         onView(withId(R.id.layout_chatbox)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_chatbox)).perform(typeText(mChatMessage.getObject().getText()));
         onView(withId(R.id.button_chatbox_send)).perform(click());
