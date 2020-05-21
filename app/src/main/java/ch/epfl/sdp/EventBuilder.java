@@ -17,13 +17,14 @@ public class EventBuilder {
     private LatLng mLocation = new LatLng(10, 10);
     private String mImageId;
     private String mOrganizerRef;
-    private final String DEFAULT_IMAGE = "EventDefaultImage.jpg";
+    private final String DEFAULT_URL = "https://firebasestorage.googleapis.com/v0/b/eventum-6a6b7.appspot.com" +
+            "/o/eventDefault.jpg?alt=media&token=a6d345fa-a513-478d-a019-2307ee50022b";
 
     /**
      * @return the Event instance using the provided attributes
      */
     public Event build() {
-        if (mImageId == null) mImageId = DEFAULT_IMAGE;
+        if (mImageId == null) mImageId = DEFAULT_URL;
         ObjectUtils.verifyNotNull(mTitle, mDescription, mDate, mLocation, mImageId, mOrganizerRef);
         if (mTitle.isEmpty()) throw new IllegalArgumentException("No title specified");
         if (mDescription.isEmpty()) throw new IllegalArgumentException("No description specified");

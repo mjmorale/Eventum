@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public class ImageCache {
 
     private ImageCache() {}
 
-    private static final String TAG = "ImageCache";
+    private static final String TAG = "ImageGetter";
 
     private static HashMap<Date, String> cacheStatus;
 
