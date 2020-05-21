@@ -106,7 +106,6 @@ public class ChatFragment extends Fragment {
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
             List<Pair<ChatMessage, LiveData<User>>> chat = new ArrayList<>();
-            Database database = ServiceProvider.getInstance().getDatabase();
             for (DatabaseObject<ChatMessage> messageObject : messages) {
                 chat.add(new Pair<>(messageObject.getObject(), mViewModel.getUser(messageObject.getObject().getUid())));
             }

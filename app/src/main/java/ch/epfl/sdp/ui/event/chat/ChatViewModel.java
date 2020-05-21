@@ -67,13 +67,7 @@ public class ChatViewModel extends ViewModel {
     public LiveData<User> getUser(String userId){
        return mDatabase.query("users").document(userId).liveData(User.class);
     }
-    /**
-     *
-     * @return the database
-     */
-    public Database getDatabase() {
-        return mDatabase;
-    }
+
 
     /**
      * Method to add a new chat message for an event in the database
