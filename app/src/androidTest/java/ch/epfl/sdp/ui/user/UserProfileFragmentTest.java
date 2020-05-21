@@ -104,7 +104,7 @@ public class UserProfileFragmentTest {
         intending(hasAction("android.intent.action.PICK")).respondWith(result);
         onView(withId(R.id.user_profile_photo)).perform(click());
         Intents.release();
-        
+
 
         onView(withId(R.id.user_profile_photo)).check(matches(withTagValue(is("new_image"))));
         onView(withText(mUser.getName())).check(matches(isDisplayed()));

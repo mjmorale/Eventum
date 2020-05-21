@@ -46,8 +46,8 @@ public class CardArrayAdapter extends ArrayAdapter<DatabaseObject<Event>> {
 
         float distanceInMeters = mLocationService.distanceTo(getContext(), event.getLocation());
         String distanceString = distanceInMeters < 1000.0f ?
-                String.format(Locale.getDefault(), ", %dm", (int)distanceInMeters) :
-                String.format(Locale.getDefault(), ", %.1fkm", distanceInMeters / 1000.0f);
+                String.format(Locale.getDefault(), "%d m", (int)distanceInMeters) :
+                String.format(Locale.getDefault(), "%d km", (int) distanceInMeters / 1000);
 
         TextView name = convertView.findViewById(R.id.eventName);
         ImageView imageView = convertView.findViewById(R.id.imageCard);

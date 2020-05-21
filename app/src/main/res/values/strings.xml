@@ -40,7 +40,7 @@
     <string name="deny">DENY</string>
     <string name="default_title_1">Prévention des épidémies avec l\'unité 731</string>
     <string name="default_description_1">Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !</string>
-    <string name="default_date_1">11 Septembre 2001</string>
+    <string name="default_date_1">1 Jan 1970</string>
     <string name="user_events">User events</string>
     <string name="user_statistics">User statistics</string>
     <string name="filter">Filter</string>

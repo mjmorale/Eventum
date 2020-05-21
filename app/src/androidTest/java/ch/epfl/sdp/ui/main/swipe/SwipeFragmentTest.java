@@ -59,8 +59,8 @@ public class SwipeFragmentTest {
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
     private static final String DUMMY_EVENTREF1 = "sdkljfgh34phrt";
     private static final String DUMMY_EVENTREF2 = "sdkelrituhfgh34phrt";
-    private static final String DUMMY_DISTANCE_EVENT1 = "201m";
-    private static final String DUMMY_DISTANCE_EVENT2 = "3.4km";
+    private static final String DUMMY_DISTANCE_EVENT1 = "201 m";
+    private static final String DUMMY_DISTANCE_EVENT2 = "3 km";
 
     private FragmentScenario<SwipeFragment> mScenario;
 

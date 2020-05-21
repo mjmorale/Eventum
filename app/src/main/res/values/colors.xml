@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#237655</color>
     <color name="colorPrimaryBright">#3447ECAA</color>
     <color name="colorAccent">@color/colorPrimary</color>
+    <color name="colorPrimaryLight">#e4fcf0</color>
     <color name="red">#EC4749</color>
     <color name="black">#2F343F</color>
     <color name="grey">#485060</color>
@@ -13,4 +14,5 @@
     <color name="white">#F5F5F5</color>
     <color name="headerTextColor">#ECE3E3</color>
     <color name="transparentGrey">#B3485060</color>
+    <color name="transparentDarkGrey">#C3485060</color>
 </resources>

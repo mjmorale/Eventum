@@ -1,7 +1,5 @@
 package ch.epfl.sdp.ui.event.chat;
 
-import android.provider.ContactsContract;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,13 +8,14 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
 import ch.epfl.sdp.ui.DatabaseViewModelFactory;
-import ch.epfl.sdp.auth.UserInfo;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -24,6 +23,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  * View model for the chat (to chat between users about an event)
  */
 public class ChatViewModel extends ViewModel {
+
 
     static class ChatViewModelFactory extends DatabaseViewModelFactory {
         ChatViewModelFactory() {
@@ -52,25 +52,27 @@ public class ChatViewModel extends ViewModel {
     /**
      * Constructor of the chat view model
      *
-     * @param database where the chat messages will be uploaded
-     * @param eventRef the reference of an event
+     * @param database      where the chat messages will be uploaded
+     * @param eventRef      the reference of an event
      * @param authenticator of the user
      */
     public ChatViewModel(@NonNull String eventRef, @NonNull Authenticator authenticator, @NonNull Database database) {
         verifyNotNull(database, eventRef, authenticator);
-        mDatabase=database;
+        mDatabase = database;
         mMessageCollection = database.query("events").document(eventRef).collection("messages");
         mOrderedMessagesQuery = mMessageCollection.orderBy("date");
         mUser = authenticator.getCurrentUser();
     }
 
-    public Database getDatabase(){
-        return mDatabase;
+    public LiveData<User> getUser(String userId){
+       return mDatabase.query("users").document(userId).liveData(User.class);
     }
+
+
     /**
      * Method to add a new chat message for an event in the database
      *
-     * @param message to be uploaded in the database
+     * @param message  to be uploaded in the database
      * @param callback called when the upload is done
      */
     public void addMessage(@NonNull String message, @NonNull OnMessageAddedCallback callback) {
@@ -102,5 +104,7 @@ public class ChatViewModel extends ViewModel {
         }
         return mMessageLiveData;
     }
+
+
 
 }

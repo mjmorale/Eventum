@@ -63,15 +63,15 @@ public class UserProfileViewModel extends ViewModel {
      * @Constructor should  only be used by the userProfileViewModelFactory
      */
     public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
-        verifyNotNull(database);
-        mStorage = storage;
+        verifyNotNull(database, authenticator);
+        mStorage = verifyNotNull(storage);
         mUserInfo = authenticator.getCurrentUser();
         mUserCollection = database.query("users");
     }
 
     /**
      * @param description to be added
-     * @brief updates the description of a user in the database
+     * @brief updates the description of a user in the si je fais livedata.getValue().getId() ca va fail bien evidement. database
      */
     public void updateDescription(String description) {
         mUserCollection.document(mUserInfo.getUid()).update("description", description, result -> {
@@ -84,6 +84,8 @@ public class UserProfileViewModel extends ViewModel {
      */
     public void updateImageId(String imageId) {
         mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, result -> {
+            if (!result.isSuccessful())
+                System.err.println(result.getException().getMessage());
         });
     }
 
@@ -98,23 +100,16 @@ public class UserProfileViewModel extends ViewModel {
     }
 
     /**
-     * @return the storage used to upload pictures
-     */
-    public Storage getStorage() {
-        return mStorage;
-    }
-
-
-    /**
-     * @set an image into an image view
-     * @param imageUri of the image to be set
-     * @param context of the app
-     * @param imageView where the image to be set
+     * @param imageUri       of the image to be set
+     * @param context        of the app
+     * @param imageView      where the image to be set
      * @param uploadCallBack after the upload
+     * @set an image into an image view
      */
     public void setImage(Uri imageUri, Context context, ImageView imageView, FirestoreStorage.UrlReadyCallback uploadCallBack) {
         ImageGetter.getInstance().getImage(context, imageUri, imageView);
         imageView.setTag("new_image");
+        updateImageId(imageUri.toString());
         mStorage.uploadImage(imageUri, uploadCallBack);
     }
 

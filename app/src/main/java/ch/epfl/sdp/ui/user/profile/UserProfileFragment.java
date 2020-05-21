@@ -3,7 +3,6 @@ package ch.epfl.sdp.ui.user.profile;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -25,7 +24,6 @@ import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentUserProfileBinding;
 import ch.epfl.sdp.db.Database;
-import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.platforms.firebase.storage.FirestoreStorage;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.storage.Storage;
@@ -40,15 +38,16 @@ import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 public class UserProfileFragment extends Fragment {
 
     private static final int PERMISSION_STORAGE = 100;
+    private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
     private UserProfileViewModel mViewModel;
     private FragmentUserProfileBinding mBinding;
     private FirestoreStorage.UrlReadyCallback mUploadCallBack;
-    private final UserProfileViewModel.UserProfileViewModelFactory mFactory;
     private String imageURl;
+
     /**
      * the constructor
      */
-    public UserProfileFragment(){
+    public UserProfileFragment() {
         mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
         mFactory.setStorage(ServiceProvider.getInstance().getStorage());
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
@@ -57,12 +56,13 @@ public class UserProfileFragment extends Fragment {
 
     /**
      * Should only be used for testing
-     * @param storage to upload pictures
+     *
+     * @param storage       to upload pictures
      * @param authenticator to get the current user id
-     * @param database to get the current user info
+     * @param database      to get the current user info
      */
     @VisibleForTesting
-    public UserProfileFragment(@NonNull Storage storage,@NonNull Authenticator authenticator,@NonNull Database database){
+    public UserProfileFragment(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
         mFactory = new UserProfileViewModel.UserProfileViewModelFactory();
         mFactory.setStorage(storage);
         mFactory.setAuthenticator(authenticator);
@@ -98,8 +98,8 @@ public class UserProfileFragment extends Fragment {
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
-            mBinding.userProfileBio.getText().replace(0,mBinding.userProfileBio.getText().length(), user.getDescription());
-            if(!user.getImageId().isEmpty())
+            mBinding.userProfileBio.getText().replace(0, mBinding.userProfileBio.getText().length(), user.getDescription());
+            if (!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
         });
         mBinding.userProfileBio.addTextChangedListener(new TextWatcher() {
@@ -131,8 +131,8 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * @brief load an image from the phone gallery
      * @param uploadCallBack the callback after the upload result
+     * @brief load an image from the phone gallery
      */
     public void loadImage(FirestoreStorage.UrlReadyCallback uploadCallBack) {
         mUploadCallBack = uploadCallBack;
@@ -155,10 +155,10 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * @brief the result of the activity of choosing from the gallery intent
      * @param requestCode
      * @param resultCode
      * @param data
+     * @brief the result of the activity of choosing from the gallery intent
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
