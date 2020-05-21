@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
@@ -22,6 +23,25 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  * View model for the chat (to chat between users about an event)
  */
 public class ChatViewModel extends ViewModel {
+
+
+    static class ChatViewModelFactory extends DatabaseViewModelFactory {
+        ChatViewModelFactory() {
+            super(String.class, Authenticator.class);
+        }
+
+        void setEventRef(@NonNull String eventRef) {
+            setValue(0, verifyNotNull(eventRef));
+        }
+
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
+        }
+    }
+
+    interface OnMessageAddedCallback {
+        void onFailure(Exception exception);
+    }
 
     private CollectionQuery mMessageCollection;
     private FilterQuery mOrderedMessagesQuery;
@@ -44,6 +64,13 @@ public class ChatViewModel extends ViewModel {
         mUser = authenticator.getCurrentUser();
     }
 
+    public LiveData<User> getUser(String userId){
+       return mDatabase.query("users").document(userId).liveData(User.class);
+    }
+    /**
+     *
+     * @return the database
+     */
     public Database getDatabase() {
         return mDatabase;
     }
@@ -84,22 +111,6 @@ public class ChatViewModel extends ViewModel {
         return mMessageLiveData;
     }
 
-    interface OnMessageAddedCallback {
-        void onFailure(Exception exception);
-    }
 
-    static class ChatViewModelFactory extends DatabaseViewModelFactory {
-        ChatViewModelFactory() {
-            super(String.class, Authenticator.class);
-        }
-
-        void setEventRef(@NonNull String eventRef) {
-            setValue(0, verifyNotNull(eventRef));
-        }
-
-        void setAuthenticator(@NonNull Authenticator authenticator) {
-            setValue(1, verifyNotNull(authenticator));
-        }
-    }
 
 }

@@ -63,14 +63,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    /**
-     * Method to set the id of a user
-     *
-     * @param uid the id of the user
-     */
-    public void setUid(@NonNull String uid) {
-        mUid = uid;
-    }
 
     @Override
     public int getItemCount() {

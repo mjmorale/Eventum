@@ -25,6 +25,33 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class UserProfileViewModel extends ViewModel {
 
+    /**
+     * The model factory used to construct a UserProfileViewModel
+     */
+    static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
+
+        UserProfileViewModelFactory() {
+            super(Storage.class, Authenticator.class);
+        }
+
+        /**
+         * @param storage used to upload pictures
+         * @brief sets up the storage
+         */
+        void setStorage(@NonNull Storage storage) {
+            setValue(0, verifyNotNull(storage));
+        }
+
+        /**
+         * @param authenticator to get the current user
+         * @brief sets up the authenticaator
+         */
+        void setAuthenticator(@NonNull Authenticator authenticator) {
+            setValue(1, verifyNotNull(authenticator));
+        }
+
+    }
+
     private final CollectionQuery mUserCollection;
     private Storage mStorage;
     private UserInfo mUserInfo;
@@ -84,33 +111,6 @@ public class UserProfileViewModel extends ViewModel {
         imageView.setTag("new_image");
         updateImageId(imageUri.toString());
         mStorage.uploadImage(imageUri, uploadCallBack);
-    }
-
-    /**
-     * The model factory used to construct a UserProfileViewModel
-     */
-    static class UserProfileViewModelFactory extends DatabaseViewModelFactory {
-
-        UserProfileViewModelFactory() {
-            super(Storage.class, Authenticator.class);
-        }
-
-        /**
-         * @param storage used to upload pictures
-         * @brief sets up the storage
-         */
-        void setStorage(@NonNull Storage storage) {
-            setValue(0, verifyNotNull(storage));
-        }
-
-        /**
-         * @param authenticator to get the current user
-         * @brief sets up the authenticaator
-         */
-        void setAuthenticator(@NonNull Authenticator authenticator) {
-            setValue(1, verifyNotNull(authenticator));
-        }
-
     }
 
 }

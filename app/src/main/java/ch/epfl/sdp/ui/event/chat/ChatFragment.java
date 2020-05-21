@@ -108,8 +108,7 @@ public class ChatFragment extends Fragment {
             List<Pair<ChatMessage, LiveData<User>>> chat = new ArrayList<>();
             Database database = ServiceProvider.getInstance().getDatabase();
             for (DatabaseObject<ChatMessage> messageObject : messages) {
-                LiveData<User> userLive = database.query("users").document(messageObject.getObject().getUid()).liveData(User.class);
-                chat.add(new Pair<>(messageObject.getObject(), userLive));
+                chat.add(new Pair<>(messageObject.getObject(), mViewModel.getUser(messageObject.getObject().getUid())));
             }
             mAdapter.setChatList(chat);
             mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
