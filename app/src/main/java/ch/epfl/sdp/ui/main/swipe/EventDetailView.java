@@ -12,12 +12,10 @@ import com.google.android.gms.maps.MapView;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
-import ch.epfl.sdp.databinding.EventDetailBinding;
-import ch.epfl.sdp.offline.ImageCache;
+import ch.epfl.sdp.databinding.EventSwipeInfoBinding;
 import ch.epfl.sdp.storage.Storage;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
-import ch.epfl.sdp.databinding.EventSwipeInfoBinding;
 
 /**
  * View that shows information about a clicked event, it is a static view and thus not interactive
