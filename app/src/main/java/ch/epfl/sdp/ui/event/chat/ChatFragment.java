@@ -1,27 +1,27 @@
 package ch.epfl.sdp.ui.event.chat;
 
-import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sdp.ChatMessage;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentChatBinding;
-
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -34,19 +34,10 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class ChatFragment extends Fragment {
 
-    private ChatViewModel mViewModel;
     private final ChatViewModel.ChatViewModelFactory mFactory;
+    private ChatViewModel mViewModel;
     private FragmentChatBinding mBinding;
     private MessageListAdapter mAdapter;
-
-    public static ChatFragment getInstance(@NonNull String eventRef) {
-        Bundle bundle = new Bundle();
-        bundle.putString(UIConstants.BUNDLE_EVENT_REF,  verifyNotNull(eventRef));
-
-        ChatFragment fragment = new ChatFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
     /**
      * Constructor of the chat fragment
@@ -60,8 +51,8 @@ public class ChatFragment extends Fragment {
     /**
      * Constructor of the chat fragment, only for testing purposes!
      *
-     * @param database The database service to use
-     * @param eventRef The database reference of the current event
+     * @param database      The database service to use
+     * @param eventRef      The database reference of the current event
      * @param authenticator The authentication service to use
      */
     @VisibleForTesting
@@ -72,12 +63,21 @@ public class ChatFragment extends Fragment {
         mFactory.setEventRef(eventRef);
     }
 
+    public static ChatFragment getInstance(@NonNull String eventRef) {
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, verifyNotNull(eventRef));
+
+        ChatFragment fragment = new ChatFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = FragmentChatBinding.inflate(inflater, container, false);
 
-        mBinding.buttonChatboxSend.setOnClickListener(v->{
+        mBinding.buttonChatboxSend.setOnClickListener(v -> {
             trySendMessage(exception -> Toast.makeText(getContext(), "Couldn't send message", Toast.LENGTH_SHORT).show());
         });
 
@@ -90,25 +90,26 @@ public class ChatFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle args = getArguments();
-        if(args != null) {
+        if (args != null) {
             mFactory.setEventRef(verifyNotNull(args.getString(UIConstants.BUNDLE_EVENT_REF)));
         }
 
         mViewModel = new ViewModelProvider(this, mFactory).get(ChatViewModel.class);
 
-        mAdapter = new MessageListAdapter(mViewModel.getUserRef(), mViewModel.getDatabase(), getContext());
+        mAdapter = new MessageListAdapter(mViewModel.getUserRef(), getContext());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setSmoothScrollbarEnabled(true);
 
         mBinding.reyclerviewMessageList.setLayoutManager(layoutManager);
-        mAdapter.setContext(getContext());
         mBinding.reyclerviewMessageList.setAdapter(mAdapter);
 
         mViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
-            List<ChatMessage> chat = new ArrayList<>();
-            for(DatabaseObject<ChatMessage> object : messages) {
-                chat.add(object.getObject());
+            List<Pair<ChatMessage, LiveData<User>>> chat = new ArrayList<>();
+            Database database = ServiceProvider.getInstance().getDatabase();
+            for (DatabaseObject<ChatMessage> messageObject : messages) {
+                LiveData<User> userLive = database.query("users").document(messageObject.getObject().getUid()).liveData(User.class);
+                chat.add(new Pair<>(messageObject.getObject(), userLive));
             }
             mAdapter.setChatList(chat);
             mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
@@ -124,7 +125,7 @@ public class ChatFragment extends Fragment {
 
     private void trySendMessage(@NonNull ChatViewModel.OnMessageAddedCallback callback) {
         String message = mBinding.edittextChatbox.getText().toString();
-        if(!message.isEmpty()){
+        if (!message.isEmpty()) {
             mBinding.edittextChatbox.getText().clear();
 
             //to database

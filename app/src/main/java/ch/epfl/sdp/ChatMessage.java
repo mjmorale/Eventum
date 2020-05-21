@@ -4,22 +4,21 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
-
-import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 /**
  * Represents a message from the chat
  */
 public class ChatMessage {
+    @SuppressLint("SimpleDateFormat")
+    static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private final String mText;
     private final Date mDate;
     private final String mUserId;
     private final String mName;
-
-    @SuppressLint("SimpleDateFormat")
-    static private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public ChatMessage(@NonNull String text,
                        @NonNull Date date,
@@ -36,6 +35,7 @@ public class ChatMessage {
 
     /**
      * Formats the date using the specified formatter
+     *
      * @param date a Date object containing the date at which the message was sent
      * @return a String representation of the date
      */
@@ -45,6 +45,7 @@ public class ChatMessage {
 
     /**
      * Gives the text content of the message
+     *
      * @return the text content of the message
      */
     public String getText() {
@@ -53,6 +54,7 @@ public class ChatMessage {
 
     /**
      * Gives the date at which the message has been sent
+     *
      * @return a Date object of the time at which the message was sent
      */
     public Date getDate() {
@@ -61,6 +63,7 @@ public class ChatMessage {
 
     /**
      * Gives the date as a string
+     *
      * @return string representation of the time at which the message was sent
      */
     public String getDateStr() {
@@ -69,6 +72,7 @@ public class ChatMessage {
 
     /**
      * Gives the user id of the message sender
+     *
      * @return uid of the message sender
      */
     public String getUid() {
@@ -77,6 +81,7 @@ public class ChatMessage {
 
     /**
      * Gives the username of the message sender at the time the message was sent
+     *
      * @return username of the message sender
      */
     public String getName() {

@@ -25,6 +25,67 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class UserProfileViewModel extends ViewModel {
 
+    private final CollectionQuery mUserCollection;
+    private Storage mStorage;
+    private UserInfo mUserInfo;
+    private LiveData<User> mUserLiveData;
+    /**
+     * @param storage       used to upload pictures
+     * @param authenticator to get the current user
+     * @param database      to get the users collections
+     * @Constructor should  only be used by the userProfileViewModelFactory
+     */
+    public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
+        verifyNotNull(database, authenticator);
+        mStorage = verifyNotNull(storage);
+        mUserInfo = authenticator.getCurrentUser();
+        mUserCollection = database.query("users");
+    }
+
+    /**
+     * @param description to be added
+     * @brief updates the description of a user in the si je fais livedata.getValue().getId() ca va fail bien evidement. database
+     */
+    public void updateDescription(String description) {
+        mUserCollection.document(mUserInfo.getUid()).update("description", description, result -> {
+        });
+    }
+
+    /**
+     * @param imageId to be added
+     * @brief updated the imageId of user in the database
+     */
+    public void updateImageId(String imageId) {
+        mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, result -> {
+            if (!result.isSuccessful())
+                System.err.println(result.getException().getMessage());
+        });
+    }
+
+    /**
+     * @return the current user live data
+     */
+    public LiveData<User> getUserLive() {
+        if (mUserLiveData == null) {
+            mUserLiveData = mUserCollection.document(mUserInfo.getUid()).liveData(User.class);
+        }
+        return mUserLiveData;
+    }
+
+    /**
+     * @param imageUri       of the image to be set
+     * @param context        of the app
+     * @param imageView      where the image to be set
+     * @param uploadCallBack after the upload
+     * @set an image into an image view
+     */
+    public void setImage(Uri imageUri, Context context, ImageView imageView, FirestoreStorage.UrlReadyCallback uploadCallBack) {
+        ImageGetter.getInstance().getImage(context, imageUri, imageView);
+        imageView.setTag("new_image");
+        updateImageId(imageUri.toString());
+        mStorage.uploadImage(imageUri, uploadCallBack);
+    }
+
     /**
      * The model factory used to construct a UserProfileViewModel
      */
@@ -50,72 +111,6 @@ public class UserProfileViewModel extends ViewModel {
             setValue(1, verifyNotNull(authenticator));
         }
 
-    }
-
-    private final CollectionQuery mUserCollection;
-    private Storage mStorage;
-    private UserInfo mUserInfo;
-    private LiveData<User> mUserLiveData;
-    /**
-     * @param storage       used to upload pictures
-     * @param authenticator to get the current user
-     * @param database      to get the users collections
-     * @Constructor should  only be used by the userProfileViewModelFactory
-     */
-    public UserProfileViewModel(@NonNull Storage storage, @NonNull Authenticator authenticator, @NonNull Database database) {
-        verifyNotNull(database);
-        mStorage = storage;
-        mUserInfo = authenticator.getCurrentUser();
-        mUserCollection = database.query("users");
-    }
-
-    /**
-     * @param description to be added
-     * @brief updates the description of a user in the database
-     */
-    public void updateDescription(String description) {
-        mUserCollection.document(mUserInfo.getUid()).update("description", description, result -> {
-        });
-    }
-
-    /**
-     * @param imageId to be added
-     * @brief updated the imageId of user in the database
-     */
-    public void updateImageId(String imageId) {
-        mUserCollection.document(mUserInfo.getUid()).update("imageId", imageId, result -> {
-        });
-    }
-
-    /**
-     * @return the current user live data
-     */
-    public LiveData<User> getUserLive() {
-        if (mUserLiveData == null) {
-            mUserLiveData = mUserCollection.document(mUserInfo.getUid()).liveData(User.class);
-        }
-        return mUserLiveData;
-    }
-
-    /**
-     * @return the storage used to upload pictures
-     */
-    public Storage getStorage() {
-        return mStorage;
-    }
-
-
-    /**
-     * @set an image into an image view
-     * @param imageUri of the image to be set
-     * @param context of the app
-     * @param imageView where the image to be set
-     * @param uploadCallBack after the upload
-     */
-    public void setImage(Uri imageUri, Context context, ImageView imageView, FirestoreStorage.UrlReadyCallback uploadCallBack) {
-        ImageGetter.getInstance().getImage(context, imageUri, imageView);
-        imageView.setTag("new_image");
-        mStorage.uploadImage(imageUri, uploadCallBack);
     }
 
 }
