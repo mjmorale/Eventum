@@ -62,4 +62,67 @@ public class EventTest  {
         assertEquals(e.getOrganizer(), organizerRef);
         assertEquals(e.getCategories(), categories);
     }
+
+    @Test
+    public void Event_CheckToString() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertEquals(e.toString(), "Title:" + title + "\nDescription:" + description + "\nDate:" + date + "\nAddress:"
+                + address + "\nLatitude:" + 90.0 + "\nLongitude:" + 100.0
+                + "\nimageID:" + imageId);
+    }
+
+    @Test
+    public void Event_EqualReturnTrueIfSame() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertTrue(e.equals(e));
+    }
+
+    @Test
+    public void Event_EqualReturnFalseIfNull() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertFalse(e.equals(null));
+    }
+
+    @Test
+    public void Event_EqualReturnFalseIfNotEvent() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertFalse(e.equals(e.toString()));
+    }
+
 }
