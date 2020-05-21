@@ -143,6 +143,7 @@ public class FilterSettingsViewModel extends ViewModel {
         }else
             mLastRadiusSetting = radiusSetting;
 
+        addOrRemoveCategory(newCategory,checkCategory);
 
         Location location = mLocationService.getLastKnownLocation(context);
         GeoPoint locationGeoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -157,7 +158,6 @@ public class FilterSettingsViewModel extends ViewModel {
         mResultsLiveData.addSource(mCurrentLivedataSource, databaseObjects -> {
             mFilteredEvents = databaseObjects;
             combineEvents();
-            addOrRemoveCategory(newCategory,checkCategory);
             filterCategories();
             postCurrentEvents();
         });
@@ -173,22 +173,14 @@ public class FilterSettingsViewModel extends ViewModel {
     }
 
     private void filterCategories() {
-        if (!mListCategories.isEmpty())
-        {
-            for(DatabaseObject<Event> event: mFilteredEvents) {
-                removeIfInCategories(event);
+        for(DatabaseObject<Event> event: mFilteredEvents) {
+            for (String category : mListCategories) {
+                if(!event.getObject().getCategories().contains(category)) {
+                    mEvents.remove(event.getId());
+                }
             }
         }
     }
-
-    private void removeIfInCategories(DatabaseObject<Event> event) {
-        for (String category : mListCategories) {
-            if(!event.getObject().getCategories().contains(category)) {
-                mEvents.remove(event.getId());
-            }
-        }
-    }
-
 
     public void joinEvent(@NonNull String eventRef, @NonNull Query.OnQueryCompleteCallback<Void> callback) {
         verifyNotNull(eventRef, callback);

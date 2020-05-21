@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +39,7 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
+import ch.epfl.sdp.EventCategory;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
@@ -64,6 +66,8 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ch.epfl.sdp.EventCategory.Outdoor;
+import static ch.epfl.sdp.EventCategory.Sport;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
@@ -111,6 +115,16 @@ public class MainActivityTest {
             .setImageId("id4")
             .setOrganizerRef("ref4")
             .setLocation(new LatLng(12.3, 45.6))
+            .build();
+    private static final Event DUMMY_EVENT5 = sEventBuilder
+            .setTitle("event5")
+            .setDescription("description5")
+            .setAddress("address5")
+            .setDate(new Date("01/01/2100 00:00"))
+            .setImageId("id5")
+            .setOrganizerRef("ref5")
+            .setLocation(new LatLng(12.3, 45.6))
+            .setCategories(new ArrayList<EventCategory>() {{ add(Sport);}})
             .build();
     private static final String DUMMY_EVENTREF = "saielrkfuth2n340i7fz";
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
@@ -346,6 +360,7 @@ public class MainActivityTest {
                 .perform(NavigationViewActions.navigateTo(navId));
     }
 
+
     @Test
     public void MainActivity_FilterSettings_ShowCorrectValues() {
         launchDefaultActivity(DUMMY_USERREF);
@@ -375,6 +390,7 @@ public class MainActivityTest {
                 .check(matches(withText("10km")));
     }
 
+
     @Test
     public void MainActivity_FilterSettings_ResultLiveDataIsCorrectlyFiltered() throws Throwable {
         launchDefaultActivity(DUMMY_USERREF);
@@ -392,4 +408,29 @@ public class MainActivityTest {
 
         onView(withText(event4.getObject().getTitle())).check(matches(isDisplayed()));
     }
+    /*
+    @Test
+    public void MainActivity_FilterSettings_ResultCategory() throws Throwable {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        DatabaseObject<Event> event1 = new DatabaseObject<>("event1", DUMMY_EVENT1);
+        DatabaseObject<Event> event2 = new DatabaseObject<>("event2", DUMMY_EVENT2);
+        DatabaseObject<Event> event3 = new DatabaseObject<>("event3", DUMMY_EVENT3);
+        DatabaseObject<Event> event5 = new DatabaseObject<>("event5", DUMMY_EVENT5);
+
+        mActivity.runOnUiThread(() -> {
+
+            mAttendingEventsLiveData.setValue(Arrays.asList(event2));
+            mEventsLiveData.setValue(Arrays.asList(event1, event2, event3, event5));
+            mOwnedEventsLiveData.setValue(Arrays.asList(event3));
+        });
+
+        onView(withId(R.id.main_actionbar_search))
+                .perform(click());
+
+        onView(withId(R.id.optionSport))
+                .perform(click());
+
+        //onView(withText(event4.getObject().getTitle())).check(matches(isDisplayed()));
+    }*/
 }
