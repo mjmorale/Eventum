@@ -17,6 +17,7 @@ import ch.epfl.sdp.offline.ImageCache;
 import ch.epfl.sdp.storage.Storage;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
+import ch.epfl.sdp.databinding.EventSwipeInfoBinding;
 
 /**
  * View that shows information about a clicked event, it is a static view and thus not interactive
@@ -26,7 +27,7 @@ public class EventDetailView extends RelativeLayout {
 
     private final static String TAG = "EventDetailView";
 
-    private EventDetailBinding mBinding;
+    private EventSwipeInfoBinding mBinding;
 
     /**
      * When the view is created the button are removed from visibility since no interaction is
@@ -37,15 +38,9 @@ public class EventDetailView extends RelativeLayout {
      */
     public EventDetailView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        inflate(context, R.layout.event_detail, this);
+        inflate(context, R.layout.event_swipe_info, this);
 
-        mBinding = EventDetailBinding.bind(this);
-
-        mBinding.eventDetailCalendarButton.setVisibility(GONE);
-        mBinding.eventDetailChatButton.setVisibility(GONE);
-        mBinding.eventDetailSharingButton.setVisibility(GONE);
-        mBinding.weatherLayout.setVisibility(GONE);
-        mBinding.noWeatherLayout.setVisibility(GONE);
+        mBinding = EventSwipeInfoBinding.bind(this);
     }
 
     /**

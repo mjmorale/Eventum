@@ -69,7 +69,7 @@ public class EventFragmentTest {
     private Event DUMMY_EVENT = sEventBuilder
             .setTitle(DUMMY_TITLE)
             .setDescription(DUMMY_DESCRIPTION)
-            .setDate("01/01/2021")
+            .setDate("01/01/2021 00:00")
             .setOrganizerRef(DUMMY_REF)
             .build();
 
@@ -199,7 +199,7 @@ public class EventFragmentTest {
         Event DUMMY_EVENT_2 = sEventBuilder
                 .setTitle(DUMMY_TITLE)
                 .setDescription(DUMMY_DESCRIPTION)
-                .setDate("16/05/2020")
+                .setDate("16/05/2020 00:00")
                 .setOrganizerRef(DUMMY_REF)
                 .build();
 

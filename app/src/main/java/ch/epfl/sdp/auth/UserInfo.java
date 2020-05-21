@@ -15,6 +15,7 @@ public class UserInfo {
     private final String mDisplayName;
     private final String mEmail;
 
+
     /**
      * Creates a new instance of UserInfo.
      *

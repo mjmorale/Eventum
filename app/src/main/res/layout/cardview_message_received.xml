@@ -6,25 +6,40 @@
     android:layout_height="wrap_content"
     android:paddingTop="8dp">
 
-    <ImageView
-        android:id="@+id/image_message_profile"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/myCardView"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:background="@drawable/circle"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.6"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_message_body"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/image_message_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_person_black_24dp" />
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/text_message_name"
-        android:text="@string/john_doe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/john_doe"
+        android:paddingLeft="10dp"
         android:textSize="12sp"
-        app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
-        android:layout_marginStart="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="4dp" />
+        app:layout_constraintLeft_toRightOf="@+id/myCardView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_message_body"
@@ -38,7 +53,7 @@
         android:text="@string/hi_man_how_are_you"
         android:textColor="#ffffff"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
+        app:layout_constraintLeft_toRightOf="@+id/myCardView"
         app:layout_constraintTop_toBottomOf="@+id/text_message_name" />
 
     <TextView
