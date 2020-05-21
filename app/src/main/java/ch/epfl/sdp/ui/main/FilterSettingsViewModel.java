@@ -176,15 +176,19 @@ public class FilterSettingsViewModel extends ViewModel {
         if (!mListCategories.isEmpty())
         {
             for(DatabaseObject<Event> event: mFilteredEvents) {
-
-                for (String category : mListCategories) {
-                    if(!event.getObject().getCategories().contains(category)) {
-                        mEvents.remove(event.getId());
-                    }
-                }
+                removeIfInCategories(event);
             }
         }
     }
+
+    private void removeIfInCategories(DatabaseObject<Event> event) {
+        for (String category : mListCategories) {
+            if(!event.getObject().getCategories().contains(category)) {
+                mEvents.remove(event.getId());
+            }
+        }
+    }
+
 
     public void joinEvent(@NonNull String eventRef, @NonNull Query.OnQueryCompleteCallback<Void> callback) {
         verifyNotNull(eventRef, callback);
