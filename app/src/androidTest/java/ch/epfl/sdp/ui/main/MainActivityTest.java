@@ -357,6 +357,15 @@ public class MainActivityTest {
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("5km")));
 
+        onView(withId(R.id.optionIndoor))
+                .perform(click());
+        onView(withId(R.id.optionOutdoor))
+                .perform(click());
+        onView(withId(R.id.optionSport))
+                .perform(click());
+        onView(withId(R.id.optionParty))
+                .perform(click());
+
         onView(withId(R.id.seekBar_range))
                 .perform(setProgress(9));
 
