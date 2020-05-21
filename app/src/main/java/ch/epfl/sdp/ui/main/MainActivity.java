@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 email.setText(user.getEmail()); }
         });
 
-        addFilterSettingsListener();
+        addFilterSeekBarSettingsListener();
+        addFilterCategorySettingsListener();
         if (savedInstanceState == null) {
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void addFilterSettingsListener() {
+    public void addFilterSeekBarSettingsListener() {
         mBinding.menuMainSearch.mSeekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -223,7 +224,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+    }
 
+    public void addFilterCategorySettingsListener() {
         mBinding.menuMainSearch.mOptionOutdoor.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -248,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mFilterSettingsViewModel.setSettings(getApplicationContext(), null, "Sport",b);
             }
         });
-
     }
 
     private void setupToolbarNavigation() {
