@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupFilterSettingsFactory();
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
 
-        View view = mBinding.getRoot();
-        setContentView(view);
+        setContentView(mBinding.getRoot());
         setSupportActionBar(mBinding.mainToolbar);
 
         setupToolbarNavigation();

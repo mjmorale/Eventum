@@ -365,6 +365,8 @@ public class MainActivityTest {
                 .perform(click());
         onView(withId(R.id.optionParty))
                 .perform(click());
+        onView(withId(R.id.optionIndoor))
+                .perform(click());
 
         onView(withId(R.id.seekBar_range))
                 .perform(setProgress(9));
