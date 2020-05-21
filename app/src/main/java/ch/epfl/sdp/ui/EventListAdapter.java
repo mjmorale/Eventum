@@ -41,10 +41,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle;
+        public TextView mDate;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.eventlist_item_title);
+            mDate = itemView.findViewById(R.id.eventlist_item_date);
         }
 
         /**
@@ -128,6 +130,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         DatabaseObject<Event> event = mEventList.get(position);
         holder.mTitle.setText(event.getObject().getTitle());
+        holder.mDate.setText(event.getObject().getDateStr());
         if(mItemClickListener != null) {
             holder.setClickListener(event, mItemClickListener);
         }

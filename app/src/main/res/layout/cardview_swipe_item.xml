@@ -34,52 +34,67 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@color/transparentGrey"
+                android:background="@color/transparentDarkGrey"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/eventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="1"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="30dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:text="title" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/eventName"
-                        android:textSize="20sp"
-                        android:textColor="@color/colorPrimary"
-                        android:gravity="start"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:paddingStart="30dp"
-                        tools:text="title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="2dp">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_weight="1"
-                        android:paddingBottom="5dp"/>
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/ic_place_black_24dp" />
 
                     <TextView
                         android:id="@+id/eventDistance"
-                        android:textSize="20sp"
-                        android:textColor="@color/colorPrimary"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:paddingEnd="30dp"
-                        tools:text="distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="5dp" />
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingLeft="3dp"
+                        android:paddingEnd="30dp"
+                        android:paddingBottom="5dp"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        tools:text="distance" />
 
                 </LinearLayout>
 
                 <TextView
-                    android:textSize="15sp"
-                    android:textColor="@color/grey"
-                    android:background="@color/white"
-                    android:padding="10dp"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    android:gravity="start"
                     android:id="@+id/eventDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="3"
+                    android:padding="10dp"
+                    android:textColor="@color/grey"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <TextView

@@ -134,12 +134,11 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMapFactory.setMapManager(new GoogleMapManager(googleMap));
         mMapViewModel = new ViewModelProvider(this, mMapFactory).get(LiteMapViewModel.class);
 
         mBinding.cardsListView.setOnItemClickListener((itemPosition, dataObject) -> {
             Event selectedEvent = mArrayAdapter.getItem(itemPosition).getObject();
-            mMapViewModel.setEventOnMap(selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
+            mMapViewModel.setEventOnMap(new GoogleMapManager(googleMap), selectedEvent.getLocation(), selectedEvent.getTitle(), mZoomLevel);
             mBinding.eventDetailView.setEvent(selectedEvent);
             mBinding.eventDetailView.callOnClick();
         });
