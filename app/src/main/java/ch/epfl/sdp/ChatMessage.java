@@ -1,12 +1,8 @@
 package ch.epfl.sdp;
 
 import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-
-import com.google.firebase.firestore.ServerTimestamp;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;

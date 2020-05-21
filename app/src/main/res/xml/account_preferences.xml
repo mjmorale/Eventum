@@ -3,17 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        app:widgetLayout="@layout/layout_settings_account_profile_picture"
-        app:key="account_picture"
-        app:title="Avatar"
-        app:summary="Your profile picture" />
-
-    <EditTextPreference
         app:singleLine="true"
         android:selectAllOnFocus="true"
         app:key="account_name"
-        app:title="Name"
-        app:useSimpleSummaryProvider="true" />
+        app:title="Name" />
 
     <Preference
         app:key="account_email"

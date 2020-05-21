@@ -7,7 +7,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.ActivityUserBinding;
 import ch.epfl.sdp.ui.user.events.UserEventsFragment;
-import ch.epfl.sdp.ui.user.stats.UserStatisticsFragment;
+import ch.epfl.sdp.ui.user.profile.UserProfileFragment;
+
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -35,7 +36,7 @@ public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(mBinding.userContent.getId(), new UserStatisticsFragment()).commit();
+                    .replace(mBinding.userContent.getId(), new UserProfileFragment()).commit();
         }
     }
 
@@ -48,15 +49,14 @@ public class UserActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         switch(tab.getPosition()) {
-            case 0:
-                // User statistics tab was selected
+            case 0: {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.userContent.getId(), new UserStatisticsFragment()).commit();
-                break;
-            case 1:
+                        .replace(mBinding.userContent.getId(), new UserProfileFragment()).commit();
+            }break;
+            case 1: {
                 getSupportFragmentManager().beginTransaction()
                         .replace(mBinding.userContent.getId(), new UserEventsFragment()).commit();
-                break;
+            }break;
         }
     }
 

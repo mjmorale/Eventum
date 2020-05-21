@@ -75,16 +75,6 @@ public class SettingsViewModel extends ViewModel {
         return mUserLiveData;
     }
 
-    /**
-     * Method to set the user name
-     *
-     * @param username of the user
-     * @param callback called when the name is set
-     */
-    public void setUserName(@NonNull String username, @NonNull Query.OnQueryCompleteCallback<Void> callback) {
-        verifyNotNull(username, callback);
-        mUserDocument.update("username", username, callback);
-    }
 
     /**
      * Method to delete the account
