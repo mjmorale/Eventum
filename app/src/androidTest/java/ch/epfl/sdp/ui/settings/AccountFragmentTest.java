@@ -53,49 +53,6 @@ public class AccountFragmentTest extends SettingsFragmentTest {
         onView(withText(DUMMY_USER.getEmail())).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void AccountFragment_SetUsernameChangesDatabase() throws Throwable {
-        mActivity.runOnUiThread(() -> {
-            mUserLiveData.setValue(DUMMY_USER);
-        });
-
-        onView(withText("Name")).perform(click());
-
-        onView(withText("nametest")).perform(
-            replaceText(DUMMY_USER.getName()),
-            closeSoftKeyboard()
-        );
-
-        onView(withText("OK")).perform(click());
-
-        verify(mDocumentQuery).update(eq("username"), eq(DUMMY_USER.getName()), any());
-    }
-
-    @Test
-    public void AccountFragment_SetUsernameFailsWithToast() throws Throwable {
-        mActivity.runOnUiThread(() -> {
-            mUserLiveData.setValue(DUMMY_USER);
-        });
-
-        doNothing().when(mDocumentQuery).update(anyString(), any(), mOnQueryCompleteCallbackArgumentCaptor.capture());
-
-        onView(withText("Name")).perform(click());
-
-        onView(withText("nametest")).perform(
-                replaceText(DUMMY_USER.getName()),
-                closeSoftKeyboard()
-        );
-
-        onView(withText("OK")).perform(click());
-
-        mActivity.runOnUiThread(() -> {
-            mOnQueryCompleteCallbackArgumentCaptor.getValue().onQueryComplete(QueryResult.failure(new Exception()));
-        });
-
-        onView(withText("Cannot set username"))
-                .inRoot(not(isFocusable()))
-                .check(matches(isDisplayed()));
-    }
 
     @Test
     public void AccountFragment_DeleteAccountCreatesDialog() {

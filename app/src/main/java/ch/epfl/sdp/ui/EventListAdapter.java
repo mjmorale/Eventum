@@ -41,10 +41,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle;
+        public TextView mDate;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.eventlist_item_title);
+            mDate = itemView.findViewById(R.id.eventlist_item_date);
         }
 
         /**
@@ -99,6 +101,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     }
 
     /**
+     * Get an item at a certain position.
+     * @param position The index of the object in the adapter.
+     * @return The object at the specified index.
+     */
+    public DatabaseObject<Event> get(int position) {
+        return mEventList.get(position);
+    }
+
+    /**
      * Set the click listener for the items of the adapter.
      * @param listener The on click listener for the adapter.
      * @throws IllegalArgumentException The listener is null.
@@ -119,6 +130,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         DatabaseObject<Event> event = mEventList.get(position);
         holder.mTitle.setText(event.getObject().getTitle());
+        holder.mDate.setText(event.getObject().getDateStr());
         if(mItemClickListener != null) {
             holder.setClickListener(event, mItemClickListener);
         }

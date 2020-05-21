@@ -103,6 +103,15 @@ public class MainActivityTest {
             .setOrganizerRef("ref3")
             .setLocation(new LatLng(12.3, 45.6))
             .build();
+    private static final Event DUMMY_EVENT4 = sEventBuilder
+            .setTitle("event4")
+            .setDescription("description4")
+            .setAddress("address4")
+            .setDate(new Date("01/01/2100 00:00"))
+            .setImageId("id4")
+            .setOrganizerRef("ref4")
+            .setLocation(new LatLng(12.3, 45.6))
+            .build();
     private static final String DUMMY_EVENTREF = "saielrkfuth2n340i7fz";
     private static final String DUMMY_USERREF = "sdfkjghsdflkjghsdlfkgjh";
     private static final UserInfo DUMMY_USERINFO = new UserInfo(DUMMY_USERREF, "testname", "testemail");
@@ -362,13 +371,14 @@ public class MainActivityTest {
         DatabaseObject<Event> event1 = new DatabaseObject<>("event1", DUMMY_EVENT1);
         DatabaseObject<Event> event2 = new DatabaseObject<>("event2", DUMMY_EVENT2);
         DatabaseObject<Event> event3 = new DatabaseObject<>("event3", DUMMY_EVENT3);
+        DatabaseObject<Event> event4 = new DatabaseObject<>("event4", DUMMY_EVENT4);
 
         mActivity.runOnUiThread(() -> {
             mAttendingEventsLiveData.setValue(Arrays.asList(event2));
-            mEventsLiveData.setValue(Arrays.asList(event1, event2, event3));
+            mEventsLiveData.setValue(Arrays.asList(event1, event2, event3, event4));
             mOwnedEventsLiveData.setValue(Arrays.asList(event3));
         });
 
-        onView(withText(event1.getObject().getTitle())).check(matches(isDisplayed()));
+        onView(withText(event4.getObject().getTitle())).check(matches(isDisplayed()));
     }
 }

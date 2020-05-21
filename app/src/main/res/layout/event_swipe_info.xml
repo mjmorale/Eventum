@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView_swipeInfo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/default_event_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.cardview.widget.CardView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:elevation="2dp"
+            app:cardCornerRadius="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Title"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    tools:text="title" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="20dp"
+                    android:text="Description"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="description" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:id="@+id/dateImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_event_white_30dp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+
+                        android:text="01/01/2020"
+                        android:textAlignment="gravity"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        tools:text="date" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/addressImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_pin_drop_black_30dp" />
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:text="221B Baker Street"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/minimap"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    map:cameraZoom="15"
+                    map:liteMode="true"
+                    map:mapType="normal" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

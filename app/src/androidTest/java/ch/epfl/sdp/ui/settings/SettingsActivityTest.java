@@ -76,12 +76,6 @@ public class SettingsActivityTest {
     }
 
     @Test
-    public void SettingsActivity_AccountMenuHasAvatar() {
-        onView(withText("Account")).perform(click());
-        onView(withText("Avatar")).check(matches(isDisplayed()));
-    }
-
-    @Test
     public void SettingsActivity_AccountMenuHasName() {
         onView(withText("Account")).perform(click());
         onView(withText("Name")).check(matches(isDisplayed()));
