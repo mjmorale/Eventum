@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+
     // Library dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Jetpack dependencies
