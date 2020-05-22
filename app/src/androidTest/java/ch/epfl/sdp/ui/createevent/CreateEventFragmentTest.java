@@ -218,6 +218,8 @@ public class CreateEventFragmentTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
+        clickOnCategoryButtons();
+
         clickCreateButton();
     }
 
@@ -229,6 +231,24 @@ public class CreateEventFragmentTest {
 
     private void clickAddImageButton() {
         onView(withId(R.id.addImageButton)).perform(
+                scrollTo(),
+                click());
+    }
+
+    private void clickOnCategoryButtons() {
+        onView(withId(R.id.IndoorToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.IndoorToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.OutdoorToggleButton)).perform(
+                scrollTo(),
+                click());
+
+        onView(withId(R.id.SportToggleButton)).perform(
                 scrollTo(),
                 click());
     }

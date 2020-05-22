@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +39,7 @@ import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
+import ch.epfl.sdp.EventCategory;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
@@ -346,6 +348,7 @@ public class MainActivityTest {
                 .perform(NavigationViewActions.navigateTo(navId));
     }
 
+
     @Test
     public void MainActivity_FilterSettings_ShowCorrectValues() {
         launchDefaultActivity(DUMMY_USERREF);
@@ -357,12 +360,24 @@ public class MainActivityTest {
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("5km")));
 
+        onView(withId(R.id.optionIndoor))
+                .perform(click());
+        onView(withId(R.id.optionOutdoor))
+                .perform(click());
+        onView(withId(R.id.optionSport))
+                .perform(click());
+        onView(withId(R.id.optionParty))
+                .perform(click());
+        onView(withId(R.id.optionIndoor))
+                .perform(click());
+
         onView(withId(R.id.seekBar_range))
                 .perform(setProgress(9));
 
         onView(withId(R.id.seekBar_value))
                 .check(matches(withText("10km")));
     }
+
 
     @Test
     public void MainActivity_FilterSettings_ResultLiveDataIsCorrectlyFiltered() throws Throwable {
