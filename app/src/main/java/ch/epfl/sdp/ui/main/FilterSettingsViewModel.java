@@ -174,11 +174,8 @@ public class FilterSettingsViewModel extends ViewModel {
 
     private void filterCategories() {
         for(DatabaseObject<Event> event: mFilteredEvents) {
-            for (String category : mListCategories) {
-                if(!event.getObject().getCategories().contains(category)) {
-                    mEvents.remove(event.getId());
-                }
-            }
+            if(!event.getObject().getCategories().containsAll(mListCategories))
+                mEvents.remove(event.getId());
         }
     }
 
