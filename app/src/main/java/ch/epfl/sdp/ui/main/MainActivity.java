@@ -23,12 +23,11 @@ import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
-import ch.epfl.sdp.platforms.firebase.db.FirestoreDatabase;
+import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
@@ -40,6 +39,7 @@ import ch.epfl.sdp.ui.main.swipe.SwipeFragment;
 import ch.epfl.sdp.ui.settings.FilterView;
 import ch.epfl.sdp.ui.settings.SettingsActivity;
 import ch.epfl.sdp.ui.user.UserActivity;
+
 
 /**
  * The main activity of the application
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(mBinding.mainToolbar);
 
         setupToolbarNavigation();
-
         // Build the view model
         mFactory.setUserRef(getUserRefFromIntent(getIntent()));
         mViewModel = new ViewModelProvider(this, mFactory).get(MainViewModel.class);
@@ -85,20 +84,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (user != null) {
                 TextView username = mMainNavHeaderView.findViewById(R.id.main_nav_header_username);
                 TextView email = mMainNavHeaderView.findViewById(R.id.main_nav_header_email);
-
+                if(!user.getImageId().isEmpty())
+                    ImageGetter.getInstance().getImage(getApplicationContext(), user.getImageId(),mMainNavHeaderView.findViewById(R.id.main_nav_header_profile_picture));
                 username.setText(user.getName());
-                email.setText(user.getEmail());
-            }
+                email.setText(user.getEmail()); }
         });
 
         addFilterSettingsListener();
-
         if (savedInstanceState == null) {
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION },
-                    PERMISSION_LOCATION);
-        }
+                    PERMISSION_LOCATION); }
     }
 
     @Override

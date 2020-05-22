@@ -107,7 +107,7 @@ public class MainActivityTest {
             .setTitle("event4")
             .setDescription("description4")
             .setAddress("address4")
-            .setDate(new Date("01/01/2100"))
+            .setDate(new Date("01/01/2100 00:00"))
             .setImageId("id4")
             .setOrganizerRef("ref4")
             .setLocation(new LatLng(12.3, 45.6))

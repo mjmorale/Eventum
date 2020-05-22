@@ -44,8 +44,6 @@ android {
 
 dependencies {
 
-    // Facebook dependencies
-    implementation 'com.facebook.android:facebook-share:5.15.3'
     // Library dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Jetpack dependencies

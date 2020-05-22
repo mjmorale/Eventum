@@ -19,14 +19,16 @@ public class UserDatabaseBuilder extends DatabaseObjectBuilder<User> {
      * Construct a new UserDatabaseBuilder instance.
      */
     public UserDatabaseBuilder() {
-        super("username", "email");
+        super("username", "email","imageId", "description");
     }
 
     @Override
     public User buildFromMap(@NonNull Map<String, Object> data) {
         String name = (String)data.get("username");
         String email = (String)data.get("email");
-        return new User(name, email);
+        String imageId = (String)data.get("imageId");
+        String decription= (String)data.get("description");
+        return new User(name, email, imageId, decription);
     }
 
     @Override
@@ -34,6 +36,8 @@ public class UserDatabaseBuilder extends DatabaseObjectBuilder<User> {
         return new HashMap<String, Object>() {{
             put("username", object.getName());
             put("email", object.getEmail());
+            put("imageId", object.getImageId());
+            put("description", object.getDescription());
         }};
     }
 

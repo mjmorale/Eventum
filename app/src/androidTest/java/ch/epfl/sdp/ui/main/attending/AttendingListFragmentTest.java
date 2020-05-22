@@ -68,7 +68,7 @@ public class AttendingListFragmentTest {
     private static final Event DUMMY_EVENT = sEventBuilder
             .setTitle("testtitle")
             .setDescription("description")
-            .setDate("01/01/2020")
+            .setDate("01/01/2020 00:00")
             .setOrganizerRef("testref")
             .setAddress("testaddress")
             .setImageId("testid")
@@ -77,7 +77,7 @@ public class AttendingListFragmentTest {
     private static final Event DUMMY_EVENT2 = sEventBuilder
             .setTitle("testtitle2")
             .setDescription("description2")
-            .setDate("01/01/2020")
+            .setDate("01/01/2020 00:00")
             .setOrganizerRef("testref2")
             .setAddress("testaddress2")
             .setImageId("testid2")
