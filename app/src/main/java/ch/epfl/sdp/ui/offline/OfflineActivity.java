@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import ch.epfl.sdp.databinding.ActivityOfflineBinding;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
 
+/**
+ * Activity that is launched if network is not available.
+ */
 public class OfflineActivity extends AppCompatActivity {
 
     private ActivityOfflineBinding mBinding;
