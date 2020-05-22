@@ -15,6 +15,7 @@ import ch.epfl.sdp.databinding.ActivityAuthBinding;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.MainActivity;
+import ch.epfl.sdp.ui.offline.OfflineActivity;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
@@ -49,6 +50,11 @@ public class AuthActivity extends AppCompatActivity implements AuthFragment.OnAu
         finish();
     }
 
+    @Override
+    public void onOffline() {
+        startActivity(new Intent(this, OfflineActivity.class));
+        finish();
+    }
 
     /**
      * Utility method that creates an Intent given a URI created by the share button

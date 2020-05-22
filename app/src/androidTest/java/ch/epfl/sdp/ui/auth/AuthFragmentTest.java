@@ -25,6 +25,8 @@ import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.Query;
 import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
+import ch.epfl.sdp.mocks.MockOnlineConnectivityService;
+import ch.epfl.sdp.offline.ConnectivityService;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -42,6 +44,8 @@ import static org.mockito.Mockito.when;
 public class AuthFragmentTest {
 
     private static final UserInfo DUMMY_USERINFO = new UserInfo("testuid", "testname", "testmail");
+
+    private ConnectivityService mConnectivityService = new MockOnlineConnectivityService();
 
     @Mock
     private Database mDatabase;
@@ -80,7 +84,7 @@ public class AuthFragmentTest {
             AuthFragment.class,
             new Bundle(),
             R.style.Theme_AppCompat,
-            new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase)
+            new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase, mConnectivityService)
         );
 
         onView(withId(R.id.btn_google_sign_in)).check(matches(isEnabled()));
@@ -97,7 +101,7 @@ public class AuthFragmentTest {
             AuthFragment.class,
             new Bundle(),
             R.style.Theme_AppCompat,
-            new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase)
+            new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase, mConnectivityService)
         );
 
         onView(withId(R.id.btn_google_sign_in)).check(matches(not(isEnabled())));
@@ -115,7 +119,7 @@ public class AuthFragmentTest {
                 AuthFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase)
+                new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase, mConnectivityService)
         );
 
         scenario.onFragment(fragment -> {
@@ -138,7 +142,7 @@ public class AuthFragmentTest {
                 AuthFragment.class,
                 new Bundle(),
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase)
+                new MockFragmentFactory<>(AuthFragment.class, mAuthenticator, mDatabase, mConnectivityService)
         );
 
         scenario.onFragment(fragment -> {
