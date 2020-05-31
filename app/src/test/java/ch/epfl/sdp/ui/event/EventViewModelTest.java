@@ -11,7 +11,6 @@ import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.map.MapManager;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DefaultEventViewModelTest {
+public class EventViewModelTest {
 
     private static final String DUMMY_STRING = "test";
 
@@ -44,7 +43,7 @@ public class DefaultEventViewModelTest {
     public void DefaultEventViewModel_Constructor_ReferencesTheEventCollection() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        EventViewModel vm = new EventViewModel(DUMMY_STRING, mDatabase);
 
         verify(mDatabase).query("events");
         verify(mCollectionQuery).document(DUMMY_STRING);
@@ -55,7 +54,7 @@ public class DefaultEventViewModelTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         when(mDocumentQuery.liveData(Event.class)).thenReturn(mEventLiveData);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        EventViewModel vm = new EventViewModel(DUMMY_STRING, mDatabase);
 
         assertNotNull(vm.getEvent());
     }

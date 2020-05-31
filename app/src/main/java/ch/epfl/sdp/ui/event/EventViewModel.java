@@ -14,7 +14,7 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 /**
  * View model to display some detail information of an event
  */
-public class DefaultEventViewModel extends ViewModel {
+public class EventViewModel extends ViewModel {
 
     /**
      * Factory of the DefaultEventViewModel
@@ -50,7 +50,7 @@ public class DefaultEventViewModel extends ViewModel {
      * @param eventRef the reference of the event to display
      * @param database The database service to use
      */
-    public DefaultEventViewModel(@NonNull String eventRef, @NonNull Database database) {
+    public EventViewModel(@NonNull String eventRef, @NonNull Database database) {
         verifyNotNull(eventRef, database);
         mEventRef = eventRef;
         mEventDocumentQuery = database.query("events").document(eventRef);
