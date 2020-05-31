@@ -21,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
-import ch.epfl.sdp.Event;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -42,8 +41,8 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  */
 public class EventFragment extends Fragment implements OnMapReadyCallback {
 
-    private final DefaultEventViewModel.DefaultEventViewModelFactory mFactory;
-    private DefaultEventViewModel mViewModel;
+    private final EventViewModel.DefaultEventViewModelFactory mFactory;
+    private EventViewModel mViewModel;
 
     private final LiteMapViewModel.LiteMapViewModelFactory mMapFactory;
     private LiteMapViewModel mMapViewModel;
@@ -83,7 +82,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     public EventFragment() {
         Database database = ServiceProvider.getInstance().getDatabase();
 
-        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
+        mFactory = new EventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
 
         mWeatherFactory =  new WeatherViewModel.WeatherViewModelFactory();
@@ -101,7 +100,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      */
     @VisibleForTesting
     public EventFragment(@NonNull Database database, @NonNull String eventRef, @NonNull WeatherFetcher fetcher) {
-        mFactory = new DefaultEventViewModel.DefaultEventViewModelFactory();
+        mFactory = new EventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
 
@@ -135,7 +134,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
         mBinding.minimap.onCreate(savedInstanceState);
         mBinding.minimap.getMapAsync(this);
 
-        mViewModel = new ViewModelProvider(this, mFactory).get(DefaultEventViewModel.class);
+        mViewModel = new ViewModelProvider(this, mFactory).get(EventViewModel.class);
         mWeatherViewModel= new ViewModelProvider(this, mWeatherFactory).get(WeatherViewModel.class);
 
         mEventSharing = new SharingBuilder().setRef(mViewModel.getEventRef()).build();
