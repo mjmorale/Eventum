@@ -11,11 +11,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ch.epfl.sdp.offline.EventSaver;
 
+import static ch.epfl.sdp.EventCategory.Outdoor;
+import static ch.epfl.sdp.EventCategory.Sport;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,8 +34,12 @@ public class EventTest  {
     private Context context = new Activity();
     private File path = context.getFilesDir();
     private Date dateEvent = new Date();
-    String organizerRef = "organizerref";
-    String imageId = "URL";
+    private String organizerRef = "organizerref";
+    private String imageId = "URL";
+    private ArrayList<EventCategory> categories = new ArrayList<EventCategory>() {{
+        add(Sport);
+        add(Outdoor);
+    }};
 
     @Test
     public void EventBuilder_CheckCorrectData() {
@@ -44,6 +51,7 @@ public class EventTest  {
                               .setLocation(location)
                               .setImageId(imageId)
                               .setOrganizerRef(organizerRef)
+                              .setCategories(categories)
                               .build();
 
         assertEquals(e.getTitle(), title);
@@ -52,5 +60,69 @@ public class EventTest  {
         assertEquals(e.getAddress(), address);
         assertEquals(e.getImageId(), imageId);
         assertEquals(e.getOrganizer(), organizerRef);
+        assertEquals(e.getCategories(), categories);
     }
+
+    @Test
+    public void Event_CheckToString() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertEquals(e.toString(), "Title:" + title + "\nDescription:" + description + "\nDate:" + date + "\nAddress:"
+                + address + "\nLatitude:" + 90.0 + "\nLongitude:" + 100.0
+                + "\nimageID:" + imageId);
+    }
+
+    @Test
+    public void Event_EqualReturnTrueIfSame() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertTrue(e.equals(e));
+    }
+
+    @Test
+    public void Event_EqualReturnFalseIfNull() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertFalse(e.equals(null));
+    }
+
+    @Test
+    public void Event_EqualReturnFalseIfNotEvent() {
+        EventBuilder eventBuilder = new EventBuilder();
+        Event e = eventBuilder.setTitle(title)
+                .setDescription(description)
+                .setDate(date)
+                .setAddress(address)
+                .setLocation(location)
+                .setImageId(imageId)
+                .setOrganizerRef(organizerRef)
+                .setCategories(categories)
+                .build();
+        assertFalse(e.equals(e.toString()));
+    }
+
 }

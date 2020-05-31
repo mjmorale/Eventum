@@ -29,7 +29,7 @@
                 android:progress="5" />
         </TableRow>
 
-<!--        <TextView
+        <TextView
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="Which categories ? "
@@ -40,38 +40,33 @@
         </TextView>
 
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/radio_Group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/option1"
+                android:id="@+id/optionIndoor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All" />
+                android:text="Indoor" />
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/option2"
+                android:id="@+id/optionOutdoor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Party" />
+                android:text="Outdoor" />
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/option3"
+                android:id="@+id/optionSport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sport" />
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/option4"
+                android:id="@+id/optionParty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AA" />
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/option5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Concert" />
+                android:text="Party" />
 
-        </RadioGroup>-->
+        </RadioGroup>
     </LinearLayout>
 </LinearLayout>

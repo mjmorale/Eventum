@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,55 +28,39 @@ public class Event implements Serializable {
     private double mLatitude;
     private double mLongitude;
     private final String mOrganizerRef;
+    private final ArrayList<EventCategory> mCategories = new ArrayList<EventCategory>();
     static private SimpleDateFormat mFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
+    /**
+     * Constructor of event
+     *
+     * @param title Event title
+     * @param description Description for the event
+     * @param date The date where the event is happening
+     * @param address The address of where the event is happening
+     * @param location The location of where the event is happening
+     * @param imageId An URL to an image for the Event
+     * @param organizerRef The reference of the organizer
+     * @param categories The categories of the event
+     */
     public Event(@NonNull String title,
                  @NonNull String description,
                  @NonNull Date date,
                  @NonNull String address,
                  @NonNull LatLng location,
                  @NonNull String imageId,
-                 @NonNull String organizerRef) {
+                 @NonNull String organizerRef,
+                 @NonNull ArrayList<EventCategory> categories) {
         mTitle = title;
         mDescription = description;
         mDate = date;
         mAddress = address;
-
         mLatitude = location.latitude;
         mLongitude = location.longitude;
-
         mImageId = imageId;
         mOrganizerRef = organizerRef;
+        mCategories.addAll(categories);
     }
-
-    /**
-     * This constructor is here for the
-     * @param title Event title
-     * @param description Description for the event
-     * @param date The date where the event is happening
-     * @param address The address of where the event is happening
-     * @param latitude The latitude of where the event is happening
-     * @param longitude The longitude of where the event is happening
-     * @param imageId An URL to an image for the Event
-     */
-    public Event(@NonNull String title,
-                 @NonNull String description,
-                 @NonNull Date date,
-                 @NonNull String address,
-                 double latitude,
-                 double longitude,
-                 @NonNull String  imageId,
-                 @NonNull String organizerRef) {
-        mTitle = title;
-        mDescription = description;
-        mDate = date;
-        mAddress = address;
-        mLatitude = latitude;
-        mLatitude = longitude;
-        mImageId = imageId;
-        mOrganizerRef = organizerRef;
-    }
-
 
     /**
      * Utility method to convert a Date class into a human readable date using a specified format.
@@ -147,6 +132,13 @@ public class Event implements Serializable {
      */
     public String getAddress() {
         return mAddress;
+    }
+
+    /**
+     * @return  the categories of the event
+     */
+    public ArrayList<EventCategory> getCategories() {
+        return mCategories;
     }
 
     @Override
