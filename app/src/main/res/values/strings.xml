@@ -46,5 +46,6 @@
     <string name="filter">Filter</string>
     <string name="default_filter_range">5km</string>
     <string name="forecast_unavailable">Weather forecast unavailable</string>
-    <string name="openweather_api_k">7c35ebdff45e1d54db43876dfcb0c320</string>;
+    <string name="openweather_api_k">7c35ebdff45e1d54db43876dfcb0c320</string>
+    <string name="reload">Reload denied events</string>;;
 </resources>
