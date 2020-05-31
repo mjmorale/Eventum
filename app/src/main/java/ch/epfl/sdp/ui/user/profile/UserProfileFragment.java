@@ -98,27 +98,18 @@ public class UserProfileFragment extends Fragment {
         });
         mViewModel.getUserLive().observe(getViewLifecycleOwner(), user -> {
             mBinding.userProfileName.setText(user.getName());
-            mBinding.userProfileBio.getText().replace(0, mBinding.userProfileBio.getText().length(), user.getDescription());
-            if (!user.getImageId().isEmpty())
+            mBinding.userProfileBio.getText().clear();
+            mBinding.userProfileBio.getText().append(user.getDescription());
+        if (!user.getImageId().isEmpty())
                 ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userProfilePhoto);
         });
-        mBinding.userProfileBio.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mViewModel.updateDescription(s.toString());
+        mBinding.userProfileBio.setOnFocusChangeListener((v, hasFocus) -> {
+            if(!hasFocus){
+                mViewModel.updateDescription(mBinding.userProfileBio.getText().toString());
             }
         });
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
