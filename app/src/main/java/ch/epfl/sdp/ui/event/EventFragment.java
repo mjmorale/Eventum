@@ -207,7 +207,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                 mBinding.eventDetailAttendeeListView.setVisibility(View.VISIBLE);
                 mBinding.eventDetailNoAttendeesMsg.setVisibility(View.GONE);
             }
-            mBinding.eventDetailAttendeeCount.setText("(" + users.size() + ")");
+            mBinding.eventDetailAttendeeCount.setText(String.format("(%d)", users.size()));
         });
     }
 

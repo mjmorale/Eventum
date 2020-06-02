@@ -108,17 +108,15 @@ public class EventFragmentTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
         when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mDocumentQueryMock.liveData(Event.class)).thenReturn(mEventsLive);
-        mEventsLive.postValue(DUMMY_EVENT);
-
-        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
-
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(Weather.class)).thenReturn(mWeatherLiveData);
         mWeatherLiveData.postValue(null);
+        mEventsLive.postValue(DUMMY_EVENT);
     }
 
     private void setupAttendee(List<DatabaseObject<User>> attendees) {
