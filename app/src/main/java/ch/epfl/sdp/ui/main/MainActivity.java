@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void setupToolbarNavigation() {
+    public void setupToolbarNavigation() {
         setSupportActionBar(mBinding.mainToolbar);
 
         mBinding.mainNavView.setNavigationItemSelectedListener(this);
@@ -301,4 +301,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return intent;
     }
+
+    public void addListenerBackButton_hideItems(){
+        mBinding.mainToolbar.getMenu().findItem(R.id.main_actionbar_add).setVisible(false);
+        mBinding.mainToolbar.getMenu().findItem(R.id.main_actionbar_search).setVisible(false);
+        mBinding.mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
 }

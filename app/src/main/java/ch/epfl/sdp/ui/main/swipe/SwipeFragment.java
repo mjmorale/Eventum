@@ -8,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import androidx.appcompat.app.ActionBar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,6 +33,7 @@ import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.platforms.google.map.GoogleMapManager;
 import ch.epfl.sdp.ui.event.LiteMapViewModel;
 import ch.epfl.sdp.ui.main.FilterSettingsViewModel;
+import ch.epfl.sdp.ui.main.MainActivity;
 import ch.epfl.sdp.ui.main.map.MapFragment;
 
 /**
@@ -157,11 +160,19 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private void showEventDetail() {
         mBinding.cardsListView.setVisibility(View.GONE);
         mBinding.eventDetailView.setVisibility(View.VISIBLE);
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        ((MainActivity) getActivity()).addListenerBackButton_hideItems();
     }
 
     private void showCardList() {
         mBinding.eventDetailView.setVisibility(View.GONE);
         mBinding.cardsListView.setVisibility(View.VISIBLE);
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) getActivity()).setupToolbarNavigation();
     }
 
     private void setupBackButton() {
