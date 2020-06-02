@@ -121,6 +121,66 @@
 
             </FrameLayout>
 
+            <TextView
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="Categories: "
+                android:textColor="@color/grey"
+                android:layout_marginTop="20dp"
+                android:textSize="25sp"
+                android:layout_width="match_parent">
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="1dp"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/IndoorToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:textOff="Indoor"
+                    android:textOn="Indoor"/>
+
+                <ToggleButton
+                    android:id="@+id/OutdoorToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:textOff="Outdoor"
+                    android:textOn="Outdoor"/>
+
+                <ToggleButton
+                    android:id="@+id/SportToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:textOff="Sport"
+                    android:textOn="Sport"/>
+
+                <ToggleButton
+                    android:id="@+id/PartyToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:textOff="Party"
+                    android:textOn="Party"/>
+            </LinearLayout>
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"

@@ -36,6 +36,10 @@ import ch.epfl.sdp.storage.Storage;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 import static android.app.Activity.RESULT_OK;
+import static ch.epfl.sdp.EventCategory.Indoor;
+import static ch.epfl.sdp.EventCategory.Outdoor;
+import static ch.epfl.sdp.EventCategory.Party;
+import static ch.epfl.sdp.EventCategory.Sport;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 import static ch.epfl.sdp.ui.UIConstants.RC_CHOOSE_PHOTO;
 
@@ -94,6 +98,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         mBinding.createButton.setOnClickListener(this);
         mBinding.addImageButton.setOnClickListener(this);
         mBinding.time.setIs24HourView(true);
+
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.IndoorToggleButton, Indoor);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.OutdoorToggleButton, Outdoor);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.SportToggleButton, Sport);
+        mViewModel.setCategoryFromToggleButton(getView(), R.id.PartyToggleButton, Party);
     }
 
     @Override
@@ -190,6 +199,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setAddress(address)
                 .setImageId(mViewModel.getImageId())
                 .setOrganizerRef(mViewModel.getUserRef())
+                .setCategories(mViewModel.getCategories())
                 .build();
 
         mViewModel.insertEvent(event, callback);

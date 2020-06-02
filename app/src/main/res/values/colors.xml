@@ -15,4 +15,5 @@
     <color name="headerTextColor">#ECE3E3</color>
     <color name="transparentGrey">#B3485060</color>
     <color name="transparentDarkGrey">#C3485060</color>
+    <color name="light_red">#BEF44336</color>
 </resources>
