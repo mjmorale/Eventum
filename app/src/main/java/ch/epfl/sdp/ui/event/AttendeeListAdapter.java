@@ -1,4 +1,4 @@
-package ch.epfl.sdp.ui.event.attendee;
+package ch.epfl.sdp.ui.event;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +16,21 @@ import ch.epfl.sdp.db.DatabaseObject;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * Adapter view for user objects
+ */
 public class AttendeeListAdapter extends RecyclerView.Adapter<AttendeeListAdapter.UserViewHolder> {
 
+    /**
+     * Callback interface for click events
+     */
     public interface OnItemClickListener {
-
         void OnItemClicked(@NonNull DatabaseObject<User> event);
     }
 
+    /**
+     * The adapter's viewholder
+     */
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         public TextView mName;
 
@@ -41,26 +49,46 @@ public class AttendeeListAdapter extends RecyclerView.Adapter<AttendeeListAdapte
     private AttendeeListAdapter.OnItemClickListener mItemClickListener = null;
     private String mCurrentUser;
 
+    /**
+     * Construct a new AttendeeListAdapter
+     * @param currentUser The id of the currently connected user
+     */
     public AttendeeListAdapter(@NonNull String currentUser) {
         mCurrentUser = verifyNotNull(currentUser);
         mUserList = new ArrayList<>();
     }
 
-    public AttendeeListAdapter(@NonNull String currentUser, @NonNull List<DatabaseObject<User>> events) {
+    /**
+     * Construct a new AttendeeListAdapter
+     * @param currentUser The id of the currently connected user
+     * @param users The list of users to display
+     */
+    public AttendeeListAdapter(@NonNull String currentUser, @NonNull List<DatabaseObject<User>> users) {
         mCurrentUser = verifyNotNull(currentUser);
-        mUserList = verifyNotNull(events);
+        mUserList = verifyNotNull(users);
     }
 
+    /**
+     * Clears the content of the adapter
+     */
     public void clear() {
         mUserList.clear();
         notifyDataSetChanged();
     }
 
+    /**
+     * Add a list of users to the adapter
+     * @param users The list of users to add
+     */
     public void addAll(@NonNull List<DatabaseObject<User>> users) {
         mUserList.addAll(verifyNotNull(users));
         notifyDataSetChanged();
     }
 
+    /**
+     * Set a click listener on the items
+     * @param listener The click callback function
+     */
     public void setOnItemClickListener(@NonNull AttendeeListAdapter.OnItemClickListener listener) {
         mItemClickListener = verifyNotNull(listener);
     }

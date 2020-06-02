@@ -1,5 +1,7 @@
 package ch.epfl.sdp.ui;
 
+import android.util.Log;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
  * Factory to create a view model with custom parameters
  */
 public class ParameterizedViewModelFactory implements ViewModelProvider.Factory {
+
+    private final static String TAG = "ViewModelFactory";
 
     private List<Object> mParameters = new ArrayList<>();
     private List<Class<?>> mTypes = new ArrayList<>();
@@ -71,7 +75,9 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
             try {
                 return constructor.newInstance(mParameters.toArray());
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                throw new IllegalArgumentException("Cannot instantiate " + modelClass.getSimpleName() + " class");
+                String errorMsg = "Cannot instantiate " + modelClass.getSimpleName() + " class";
+                Log.e(TAG, errorMsg, e);
+                throw new IllegalArgumentException(errorMsg);
             }
         }
         throw new IllegalArgumentException(modelClass.getSimpleName() + " does not have a constructor that matches the factory arguments");
