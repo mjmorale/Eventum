@@ -22,6 +22,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import java.util.Objects;
+
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.auth.Authenticator;
@@ -161,18 +163,16 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         mBinding.cardsListView.setVisibility(View.GONE);
         mBinding.eventDetailView.setVisibility(View.VISIBLE);
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        ((MainActivity) getActivity()).addListenerBackButton_hideItems();
+        if (getActivity() instanceof MainActivity) //for test don't need to update toolbar
+            ((MainActivity) requireActivity()).updateToolBarSwipe(true);
     }
 
     private void showCardList() {
         mBinding.cardsListView.setVisibility(View.VISIBLE);
         mBinding.eventDetailView.setVisibility(View.GONE);
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        ((MainActivity) getActivity()).setupToolbarNavigation();
+        if (getActivity() instanceof MainActivity)  //for test don't need to update toolbar
+            ((MainActivity) getActivity()).updateToolBarSwipe(false);
     }
 
     private void setupBackButton() {
