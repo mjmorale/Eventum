@@ -29,18 +29,18 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/event_default" />
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/black"
-                    android:text="Title"
+                    android:text="Event"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="30sp"
-                    tools:text="title" />
+                    android:textSize="30sp" />
 
                 <TextView
                     android:id="@+id/description"
@@ -49,11 +49,9 @@
                     android:background="@color/white"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="20dp"
-                    android:text="Description"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    tools:text="description" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/date"
@@ -65,8 +63,7 @@
                     android:text="01/01/2020"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    tools:text="date" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/address"
@@ -88,6 +85,65 @@
                     map:cameraZoom="15"
                     map:mapType="normal"
                     map:liteMode="true" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/black"
+                                android:paddingLeft="5dp"
+                                android:paddingBottom="5dp"
+                                android:text="Attendees"
+                                android:textColor="@color/white"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/event_detail_attendee_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/black"
+                                android:paddingStart="5dp"
+                                android:paddingBottom="5dp"
+                                android:text="(0)"
+                                android:textColor="@color/white"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/event_detail_attendee_list_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <TextView
+                            android:id="@+id/event_detail_no_attendees_msg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:text="No one is attending to this event :("
+                            android:textAlignment="center" />
+
+                    </LinearLayout>
+                </ScrollView>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/noWeatherLayout"

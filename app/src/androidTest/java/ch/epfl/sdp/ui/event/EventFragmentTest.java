@@ -16,17 +16,23 @@ import androidx.test.espresso.intent.Intents;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import ch.epfl.sdp.ChatMessage;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.EventBuilder;
 import ch.epfl.sdp.R;
+import ch.epfl.sdp.User;
 import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
@@ -34,6 +40,8 @@ import ch.epfl.sdp.db.DatabaseObject;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
 import ch.epfl.sdp.db.queries.FilterQuery;
+import ch.epfl.sdp.db.queries.Query;
+import ch.epfl.sdp.db.queries.QueryResult;
 import ch.epfl.sdp.mocks.MockFragmentFactory;
 import ch.epfl.sdp.mocks.MockWeatherFetcher;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -48,11 +56,16 @@ import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -84,7 +97,6 @@ public class EventFragmentTest {
     @Mock
     private Authenticator<AuthCredential> mAuthenticatorMock;
 
-
     private WeatherFetcher mWeatherFetcherMock = new MockWeatherFetcher();
 
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
@@ -102,9 +114,26 @@ public class EventFragmentTest {
         when(mDocumentQueryMock.liveData(Event.class)).thenReturn(mEventsLive);
         mEventsLive.postValue(DUMMY_EVENT);
 
+        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
+
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(Weather.class)).thenReturn(mWeatherLiveData);
         mWeatherLiveData.postValue(null);
+    }
+
+    private void setupAttendee(List<DatabaseObject<User>> attendees) {
+        doAnswer(invocation -> {
+            List<String> userIds = new ArrayList<>();
+            for(DatabaseObject<User> user: attendees) {
+                userIds.add(user.getId());
+            }
+            ((Query.OnQueryCompleteCallback<Object>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(userIds));
+            return null;
+        }).when(mDocumentQueryMock).getField(anyString(), any());
+        doAnswer(invocation -> {
+            ((Query.OnQueryCompleteCallback<List<DatabaseObject<User>>>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(attendees));
+            return null;
+        }).when(mCollectionQueryMock).get(any(), any());
     }
 
     @SuppressWarnings("unchecked")
@@ -113,7 +142,7 @@ public class EventFragmentTest {
                 EventFragment.class,
                 bundle,
                 R.style.Theme_AppCompat,
-                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef", mWeatherFetcherMock)
+                new MockFragmentFactory(EventFragment.class, mDatabaseMock, "anyRef", mAuthenticatorMock, mWeatherFetcherMock)
         );
 
     }
@@ -165,7 +194,6 @@ public class EventFragmentTest {
         when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
         when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
         when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mChatLiveData);
-        when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
         ServiceProvider.getInstance().setDatabase(mDatabaseMock);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticatorMock);
 
@@ -212,6 +240,35 @@ public class EventFragmentTest {
 
         String newWeatherType = (String) newWeather.getWeather(newWeather.getClosestDay(DUMMY_EVENT_2.getDate())).get("main");
         onView(withId(R.id.weatherType)).check(matches(withText(newWeatherType)));
+    }
+
+    @Test
+    public void EventFragment_DisplayEmptyMessageIfNoAttendee() {
+        setupAttendee(new ArrayList<>());
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+        scenario(bundle);
+
+        onView(withId(R.id.event_detail_no_attendees_msg)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.event_detail_attendee_list_view)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.event_detail_attendee_count)).check(matches(withText(containsString("(0)"))));
+    }
+
+    @Test
+    public void EventFragment_DisplayListOfAttendees() {
+        List<DatabaseObject<User>> attendees = new ArrayList<>();
+        attendees.add(new DatabaseObject<>("id", new User("testname", "testemail")));
+        setupAttendee(attendees);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+        scenario(bundle);
+
+        onView(withId(R.id.event_detail_no_attendees_msg)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.event_detail_attendee_list_view)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.event_detail_attendee_count)).check(matches(withText(containsString("(1)"))));
+        onView(withText("testname")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
     }
 
 }

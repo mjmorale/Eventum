@@ -3,6 +3,7 @@ package ch.epfl.sdp.platforms.firebase.db.queries;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 

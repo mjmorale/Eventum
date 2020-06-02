@@ -72,7 +72,15 @@ public class AuthActivityTest {
         mActivity.launchActivity(sendAction);
         Intents.init();
 
+        intending(allOf(
+                hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
+                hasExtra(UIConstants.BUNDLE_USER_REF, DUMMY_USER_REF),
+                hasExtra(UIConstants.BUNDLE_EVENT_REF, DUMMY_EVENT_REF),
+                hasExtra(UIConstants.BUNDLE_EVENT_MODE_REF, EventActivity.EventActivityMode.ATTENDEE)
+        )).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent()));
+
         mActivity.getActivity().onLoggedIn(DUMMY_USER_REF);
+
         intended(allOf(
                 hasComponent("ch.epfl.sdp.ui.event.EventActivity"),
                 hasExtra(UIConstants.BUNDLE_USER_REF, DUMMY_USER_REF),
