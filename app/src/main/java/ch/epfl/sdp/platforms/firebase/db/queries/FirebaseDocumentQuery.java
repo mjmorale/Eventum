@@ -55,10 +55,7 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         mDocument.get().addOnCompleteListener(t -> {
             if(t.isSuccessful()) {
                 DocumentSnapshot doc = t.getResult();
-                Object data = null;
-                if(doc.exists()) {
-                    data = doc.get(field);
-                }
+                Object data = doc.exists() ? doc.get(field) : null;
                 callback.onQueryComplete(QueryResult.success(data));
             }
             else {

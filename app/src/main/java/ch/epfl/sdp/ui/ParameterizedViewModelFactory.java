@@ -75,7 +75,7 @@ public class ParameterizedViewModelFactory implements ViewModelProvider.Factory 
             try {
                 return constructor.newInstance(mParameters.toArray());
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                String errorMsg = "Cannot instantiate " + modelClass.getSimpleName() + " class";
+                String errorMsg = String.format("Cannot instantiate %s class", modelClass.getSimpleName());
                 Log.e(TAG, errorMsg, e);
                 throw new IllegalArgumentException(errorMsg);
             }

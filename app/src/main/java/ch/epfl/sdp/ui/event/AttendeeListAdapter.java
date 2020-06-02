@@ -46,7 +46,7 @@ public class AttendeeListAdapter extends RecyclerView.Adapter<AttendeeListAdapte
     }
 
     private List<DatabaseObject<User>> mUserList;
-    private AttendeeListAdapter.OnItemClickListener mItemClickListener = null;
+    private AttendeeListAdapter.OnItemClickListener mItemClickListener;
     private String mCurrentUser;
 
     /**
