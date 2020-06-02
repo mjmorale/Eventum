@@ -167,8 +167,8 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     }
 
     private void showCardList() {
-        mBinding.eventDetailView.setVisibility(View.GONE);
         mBinding.cardsListView.setVisibility(View.VISIBLE);
+        mBinding.eventDetailView.setVisibility(View.GONE);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
