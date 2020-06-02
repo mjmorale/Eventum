@@ -49,6 +49,21 @@ public class FirebaseDocumentQuery extends FirebaseQuery implements DocumentQuer
         handleDocumentSnapshot(mDocument.get(), type, callback);
     }
 
+    @Override
+    public void getField(@NonNull String field, @NonNull OnQueryCompleteCallback<Object> callback) {
+        verifyNotNull(field, callback);
+        mDocument.get().addOnCompleteListener(t -> {
+            if(t.isSuccessful()) {
+                DocumentSnapshot doc = t.getResult();
+                Object data = doc.exists() ? doc.get(field) : null;
+                callback.onQueryComplete(QueryResult.success(data));
+            }
+            else {
+                callback.onQueryComplete(QueryResult.failure(t.getException()));
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> void set(@NonNull T object, @NonNull OnQueryCompleteCallback<Void> callback) {
