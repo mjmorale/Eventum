@@ -11,7 +11,9 @@ import ch.epfl.sdp.ui.DatabaseViewModelFactory;
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
 public class ProfileViewModel extends ViewModel {
-    private LiveData <User> mUser;
+    private String mUser;
+    private LiveData<User> mUserLiveData;
+    private Database mDatabase;
 
     static class ProfileViewModelFactory extends DatabaseViewModelFactory{
         ProfileViewModelFactory(){super(String.class);}
@@ -21,8 +23,8 @@ public class ProfileViewModel extends ViewModel {
 
     public ProfileViewModel(@NonNull String userRef, @NonNull Database database){
         verifyNotNull(userRef, database);
-
-        mUser = database.query("Users").document(userRef).liveData(User.class);
+        mDatabase = database;
+        mUser = userRef;
     }
 
     /**
@@ -30,6 +32,9 @@ public class ProfileViewModel extends ViewModel {
      * @return The user
      */
     public LiveData<User> getUser() {
-        return mUser;
+        if(mUserLiveData == null){
+            mUserLiveData = mDatabase.query("users").document(mUser).liveData(User.class);
+        }
+        return mUserLiveData;
     }
 }
