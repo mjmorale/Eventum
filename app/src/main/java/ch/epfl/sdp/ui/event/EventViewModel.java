@@ -5,7 +5,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import ch.epfl.sdp.Event;
@@ -60,6 +62,7 @@ public class EventViewModel extends ViewModel {
 
     private final String mUserRef;
     private MutableLiveData<List<DatabaseObject<User>>> mAttendees = new MutableLiveData<>();
+    private MediatorLiveData<User> mOrganizer = new MediatorLiveData<>();
 
     /**
      * Constructor of the DefaultEventViewModel, the factory should be used instead of this
@@ -73,6 +76,14 @@ public class EventViewModel extends ViewModel {
         mUserRef = authenticator.getCurrentUser().getUid();
         mEventDocumentQuery = database.query("events").document(eventRef);
 
+        mEventDocumentQuery.getField("organizer", organizerRes -> {
+            if(organizerRes.isSuccessful()) {
+                String organizerRef = (String) organizerRes.getData();
+                mOrganizer.addSource(database.query("users").document(organizerRef).liveData(User.class), user -> {
+                    mOrganizer.postValue(user);
+                });
+            }
+        });
         mEventDocumentQuery.getField("attendees", eventRes -> {
             if(eventRes.isSuccessful()) {
                 List<String> attendeeIds = (ArrayList<String>)eventRes.getData();
@@ -101,6 +112,15 @@ public class EventViewModel extends ViewModel {
             mEvent = mEventDocumentQuery.liveData(Event.class);
         }
         return mEvent;
+    }
+
+    /**
+     * Method to get the event organizer
+     *
+     * @return a live data of the event's organizer
+     */
+    public LiveData<User> getOrganizer() {
+        return mOrganizer;
     }
 
     /**
