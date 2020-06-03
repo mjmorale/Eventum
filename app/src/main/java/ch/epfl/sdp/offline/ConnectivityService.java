@@ -18,8 +18,11 @@ public class ConnectivityService extends LifecycleService {
     @Override
     public void onCreate() {
         super.onCreate();
+        Intent intent = new Intent(this, AuthActivity.class);
+        // Required for API versions < 25
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mConnectivityLiveData.observe(this,
-                isConnected -> startActivity(new Intent(this, AuthActivity.class)));
+                isConnected -> startActivity(intent));
     }
 
     @Nullable

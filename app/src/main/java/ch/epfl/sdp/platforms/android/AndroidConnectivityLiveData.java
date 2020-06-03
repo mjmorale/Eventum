@@ -12,10 +12,16 @@ import androidx.lifecycle.LiveData;
 public class AndroidConnectivityLiveData extends LiveData<Boolean> {
 
     private Context mContext;
+    private Boolean currentConnectivityState = false;
     private BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            postValue(isConnected(context));
+            Boolean newConnectivityState = isConnected(context);
+            // This avoids reloading if connection changed between mobile data and wifi
+            if (currentConnectivityState != newConnectivityState) {
+                currentConnectivityState = newConnectivityState;
+                postValue(currentConnectivityState);
+            }
         }
     };
 

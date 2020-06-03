@@ -60,7 +60,8 @@
 
         <service
             android:name=".offline.ConnectivityService"
-            android:exported="false"/>
+            android:exported="false"
+            android:stopWithTask="true"/>
     </application>
 
 
