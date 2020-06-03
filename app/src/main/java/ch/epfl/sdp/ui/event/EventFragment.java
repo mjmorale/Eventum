@@ -196,9 +196,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mBinding.organizerName.setText(user.getObject().getName());
             mBinding.organizerNameLayout.setOnClickListener(v -> {
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(getId(), ProfileFragment.getInstance(user.getId()))
-                        .addToBackStack(null)
-                        .commit();
+                        .replace(getId(), ProfileFragment.getInstance(user.getId())).addToBackStack(null).commit();
             });
         });
 
