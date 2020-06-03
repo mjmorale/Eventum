@@ -61,11 +61,9 @@ public class EventActivity extends AppCompatActivity {
             setResult(Activity.RESULT_CANCELED);
             finish();
         }
-
-        switch(mode) {
-            default:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(mBinding.eventContent.getId(), EventFragment.getInstance(eventRef)).commit();
+        else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(mBinding.eventContent.getId(), EventFragment.getInstance(eventRef)).commit();
         }
     }
 

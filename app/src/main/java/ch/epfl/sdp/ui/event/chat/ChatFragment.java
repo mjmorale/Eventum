@@ -112,7 +112,6 @@ public class ChatFragment extends Fragment {
             mAdapter.setChatList(chat);
             mBinding.reyclerviewMessageList.scrollToPosition(mAdapter.getItemCount() - 1);
         });
-
     }
 
     @Override

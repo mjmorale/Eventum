@@ -8,23 +8,31 @@ import org.mockito.MockitoAnnotations;
 import androidx.lifecycle.LiveData;
 
 import ch.epfl.sdp.Event;
+import ch.epfl.sdp.auth.Authenticator;
+import ch.epfl.sdp.auth.UserInfo;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.db.queries.CollectionQuery;
 import ch.epfl.sdp.db.queries.DocumentQuery;
-import ch.epfl.sdp.map.MapManager;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DefaultEventViewModelTest {
+public class EventViewModelTest {
 
     private static final String DUMMY_STRING = "test";
+    private final static UserInfo DUMMY_USERINFO = new UserInfo("testuid", "testname", "testemail");
 
     @Mock
     private Database mDatabase;
+
+    @Mock
+    private Authenticator mAuthenticator;
 
     @Mock
     private CollectionQuery mCollectionQuery;
@@ -44,7 +52,9 @@ public class DefaultEventViewModelTest {
     public void DefaultEventViewModel_Constructor_ReferencesTheEventCollection() {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
+        doNothing().when(mDocumentQuery).getField(anyString(), any());
+        EventViewModel vm = new EventViewModel(DUMMY_STRING, mAuthenticator, mDatabase);
 
         verify(mDatabase).query("events");
         verify(mCollectionQuery).document(DUMMY_STRING);
@@ -55,7 +65,9 @@ public class DefaultEventViewModelTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         when(mDocumentQuery.liveData(Event.class)).thenReturn(mEventLiveData);
-        DefaultEventViewModel vm = new DefaultEventViewModel(DUMMY_STRING, mDatabase);
+        when(mAuthenticator.getCurrentUser()).thenReturn(DUMMY_USERINFO);
+        doNothing().when(mDocumentQuery).getField(anyString(), any());
+        EventViewModel vm = new EventViewModel(DUMMY_STRING, mAuthenticator, mDatabase);
 
         assertNotNull(vm.getEvent());
     }
