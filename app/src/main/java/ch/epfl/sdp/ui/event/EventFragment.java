@@ -33,6 +33,7 @@ import ch.epfl.sdp.ui.event.chat.ChatFragment;
 import ch.epfl.sdp.ui.sharing.Sharing;
 import ch.epfl.sdp.ui.sharing.SharingBuilder;
 import ch.epfl.sdp.platforms.openweathermap.OpenWeatherMapFetcher;
+import ch.epfl.sdp.ui.user.profile.ProfileFragment;
 import ch.epfl.sdp.weather.Weather;
 import ch.epfl.sdp.weather.WeatherFetcher;
 
@@ -204,6 +205,13 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             else {
                 mUserListAdapter.clear();
                 mUserListAdapter.addAll(users);
+                mUserListAdapter.setOnItemClickListener(user -> {
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(getId(), ProfileFragment.getInstance(user.getId()))
+                            .addToBackStack(null)
+                            .commit();
+                });
                 mBinding.eventDetailAttendeeListView.setVisibility(View.VISIBLE);
                 mBinding.eventDetailNoAttendeesMsg.setVisibility(View.GONE);
             }
