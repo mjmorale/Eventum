@@ -51,5 +51,8 @@
     <string name="forecast_unavailable">Forecast only available for events happening in the next 7 days</string>
     <string name="openweather_api_k">7c35ebdff45e1d54db43876dfcb0c320</string>
     <string name="weather_forecast_unavailable">Weather Forecast Unavailable</string>
-    <string name="reload">Reload events</string>;
+    <string name="reload">Reload events</string>
+    <string name="extra_info">Extra info</string>
+    <string name="organized_by">Organized by:</string>
+    <string name="attendees">Attendees</string>;
 </resources>

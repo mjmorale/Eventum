@@ -37,10 +37,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/black"
-                    android:text="Event"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Title"
                     android:textAlignment="center"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="30sp" />
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    tools:text="title" />
 
                 <TextView
                     android:id="@+id/description"
@@ -49,113 +51,124 @@
                     android:background="@color/white"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="20dp"
+                    android:text="Description"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/black"
-                    android:paddingEnd="40dp"
-                    android:paddingBottom="5dp"
-                    android:text="01/01/2020"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:textAlignment="textStart"
-                    android:paddingHorizontal="15dp"
+                    tools:text="description" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
                     android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    android:background="@color/white">
-                </TextView>
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:id="@+id/dateImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_event_white_30dp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+
+                        android:text="01/01/2020"
+                        android:textAlignment="gravity"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        tools:text="date" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/addressImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_pin_drop_black_30dp" />
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:text="221B Baker Street"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
                 <com.google.android.gms.maps.MapView
-                    xmlns:map="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/minimap"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    map:cameraZoom="15"
-                    map:mapType="normal"
-                    map:liteMode="true" />
+                    app:cameraZoom="15"
+                    app:liteMode="true"
+                    app:mapType="normal" />
 
-                <ScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/extra_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+                        android:text="@string/extra_info"
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/textView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/black"
-                                android:paddingLeft="5dp"
-                                android:paddingBottom="5dp"
-                                android:text="Attendees"
-                                android:textColor="@color/white"
-                                android:textSize="20sp" />
-
-                            <TextView
-                                android:id="@+id/event_detail_attendee_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@color/black"
-                                android:paddingStart="5dp"
-                                android:paddingBottom="5dp"
-                                android:text="(0)"
-                                android:textColor="@color/white"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/event_detail_attendee_list_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp">
-
-                        </androidx.recyclerview.widget.RecyclerView>
-
-                        <TextView
-                            android:id="@+id/event_detail_no_attendees_msg"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
-                            android:text="No one is attending to this event :("
-                            android:textAlignment="center" />
-
-                    </LinearLayout>
-                </ScrollView>
+                        android:textAlignment="gravity"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:text="Extra info" />
+                </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/noWeatherLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="80dp">
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/noWeatherCloudImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_cloud_red_30dp" />
 
                     <TextView
                         android:id="@+id/noWeatherHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="sans-serif-black"
                         android:text="@string/weather_forecast_unavailable"
@@ -163,7 +176,7 @@
                         android:textColor="@color/red"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/noWeatherCloudImage"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -187,7 +200,6 @@
                     android:id="@+id/weatherLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="80dp"
                     android:visibility="gone">
 
                     <TextView
@@ -279,8 +291,129 @@
 
                     </LinearLayout>
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:id="@+id/faceImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_face_white_30dp" />
+
+                    <TextView
+                        android:id="@+id/organizer_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+                        android:text="@string/organized_by"
+
+                        android:textAlignment="gravity"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        tools:text="Organized by:" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/organizer_name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/organizer_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="26dp"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:text="Sherlock Holmes"/>
+
+                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="80dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:paddingStart="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:background="@color/black">
+
+                            <ImageView
+                                android:id="@+id/groupImage"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/ic_group_white_30dp" />
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingStart="8dp"
+                                android:paddingTop="2dp"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:text="@string/attendees" />
+
+                            <TextView
+                                android:id="@+id/event_detail_attendee_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/black"
+                                android:paddingStart="5dp"
+                                android:paddingBottom="5dp"
+                                android:text="(0)"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/event_detail_attendee_list_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <TextView
+                            android:id="@+id/event_detail_no_attendees_msg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:text="No one is attending this event :("
+                            android:textAlignment="center" />
+
+                    </LinearLayout>
+                </ScrollView>
 
 
             </LinearLayout>
