@@ -120,7 +120,9 @@ public class EventFragmentTest {
 
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
 
-    private MutableLiveData<User> mOrganizerLive = new MutableLiveData<>();
+    private MutableLiveData<DatabaseObject<User>> mOrganizerLive = new MutableLiveData<>();
+
+    private MutableLiveData<User> mUserLive = new MutableLiveData<>();
 
     private MutableLiveData<List<DatabaseObject<Weather>>> mWeatherLiveData = new MutableLiveData<>();
 
@@ -165,8 +167,9 @@ public class EventFragmentTest {
             return null;
         }).when(mEventDocumentQueryMock).getField(eq("organizer"), any());
         when(mUserCollectionQueryMock.document(eq(user.getId()))).thenReturn(mOrganizerDocumentQueryMock);
-        when(mOrganizerDocumentQueryMock.liveData(User.class)).thenReturn(mOrganizerLive);
-        mOrganizerLive.postValue(user.getObject());
+        when(mOrganizerDocumentQueryMock.liveData(User.class)).thenReturn(mUserLive);
+        mUserLive.postValue(user.getObject());
+        mOrganizerLive.postValue(user);
     }
 
     @SuppressWarnings("unchecked")
@@ -297,6 +300,18 @@ public class EventFragmentTest {
         onView(withId(R.id.event_detail_attendee_list_view)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(withId(R.id.event_detail_attendee_count)).check(matches(withText(containsString("(1)"))));
         onView(withText("testname")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+    }
+
+    @Test
+    public void EventFragment_DisplaysOrganizer() {
+        DatabaseObject<User> organizer = new DatabaseObject<>("id", new User("testname", "testemail"));
+        setupOrganizer(organizer);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(UIConstants.BUNDLE_EVENT_REF, "anyRef");
+        scenario(bundle);
+
+        onView(withId(R.id.organizer_name)).check(matches(withText(containsString(organizer.getObject().getName()))));
     }
 
 }

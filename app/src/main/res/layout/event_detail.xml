@@ -116,14 +116,12 @@
                 </LinearLayout>
 
                 <com.google.android.gms.maps.MapView
-                    xmlns:map="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/minimap"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    map:cameraZoom="15"
-                    map:mapType="normal"
-                    map:liteMode="true" />
-
+                    app:cameraZoom="15"
+                    app:liteMode="true"
+                    app:mapType="normal" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
