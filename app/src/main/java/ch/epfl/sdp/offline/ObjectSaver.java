@@ -26,8 +26,10 @@ public abstract class ObjectSaver <T extends Serializable> {
 
     /**
      * Saves an object in a file
+     *
      * @param toSave The object to save in the collection
      * @param docReference Id of the document
+     * @param path local path where file is located
      */
     public void saveFile(T toSave, String docReference,File path) {
 
@@ -46,8 +48,11 @@ public abstract class ObjectSaver <T extends Serializable> {
     }
 
     /**
+     * Query multiple local files based on a list reference and a path.
+     *
      * @param listReference list of id from files you want to get
-     * @return
+     * @param path local path where file is located
+     * @return list of object contained in the specified path
      */
     public List<T> getMultipleFile(List<String> listReference, File path)  {
         List<T> result = new ArrayList<T>();
@@ -67,21 +72,30 @@ public abstract class ObjectSaver <T extends Serializable> {
     }
 
     /**
+     * Query a single local file based on a document reference and a path.
+     *
      * @param docReference Id of the document
-     * @return
+     * @param path local path where file is located
+     * @return object contained in the specified path
      */
     public T getSingleFile(String docReference, File path) {
         File fileDescriptor = new File(path,docReference);
 
         T tempRead = null;
         try (FileInputStream fi = new FileInputStream(fileDescriptor); ObjectInputStream oi = new ObjectInputStream(fi);){
-            tempRead = (T) oi.readObject();}
-        catch (IOException | ClassNotFoundException e) {
+            tempRead = (T) oi.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return tempRead;
     }
 
+    /**
+     * Remove a single local file based on a document reference and a path.
+     *
+     * @param path local path where file to remove is located
+     * @param docReference Id of the document
+     */
     public void removeSingleFile(String docReference, File path) {
         File fileDescriptor = new File(path,docReference);
         fileDescriptor.delete();
