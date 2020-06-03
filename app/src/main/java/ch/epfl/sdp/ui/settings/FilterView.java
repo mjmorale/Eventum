@@ -47,9 +47,7 @@ public class FilterView extends FrameLayout {
         mOptionParty = findViewById(R.id.optionParty);
 
         mDialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR());
-
         DialogCustomViewExtKt.customView(mDialog, 0, findViewById(R.id.seekBar), false, false, true, true);
-
         mDialog.positiveButton(null, "Choose", null);
     }
 
