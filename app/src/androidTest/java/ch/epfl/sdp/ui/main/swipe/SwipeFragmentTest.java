@@ -278,5 +278,22 @@ public class SwipeFragmentTest {
 
         onView(withId(R.id.mapView)).check(matches((isDisplayed())));
     }
+
+    @Test
+    public void SwipeFragment_ReloadButtonWorks() throws InterruptedException {
+        scenario();
+        List<DatabaseObject<Event>> events = new ArrayList<>();
+        events.add(new DatabaseObject<>(DUMMY_EVENTREF1, eventTest1));
+        mScenario.onFragment(fragment -> mEventsLiveData.setValue(events));
+
+        Thread.sleep(1500);
+        onView(withId(R.id.cards_list_view)).perform(swipeRight());
+
+        Thread.sleep(1500);
+        onView(withId(R.id.reload_swipe_button)).perform(click());
+
+        Thread.sleep(1500);
+        onView(withText("title")).check(matches(isDisplayed()));
+    }
 }
 

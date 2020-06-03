@@ -21,6 +21,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.EventDetailBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -52,6 +54,8 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
     private EventDetailBinding mBinding;
 
+    private AttendeeListAdapter mUserListAdapter;
+
     private Sharing mEventSharing;
     private float mZoomLevel = 15;
     private int LAUNCH_CALENDAR = 3;
@@ -80,14 +84,13 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * Constructor of the DefaultEventFragment
      */
     public EventFragment() {
-        Database database = ServiceProvider.getInstance().getDatabase();
-
         mFactory = new EventViewModel.DefaultEventViewModelFactory();
-        mFactory.setDatabase(database);
+        mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
+        mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
 
-        mWeatherFactory =  new WeatherViewModel.WeatherViewModelFactory();
+        mWeatherFactory = new WeatherViewModel.WeatherViewModelFactory();
         mWeatherFactory.setWeatherFetcher(new OpenWeatherMapFetcher());
-        mWeatherFactory.setDatabase(database);
+        mWeatherFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
 
         mMapFactory = new LiteMapViewModel.LiteMapViewModelFactory();
     }
@@ -99,10 +102,11 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
      * @param eventRef the reference of an event
      */
     @VisibleForTesting
-    public EventFragment(@NonNull Database database, @NonNull String eventRef, @NonNull WeatherFetcher fetcher) {
+    public EventFragment(@NonNull Database database, @NonNull String eventRef, @NonNull Authenticator authenticator, @NonNull WeatherFetcher fetcher) {
         mFactory = new EventViewModel.DefaultEventViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setEventRef(eventRef);
+        mFactory.setAuthenticator(authenticator);
 
         mWeatherFactory = new WeatherViewModel.WeatherViewModelFactory();
         mWeatherFactory.setDatabase(database);
@@ -148,8 +152,11 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding.eventDetailCalendarButton.setOnClickListener(v-> startActivityForResult(getCalendarIntent(), LAUNCH_CALENDAR));
 
+        mUserListAdapter = new AttendeeListAdapter(mViewModel.getUserRef());
+
         setEvent();
         setWeather();
+        setAttendees();
     }
 
     private void setEvent() {
@@ -163,7 +170,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setWeather() {
-
         mViewModel.getEvent().observe(getViewLifecycleOwner(), event-> {
             mWeatherViewModel.getWeatherList().observe(getViewLifecycleOwner(), weatherList -> {
                 if (weatherList == null || weatherList.isEmpty()) {
@@ -179,12 +185,33 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                     }
                     showWeather(latestWeather, event.getDate());
                 }
-
             });
         });
     }
-    private void showWeather(Weather weather, Date eventDate) {
 
+    private void setAttendees() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setSmoothScrollbarEnabled(true);
+
+        mBinding.eventDetailAttendeeListView.setLayoutManager(layoutManager);
+        mBinding.eventDetailAttendeeListView.setAdapter(mUserListAdapter);
+
+        mViewModel.getAttendees().observe(getViewLifecycleOwner(), users -> {
+            if(users.isEmpty()) {
+                mBinding.eventDetailAttendeeListView.setVisibility(View.GONE);
+                mBinding.eventDetailNoAttendeesMsg.setVisibility(View.VISIBLE);
+            }
+            else {
+                mUserListAdapter.clear();
+                mUserListAdapter.addAll(users);
+                mBinding.eventDetailAttendeeListView.setVisibility(View.VISIBLE);
+                mBinding.eventDetailNoAttendeesMsg.setVisibility(View.GONE);
+            }
+            mBinding.eventDetailAttendeeCount.setText(String.format("(%d)", users.size()));
+        });
+    }
+
+    private void showWeather(Weather weather, Date eventDate) {
         if (weather.isForecastAvailable(eventDate)) {
             int closestDay = weather.getClosestDay(eventDate);
 
@@ -207,7 +234,6 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
             mBinding.weatherLayout.setVisibility(View.GONE);
         }
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
