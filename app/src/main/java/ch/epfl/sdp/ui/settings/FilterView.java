@@ -47,7 +47,7 @@ public class FilterView extends FrameLayout {
         mOptionParty = findViewById(R.id.optionParty);
 
         mDialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR());
-        mDialog.title(null, "Event parameter");
+//        mDialog.title(null, "Event parameter");
 
         DialogCustomViewExtKt.customView(mDialog, 0, findViewById(R.id.seekBar), false, false, true, true);
 
