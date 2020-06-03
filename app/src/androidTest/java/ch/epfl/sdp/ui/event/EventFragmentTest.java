@@ -127,7 +127,7 @@ public class EventFragmentTest {
             }
             ((Query.OnQueryCompleteCallback<Object>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(userIds));
             return null;
-        }).when(mDocumentQueryMock).getField("attendees", any());
+        }).when(mDocumentQueryMock).getField(anyString(), any());
         doAnswer(invocation -> {
             ((Query.OnQueryCompleteCallback<List<DatabaseObject<User>>>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(attendees));
             return null;
