@@ -36,8 +36,8 @@
     <string name="settings">Settings</string>
     <string name="hello_hello">hello, hello!</string>
     <string name="content_description_image">Profile image of the event</string>
-    <string name="accept">ACCEPT</string>
-    <string name="deny">DENY</string>
+    <string name="accept">Dope!</string>
+    <string name="deny">Nope...</string>
     <string name="default_title_1">Prévention des épidémies avec l\'unité 731</string>
     <string name="default_description_1">Faut arrêter ces conneries de nord et de sud ! Une fois pour toutes, le nord, suivant comment on est tourné, ça change tout !</string>
     <string name="default_date_1">1 Jan 1970</string>
@@ -50,5 +50,6 @@
 
     <string name="forecast_unavailable">Forecast only available for events happening in the next 7 days</string>
     <string name="openweather_api_k">7c35ebdff45e1d54db43876dfcb0c320</string>
-    <string name="weather_forecast_unavailable">Weather Forecast Unavailable</string>;
+    <string name="weather_forecast_unavailable">Weather Forecast Unavailable</string>
+    <string name="reload">Reload events</string>;
 </resources>
