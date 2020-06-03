@@ -29,7 +29,7 @@ import ch.epfl.sdp.auth.Authenticator;
 import ch.epfl.sdp.databinding.FragmentAuthBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.offline.ConnectivityService;
-import ch.epfl.sdp.platforms.android.AndroidConnectivityService;
+import ch.epfl.sdp.platforms.android.AndroidConnectivityLiveData;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
 
@@ -50,23 +50,19 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     private AuthViewModel<AuthCredential> mViewModel;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private ConnectivityService mConnectivityService;
+    private AndroidConnectivityLiveData mConnectivityLiveData;
 
     public AuthFragment() {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
         mFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
-
-        mConnectivityService = new AndroidConnectivityService();
     }
 
     @VisibleForTesting
-    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database, @NonNull ConnectivityService connectivityService) {
+    public AuthFragment(@NonNull Authenticator authenticator, @NonNull Database database) {
         mFactory = new AuthViewModel.AuthViewModelFactory();
         mFactory.setAuthenticator(authenticator);
         mFactory.setDatabase(database);
-
-        mConnectivityService = connectivityService;
     }
 
     @VisibleForTesting
@@ -86,6 +82,8 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mConnectivityLiveData = new AndroidConnectivityLiveData(getContext());
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -99,13 +97,13 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
         mViewModel.getUserRef().observe(getViewLifecycleOwner(), userRef -> {
             if(userRef == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
-            }
-            else if (mAuthListener != null) {
-                if (mConnectivityService.isNetworkAvailable(getContext())) {
-                    mAuthListener.onLoggedIn(userRef);
-                } else {
-                    mAuthListener.onOffline();
-                }
+            } else if (mAuthListener != null) {
+                    mConnectivityLiveData.observeForever(connectivityService -> {
+                        if (connectivityService.isNetworkAvailable())
+                            mAuthListener.onLoggedIn(userRef);
+                        else
+                            mAuthListener.onOffline();
+                    });
             } else {
                 Log.d(TAG, "Logged in successful but no AuthListener");
             }

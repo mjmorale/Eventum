@@ -10,8 +10,7 @@ public interface ConnectivityService {
     /**
      * Returns details about the currently active default data network.
      *
-     * @param context current application context
      * @return true if a network connection is available, false otherwise
      */
-    boolean isNetworkAvailable(Context context);
+    boolean isNetworkAvailable();
 }
