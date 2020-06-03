@@ -128,11 +128,7 @@ public class AttendingListViewModel extends ViewModel {
     }
 
     private void postCurrentCacheContent() {
-        try {
-            List<DatabaseObject<Event>> events = mCache.getAllEventsWithRefs(mCacheDir);
-            mCachedEventsLiveData.postValue(events);
-        } catch (IOException | ClassNotFoundException e) {
-            Log.e(TAG, "Cannot read events from the cache", e);
-        }
+        List<DatabaseObject<Event>> events = mCache.getAllEventsWithRefs(mCacheDir);
+        mCachedEventsLiveData.postValue(events);
     }
 }

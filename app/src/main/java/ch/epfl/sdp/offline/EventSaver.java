@@ -18,6 +18,9 @@ import java.util.Objects;
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.db.DatabaseObject;
 
+/**
+ * Class that allows to save an Event in the app-specific storage.
+ */
 public class EventSaver extends ObjectSaver<Event> {
 
     @Override
@@ -26,7 +29,8 @@ public class EventSaver extends ObjectSaver<Event> {
     }
 
     /**
-     * Saves Event in a file
+     * Saves Event in a file.
+     *
      * @param toSave The object to save in the collection
      * @param docReference Id of the document (Event)
      * @param deleteDate When we can delete the temp file
@@ -55,13 +59,25 @@ public class EventSaver extends ObjectSaver<Event> {
         }
     }
 
+    /**
+     * Query all the events at a specified path.
+     *
+     * @param path to target events from
+     * @return list of queried events
+     */
     public List<Event> getAllEvents(File path) {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());
         return getMultipleFile(listReference, path);
     }
 
-    public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) throws IOException, ClassNotFoundException {
+    /**
+     * Same as getAllEvents except that it returns events bundled inside a DatabaseObject.
+     *
+     * @param path to target event database objects from
+     * @return list of queries events
+     */
+    public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());
         List<Event> listEvents = getMultipleFile(listReference, path);
@@ -72,6 +88,13 @@ public class EventSaver extends ObjectSaver<Event> {
         return listDatabaseObjects;
     }
 
+    /**
+     * Remove a single local event based on a document reference and a path.
+     *
+     * @param docReference Id of the document
+     * @param path local path where file to remove is located
+     * @return true if elements was correctly removed, false otherwise
+     */
     public boolean removeSingleEvent(String docReference, File path) {
         removeSingleFile(docReference,path);
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);

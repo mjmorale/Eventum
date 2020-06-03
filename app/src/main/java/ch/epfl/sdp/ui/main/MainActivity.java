@@ -30,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
 import ch.epfl.sdp.map.LocationService;
+import ch.epfl.sdp.platforms.android.AndroidConnectivityLiveData;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final MainViewModel.MainViewModelFactory mFactory;
 
     private View mMainNavHeaderView;
+
+    private AndroidConnectivityLiveData mConnectivityLiveData;
 
     /**
      * Constructor of the main activity
