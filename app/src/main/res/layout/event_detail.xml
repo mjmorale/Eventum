@@ -124,6 +124,14 @@
                     map:mapType="normal"
                     map:liteMode="true" />
 
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="7dp"
+                    android:background="@color/black"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/noWeatherLayout"
                     android:layout_width="match_parent"
@@ -266,23 +274,34 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingTop="3dp"
+                            android:background="@color/black">
+
+                            <ImageView
+                                android:id="@+id/groupImage"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="0"
+                                android:paddingStart="8dp"
+                                android:paddingTop="5dp"
+
+                                app:srcCompat="@drawable/ic_group_white_30dp" />
 
                             <TextView
                                 android:id="@+id/textView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@color/black"
-                                android:paddingLeft="5dp"
-                                android:paddingBottom="5dp"
-                                android:text="Attendees"
+                                android:paddingStart="8dp"
+                                android:paddingTop="2dp"
                                 android:textColor="@color/white"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"
+                                android:text="Attendees" />
 
                             <TextView
                                 android:id="@+id/event_detail_attendee_count"
@@ -294,15 +313,14 @@
                                 android:paddingBottom="5dp"
                                 android:text="(0)"
                                 android:textColor="@color/white"
-                                android:textSize="20sp" />
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/event_detail_attendee_list_view"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp">
+                            android:layout_height="250dp">
 
                         </androidx.recyclerview.widget.RecyclerView>
 
