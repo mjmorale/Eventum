@@ -9,10 +9,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Distance: "
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="0dp"
+            android:textSize="19sp"
+            android:layout_width="match_parent">
+        </TextView>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp">
             <TextView
                 android:id="@+id/seekBar_value"
@@ -32,10 +43,11 @@
         <TextView
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="Which categories ? "
-            android:textColor="@color/grey"
+            android:text="Categories: "
+            android:textColor="@color/black"
             android:layout_marginTop="15dp"
-            android:textSize="25sp"
+            android:layout_marginBottom="10dp"
+            android:textSize="19sp"
             android:layout_width="match_parent">
         </TextView>
 
