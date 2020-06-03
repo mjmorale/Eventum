@@ -17,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
                 android:background="@drawable/color_gradient_sel">
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/user_picture"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -25,6 +25,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
+                    android:background="@drawable/circle_smaller"
                     app:srcCompat="@drawable/ic_person_black_24dp"/>
             </FrameLayout>
             <TextView
