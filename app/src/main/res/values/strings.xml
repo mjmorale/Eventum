@@ -45,6 +45,9 @@
     <string name="user_statistics">User statistics</string>
     <string name="filter">Filter</string>
     <string name="default_filter_range">5km</string>
+    <string name="profile_image_of_the_user" />
+
+
     <string name="forecast_unavailable">Forecast only available for events happening in the next 7 days</string>
     <string name="openweather_api_k">7c35ebdff45e1d54db43876dfcb0c320</string>
     <string name="weather_forecast_unavailable">Weather Forecast Unavailable</string>
