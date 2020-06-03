@@ -9,6 +9,10 @@ import android.net.NetworkInfo;
 
 import androidx.lifecycle.LiveData;
 
+/**
+ * LiveData that post a boolean value when connection state has changed, returning true if network
+ * is now available or false otherwise.
+ */
 public class AndroidConnectivityLiveData extends LiveData<Boolean> {
 
     private Context mContext;
@@ -25,6 +29,11 @@ public class AndroidConnectivityLiveData extends LiveData<Boolean> {
         }
     };
 
+    /**
+     * Constructor for the connectivity LiveData that binds it a given context
+     *
+     * @param context on which receiver will be bind to
+     */
     public AndroidConnectivityLiveData(Context context) {
         mContext = context;
     }
