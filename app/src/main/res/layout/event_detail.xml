@@ -124,24 +124,52 @@
                     map:mapType="normal"
                     map:liteMode="true" />
 
-                <View
-                    android:id="@+id/divider2"
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="7dp"
-                    android:background="@color/black"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp" />
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/extra_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+
+                        android:textAlignment="gravity"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:text="Extra info" />
+                </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/noWeatherLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <ImageView
+                        android:id="@+id/noWeatherCloudImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_cloud_red_30dp" />
+
                     <TextView
                         android:id="@+id/noWeatherHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="sans-serif-black"
                         android:text="@string/weather_forecast_unavailable"
@@ -149,7 +177,7 @@
                         android:textColor="@color/red"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/noWeatherCloudImage"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -266,6 +294,57 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:id="@+id/faceImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/ic_face_white_30dp" />
+
+                    <TextView
+                        android:id="@+id/organizer_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="22dp"
+
+                        android:textAlignment="gravity"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        tools:text="Organized by:" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/organizer_name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/organizer_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="50dp"
+                        android:text="Sherlock Holmes"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -285,11 +364,11 @@
 
                             <ImageView
                                 android:id="@+id/groupImage"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:layout_weight="0"
                                 android:paddingStart="8dp"
-                                android:paddingTop="5dp"
+                                android:paddingTop="2dp"
 
                                 app:srcCompat="@drawable/ic_group_white_30dp" />
 
@@ -320,7 +399,7 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/event_detail_attendee_list_view"
                             android:layout_width="match_parent"
-                            android:layout_height="250dp">
+                            android:layout_height="150dp">
 
                         </androidx.recyclerview.widget.RecyclerView>
 
