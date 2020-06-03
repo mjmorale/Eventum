@@ -73,7 +73,6 @@ public class ProfileFragmentTest {
         when(mDatabase.query(anyString())).thenReturn(mCollectionQuery);
         when(mCollectionQuery.document(anyString())).thenReturn(mDocumentQuery);
         when(mDocumentQuery.liveData(any())).thenReturn(mLiveData);
-
     }
 
     @Test
@@ -91,7 +90,6 @@ public class ProfileFragmentTest {
         onView(withText(DESCRIPTION)).check(matches(isDisplayed()));
         onView(withText(EMAIL)).check(matches(isDisplayed()));
         onView(withId(R.id.user_picture));
-
     }
 
     @Test

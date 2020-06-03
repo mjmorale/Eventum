@@ -44,7 +44,6 @@ public class ProfileFragment extends Fragment {
         mFactory = new ProfileViewModel.ProfileViewModelFactory();
         mFactory.setDatabase(database);
         mFactory.setUserRef(userRef);
-
     }
 
     @Override
@@ -71,7 +70,6 @@ public class ProfileFragment extends Fragment {
             mBinding.userInterests.setText(user.getDescription());
             mBinding.userEmail.setText(user.getEmail());
         });
-
     }
 
     @Override
@@ -79,5 +77,4 @@ public class ProfileFragment extends Fragment {
         super.onDestroyView();
         mBinding = null;
     }
-
 }
