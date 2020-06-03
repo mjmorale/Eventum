@@ -86,7 +86,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     @Override
     public void onLeftCardExit(Object o) {
         mNumberSwipe += 1;
-        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmptyMsg.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmpty.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         goBackToMapIfConditionsAreMet();
     }
 
@@ -98,7 +98,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
             }
         });
         mNumberSwipe += 1;
-        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmptyMsg.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        if (mEventHash == DEFAULT_VALUE) mBinding.swipeEmpty.setVisibility(mArrayAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         goBackToMapIfConditionsAreMet();
     }
 
@@ -135,6 +135,10 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
         addEventsInArrayAdapter();
 
         mBinding.eventDetailView.setOnClickListener(click -> showEventDetail());
+
+        SwipeFragment swipeFragment = new SwipeFragment();
+        mBinding.reloadSwipeButton.setOnClickListener(click -> getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.cards_list_view_container, swipeFragment).commit());
 
         return mBinding.getRoot();
     }
@@ -193,7 +197,7 @@ public class SwipeFragment extends Fragment implements SwipeFlingAdapterView.onF
     private void addEventsInArrayAdapter() {
         mSettingsViewModel.getFilteredEvents().observe(getViewLifecycleOwner(), events -> {
             if (events != null) {
-                mBinding.swipeEmptyMsg.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+                mBinding.swipeEmpty.setVisibility(events.isEmpty() ? View.VISIBLE : View.INVISIBLE);
 
                 if (mEventHash != DEFAULT_VALUE) {
                     for (DatabaseObject<Event> event : events) {
