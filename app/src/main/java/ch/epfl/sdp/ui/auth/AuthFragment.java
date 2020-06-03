@@ -97,10 +97,10 @@ public class AuthFragment extends Fragment implements View.OnClickListener {
             if(userRef == null) {
                 mBinding.btnGoogleSignIn.setEnabled(true);
             } else if (mAuthListener != null) {
-                    if (mConnectivityLiveData.isConnected(requireContext()))
-                        mAuthListener.onLoggedIn(userRef);
-                    else
-                        mAuthListener.onOffline();
+                if (mConnectivityLiveData.isConnected(requireContext()))
+                    mAuthListener.onLoggedIn(userRef);
+                else
+                    mAuthListener.onOffline();
             } else {
                 Log.d(TAG, "Logged in successful but no AuthListener");
             }

@@ -58,6 +58,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <service
+            android:name=".offline.ConnectivityService"
+            android:exported="false"/>
     </application>
 
 

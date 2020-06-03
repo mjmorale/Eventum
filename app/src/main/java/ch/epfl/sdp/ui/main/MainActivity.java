@@ -25,8 +25,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 
 import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.ActivityMainBinding;
@@ -36,7 +34,6 @@ import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
 import ch.epfl.sdp.platforms.google.map.GoogleLocationService;
 import ch.epfl.sdp.ui.ServiceProvider;
 import ch.epfl.sdp.ui.UIConstants;
-import ch.epfl.sdp.ui.auth.AuthActivity;
 import ch.epfl.sdp.ui.createevent.CreateEventActivity;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.attending.AttendingListFragment;
@@ -76,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
-
-        setupConnectivityListener();
 
         setupFilterSettingsFactory();
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
@@ -280,16 +275,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFilterSettingsFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFilterSettingsFactory.setLocationService(locationService);
         mFilterSettingsFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
-    }
-
-    private void setupConnectivityListener() {
-        mConnectivityLiveData = new AndroidConnectivityLiveData(this);
-        mConnectivityLiveData.observeForever(isConnected -> {
-            if (!isConnected) {
-                Toast.makeText(this, "Connection lost, switching to offline", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, AuthActivity.class));
-            }
-        });
     }
 
     private String getUserRefFromIntent(Intent intent) {
