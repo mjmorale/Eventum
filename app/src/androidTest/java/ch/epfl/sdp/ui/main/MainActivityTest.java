@@ -64,6 +64,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -395,5 +396,23 @@ public class MainActivityTest {
         });
 
         onView(withText(event4.getObject().getTitle())).check(matches(isDisplayed()));
+    }
+
+
+    @Test
+    public void MainActivity_ToolbarBackButton() throws Throwable {
+        launchDefaultActivity(DUMMY_USERREF);
+
+        DatabaseObject<Event> event = new DatabaseObject<>("event", DUMMY_EVENT4);
+
+        mActivity.runOnUiThread(() -> {
+            mEventsLiveData.setValue(Arrays.asList( event));
+        });
+
+        onView(withId(R.id.cards_list_view)).perform(click());
+        onView(withId(R.id.default_event_layout)).check(matches(isDisplayed()));
+
+        onView(withContentDescription("Navigate up")).perform(click()); //back button in the toolbar
+        onView(withId(R.id.default_event_layout)).check(matches(not(isDisplayed())));
     }
 }

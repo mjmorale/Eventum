@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -252,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void setupToolbarNavigation() {
+    public void setupToolbarNavigation() {
         setSupportActionBar(mBinding.mainToolbar);
 
         mBinding.mainNavView.setNavigationItemSelectedListener(this);
@@ -301,4 +302,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return intent;
     }
+
+    /**
+     * Change the toolbar when we go to the event details from the swipe or the opposite
+     * @param goDetails, tell if we go to the swipe or the event details
+     */
+    public void updateToolBarSwipe(boolean goDetails){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(goDetails);
+
+        if (goDetails){
+            mBinding.mainToolbar.getMenu().findItem(R.id.main_actionbar_add).setVisible(false);
+            mBinding.mainToolbar.getMenu().findItem(R.id.main_actionbar_search).setVisible(false);
+            mBinding.mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+        else
+            setupToolbarNavigation();
+    }
+
 }
