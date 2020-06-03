@@ -303,6 +303,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return intent;
     }
 
+    /**
+     * Change the toolbar when we go to the event details from the swipe or the opposite
+     *
+     * @param goDetails, tell if we go to the swipe or the event details
+     */
     public void updateToolBarSwipe(boolean goDetails){
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(goDetails);
