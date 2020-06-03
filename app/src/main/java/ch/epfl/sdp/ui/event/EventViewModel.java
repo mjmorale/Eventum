@@ -62,7 +62,7 @@ public class EventViewModel extends ViewModel {
 
     private final String mUserRef;
     private MutableLiveData<List<DatabaseObject<User>>> mAttendees = new MutableLiveData<>();
-    private MediatorLiveData<User> mOrganizer = new MediatorLiveData<>();
+    private MediatorLiveData<DatabaseObject<User>> mOrganizer = new MediatorLiveData<>();
 
     /**
      * Constructor of the DefaultEventViewModel, the factory should be used instead of this
@@ -80,10 +80,11 @@ public class EventViewModel extends ViewModel {
             if(organizerRes.isSuccessful()) {
                 String organizerRef = (String) organizerRes.getData();
                 mOrganizer.addSource(database.query("users").document(organizerRef).liveData(User.class), user -> {
-                    mOrganizer.postValue(user);
+                    mOrganizer.postValue(new DatabaseObject<>(organizerRef, user));
                 });
             }
         });
+
         mEventDocumentQuery.getField("attendees", eventRes -> {
             if(eventRes.isSuccessful()) {
                 List<String> attendeeIds = (ArrayList<String>)eventRes.getData();
@@ -119,7 +120,7 @@ public class EventViewModel extends ViewModel {
      *
      * @return a live data of the event's organizer
      */
-    public LiveData<User> getOrganizer() {
+    public LiveData<DatabaseObject<User>> getOrganizer() {
         return mOrganizer;
     }
 

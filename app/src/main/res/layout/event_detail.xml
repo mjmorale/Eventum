@@ -141,6 +141,7 @@
                         android:paddingStart="8dp"
                         android:paddingTop="2dp"
                         android:paddingEnd="22dp"
+                        android:text="@string/extra_info"
 
                         android:textAlignment="gravity"
                         android:textColor="@color/black"
@@ -317,6 +318,7 @@
                         android:paddingStart="8dp"
                         android:paddingTop="2dp"
                         android:paddingEnd="22dp"
+                        android:text="@string/organized_by"
 
                         android:textAlignment="gravity"
                         android:textColor="@color/white"
@@ -337,12 +339,13 @@
                         android:id="@+id/organizer_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="50dp"
-                        android:text="Sherlock Holmes"
+                        android:paddingStart="26dp"
                         android:textAlignment="textStart"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Sherlock Holmes"/>
+
                 </LinearLayout>
 
                 <ScrollView
@@ -359,17 +362,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
-                            android:paddingTop="3dp"
+                            android:paddingStart="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
                             android:background="@color/black">
 
                             <ImageView
                                 android:id="@+id/groupImage"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
                                 android:layout_weight="0"
-                                android:paddingStart="8dp"
-                                android:paddingTop="2dp"
-
                                 app:srcCompat="@drawable/ic_group_white_30dp" />
 
                             <TextView
@@ -380,7 +382,7 @@
                                 android:paddingTop="2dp"
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
-                                android:text="Attendees" />
+                                android:text="@string/attendees" />
 
                             <TextView
                                 android:id="@+id/event_detail_attendee_count"

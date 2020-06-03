@@ -157,6 +157,7 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
 
         setEvent();
         setWeather();
+        setOrganizer();
         setAttendees();
     }
 
@@ -188,6 +189,20 @@ public class EventFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         });
+    }
+
+    private void setOrganizer() {
+        mViewModel.getOrganizer().observe(getViewLifecycleOwner(), user -> {
+            mBinding.organizerName.setText(user.getObject().getName());
+            mBinding.organizerNameLayout.setOnClickListener(v -> {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(getId(), ProfileFragment.getInstance(user.getId()))
+                        .addToBackStack(null)
+                        .commit();
+            });
+        });
+
+
     }
 
     private void setAttendees() {
