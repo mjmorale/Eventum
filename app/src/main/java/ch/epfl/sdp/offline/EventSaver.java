@@ -76,9 +76,8 @@ public class EventSaver extends ObjectSaver<Event> {
      *
      * @param path to target event database objects from
      * @return list of queries events
-     * @throws IOException
      */
-    public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) throws IOException {
+    public List<DatabaseObject<Event>> getAllEventsWithRefs(File path) {
         HashMap<String, Map<String,Object>> statusFiles = getEventStatusFiles(path);
         List<String> listReference = new ArrayList<>(statusFiles.keySet());
         List<Event> listEvents = getMultipleFile(listReference, path);
@@ -94,7 +93,7 @@ public class EventSaver extends ObjectSaver<Event> {
      *
      * @param docReference Id of the document
      * @param path local path where file to remove is located
-     * @return true if elements was correctly removed, false otherwise 
+     * @return true if elements was correctly removed, false otherwise
      */
     public boolean removeSingleEvent(String docReference, File path) {
         removeSingleFile(docReference,path);
