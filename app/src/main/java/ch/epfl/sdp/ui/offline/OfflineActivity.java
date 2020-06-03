@@ -25,9 +25,9 @@ public class OfflineActivity extends AppCompatActivity {
         mBinding.mainToolbar.setTitle("Offline mode");
 
         AndroidConnectivityLiveData mConnectivityLiveData = new AndroidConnectivityLiveData(getApplicationContext());
-        mConnectivityLiveData.observeForever(connectivityService -> {
-            if (connectivityService.isNetworkAvailable()) {
-                Toast.makeText(this, "Back online", Toast.LENGTH_SHORT).show();
+        mConnectivityLiveData.observeForever(isConnected -> {
+            if (isConnected) {
+                Toast.makeText(this, "Back online!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, AuthActivity.class));
             }
         });

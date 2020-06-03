@@ -9,9 +9,15 @@ import android.net.NetworkInfo;
 
 import androidx.lifecycle.LiveData;
 
-public class AndroidConnectivityLiveData extends LiveData<AndroidConnectivityService> {
+public class AndroidConnectivityLiveData extends LiveData<Boolean> {
 
     private Context mContext;
+    private BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            postValue(isConnected(context));
+        }
+    };
 
     public AndroidConnectivityLiveData(Context context) {
         mContext = context;
@@ -21,23 +27,25 @@ public class AndroidConnectivityLiveData extends LiveData<AndroidConnectivitySer
     protected void onActive() {
         super.onActive();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        mContext.registerReceiver(networkReceiver, filter);
+        mContext.registerReceiver(mNetworkReceiver, filter);
     }
 
     @Override
     protected void onInactive() {
         super.onInactive();
-        mContext.unregisterReceiver(networkReceiver);
+        mContext.unregisterReceiver(mNetworkReceiver);
     }
 
-    private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager connectivityManager
-                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            boolean isConnected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-            postValue(new AndroidConnectivityService(isConnected));
-        }
-    };
+    /**
+     * Synchronously query connectivity, useful if we don't want to wait on a listener.
+     *
+     * @param context current context
+     * @return if connection is available
+     */
+    public Boolean isConnected(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

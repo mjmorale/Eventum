@@ -77,13 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 
-        mConnectivityLiveData = new AndroidConnectivityLiveData(this);
-        mConnectivityLiveData.observeForever(connectivityService -> {
-            if (!connectivityService.isNetworkAvailable()) {
-                Toast.makeText(this, "Connection lost, switching to offline", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, AuthActivity.class));
-            }
-        });
+        setupConnectivityListener();
 
         setupFilterSettingsFactory();
         mFilterSettingsViewModel = new ViewModelProvider(this, mFilterSettingsFactory).get(FilterSettingsViewModel.class);
@@ -286,6 +280,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFilterSettingsFactory.setDatabase(ServiceProvider.getInstance().getDatabase());
         mFilterSettingsFactory.setLocationService(locationService);
         mFilterSettingsFactory.setAuthenticator(ServiceProvider.getInstance().getAuthenticator());
+    }
+
+    private void setupConnectivityListener() {
+        mConnectivityLiveData = new AndroidConnectivityLiveData(this);
+        mConnectivityLiveData.observeForever(isConnected -> {
+            if (!isConnected) {
+                Toast.makeText(this, "Connection lost, switching to offline", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, AuthActivity.class));
+            }
+        });
     }
 
     private String getUserRefFromIntent(Intent intent) {
