@@ -64,6 +64,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -86,13 +87,31 @@ public class EventFragmentTest {
     private Database mDatabaseMock;
 
     @Mock
-    private CollectionQuery mCollectionQueryMock;
+    private CollectionQuery mEventCollectionQueryMock;
 
     @Mock
-    private DocumentQuery mDocumentQueryMock;
+    private CollectionQuery mUserCollectionQueryMock;
 
     @Mock
-    private FilterQuery mFilterQueryMock;
+    private CollectionQuery mWeatherCollectionQueryMock;
+
+    @Mock
+    private CollectionQuery mChatCollectionQueryMock;
+
+    @Mock
+    private DocumentQuery mEventDocumentQueryMock;
+
+    @Mock
+    private DocumentQuery mUserDocumentQueryMock;
+
+    @Mock
+    private DocumentQuery mOrganizerDocumentQueryMock;
+
+    @Mock
+    private FilterQuery mWeatherFilterQueryMock;
+
+    @Mock
+    private FilterQuery mChatFilterQueryMock;
 
     @Mock
     private Authenticator<AuthCredential> mAuthenticatorMock;
@@ -100,6 +119,8 @@ public class EventFragmentTest {
     private WeatherFetcher mWeatherFetcherMock = new MockWeatherFetcher();
 
     private MutableLiveData<Event> mEventsLive = new MutableLiveData<>();
+
+    private MutableLiveData<User> mOrganizerLive = new MutableLiveData<>();
 
     private MutableLiveData<List<DatabaseObject<Weather>>> mWeatherLiveData = new MutableLiveData<>();
 
@@ -109,12 +130,16 @@ public class EventFragmentTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(mAuthenticatorMock.getCurrentUser()).thenReturn(new UserInfo("testuid", "testname", "testemail"));
-        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
-        when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
-        when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
-        when(mDocumentQueryMock.liveData(Event.class)).thenReturn(mEventsLive);
-        when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
-        when(mFilterQueryMock.liveData(Weather.class)).thenReturn(mWeatherLiveData);
+        when(mDatabaseMock.query(eq("events"))).thenReturn(mEventCollectionQueryMock);
+        when(mEventCollectionQueryMock.document(anyString())).thenReturn(mEventDocumentQueryMock);
+        when(mEventDocumentQueryMock.liveData(Event.class)).thenReturn(mEventsLive);
+        when(mDatabaseMock.query(eq("users"))).thenReturn(mUserCollectionQueryMock);
+        when(mEventDocumentQueryMock.collection(anyString())).thenReturn(mWeatherCollectionQueryMock);
+        when(mWeatherCollectionQueryMock.orderBy(anyString())).thenReturn(mWeatherFilterQueryMock);
+        when(mWeatherFilterQueryMock.liveData(Weather.class)).thenReturn(mWeatherLiveData);
+        when(mEventDocumentQueryMock.collection(eq("messages"))).thenReturn(mChatCollectionQueryMock);
+        when(mChatCollectionQueryMock.orderBy(anyString())).thenReturn(mChatFilterQueryMock);
+        when(mChatFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mChatLiveData);
         mWeatherLiveData.postValue(null);
         mEventsLive.postValue(DUMMY_EVENT);
     }
@@ -127,11 +152,21 @@ public class EventFragmentTest {
             }
             ((Query.OnQueryCompleteCallback<Object>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(userIds));
             return null;
-        }).when(mDocumentQueryMock).getField(anyString(), any());
+        }).when(mEventDocumentQueryMock).getField(eq("attendees"), any());
         doAnswer(invocation -> {
             ((Query.OnQueryCompleteCallback<List<DatabaseObject<User>>>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(attendees));
             return null;
-        }).when(mCollectionQueryMock).get(any(), any());
+        }).when(mUserCollectionQueryMock).get(eq(User.class), any());
+    }
+
+    private void setupOrganizer(DatabaseObject<User> user) {
+        doAnswer(invocation -> {
+            ((Query.OnQueryCompleteCallback<Object>) invocation.getArgument(1)).onQueryComplete(QueryResult.success(user.getId()));
+            return null;
+        }).when(mEventDocumentQueryMock).getField(eq("organizer"), any());
+        when(mUserCollectionQueryMock.document(eq(user.getId()))).thenReturn(mOrganizerDocumentQueryMock);
+        when(mOrganizerDocumentQueryMock.liveData(User.class)).thenReturn(mOrganizerLive);
+        mOrganizerLive.postValue(user.getObject());
     }
 
     @SuppressWarnings("unchecked")
@@ -187,11 +222,6 @@ public class EventFragmentTest {
 
     @Test
     public void EventFragment_LaunchesChatWithCorrectValues() {
-        when(mDatabaseMock.query(anyString())).thenReturn(mCollectionQueryMock);
-        when(mCollectionQueryMock.document(anyString())).thenReturn(mDocumentQueryMock);
-        when(mDocumentQueryMock.collection(anyString())).thenReturn(mCollectionQueryMock);
-        when(mCollectionQueryMock.orderBy(anyString())).thenReturn(mFilterQueryMock);
-        when(mFilterQueryMock.liveData(ChatMessage.class)).thenReturn(mChatLiveData);
         ServiceProvider.getInstance().setDatabase(mDatabaseMock);
         ServiceProvider.getInstance().setAuthenticator(mAuthenticatorMock);
 
