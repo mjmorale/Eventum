@@ -38,6 +38,14 @@ public interface DocumentQuery extends Query {
     <T> void get(@NonNull Class<T> type, @NonNull OnQueryCompleteCallback<T> callback);
 
     /**
+     * Get the value of a particular field of this document.
+     *
+     * @param field The name of the field to recover
+     * @param callback The callback function that will be called with the result
+     */
+    void getField(@NonNull String field, @NonNull OnQueryCompleteCallback<Object> callback);
+
+    /**
      * Set or replace the object associated to this query.
      *
      * @param callback class that will be called once created
