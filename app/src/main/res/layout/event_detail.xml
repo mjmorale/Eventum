@@ -346,75 +346,69 @@
 
                 </LinearLayout>
 
-                <ScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="80dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:background="@color/black"
+                        android:orientation="horizontal"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:background="@color/black">
-
-                            <ImageView
-                                android:id="@+id/groupImage"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_group_white_30dp" />
-
-                            <TextView
-                                android:id="@+id/textView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingStart="8dp"
-                                android:paddingTop="2dp"
-                                android:textColor="@color/white"
-                                android:textSize="20sp"
-                                android:text="@string/attendees" />
-
-                            <TextView
-                                android:id="@+id/event_detail_attendee_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@color/black"
-                                android:paddingStart="5dp"
-                                android:paddingBottom="5dp"
-                                android:text="(0)"
-                                android:textColor="@color/white"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/event_detail_attendee_list_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp">
-
-                        </androidx.recyclerview.widget.RecyclerView>
+                        <ImageView
+                            android:id="@+id/groupImage"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/ic_group_white_30dp" />
 
                         <TextView
-                            android:id="@+id/event_detail_no_attendees_msg"
-                            android:layout_width="match_parent"
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
-                            android:text="No one is attending this event :("
-                            android:textAlignment="center" />
+                            android:paddingStart="8dp"
+                            android:paddingTop="2dp"
+                            android:text="@string/attendees"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
+                        <TextView
+                            android:id="@+id/event_detail_attendee_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/black"
+                            android:paddingStart="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="(0)"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-                </ScrollView>
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/event_detail_attendee_list_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="80dp">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <TextView
+                        android:id="@+id/event_detail_no_attendees_msg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="No one is attending this event :("
+                        android:textAlignment="center" />
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
