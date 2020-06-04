@@ -5,13 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import ch.epfl.sdp.ObjectUtils;
+
+import java.util.List;
+
 import ch.epfl.sdp.databinding.ActivityAuthBinding;
+import ch.epfl.sdp.offline.ConnectivityService;
 import ch.epfl.sdp.ui.UIConstants;
 import ch.epfl.sdp.ui.event.EventActivity;
 import ch.epfl.sdp.ui.main.MainActivity;
@@ -26,6 +27,7 @@ public class AuthActivity extends AppCompatActivity implements AuthFragment.OnAu
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, ConnectivityService.class));
         mBinding = ActivityAuthBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();
         setContentView(view);

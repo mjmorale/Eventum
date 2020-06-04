@@ -35,7 +35,7 @@
             android:id="@+id/reload_swipe_button"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:background="@color/colorPrimary"
             android:layout_marginBottom="80dp"
             android:text="@string/reload"
