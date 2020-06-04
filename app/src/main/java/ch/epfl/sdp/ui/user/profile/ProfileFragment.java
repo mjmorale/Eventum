@@ -19,11 +19,19 @@ import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * This fragment is shown to show the profile of other users through the attendee list
+ */
 public class ProfileFragment extends Fragment {
     private UserProfileBinding mBinding;
     private ProfileViewModel.ProfileViewModelFactory mFactory;
     private ProfileViewModel mViewModel;
 
+    /**
+     * Provides an instance of a ProfileFragment showing the information about an user
+     * @param userRef The reference in database of the user that will be shown in the fragment
+     * @return a fragment
+     */
     public static ProfileFragment getInstance(String userRef){
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_USER_REF, verifyNotNull(userRef));
@@ -32,7 +40,9 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-
+    /**
+     * Constructor for the profile Fragment
+     */
     public ProfileFragment(){
         super();
         mFactory = new ProfileViewModel.ProfileViewModelFactory();
