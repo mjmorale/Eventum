@@ -11,7 +11,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.UserProfileBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
