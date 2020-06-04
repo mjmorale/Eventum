@@ -25,8 +25,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/circle_smaller"
-                    app:srcCompat="@drawable/ic_person_black_24dp"/>
+                    android:minWidth="300dp"
+                    android:minHeight="300dp" />
             </FrameLayout>
             <TextView
                 android:layout_width="match_parent"

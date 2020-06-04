@@ -11,6 +11,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import ch.epfl.sdp.R;
 import ch.epfl.sdp.databinding.UserProfileBinding;
 import ch.epfl.sdp.db.Database;
 import ch.epfl.sdp.platforms.firebase.storage.ImageGetter;
@@ -19,11 +20,19 @@ import ch.epfl.sdp.ui.UIConstants;
 
 import static ch.epfl.sdp.ObjectUtils.verifyNotNull;
 
+/**
+ * This fragment is shown to show the profile of other users through the attendee list
+ */
 public class ProfileFragment extends Fragment {
     private UserProfileBinding mBinding;
     private ProfileViewModel.ProfileViewModelFactory mFactory;
     private ProfileViewModel mViewModel;
 
+    /**
+     * Provides an instance of a ProfileFragment showing the information about an user
+     * @param userRef The reference in database of the user that will be shown in the fragment
+     * @return a fragment
+     */
     public static ProfileFragment getInstance(String userRef){
         Bundle bundle = new Bundle();
         bundle.putString(UIConstants.BUNDLE_USER_REF, verifyNotNull(userRef));
@@ -32,7 +41,9 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-
+    /**
+     * Constructor for the profile Fragment
+     */
     public ProfileFragment(){
         super();
         mFactory = new ProfileViewModel.ProfileViewModelFactory();
@@ -66,6 +77,8 @@ public class ProfileFragment extends Fragment {
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userPicture);
+            int transparent = 0;
+            mBinding.userPicture.setBackgroundColor(transparent);
             mBinding.userProfileName.setText(user.getName());
             mBinding.userInterests.setText(user.getDescription());
             mBinding.userEmail.setText(user.getEmail());
