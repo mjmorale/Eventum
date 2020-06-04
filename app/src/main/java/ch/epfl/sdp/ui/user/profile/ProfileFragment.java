@@ -76,8 +76,6 @@ public class ProfileFragment extends Fragment {
 
         mViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             ImageGetter.getInstance().getImage(getContext(), user.getImageId(), mBinding.userPicture);
-            int transparent = 0;
-            mBinding.userPicture.setBackgroundColor(transparent);
             mBinding.userProfileName.setText(user.getName());
             mBinding.userInterests.setText(user.getDescription());
             mBinding.userEmail.setText(user.getEmail());
