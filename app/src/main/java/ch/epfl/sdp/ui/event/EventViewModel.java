@@ -1,14 +1,13 @@
 package ch.epfl.sdp.ui.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.epfl.sdp.Event;
 import ch.epfl.sdp.User;
@@ -89,7 +88,7 @@ public class EventViewModel extends ViewModel {
             if(eventRes.isSuccessful()) {
                 List<String> attendeeIds = (ArrayList<String>)eventRes.getData();
                 database.query("users").get(User.class, usersRes -> {
-                    if(usersRes.isSuccessful()) {
+                    if(usersRes.isSuccessful() && attendeeIds != null) {
                         List<DatabaseObject<User>> attendee = new ArrayList<>();
                         for(DatabaseObject<User> user: usersRes.getData()) {
                             if(attendeeIds.contains(user.getId())) {
