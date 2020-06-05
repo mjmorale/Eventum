@@ -56,6 +56,13 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
     <img src ="images/Map.jpg" alt="Map" width="25%" height="25%">
 
 
+* If you do not find your happiness in the events proposed by others, you can always create your own events by clicking on the '+' on the top right corner. To create an event you need a title, a description, a time and date, an address and maybe some categories if you want other users to find your event more easily :
+
+    <img src ="images/EventCreation.jpg" alt="EventCreation" width="25%" height="25%">
+
+    <img src ="images/EventCreationAddress.jpg" alt="EventCreationAddress" width="25%" height="25%">
+
+
 ## Creators
 
 * Corentin Bugnot
