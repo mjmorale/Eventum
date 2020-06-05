@@ -19,6 +19,11 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
 
 <img src ="images/20200605_130629.gif" alt="Swipe" width="25%" height="25%">
 
+* You can filter the events you want to see by range and some categories :
+
+<img src ="images/Filter.jpg" alt="Filter" width="25%" height="25%">
+
+
 * Menu accessed by clicking on the top left icon :
 
 <img src ="images/Sidebar.jpg" alt="Sidebar" width="25%" height="25%">
@@ -27,15 +32,20 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
   
   * The list:
 
-<img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
+    <img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
 
 
   * How an event looks like once you accepted it:
 
-<img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
-<img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
+    <img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
 
+    <img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
 
+    *
+
+* You can also display a map that shows you events nearby. Click on any red marker to see a quick description of the event and a photo. If you click on the image, you will be allowed accept or deny the event.
+
+    <img src ="images/Map.jpg" alt="Map" width="25%" height="25%">
 
 
 ## Creators
