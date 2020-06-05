@@ -33,7 +33,6 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
   * How an event looks like once you accepted it:
 
 <img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
-
 <img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
 
 
