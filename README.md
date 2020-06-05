@@ -17,7 +17,7 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
 
 * Swipe an event :
 
-<img src ="images/20200605_130629.gif" alt="Swipe" width="50%" height="50%">
+<img src ="images/20200605_130629.gif" alt="Swipe" width="25%" height="25%">
 
 ## Creators
 
