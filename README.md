@@ -96,11 +96,13 @@ Creating an event is a breeze with Eventum. Start by clicking on the **+** icon 
 <img src ="images/EventCreationAddress.jpg" alt="EventCreationAddress" width="25%" height="25%">
 
 ## Profile customization
+
 By clicking on your profile name on the sidebar, you get access to your personal page. Here, you can change your profile picture, add a short bio and access all the events that you created.
 
-TODO: insert personal profile page here
+<img src ="images/MyProfile.jpg" alt="MyProfile" width="25%" height="25%">
 
-TODO: insert created events here
+<img src ="images/MyEvents2.jpg" alt="MyEvents" width="25%" height="25%">
+
 
 ## Creators
 
