@@ -43,7 +43,7 @@ You can swipe left or right to deny or accept an event, respectively. Accepting 
 
     * You can chat :
 
-    <img src ="images/Chat.jpg" alt="Chat" width="25%" height="25%">
+    <img src ="images/Chat2.jpg" alt="Chat" width="25%" height="25%">
 
     * You can check out other people's profile to see their personality :
 
