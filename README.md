@@ -101,7 +101,7 @@ By clicking on your profile name on the sidebar, you get access to your personal
 
 <img src ="images/MyProfile.jpg" alt="MyProfile" width="25%" height="25%">
 
-<img src ="images/MyEvents2.jpg" alt="MyEvents" width="25%" height="25%">
+<img src ="images/MyEvents.jpg" alt="MyEvents" width="25%" height="25%">
 
 
 ## Creators
