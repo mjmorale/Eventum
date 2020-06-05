@@ -9,9 +9,19 @@ The app was made for Software Development Project (CS - 306) at EPFL
 
 Eventum is an app created to streamline the creation of events.
 
-## Features
+## Table of content
 
-### Swipe
+  - [Table of content](#table-of-content)
+  - [Swipe](#swipe)
+  - [Filter](#filter)
+  - [Sidebar](#sidebar)
+  - [Attending list](#attending-list)
+  - [Change of mind about an event](#change-of-mind-about-an-event)
+  - [Map](#map)
+  - [Create](#create)
+  - [Creators](#creators)
+
+## Swipe
 
 You can swipe left or right to deny or accept an event, respectively. Accepting an event means you are seen as an attendee to other users who accepted the same event and you can add the event to your calendar. You also can chat with the organizer and other attendees.
 
@@ -19,14 +29,19 @@ You can swipe left or right to deny or accept an event, respectively. Accepting 
 
 <img src ="images/Swipe.gif" alt="Swipe" width="25%" height="25%">
 
+## Filter
+
 * You can filter the events you want to see by range and some categories :
 
 <img src ="images/Filter.jpg" alt="Filter" width="25%" height="25%">
 
+## Sidebar
 
 * Menu accessed by clicking on the top left icon :
 
 <img src ="images/Sidebar.jpg" alt="Sidebar" width="25%" height="25%">
+
+## Attending list
 
 * Attending lists all the events you have swiped to accept. Accessing an event from this menu gives you the opportunity to add this event to your calendar, chat with the organizer and attendees, see who will attend the event and the weather. You can also share a link of the event to others, this will open the app with the event on it.
   
@@ -34,30 +49,40 @@ You can swipe left or right to deny or accept an event, respectively. Accepting 
 
     <img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
 
-
+    ### Additional features
+    
   * How an event looks like once you accepted it:
 
     <img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
 
     <img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
 
+    #### Chat
+
     * You can chat :
 
     <img src ="images/Chat2.jpg" alt="Chat" width="25%" height="25%">
+
+    #### Profile
 
     * You can check out other people's profile to see their personality :
 
     <img src ="images/Profile.jpeg" alt="Profile" width="25%" height="25%">
 
+## Change of mind about an event
+
 * If you wish to not attend the event after all, you can always choose to not be attending the event by deleting it from your attending list :
 
   <img src ="images/Delete.gif" alt="Delete" width="25%" height="25%">
 
+## Map
 
 * You can also display a map that shows you events nearby. Click on any red marker to see a quick description of the event and a photo. If you click on the image, you will be allowed accept or deny the event.
 
     <img src ="images/Map.jpg" alt="Map" width="25%" height="25%">
 
+
+## Create
 
 * If you do not find your happiness in the events proposed by others, you can always create your own events by clicking on the '+' on the top right corner. To create an event you need a title, a description, a time and date, an address and maybe some categories if you want other users to find your event more easily :
 
