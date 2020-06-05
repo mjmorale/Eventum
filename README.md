@@ -17,7 +17,7 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
 
 * Swipe an event :
 
-![Swipe](images/20200605_130629.gif)<!-- .element height="50%" width="50%" -->
+<img src ="images/20200605_130629.gif" alt="Swipe" width="50%" height="50%">
 
 ## Creators
 
