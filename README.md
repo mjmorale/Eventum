@@ -20,6 +20,7 @@ Eventum is an app created to streamline the process of creating and attending ev
   - [Event info](#event-info)
   - [Leave an event](#leave-an-event)
   - [Create](#create)
+  - [Profile customization](#profile-customization)
   - [Creators](#creators)
 
 ## Swipe
@@ -94,6 +95,12 @@ Creating an event is a breeze with Eventum. Start by clicking on the **+** icon 
 
 <img src ="images/EventCreationAddress.jpg" alt="EventCreationAddress" width="25%" height="25%">
 
+## Profile customization
+By clicking on your profile name on the sidebar, you get access to your personal page. Here, you can change your profile picture, add a short bio and access all the events that you created.
+
+TODO: insert personal profile page here
+
+TODO: insert created events here
 
 ## Creators
 
