@@ -13,11 +13,31 @@ Eventum is an app created to streamline the creation of events.
 
 ### Swipe
 
-You can swipe left or right to deny or accept the an event, respectively. Accepting an event means you are seen as an attendee to other users who accept an event and you can add the event to your calendar. You also can chat with the organiser and other attendees.
+You can swipe left or right to deny or accept the an event, respectively. Accepting an event means you are seen as an attendee to other users who accepted the same event and you can add the event to your calendar. You also can chat with the organiser and other attendees.
 
 * Swipe an event :
 
 <img src ="images/20200605_130629.gif" alt="Swipe" width="25%" height="25%">
+
+* Menu accessed by clicking on the top left icon :
+
+<img src ="images/Sidebar.jpg" alt="Sidebar" width="25%" height="25%">
+
+* Attending lists all the events you have swiped to accept. Accessing an event from this menu gives you the opportunity to add this event to your calendar, chat with the organizer and attendees, see who will attend the event and the weather. You can also share a link of the event to others, this will open the app with the event on it.
+  
+  * The list:
+
+<img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
+
+
+  * How an event looks like once you accepted it:
+
+<img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
+
+<img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
+
+
+
 
 ## Creators
 
