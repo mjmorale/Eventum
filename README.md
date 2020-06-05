@@ -41,7 +41,15 @@ You can swipe left or right to deny or accept the an event, respectively. Accept
 
     <img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
 
-    *
+    * You can chat :
+
+    <img src ="images/Chat.jpg" alt="Chat" width="25%" height="25%">
+
+    * You can check out other people's profile to see their personality :
+
+    <img src ="images/Profile.jpeg" alt="Profile" width="25%" height="25%">
+
+
 
 * You can also display a map that shows you events nearby. Click on any red marker to see a quick description of the event and a photo. If you click on the image, you will be allowed accept or deny the event.
 
