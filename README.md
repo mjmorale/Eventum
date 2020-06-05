@@ -3,92 +3,96 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/17f55cc9180ef915e021/maintainability)](https://codeclimate.com/github/mjmorale/Eventum/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/17f55cc9180ef915e021/test_coverage)](https://codeclimate.com/github/mjmorale/Eventum/test_coverage)
 
-The app was made for Software Development Project (CS - 306) at EPFL
+The app was made for Software Development Project (CS-306) at EPFL
 
 # Eventum
 
-Eventum is an app created to streamline the creation of events.
+Eventum is an app created to streamline the process of creating and attending events.
 
 ## Table of content
 
   - [Table of content](#table-of-content)
   - [Swipe](#swipe)
   - [Filter](#filter)
+  - [Map](#map)
   - [Sidebar](#sidebar)
   - [Attending list](#attending-list)
-  - [Change of mind about an event](#change-of-mind-about-an-event)
-  - [Map](#map)
+  - [Event info](#event-info)
+  - [Leave an event](#leave-an-event)
   - [Create](#create)
   - [Creators](#creators)
 
 ## Swipe
 
-You can swipe left or right to deny or accept an event, respectively. Accepting an event means you are seen as an attendee to other users who accepted the same event and you can add the event to your calendar. You also can chat with the organizer and other attendees.
-
-* Swipe an event :
+You can swipe left or right to deny or accept an event, respectively, and find out more about an event by clicking on it.
 
 <img src ="images/Swipe.gif" alt="Swipe" width="25%" height="25%">
 
 ## Filter
 
-* You can filter the events you want to see by range and some categories :
+Use this menu to filter events by distance and category.
 
 <img src ="images/Filter.jpg" alt="Filter" width="25%" height="25%">
 
+## Map
+
+You can also display a map that shows you nearby events. Click on any red marker to see a quick description of the event and a photo, and clicking on that pop-up gives you the option to accept or deny that event.
+
+ <img src ="images/Map.jpg" alt="Map" width="25%" height="25%">
+
 ## Sidebar
 
-* Menu accessed by clicking on the top left icon :
+Easily navigate through the app using the navigation menu, accessed by clicking on the top left icon
 
 <img src ="images/Sidebar.jpg" alt="Sidebar" width="25%" height="25%">
 
 ## Attending list
 
-* Attending lists all the events you have swiped to accept. Accessing an event from this menu gives you the opportunity to add this event to your calendar, chat with the organizer and attendees, see who will attend the event and the weather. You can also share a link of the event to others, this will open the app with the event on it.
-  
-  * The list:
+ Access all the events you accepted, and get informed about when they are happening using the attending list.
 
-    <img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
+ <img src ="images/AttendingList.jpg" alt="AttendingList" width="25%" height="25%">
 
-    ### Additional features
-    
-  * How an event looks like once you accepted it:
 
-    <img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
+## Event info
 
-    <img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
+Accessing an event from the attending list gives you access to extra information and functionalities related to that event, such as:
+   * Date & time
+   * Location (with an integrated minimap)
+   * Weather forecast at the time and location of the event
+   * List of people attending that event
+   * Link sharing
+   * Chat
+   * Calendar integration
 
-    #### Chat
+<img src ="images/EventAttendee2.jpg" alt="AttendeeEvent" width="25%" height="25%">
 
-    * You can chat :
+<img src ="images/AttendeeList.jpg" alt="AttendeeList" width="25%" height="25%">
 
-    <img src ="images/Chat2.jpg" alt="Chat" width="25%" height="25%">
+#### Chat
 
-    #### Profile
+* Chat with all other attendees:
 
-    * You can check out other people's profile to see their personality :
+   <img src ="images/Chat2.jpg" alt="Chat" width="25%" height="25%">
+
+#### Profile
+
+ * You can check out other people's profile by clicking on their name:
 
     <img src ="images/Profile.jpeg" alt="Profile" width="25%" height="25%">
 
-## Change of mind about an event
+## Leave an event
 
-* If you wish to not attend the event after all, you can always choose to not be attending the event by deleting it from your attending list :
+If you change your mind after attending an event, you can always remove it from your attending list by swiping left on it:
 
-  <img src ="images/Delete.gif" alt="Delete" width="25%" height="25%">
-
-## Map
-
-* You can also display a map that shows you events nearby. Click on any red marker to see a quick description of the event and a photo. If you click on the image, you will be allowed accept or deny the event.
-
-    <img src ="images/Map.jpg" alt="Map" width="25%" height="25%">
-
+ <img src ="images/Delete.gif" alt="Delete" width="25%" height="25%">
 
 ## Create
 
-* If you do not find your happiness in the events proposed by others, you can always create your own events by clicking on the '+' on the top right corner. To create an event you need a title, a description, a time and date, an address and maybe some categories if you want other users to find your event more easily :
+Creating an event is a breeze with Eventum. Start by clicking on the **+** icon on the top right corner, and you will access our event creation menu. Simply add a title, description, date and time, address, categories and a picture and your event will be visible to any user of the Eventum app.
 
-    <img src ="images/EventCreation.jpg" alt="EventCreation" width="25%" height="25%">
+<img src ="images/EventCreation.jpg" alt="EventCreation" width="25%" height="25%">
 
-    <img src ="images/EventCreationAddress.jpg" alt="EventCreationAddress" width="25%" height="25%">
+<img src ="images/EventCreationAddress.jpg" alt="EventCreationAddress" width="25%" height="25%">
 
 
 ## Creators
